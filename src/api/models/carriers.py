@@ -1,12 +1,8 @@
-Carrier 
-
-
-
 from sqlalchemy import String, Integer, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from api.models import db
 
-
+    
 class Carrier(db.Model):
     __tablename__ = "carriers"
 
