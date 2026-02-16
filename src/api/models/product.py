@@ -3,6 +3,7 @@ from sqlalchemy import String,DateTime, Float,Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from api.models import db
+from api.models.category import Category
 
 
 class Product(db.Model):

@@ -4,6 +4,8 @@ from datetime import datetime, timezone
 from api.models import db
 import enum
 
+from api.models.user import User
+
 class Payment(enum.Enum):
     credit_card = "credit_card"
     bizum = "bizum"
@@ -17,8 +19,8 @@ class Status(enum.Enum):
     cancelled = "cancelled"
 
 
-class Product(db.Model):
-    __tablename__ = 'product'
+class Order(db.Model):
+    __tablename__ = 'order'
     id: Mapped[int] = mapped_column(primary_key=True)
     total_price: Mapped[float] = mapped_column(Float, nullable=False)
     tax: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)

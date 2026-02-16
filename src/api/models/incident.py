@@ -2,10 +2,12 @@ from sqlalchemy import String, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
+from api.models.order import Order
+from api.models.user import User
 
 
 class Incident(db.Model):
-    __tablename__ = 'incidents'
+    __tablename__ = 'incident'
 
     # Columnas
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -14,7 +16,8 @@ class Incident(db.Model):
     description: Mapped[str] = mapped_column(String(1000), nullable=False)
 
     status: Mapped[str] = mapped_column(
-        Enum('open', 'in_progress', 'resolved', 'rejected', name='incident_status'),
+        Enum('open', 'in_progress', 'resolved',
+             'rejected', name='incident_status'),
         default='open',
         nullable=False
     )
@@ -31,24 +34,24 @@ class Incident(db.Model):
     )
 
     user_id: Mapped[int] = mapped_column(
-        ForeignKey('users.id'),
+        ForeignKey('user.id'),
         nullable=False
     )
 
     order_id: Mapped[int] = mapped_column(
-        ForeignKey('orders.id'),
+        ForeignKey('order.id'),
         nullable=True
     )
 
     # Relaciones
     user: Mapped["User"] = relationship(
         "User",
-        back_populates="incidents"
+        back_populates="incident"
     )
 
     order: Mapped["Order"] = relationship(
         "Order",
-        back_populates="incidents"
+        back_populates="incident"
     )
 
     def __repr__(self):

@@ -3,6 +3,8 @@ from sqlalchemy import String,DateTime, Float,Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from api.models import db
+from api.models.product import Product
+from api.models.user import User
 
 
 class Favorite(db.Model):

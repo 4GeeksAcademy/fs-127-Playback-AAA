@@ -2,10 +2,11 @@ from sqlalchemy import String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
+from api.models.user import User
 
 
 class Address(db.Model):
-    __tablename__ = "addresses"
+    __tablename__ = "address"
 
     # =========================
     # Columnas
@@ -13,7 +14,7 @@ class Address(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"),
+        ForeignKey("user.id"),
         nullable=False
     )
 
@@ -76,7 +77,7 @@ class Address(db.Model):
 
     user: Mapped["User"] = relationship(
         "User",
-        back_populates="addresses"
+        back_populates="address"
     )
 
     def __repr__(self):

@@ -2,26 +2,29 @@ from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, CheckCons
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
+from api.models.order import Order
+from api.models.product import Product
+from api.models.user import User
 
 
 class Review(db.Model):
-    __tablename__ = 'reviews'
+    __tablename__ = 'review'
 
     # Columnas
     id: Mapped[int] = mapped_column(primary_key=True)
 
     user_id: Mapped[int] = mapped_column(
-        ForeignKey('users.id'),
+        ForeignKey('user.id'),
         nullable=False
     )
 
     product_id: Mapped[int] = mapped_column(
-        ForeignKey('products.id'),
+        ForeignKey('product.id'),
         nullable=False
     )
 
     order_id: Mapped[int] = mapped_column(
-        ForeignKey('orders.id'),
+        ForeignKey('order.id'),
         nullable=False
     )
 
@@ -59,23 +62,24 @@ class Review(db.Model):
 
     # Constraints
     __table_args__ = (
-        CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
+        CheckConstraint('rating >= 1 AND rating <= 5',
+                        name='check_rating_range'),
     )
 
     # Relaciones
     user: Mapped["User"] = relationship(
         "User",
-        back_populates="reviews"
+        back_populates="review"
     )
 
     product: Mapped["Product"] = relationship(
         "Product",
-        back_populates="reviews"
+        back_populates="review"
     )
 
     order: Mapped["Order"] = relationship(
         "Order",
-        back_populates="reviews"
+        back_populates="review"
     )
 
     def __repr__(self):
