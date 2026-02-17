@@ -13,7 +13,7 @@ class Product(db.Model):
     description: Mapped[str] = mapped_column(String(1000), nullable=True)
     price: Mapped[float] = mapped_column(Float(), nullable=False, default=0.0)
     image_url: Mapped[str] = mapped_column(String(500), nullable=True)
-    code_product: Mapped[int] = mapped_column(Integer(), primary_key=True, nullable=True)
+    code_product: Mapped[int] = mapped_column(Integer(), nullable=False,unique=True) 
     size: Mapped[str] = mapped_column(String(), nullable=True)
     weight: Mapped[float] = mapped_column(Float(), nullable=True)
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
