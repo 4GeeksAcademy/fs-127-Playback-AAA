@@ -1,5 +1,5 @@
 
-from sqlalchemy import String,DateTime, Float,Integer
+from sqlalchemy import String,DateTime, Float,Integer,ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from api.models import db
@@ -20,14 +20,18 @@ class Product(db.Model):
     discount: Mapped[float] = mapped_column(Float(), nullable=False, default=0)
     create_at:Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=0)
 
+   #----------------------ForeignKey
 
-    categoria_id: Mapped["Category"] = relationship(
-        "Category",
-        back_populates="product",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=False)
 
+    #----------------------RelationShip
+    category: Mapped["Category"] = relationship("Category", back_populates="products")
+    order_details: Mapped[list["OrderDetail"]] = relationship("OrderDetail", back_populates="product", cascade="all, delete-orphan")
+    reviews: Mapped[list["Review"]] = relationship("Review", back_populates="product", cascade="all, delete-orphan")
+    favorites: Mapped[list["Favorite"]] = relationship("Favorite", back_populates="product", cascade="all, delete-orphan")
+
+
+   
     def __repr__(self):
         return f'<Product {self.id}: {self.name}>'
 

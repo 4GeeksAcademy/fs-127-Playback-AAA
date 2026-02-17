@@ -1,20 +1,29 @@
 import bcrypt
 from sqlalchemy import String, Boolean, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
 
 
 class User(db.Model):
+ 
     __tablename__ = 'user'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(80), unique=False, nullable=False)
-    last_name: Mapped[str] = mapped_column(String(120), unique=False, nullable=False)
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(120), nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column( DateTime(),default=datetime.now(timezone.utc))
-    # Aqui va el nombre de como se llama la CLASE no la tabla
+    created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
+
+    #----------------------RelationShip
+
+    addresses: Mapped[list["Address"]] = relationship("Address", back_populates="user", cascade="all, delete-orphan")
+    orders: Mapped[list["Order"]] = relationship("Order", back_populates="user", cascade="all, delete-orphan")
+    reviews: Mapped[list["Review"]] = relationship("Review", back_populates="user", cascade="all, delete-orphan")
+    incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="user", cascade="all, delete-orphan")
+    favorites: Mapped[list["Favorite"]] = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
 
     def set_password(self, password):
         """Hashea un password en texto plano y lo almacena."""

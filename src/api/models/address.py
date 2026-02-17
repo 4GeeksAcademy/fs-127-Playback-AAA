@@ -12,73 +12,25 @@ class Address(db.Model):
     # Columnas
     # =========================
     id: Mapped[int] = mapped_column(primary_key=True)
+    address: Mapped[str] = mapped_column(String(255), nullable=False)
+    address_type: Mapped[str] = mapped_column(String(50), default="shipping", nullable=False)
+    full_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    phone: Mapped[str] = mapped_column(String(30), nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False)
+    province: Mapped[str] = mapped_column(String(100), nullable=True)
+    municipality: Mapped[str] = mapped_column(String(100), nullable=True)
+    postal_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    country: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("user.id"),
-        nullable=False
-    )
+    #----------------------ForeignKey
 
-    address: Mapped[str] = mapped_column(
-        String(255),
-        nullable=False
-    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
 
-    address_type: Mapped[str] = mapped_column(
-        String(50),
-        default="shipping",
-        nullable=False
-    )
-
-    full_name: Mapped[str] = mapped_column(
-        String(150),
-        nullable=False
-    )
-
-    phone: Mapped[str] = mapped_column(
-        String(30),
-        nullable=False
-    )
-
-    city: Mapped[str] = mapped_column(
-        String(100),
-        nullable=False
-    )
-
-    province: Mapped[str] = mapped_column(
-        String(100),
-        nullable=True
-    )
-
-    municipality: Mapped[str] = mapped_column(
-        String(100),
-        nullable=True
-    )
-
-    postal_code: Mapped[str] = mapped_column(
-        String(20),
-        nullable=False
-    )
-
-    country: Mapped[str] = mapped_column(
-        String(100),
-        nullable=False
-    )
-
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(),
-        default=datetime.now(timezone.utc)
-    )
-
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(),
-        default=datetime.now(timezone.utc),
-        onupdate=datetime.now(timezone.utc)
-    )
-
-    user: Mapped["User"] = relationship(
-        "User",
-        back_populates="address"
-    )
+    #----------------------RelationShip
+    
+    user: Mapped["User"] = relationship("User", back_populates="addresses")
 
     def __repr__(self):
         return f"<Address {self.id}: {self.full_name} - {self.city}, {self.country}>"

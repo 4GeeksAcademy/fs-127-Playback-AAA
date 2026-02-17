@@ -19,8 +19,6 @@ class Shipment(db.Model):
     __tablename__ = "shipment"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"),nullable=False)
-    carrier_id: Mapped[int] = mapped_column(ForeignKey("carriers.id"),nullable=False)
     shipping_code: Mapped[str] = mapped_column(String(100), nullable=False)
     tracking_number: Mapped[str] = mapped_column(String(100), nullable=True)
     estimated_delivery_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
@@ -28,19 +26,14 @@ class Shipment(db.Model):
     delivery_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     shipment_status: Mapped[ShipmentStatus] = mapped_column(Enum(ShipmentStatus),default=ShipmentStatus.PENDING,nullable=False)
 
-    order_id: Mapped["Order"] = relationship(
-        "Order",
-        back_populates="shipment",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    #----------------------ForeignKey
 
-    carrier_id: Mapped["Carrier"] = relationship(
-        "Carrier",
-        back_populates="shipment",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=False)
+    carrier_id: Mapped[int] = mapped_column(ForeignKey("carrier.id"), nullable=False)
+
+    #----------------------RelationShip
+    order: Mapped["Order"] = relationship("Order", back_populates="shipment")
+    carrier: Mapped["Carrier"] = relationship("Carrier", back_populates="shipments")
 
     def serialize(self):
         return {

@@ -1,5 +1,5 @@
 from sqlalchemy import String, Integer, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column,relationship
 from api.models import db
 
     
@@ -13,7 +13,9 @@ class Carrier(db.Model):
     estimated_days: Mapped[int] = mapped_column(Integer,nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean,default=True)
 
+    #----------------------RelationShip
 
+    shipments: Mapped[list["Shipment"]] = relationship("Shipment", back_populates="carrier", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Carrier {self.id}: {self.name}>'

@@ -11,48 +11,25 @@ class Incident(db.Model):
 
     # Columnas
     id: Mapped[int] = mapped_column(primary_key=True)
-
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(1000), nullable=False)
-
     status: Mapped[str] = mapped_column(
-        Enum('open', 'in_progress', 'resolved',
-             'rejected', name='incident_status'),
+        Enum('open', 'in_progress', 'resolved', 'rejected', name='incident_status'),
         default='open',
         nullable=False
     )
+    created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(),
-        default=datetime.now(timezone.utc)
-    )
+    #----------------------ForeignKey
 
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(),
-        default=datetime.now(timezone.utc),
-        onupdate=datetime.now(timezone.utc)
-    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=True)
 
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey('user.id'),
-        nullable=False
-    )
-
-    order_id: Mapped[int] = mapped_column(
-        ForeignKey('order.id'),
-        nullable=True
-    )
-
-    # Relaciones
-    user: Mapped["User"] = relationship(
-        "User",
-        back_populates="incident"
-    )
-
-    order: Mapped["Order"] = relationship(
-        "Order",
-        back_populates="incident"
-    )
+    #----------------------RelationShip
+    
+    user: Mapped["User"] = relationship("User", back_populates="incidents")
+    order: Mapped["Order"] = relationship("Order", back_populates="incidents")
 
     def __repr__(self):
         return f'<Incident {self.id}: {self.title} ({self.status})>'

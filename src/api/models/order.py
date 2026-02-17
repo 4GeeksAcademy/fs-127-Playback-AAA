@@ -1,4 +1,4 @@
-from sqlalchemy import String,DateTime, Float,Integer,Enum
+from sqlalchemy import DateTime, Float,Enum,ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
@@ -30,7 +30,16 @@ class Order(db.Model):
     status:Mapped[Status] = mapped_column(Enum(Status), nullable=False)
     created_at: Mapped[datetime] = mapped_column( DateTime(),default=datetime.now(timezone.utc))
 
-    user_id: Mapped["User"] = relationship("User", back_populates="product")
+    #---------------------ForeignKey
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+
+    #----------------------RelationShip
+    user: Mapped["User"] = relationship("User", back_populates="orders")
+    order_details: Mapped[list["OrderDetail"]] = relationship("OrderDetail", back_populates="order", cascade="all, delete-orphan")
+    shipment: Mapped["Shipment"] = relationship("Shipment", back_populates="order", uselist=False, cascade="all, delete-orphan")
+    reviews: Mapped[list["Review"]] = relationship("Review", back_populates="order", cascade="all, delete-orphan")
+    incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="order", cascade="all, delete-orphan")
 
 
     def serialize(self):

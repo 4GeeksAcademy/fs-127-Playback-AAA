@@ -1,5 +1,5 @@
 
-from sqlalchemy import String,DateTime, Float,Integer
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from api.models import db
@@ -12,19 +12,15 @@ class Favorite(db.Model):
     #preguntar is poner Integer
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    user_id: Mapped["User"] = relationship(
-        "User",
-        back_populates="favorite",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    #----------------------ForeignKey
 
-    product_id: Mapped["Product"] = relationship(
-        "Product",
-        back_populates="favorite",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
+
+    #----------------------RelationShip
+    
+    user: Mapped["User"] = relationship("User", back_populates="favorites")
+    product: Mapped["Product"] = relationship("Product", back_populates="favorites")
 
 
     def __repr__(self):

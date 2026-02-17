@@ -9,25 +9,18 @@ class OrderDetail(db.Model):
     __tablename__ = "order_detail"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"),nullable=False)
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"),nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
 
 
-    order_id: Mapped["Order"] = relationship(
-        "Order",
-        back_populates="orderdetail",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    #----------------------ForeignKey
 
+    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=False)
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
+
+    #----------------------RelationShip
     
-    product_id: Mapped["Product"] = relationship(
-        "Product",
-        back_populates="orderdetail",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
+    order: Mapped["Order"] = relationship("Order", back_populates="order_details")
+    product: Mapped["Product"] = relationship("Product", back_populates="order_details")
 
     def serialize(self):
         return {
