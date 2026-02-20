@@ -7,12 +7,13 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from api.controllers import register_controllers
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
-
+register_controllers(api)
 @api.errorhandler(HTTPException)
 def handle_exception(e):
     response = e.get_response()

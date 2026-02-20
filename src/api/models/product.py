@@ -18,7 +18,7 @@ class Product(db.Model):
     weight: Mapped[float] = mapped_column(Float(), nullable=True)
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
     discount: Mapped[float] = mapped_column(Float(), nullable=False, default=0)
-    create_at:Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=0)
+    created_at:Mapped[datetime] = mapped_column(DateTime(), nullable=True, default=0)
 
    #----------------------ForeignKey
 
@@ -50,6 +50,20 @@ class Product(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
     
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "price": self.price,
+            "image_url": self.image_url,
+            "code_product": self.code_product,
+            "size": self.size,
+            "weight": self.weight,
+            "stock": self.stock,
+            "discount": self.discount,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
     def serialize_with_categoria_id(self):
         data = self.serialize()
         data["category"] = self.categoria_id.serialize() if self.categoria_id else None
