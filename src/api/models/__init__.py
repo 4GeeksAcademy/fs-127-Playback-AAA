@@ -9,6 +9,8 @@ from api.models.user import User
 from api.models.address import Address
 from api.models.product import Product
 from api.models.category import Category
+from api.models.subcategory import Subcategory
+from api.models.item import Item
 from api.models.favorite import Favorite
 from api.models.order import Order
 from api.models.orderdetail import OrderDetail
