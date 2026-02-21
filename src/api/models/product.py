@@ -11,13 +11,12 @@ class Product(db.Model):
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(String(1000), nullable=True)
     price: Mapped[float] = mapped_column(Float(), nullable=False, default=0.0)
-    image_url: Mapped[str] = mapped_column(String(500), nullable=True)
-    code_product: Mapped[int] = mapped_column(Integer(), nullable=False,unique=True) 
+    image_url: Mapped[str] = mapped_column(Text(), nullable=True)
     size: Mapped[str] = mapped_column(String(), nullable=True)
     weight: Mapped[float] = mapped_column(Float(), nullable=True)
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
     discount: Mapped[float] = mapped_column(Float(), nullable=False, default=0)
-    create_at:Mapped[datetime] = mapped_column(DateTime(), nullable=False)
+    created_at:Mapped[datetime] = mapped_column(DateTime(), nullable=True)
 
     #----------------------ForeignKey
 
@@ -41,7 +40,6 @@ class Product(db.Model):
             "description": self.description,
             "price": self.price,
             "image_url": self.image_url,
-            "code_product": self.code_product,
             "size": self.size,
             "weight": self.weight,
             "stock": self.stock,
@@ -50,4 +48,21 @@ class Product(db.Model):
             "item": self.item.slug if self.item else None,
             "subcategory": self.subcategory.slug if self.subcategory else None,
             "category": self.subcategory.category.slug if self.subcategory and self.subcategory.category else None
+        }
+    
+    def to_dict(self):
+        avg_rating = round(sum(r.rating for r in self.reviews) / len(self.reviews), 1) if self.reviews else 0
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "price": self.price,
+            "image_url": self.image_url,
+            "size": self.size,
+            "weight": self.weight,
+            "stock": self.stock,
+            "discount": self.discount,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "rating": avg_rating,        # promedio calculado de todas sus reviews
+            "Review": len(self.reviews), # cantidad de reviews
         }

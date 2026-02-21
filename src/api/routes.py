@@ -11,11 +11,15 @@ from api.models.user import User
 from api.models.category import Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from api.controllers import register_controllers
+import cloudinary.uploader
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+register_controllers(api)
+
 
 @api.errorhandler(HTTPException)
 def handle_exception(e):
@@ -122,3 +126,39 @@ def get_categories():
         result.append(cat_data)
 
     return jsonify(result), 200
+
+
+@api.route("/productos", methods=["POST"])
+def crear_producto():
+    nombre = request.form.get("name")
+    precio = request.form.get("price")
+    descripcion = request.form.get("description")
+    imagen = request.files.get("imagen")
+
+    if not nombre or not precio:
+        abort(400, description="Nombre y precio son obligatorios")
+
+    imagen_url = None
+    if imagen:
+        try:
+            resultado = cloudinary.uploader.upload(imagen, folder="productos")
+            imagen_url = resultado["secure_url"]
+        except Exception as e:
+            abort(500, description=f"Error al subir imagen: {str(e)}")
+
+    try:
+        from api.models import Product
+        nuevo = Product(
+            name=nombre,
+            price=float(precio),
+            description=descripcion,
+            image_url=imagen_url,
+            stock=0,
+            discount=0.0
+        )
+        db.session.add(nuevo)
+        db.session.commit()
+        return jsonify(nuevo.serialize()), 201
+    except Exception as e:
+        db.session.rollback()
+        abort(500, description=f"Error al crear producto: {str(e)}")
