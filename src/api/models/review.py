@@ -21,9 +21,9 @@ class Review(db.Model):
 
     #----------------------ForeignKey
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=True)
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
-    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=False)
+    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=True)
 
     __table_args__ = (
         CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
@@ -38,15 +38,15 @@ class Review(db.Model):
         return f'<Review {self.id}: {self.rating}/5 - User {self.user_id} Product {self.product_id}>'
 
     def serialize(self):
+        avg_rating = round(sum(r.rating for r in self.reviews) / len(self.reviews), 1) if self.reviews else 0
         return {
-            "id": self.id,
-            "user_id": self.user_id,
-            "product_id": self.product_id,
-            "order_id": self.order_id,
-            "rating": self.rating,
-            "title": self.title,
-            "comment": self.comment,
-            "is_visible": self.is_visible,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-        }
+        "id": self.id,
+        "name": self.name,
+        "price": self.price,
+        "image_url": self.image_url,
+        "stock": self.stock,
+        "discount": self.discount,
+        "rating": avg_rating,          # promedio de estrellas
+        "Review": len(self.reviews),   # cantidad de reviews
+        "created_at": self.created_at.isoformat() if self.created_at else None,
+    }

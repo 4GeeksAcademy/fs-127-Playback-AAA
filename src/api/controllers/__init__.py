@@ -15,6 +15,8 @@ principal 'api', por lo que todas las rutas quedan bajo /api/...
 """
 
 from api.controllers.products_controller import product_bp
+from api.controllers.review_controller import review_bp
+
 
 
 
@@ -24,3 +26,4 @@ def register_controllers(api):
     Se llama desde routes.py al inicializar la API.
     """
     api.register_blueprint(product_bp)
+    api.register_blueprint(review_bp)

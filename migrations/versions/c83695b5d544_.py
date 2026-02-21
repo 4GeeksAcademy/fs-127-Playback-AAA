@@ -81,7 +81,6 @@ def upgrade():
     sa.Column('description', sa.String(length=1000), nullable=True),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('image_url', sa.String(length=500), nullable=True),
-    sa.Column('code_product', sa.Integer(), nullable=False),
     sa.Column('size', sa.String(), nullable=True),
     sa.Column('weight', sa.Float(), nullable=True),
     sa.Column('stock', sa.Integer(), nullable=False),
@@ -90,7 +89,6 @@ def upgrade():
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('code_product')
     )
     op.create_table('favorite',
     sa.Column('id', sa.Integer(), nullable=False),

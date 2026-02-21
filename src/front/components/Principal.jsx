@@ -1,28 +1,45 @@
-import { Link, useNavigate } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useState, useEffect } from "react";
 import productServices from "../services/productService";
+import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { useRef } from "react";
 
 
 export const Principal = () => {
+  // Es para poder controlar el carrousel
+  const carouselRef = useRef(null);
+  // Aqui le decimos cuanto queremos que se mueva el carrousel el  behavior: "smooth" es una animacion
+  const scroll = (dir) => {
+    carouselRef.current?.scrollBy({ left: dir === "right" ? 400 : -400, behavior: "smooth" });
+  };
   const [products, setProducts] = useState([]);
-useEffect(() => {
-  productServices.getAllProducts().then(data => setProducts(data));
-}, []);
+  useEffect(() => {
+    productServices.getAllProducts().then(data => setProducts(data));
+  }, []);
+
+
+
   const featuredCategories = [
-    { name: "Ropa", icon: "👗", color: "from-rose-100 to-pink-50" },
-    { name: "Tecnología", icon: "💻", color: "from-blue-100 to-cyan-50" },
-    { name: "Hogar", icon: "🏠", color: "from-amber-100 to-yellow-50" },
-    { name: "Ropa", icon: "👗", color: "from-rose-100 to-pink-50" },
-    { name: "Tecnología", icon: "💻", color: "from-blue-100 to-cyan-50" },
-    { name: "Hogar", icon: "🏠", color: "from-amber-100 to-yellow-50" },
-    { name: "Ropa", icon: "👗", color: "from-rose-100 to-pink-50" },
-    { name: "Tecnología", icon: "💻", color: "from-blue-100 to-cyan-50" },
-    { name: "Hogar", icon: "🏠", color: "from-amber-100 to-yellow-50" },
+    { name: "Vinilos", image: "https://images.pexels.com/photos/1389429/pexels-photo-1389429.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Consolas", image: "https://images.pexels.com/photos/275033/pexels-photo-275033.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Libros", image: "https://images.pexels.com/photos/256450/pexels-photo-256450.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Cámaras", image: "https://images.pexels.com/photos/1983038/pexels-photo-1983038.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Cassettes", image: "https://images.pexels.com/photos/3811082/pexels-photo-3811082.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Arcade", image: "https://images.pexels.com/photos/1174746/pexels-photo-1174746.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Guitarras", image: "https://images.pexels.com/photos/1407322/pexels-photo-1407322.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Relojes", image: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Posters", image: "https://images.pexels.com/photos/1070345/pexels-photo-1070345.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Radios", image: "https://images.pexels.com/photos/4495755/pexels-photo-4495755.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Juguetes", image: "https://images.pexels.com/photos/163036/mario-luigi-yoshi-figures-163036.jpeg?auto=compress&cs=tinysrgb&w=400" },
+    { name: "Monedas", image: "https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg?auto=compress&cs=tinysrgb&w=400" },
   ];
 
-// Esto es una funcion para que cree las estrellas
+  // Necessitamos usar el sort para que no coincidan las categorias que queremos mostrar
+  const categoriasAleatorias = [...featuredCategories]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 5);
 
+
+  // Esto es una funcion para que cree las estrellas
   function StarRating({ rating }) {
     return (
       <div className="flex items-center gap-0.5">
@@ -36,76 +53,118 @@ useEffect(() => {
   }
 
   return (
-    <div>
+    <div >
+
+
       <section>
-        <div className="w-full px-4  max-w-screen-2xl w-full mx-auto my-6">
-          <div className="relative rounded-2xl overflow-hidden bg-primary text-white p-8 l justify-between min-h-48 cursor-pointer">
-            <div>
-              <span className="inline-block bg-amber-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest">Oferta Especial</span>
-              <h3 className="text-3xl font-bold leading-tight" >Hasta 50% OFF</h3>
-              <p className="text-stone-300 mt-1 text-sm">En productos seleccionados. ¡Solo por hoy!</p>
+        {/* Es importante el w-full y el max-w-screen-2xl para que ocupe el maximo posible y que no se deforme la imagen maximo 1536 px*/}
+        <div className="w-full px-4 max-w-screen-2xl mx-auto my-6">
+          <div className="relative  overflow-hidden min-h-48 sm:min-h-60 md:min-h-72 flex items-center justify-center"
+            style={{
+              backgroundImage: "url('https://images.pexels.com/photos/1983038/pexels-photo-1983038.jpeg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            {/* Ponemos un fondo un poco mas oscuro encima de la imagen? o lo quitamos?*/}
+            <div className="absolute inset-0 bg-black/20" />
+
+            {/* Cuadro de texto negro encima de la imagen */}
+            <div className="relative z-10 bg-black/70 text-white px-5 py-5 sm:px-8 sm:py-8 flex flex-col items-center text-center w-11/12 sm:w-80 md:w-96 m-4">
+              <h4 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3"> Captura el momento</h4>
+              <span className="text-xs font-bold uppercase mb-2">¡Oferta especial!</span>
+              <p className="text-stone-300 text-xs sm:text-sm mb-4 sm:mb-6">
+                Toda nuestra colección de cámaras analógicas con descuento.
+                ¡Solo por tiempo limitado!
+              </p>
+
+              {/* Programar boton para que al hacer click vaya a la pagina de la oferta */}
+              <button className="bg-stone-800 hover:bg-stone-700 text-white font-bold px-6 py-2.5 rounded-lg text-xs sm:text-sm  transition-all w-full">
+                Ver ofertas
+              </button>
             </div>
-            <button className="self-start mt-6 bg-amber-400 hover:bg-amber-300 text-stone-900 font-bold px-5 py-2.5 rounded-xl text-sm transition-all group-hover:scale-105 transform">
-              Ver ofertas →
-            </button>
           </div>
         </div>
-
       </section>
-      <section>
 
-    
-        <h2 className="text-lg font-semibold m-4 ">Categorías Destacadas</h2>
-        <div className="grid grid-cols-4 gap-4 mx-64">
-          {featuredCategories.slice(0, 8).map(cat => (
-            <div key={cat.name} className="cursor-pointer group">
-              {/* aspect-square max-w-[300px] es para el tamaño de las imagenes*/}
-              <div className={`w-full aspect-square max-w-[300px] rounded-md bg-gradient-to-br ${cat.color} flex items-center justify-center text-4xl`}>
-                {cat.icon}
+
+
+      {/* -------------------------------CATEGORIAS DESTACADAS */}
+      <div className="px-4 sm:px-12 md:px-20 lg:px-32">
+        <section>
+          <h2 className="text-lg font-semibold m-4 ">Categorías Destacadas</h2>
+
+          {/* Preguntar como mostrar el hover si con sombra o que cambie de color o que se agrande luego el titulo */}
+          {/* Preguntas los anchos.. */}
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-4 sm:px-8 md:px-16 lg:px-20 ">
+            {categoriasAleatorias.map(cat => (
+              <div key={cat.name} className="cursor-pointer group  hover:shadow-md transition-all duration-200 ">
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-40 sm:h-44 md:h-48 object-cover "
+                />
+                <p className="text-center text-xs font-semibold uppercase py-2  ">
+                  {cat.name}
+                </p>
               </div>
-              <p className="text-xs font-semibold uppercase mt-2 text-gray-700">
-                {cat.name}
-              </p>
+            ))}
+          </div>
+        </section >
+
+
+
+        {/* -----------------Mejor Valorados */}
+        <section>
+          <div className="flex items-center justify-between m-4 ">
+            <h2 className="text-lg font-semibold tracking-tight">Top Ventas</h2>
+            <div> <button onClick={() => scroll("left")} className="text-amber-600 hover:text-amber-700">
+              <ArrowLeft />
+            </button>
+              <button onClick={() => scroll("right")} className="text-amber-600 hover:text-amber-700">
+                <ArrowRight />
+              </button>
             </div>
-          ))}
-        </div>
 
-      </section >
-
-      <section>
-
-        <div className="flex items-center justify-between m-4">
-          <h2 className="text-lg font-semibold tracking-tight">Productos Favoritos</h2>
-          <button className="text-sm text-amber-600 hover:text-amber-700 font-medium">Ver todos →</button>
-        </div>
-        <div className="mx-5 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {products.map(p => (
-            <div
-              key={p.id}
-              className="border rounded-2xl overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-
-              <div className="aspect-square flex items-center justify-center text-5xl bg-gray-50 group-hover:scale-105 transition-transform duration-300">
-                {p.image_url}
-              </div>
-              <div className="p-3">
-                <p className="font-semibold text-sm truncate">{p.name}</p>
-                <p className="text-amber-600 font-bold mt-0.5">{p.price}</p>
-                <div className="flex items-center gap-1.5 mt-2">
-                  <StarRating rating={p.rating} />                 
-                  <span className="text-xs text-gray-500">({p.Review})</span>
+          </div>
+          {/* grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4  */}
+          <div ref={carouselRef} className="flex gap-3 overflow-x-hidden px-4 sm:px-8 md:px-16 lg:px-20">
+            {products.map(p => (
+              <div
+                key={p.id}
+                className="min-w-[calc(20%-10px)] flex-shrink-0 border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200"
+              >
+                <div className=" h-[200px] aspect-square w-full bg-gray-50 overflow-hidden relative">
+                  <img
+                    src={p.image_url || "https://placehold.co/300x300?text=Sin+imagen"}
+                    alt={p.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => e.target.src = "https://placehold.co/300x300?text=Sin+imagen"}
+                  />
+                  <button className="absolute bottom-3 left-3 right-3 bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold py-2 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+                    Añadir al carrito
+                  </button>
                 </div>
 
-                <button
-                  className="mt-3 w-full bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold py-2 rounded-lg transition-colors"
-                >
-                  Añadir al carrito
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+                <div className="p-3">
+                  <p className="font-semibold text-sm truncate">{p.name}</p>
+                  <p className="text-amber-600 font-bold mt-0.5 text-sm">{p.price}€</p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    {p.rating > 0 && (
+                      <>
+                        <StarRating rating={p.rating} />
+                        <span className="text-xs text-gray-400">({p.Review})</span>
+                      </>
+                    )}
+                  </div>
 
-    </div >
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div >
+    </div>
   );
 };
