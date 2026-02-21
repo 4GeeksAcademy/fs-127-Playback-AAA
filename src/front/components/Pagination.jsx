@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowLeft, ShoppingCart, Heart } from 'lucide-react';
+import { ArrowRight, ArrowLeft} from 'lucide-react';
 
 
 export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
