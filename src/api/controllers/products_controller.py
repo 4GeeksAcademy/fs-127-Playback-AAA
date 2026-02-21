@@ -5,6 +5,7 @@ Controlador de productos - Endpoints /api/productos
 from flask import Blueprint, request, jsonify,abort  
 from flask_jwt_extended import jwt_required
 from api.models import db, Product 
+
 import cloudinary.uploader
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
