@@ -1,10 +1,14 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from sqlalchemy.orm import joinedload
 from werkzeug.exceptions import HTTPException
 from flask import Flask, abort, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-from api.models import db, User
+from api.models import db
+from api.models.subcategory import Subcategory
+from api.models.user import User
+from api.models.category import Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -99,3 +103,22 @@ def protected():
     if not user:
         abort(404, description="Usuario no encontrado")
     return jsonify({"id": user.id, "email": user.email}), 200
+
+
+@api.route('/categories', methods=['GET'])
+def get_categories():
+    categories = Category.query.options(
+        joinedload(Category.subcategories).joinedload(Subcategory.items)
+    ).all()
+
+    result = []
+    for cat in categories:
+        cat_data = cat.serialize()
+        cat_data["subcategories"] = []
+        for sub in cat.subcategories:
+            sub_data = sub.serialize()
+            sub_data["items"] = [item.serialize() for item in sub.items]
+            cat_data["subcategories"].append(sub_data)
+        result.append(cat_data)
+
+    return jsonify(result), 200
