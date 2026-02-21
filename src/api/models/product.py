@@ -21,7 +21,7 @@ class Product(db.Model):
 
    #----------------------ForeignKey
 
-    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=True)
 
     #----------------------RelationShip
     category: Mapped["Category"] = relationship("Category", back_populates="products")

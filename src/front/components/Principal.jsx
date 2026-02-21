@@ -4,6 +4,8 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { useRef } from "react";
 
 
+
+
 export const Principal = () => {
   // Es para poder controlar el carrousel
   const carouselRef = useRef(null);
@@ -15,6 +17,7 @@ export const Principal = () => {
   useEffect(() => {
     productServices.getAllProducts().then(data => setProducts(data));
   }, []);
+
 
 
 
@@ -90,81 +93,76 @@ export const Principal = () => {
 
 
       {/* -------------------------------CATEGORIAS DESTACADAS */}
-      <div className="px-4 sm:px-12 md:px-20 lg:px-32">
+      <div className="w-full px-4 max-w-screen-2xl mx-auto">
         <section>
-          <h2 className="text-lg font-semibold m-4 ">Categorías Destacadas</h2>
+          <h2 className="text-lg font-semibold my-4 ">Categorías Destacadas</h2>
 
           {/* Preguntar como mostrar el hover si con sombra o que cambie de color o que se agrande luego el titulo */}
           {/* Preguntas los anchos.. */}
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-4 sm:px-8 md:px-16 lg:px-20 ">
-            {categoriasAleatorias.map(cat => (
-              <div key={cat.name} className="cursor-pointer group  hover:shadow-md transition-all duration-200 ">
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-full h-40 sm:h-44 md:h-48 object-cover "
-                />
-                <p className="text-center text-xs font-semibold uppercase py-2  ">
-                  {cat.name}
-                </p>
-              </div>
-            ))}
+
+         <div className="">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {categoriasAleatorias.map(cat => (
+          <div key={cat.name} className="cursor-pointer group hover:shadow-md transition-all duration-200">
+            <img src={cat.image} alt={cat.name} className="w-full h-40 sm:h-44 md:h-48 object-cover" />
+            <p className="text-center text-xs font-semibold uppercase py-2">{cat.name}</p>
           </div>
+        ))}
+      </div>
+    </div>
         </section >
 
 
 
         {/* -----------------Mejor Valorados */}
-        <section>
-          <div className="flex items-center justify-between m-4 ">
-            <h2 className="text-lg font-semibold tracking-tight">Top Ventas</h2>
-            <div> <button onClick={() => scroll("left")} className="text-amber-600 hover:text-amber-700">
-              <ArrowLeft />
-            </button>
-              <button onClick={() => scroll("right")} className="text-amber-600 hover:text-amber-700">
-                <ArrowRight />
+        <section className="mt-8">
+          <div className="flex items-center justify-between my-4 ">
+          <h2 className="text-lg font-semibold tracking-tight">Top Ventas</h2>
+      <div>
+        <button onClick={() => scroll("left")} className="text-amber-600 hover:text-amber-700"><ArrowLeft /></button>
+        <button onClick={() => scroll("right")} className="text-amber-600 hover:text-amber-700"><ArrowRight /></button>
+      </div>
+    </div>
+          {/* grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4  */}
+          <div className="overflow-hidden">
+      <div ref={carouselRef} className="flex gap-3 overflow-x-hidden">
+        {products.map(p => (
+          <div
+            key={p.id}
+            className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-none border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200"
+          >
+            <div className="h-[200px] w-full bg-gray-50 overflow-hidden relative">
+              <img
+                src={p.image_url || "https://placehold.co/300x300?text=Sin+imagen"}
+                alt={p.name}
+                className="w-full h-full object-cover"
+                onError={(e) => e.target.src = "https://placehold.co/300x300?text=Sin+imagen"}
+              />
+              <button className="absolute bottom-3 left-3 right-3 bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold py-2 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+                Añadir al carrito
               </button>
             </div>
-
-          </div>
-          {/* grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4  */}
-          <div ref={carouselRef} className="flex gap-3 overflow-x-hidden px-4 sm:px-8 md:px-16 lg:px-20">
-            {products.map(p => (
-              <div
-                key={p.id}
-                className="min-w-[calc(20%-10px)] flex-shrink-0 border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200"
-              >
-                <div className=" h-[200px] aspect-square w-full bg-gray-50 overflow-hidden relative">
-                  <img
-                    src={p.image_url || "https://placehold.co/300x300?text=Sin+imagen"}
-                    alt={p.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => e.target.src = "https://placehold.co/300x300?text=Sin+imagen"}
-                  />
-                  <button className="absolute bottom-3 left-3 right-3 bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold py-2 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    Añadir al carrito
-                  </button>
-                </div>
-
-                <div className="p-3">
-                  <p className="font-semibold text-sm truncate">{p.name}</p>
-                  <p className="text-amber-600 font-bold mt-0.5 text-sm">{p.price}€</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    {p.rating > 0 && (
-                      <>
-                        <StarRating rating={p.rating} />
-                        <span className="text-xs text-gray-400">({p.Review})</span>
-                      </>
-                    )}
-                  </div>
-
-                </div>
+            <div className="p-3">
+              <p className="font-semibold text-sm truncate">{p.name}</p>
+              <p className="text-amber-600 font-bold mt-0.5 text-sm">{p.price}€</p>
+              <div className="flex items-center gap-1.5 mt-1">
+                {p.rating > 0 && (
+                  <>
+                    <StarRating rating={p.rating} />
+                    <span className="text-xs text-gray-400">({p.Review})</span>
+                  </>
+                )}
               </div>
-            ))}
+            </div>
           </div>
-        </section>
-      </div >
+        ))}
+      </div>
+    </div>
+  </section>
+
+</div>
+
     </div>
   );
 };
