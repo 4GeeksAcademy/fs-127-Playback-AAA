@@ -36,7 +36,7 @@ def create_product():
         price = request.form.get("price")
         description = request.form.get("description")
         stock = request.form.get("stock", 1)
-        category_id = request.form.get("category_id")
+        item_id = request.form.get("item_id")
         imagen = request.files.get("imagen")
     else:
         body = request.get_json()
@@ -69,7 +69,7 @@ def create_product():
             image_url=image_url,
             stock=int(stock),
             discount=0.0,
-            category_id=int(category_id)
+            item_id=int(item_id)
         )
         db.session.add(new_product)
         db.session.commit()
@@ -98,7 +98,7 @@ def update_product(id):
         product.weight = body.get("weight", product.weight)
         product.stock = body.get("stock", product.stock)
         product.discount = body.get("discount", product.discount)
-        product.category_id = body.get("category_id", product.category_id)
+        product.item_id = body.get("item_id", product.item_id)
         db.session.commit()
     except Exception:
         db.session.rollback()

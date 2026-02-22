@@ -12,3 +12,16 @@ export const getCategoriesService = async () => {
         return [null, err.message];
     }
 };
+
+export const getFeaturedSubcategoryBannerService = async () => {
+    try {
+        const response = await fetch(`${backendUrl}/api/banners/featured-subcategory`);
+        const data = await response.json();
+        if (!response.ok) {
+            return [null, data.description || data.message || "Error al cargar el banner"];
+        }
+        return [data, null];
+    } catch (err) {
+        return [null, err.message];
+    }
+};
