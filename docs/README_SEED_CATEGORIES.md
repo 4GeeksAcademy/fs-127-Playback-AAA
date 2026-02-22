@@ -20,3 +20,18 @@ Antes de ejecutarlo asegúrate de:
 - Tener `pipenv` instalado
 - Tener la base de datos creada
 - Haber ejecutado las migraciones
+
+### 🛠️ Solución a problemas con migraciones
+
+Si al ejecutar `pipenv run upgrade` obtienes errores como **"Multiple head revisions"** o **"constraint does not exist"**, puedes resetear las migraciones desde cero sin perder tus modelos:
+```bash
+# 1. Elimina todas las migraciones existentes
+rm migrations/versions/*.py
+
+# 2. Genera una migración limpia desde tus modelos actuales
+pipenv run migrate
+
+# 3. Aplica la migración
+pipenv run upgrade
+```
+
