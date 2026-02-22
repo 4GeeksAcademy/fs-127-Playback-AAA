@@ -49,7 +49,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-theme-bg border-b border-theme-border shadow-sm">
       {/* ── BARRA PRINCIPAL ── */}
       <div className="h-[70px] flex items-center gap-3 px-4 md:px-6">
         {/* Logo — desktop: logo completo / móvil: logo mini cuadrado */}
@@ -77,7 +77,7 @@ export const Navbar = () => {
         <div className="hidden md:flex flex-1 justify-center">
           <div className="relative w-full max-w-lg">
             <svg
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-theme-faint pointer-events-none"
               width="15"
               height="15"
               viewBox="0 0 24 24"
@@ -95,7 +95,7 @@ export const Navbar = () => {
               placeholder="Buscar artículos retro..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+              className="w-full h-10 pl-10 pr-4 rounded-full border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
             />
           </div>
         </div>
@@ -104,7 +104,7 @@ export const Navbar = () => {
         <div className="flex md:hidden flex-1">
           <div className="relative w-full">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-faint pointer-events-none"
               width="14"
               height="14"
               viewBox="0 0 24 24"
@@ -122,7 +122,7 @@ export const Navbar = () => {
               placeholder="Buscar..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full h-9 pl-9 pr-3 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+              className="w-full h-9 pl-9 pr-3 rounded-full border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
             />
           </div>
         </div>
@@ -133,7 +133,7 @@ export const Navbar = () => {
             <div className="relative" ref={userRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 h-10 px-3 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-medium transition"
+                className="flex items-center gap-2 h-10 px-3 rounded-full border border-theme-border bg-theme-input hover:bg-theme-muted text-theme-secondary text-sm font-medium transition"
               >
                 <span className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                   {(store.user?.username || userEmail || "U")[0].toUpperCase()}
@@ -142,7 +142,7 @@ export const Navbar = () => {
                   {store.user?.username || userEmail}
                 </span>
                 <svg
-                  className={`w-2.5 h-2.5 text-gray-400 transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
+                  className={`w-2.5 h-2.5 text-theme-faint transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
                   viewBox="0 0 10 6"
                   fill="none"
                   stroke="currentColor"
@@ -154,19 +154,19 @@ export const Navbar = () => {
               </button>
 
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl py-1.5 z-50">
+                <div className="absolute right-0 mt-2 w-52 bg-theme-bg border border-theme-border rounded-2xl shadow-xl py-1.5 z-50">
                   {userLinks.map(({ to, icon, label }) => (
                     <Link
                       key={to}
                       to={to}
                       onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 transition"
+                      className="flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted hover:text-theme-text transition"
                     >
                       <span className="text-base w-5 text-center">{icon}</span>
                       {label}
                     </Link>
                   ))}
-                  <div className="my-1.5 mx-3 border-t border-gray-100 dark:border-gray-800" />
+                  <div className="my-1.5 mx-3 border-t border-theme-border-sm" />
                   <button
                     onClick={handleLogout}
                     className="flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 transition"
@@ -186,11 +186,11 @@ export const Navbar = () => {
                 Iniciar sesión
               </button>
               {loginOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl p-5 z-50">
-                  <p className="text-base font-bold text-gray-900 dark:text-gray-100 mb-0.5">
+                <div className="absolute right-0 mt-2 w-80 bg-theme-bg border border-theme-border rounded-2xl shadow-2xl p-5 z-50">
+                  <p className="text-base font-bold text-theme-text mb-0.5">
                     Bienvenido de vuelta
                   </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
+                  <p className="text-xs text-theme-faint mb-4">
                     Accede a tu cuenta para continuar
                   </p>
                   <LoginForm onSuccess={() => setLoginOpen(false)} />
@@ -202,13 +202,13 @@ export const Navbar = () => {
           <button
             onClick={toggleDarkMode}
             title="Cambiar tema"
-            className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 text-base transition"
+            className="w-10 h-10 flex items-center justify-center rounded-xl border border-theme-border bg-theme-input hover:bg-theme-muted text-base transition"
           >
             🌙
           </button>
           <button
             title="Idioma"
-            className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 text-base transition"
+            className="w-10 h-10 flex items-center justify-center rounded-xl border border-theme-border bg-theme-input hover:bg-theme-muted text-base transition"
           >
             🌍
           </button>
@@ -218,14 +218,14 @@ export const Navbar = () => {
         <div className="flex md:hidden items-center gap-2 flex-shrink-0">
           <button
             onClick={toggleDarkMode}
-            className="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-base transition"
+            className="w-9 h-9 flex items-center justify-center rounded-xl border border-theme-border bg-theme-input text-base transition"
           >
             🌙
           </button>
           {/* Hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 transition"
+            className="w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-xl border border-theme-border bg-theme-input transition"
             aria-label="Menú"
           >
             <span className="relative w-5 h-3.5 flex flex-col justify-between">
@@ -245,7 +245,7 @@ export const Navbar = () => {
 
       {/* ── PANEL MÓVIL ── */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 px-4 pb-5 space-y-3">
+        <div className="md:hidden border-t border-theme-border-sm bg-theme-bg px-4 pb-5 space-y-3">
           {store.isAuthenticated ? (
             <>
               {/* Info usuario */}
@@ -253,7 +253,7 @@ export const Navbar = () => {
                 <span className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                   {(store.user?.username || userEmail || "U")[0].toUpperCase()}
                 </span>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
+                <span className="text-sm font-medium text-theme-secondary truncate">
                   {store.user?.username || userEmail}
                 </span>
               </div>
@@ -265,7 +265,7 @@ export const Navbar = () => {
                     key={to}
                     to={to}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 transition"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted hover:text-theme-text transition"
                   >
                     <span className="text-base w-5 text-center">{icon}</span>
                     {label}
@@ -273,7 +273,7 @@ export const Navbar = () => {
                 ))}
               </div>
 
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-1">
+              <div className="border-t border-theme-border-sm pt-1">
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
@@ -284,16 +284,16 @@ export const Navbar = () => {
             </>
           ) : (
             <div className="space-y-3 pt-4">
-              <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 px-1">
+              <p className="text-sm font-semibold text-theme-text px-1">
                 Inicia sesión
               </p>
               <LoginForm onSuccess={() => setMobileOpen(false)} />
             </div>
           )}
-
+          
           {/* Idioma */}
-          <div className="border-t border-gray-100 dark:border-gray-800 pt-1">
-            <button className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition w-full">
+          <div className="border-t border-theme-border-sm pt-1">
+            <button className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted transition w-full">
               🌍 <span>Idioma</span>
             </button>
           </div>
