@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import productServices from "../services/productService";
 import { HeroBanner } from "../components/HeroBanner";
 import { TopRatedSubcategories } from "../components/TopRatedSubcategories";
 import { TopSales } from "../components/TopSales";
 
 export const Home = () => {
   const { dispatch } = useGlobalReducer();
-  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const loadMessage = async () => {
@@ -23,15 +21,14 @@ export const Home = () => {
     };
 
     loadMessage();
-    productServices.getAllProducts().then(setProducts);
   }, []);
 
   return (
-    <div>
+    <div className="bg-theme-bg">
       <HeroBanner />
       <div className="w-full px-4 max-w-screen-2xl mx-auto">
         <TopRatedSubcategories />
-        <TopSales products={products} />
+        <TopSales />
       </div>
     </div>
   );

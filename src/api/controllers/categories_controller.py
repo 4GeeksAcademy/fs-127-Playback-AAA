@@ -39,7 +39,7 @@ def get_categories():
     return jsonify(result), 200
 
 
-@categories_bp.route('/banners/featured-subcategory', methods=['GET'])
+@categories_bp.route('/subcategories/top-discount', methods=['GET'])
 def get_featured_subcategory_banner():
     """
     Obtiene la subcategoría con mayor número de productos en oferta.

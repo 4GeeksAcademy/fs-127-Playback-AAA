@@ -13,4 +13,4 @@ review_bp = Blueprint('review', __name__, url_prefix='/review')
 # @jwt_required()/
 def get_review():
     reviews = Review.query.all()
-    return jsonify([p.to_dict() for p in reviews]), 200
+    return jsonify([p.serialize() for p in reviews]), 200
