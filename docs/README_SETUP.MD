@@ -56,8 +56,13 @@ pipenv run upgrade
 ```bash
 pipenv run python src/api/seeds/seed_categories.py
 ```
-
 > 📖 Consulta la [documentación completa del seed](../docs/README_SEED_CATEGORIES.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
+
+**7. Opcional: Poblar la base de datos con datos de prueba para desarrollo
+```bash
+pipenv run python src/api/seeds/seed_test_data.py
+```
+> 📖 Consulta la [documentación completa del seed](../docs/README_SEED_TEST_DATA.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
 
 ---
 
