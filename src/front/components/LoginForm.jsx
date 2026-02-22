@@ -44,7 +44,7 @@ export const LoginForm = ({ onSuccess }) => {
         value={form.email}
         onChange={handleChange}
         required
-        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+        className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
       />
 
       <input
@@ -54,7 +54,7 @@ export const LoginForm = ({ onSuccess }) => {
         value={form.password}
         onChange={handleChange}
         required
-        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+        className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
       />
 
       <button
@@ -65,7 +65,7 @@ export const LoginForm = ({ onSuccess }) => {
         {loading ? "Cargando..." : "Iniciar sesión"}
       </button>
 
-      <div className="pt-3 border-t border-gray-100 dark:border-gray-800 text-center text-sm text-gray-500 dark:text-gray-400">
+      <div className="pt-3 border-t border-theme-border-sm text-center text-sm text-theme-muted">
         ¿No tienes cuenta?{" "}
         <Link
           to="/signup"

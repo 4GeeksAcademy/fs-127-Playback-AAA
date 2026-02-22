@@ -42,7 +42,7 @@ export const Categorybar = () => {
     <>
       {/* ─────────────── DESKTOP ─────────────── */}
       <div
-        className="relative bg-white border-b border-gray-200 hidden md:block"
+        className="relative bg-theme-bg border-b border-theme-border hidden md:block"
         onMouseLeave={() => setActiveCategory(null)}
       >
         <div className="max-w-screen-xl mx-auto px-8 flex items-center justify-between">
@@ -63,8 +63,8 @@ export const Categorybar = () => {
                     relative px-4 py-4 text-xs tracking-widest uppercase font-medium transition-colors duration-150 whitespace-nowrap
                     ${
                       activeCategory === cat.name
-                        ? "text-gray-900"
-                        : "text-gray-500 hover:text-gray-900"
+                        ? "text-theme-text"
+                        : "text-theme-muted hover:text-theme-text"
                     }
                   `}
                 >
@@ -77,10 +77,10 @@ export const Categorybar = () => {
             ))}
           </nav>
 
-          <div className="pl-6 border-l border-gray-200 ml-2 flex-shrink-0">
+          <div className="pl-6 border-l border-theme-border ml-2 flex-shrink-0">
             <Link
               to="/about"
-              className="text-xs tracking-widest uppercase font-medium text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+              className="text-xs tracking-widest uppercase font-medium text-theme-muted hover:text-theme-text transition-colors whitespace-nowrap"
             >
               Acerca de Playback
             </Link>
@@ -89,7 +89,7 @@ export const Categorybar = () => {
 
         {/* ── Dropdown ── */}
         {currentCategory?.subcategories?.length > 0 && (
-          <div className="absolute left-0 right-0 top-full z-50 bg-white border-b border-gray-200 shadow-2xl">
+          <div className="absolute left-0 right-0 top-full z-50 bg-theme-bg border-b border-theme-border shadow-2xl">
             <div className="max-w-screen-xl mx-auto px-8 py-8">
               <div className="flex gap-10">
                 {currentCategory?.image_url && (
@@ -118,12 +118,12 @@ export const Categorybar = () => {
                       <Link
                         to={`/category/${currentCategory.slug}/${sub.slug}`}
                         onClick={() => setActiveCategory(null)}
-                        className="text-xs font-semibold tracking-widest uppercase text-gray-700 hover:text-amber-600 transition-colors"
+                        className="text-xs font-semibold tracking-widest uppercase text-theme-secondary hover:text-amber-600 transition-colors"
                       >
                         {sub.name}
                       </Link>
 
-                      <div className="w-6 h-px bg-gray-200" />
+                      <div className="w-6 h-px bg-theme-border" />
 
                       {sub.items?.length > 0 && (
                         <ul className="flex flex-col gap-1.5">
@@ -132,7 +132,7 @@ export const Categorybar = () => {
                               <Link
                                 to={`/category/${currentCategory.slug}/${sub.slug}/${item.slug}`}
                                 onClick={() => setActiveCategory(null)}
-                                className="text-xs text-gray-500 hover:text-gray-900 transition-colors leading-relaxed"
+                                className="text-xs text-theme-muted hover:text-theme-text transition-colors leading-relaxed"
                               >
                                 {item.name}
                               </Link>
@@ -150,14 +150,14 @@ export const Categorybar = () => {
       </div>
 
       {/* ─────────────── MOBILE ─────────────── */}
-      <div className="md:hidden bg-white border-b border-gray-200">
+      <div className="md:hidden bg-theme-bg border-b border-theme-border">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={() => {
               setMobilePanelOpen((v) => !v);
               setMobileOpen(null);
             }}
-            className="flex items-center gap-2.5 text-xs tracking-widest uppercase font-medium text-gray-700"
+            className="flex items-center gap-2.5 text-xs tracking-widest uppercase font-medium text-theme-secondary"
           >
             <span className="relative w-5 h-3.5 flex flex-col justify-between">
               <span
@@ -175,28 +175,26 @@ export const Categorybar = () => {
 
           <Link
             to="/about"
-            className="text-xs tracking-widest uppercase font-medium text-gray-500 hover:text-gray-900 transition-colors"
+            className="text-xs tracking-widest uppercase font-medium text-theme-muted hover:text-theme-text transition-colors"
           >
             Acerca de Playback
           </Link>
         </div>
 
         {mobilePanelOpen && (
-          <div className="border-t border-gray-100 divide-y divide-gray-100">
+          <div className="border-t border-theme-border-sm divide-y divide-theme-border-sm">
             {categories.map((cat) => (
               <div key={cat.id}>
                 <button
                   onClick={() => toggleMobileCategory(cat.name)}
                   className="w-full flex items-center justify-between px-4 py-3.5 text-left"
                 >
-                  <span className="text-xs tracking-widest uppercase font-medium text-gray-700">
+                  <span className="text-xs tracking-widest uppercase font-medium text-theme-secondary">
                     {cat.name}
                   </span>
                   {cat.subcategories?.length > 0 && (
                     <svg
-                      className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 text-gray-400 ${
-                        mobileOpen === cat.name ? "rotate-180" : ""
-                      }`}
+                      className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 text-theme-faint ${mobileOpen === cat.name ? "rotate-180" : ""}`}
                       viewBox="0 0 10 6"
                       fill="none"
                       stroke="currentColor"
@@ -209,7 +207,7 @@ export const Categorybar = () => {
                 </button>
 
                 {mobileOpen === cat.name && cat.subcategories?.length > 0 && (
-                  <div className="bg-gray-50 px-4 pt-4 pb-6">
+                  <div className="bg-theme-subtle px-4 pt-4 pb-6">
                     <div className="flex flex-col gap-5">
                       {cat.subcategories.map((sub) => (
                         <div key={sub.id}>
@@ -219,12 +217,12 @@ export const Categorybar = () => {
                               setMobileOpen(null);
                               setMobilePanelOpen(false);
                             }}
-                            className="block text-xs tracking-widest uppercase font-semibold text-gray-700 hover:text-amber-600 transition-colors mb-2"
+                            className="block text-xs tracking-widest uppercase font-semibold text-theme-secondary hover:text-amber-600 transition-colors mb-2"
                           >
                             {sub.name}
                           </Link>
 
-                          <div className="w-5 h-px bg-gray-200 mb-2" />
+                          <div className="w-5 h-px bg-theme-border mb-2" />
 
                           {sub.items?.length > 0 && (
                             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
@@ -236,7 +234,7 @@ export const Categorybar = () => {
                                     setMobileOpen(null);
                                     setMobilePanelOpen(false);
                                   }}
-                                  className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+                                  className="text-xs text-theme-muted hover:text-theme-text transition-colors"
                                 >
                                   {item.name}
                                 </Link>
