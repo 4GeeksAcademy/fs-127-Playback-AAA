@@ -45,7 +45,7 @@ CATEGORIES_DATA = [
                     {"name": "PSP", "slug": "psp"},
                     {"name": "Xbox", "slug": "xbox"},
                     {"name": "Accesorios", "slug": "accesorios"},
-                    {"name": "Otros", "slug": "otros-playstation-clasica"},
+                    {"name": "Otros", "slug": "otros-playstation-xbox"},
                 ],
             },
             {
@@ -118,7 +118,7 @@ CATEGORIES_DATA = [
         "subcategories": [
             {
                 "name": "Medios Físicos",
-                "slug": "vinilos",
+                "slug": "medios-fisicos",
                 "description": "Medios físicos de música",
                 "items": [
                     {"name": "Discos de vinilo", "slug": "discos-de-vinilo"},
@@ -150,6 +150,17 @@ CATEGORIES_DATA = [
                     {"name": "Tocadiscos", "slug": "tocadiscos"},
                     {"name": "Amplificadores", "slug": "amplificadores"},
                     {"name": "Otros", "slug": "otros-reproductores-audio"},
+                ],
+            },
+            {
+                "name": "Instrumentos",
+                "slug": "instrumentos",
+                "description": "Instrumentos musicales antiguos",
+                "items": [
+                    {"name": "Guitarras", "slug": "guitarras"},
+                    {"name": "Pianos", "slug": "pianos"},
+                    {"name": "Baterías", "slug": "baterias"},
+                    {"name": "Otros", "slug": "otros-instrumentos"},
                 ],
             },
         ],
