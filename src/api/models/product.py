@@ -46,8 +46,8 @@ class Product(db.Model):
             "discount": self.discount,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "item": self.item.slug if self.item else None,
-            "subcategory": self.subcategory.slug if self.subcategory else None,
-            "category": self.subcategory.category.slug if self.subcategory and self.subcategory.category else None
+            "subcategory": self.item.subcategory.slug if self.item and self.item.subcategory else None,
+            "category": self.item.subcategory.category.slug if self.item and self.item.subcategory and self.item.subcategory.category else None
         }
     
     def to_dict(self):
@@ -65,4 +65,7 @@ class Product(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "rating": avg_rating,        # promedio calculado de todas sus reviews
             "Review": len(self.reviews), # cantidad de reviews
+            "item": self.item.slug if self.item else None,                                                                        
+            "subcategory": self.item.subcategory.slug if self.item and self.item.subcategory else None,                            
+            "category": self.item.subcategory.category.slug if self.item and self.item.subcategory and self.item.subcategory.category else None  
         }
