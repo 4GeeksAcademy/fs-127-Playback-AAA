@@ -358,23 +358,26 @@ CATEGORIES_DATA = [
 
 def seed_categories(db, Category, Subcategory, Item):
     for cat_idx, cat_data in enumerate(CATEGORIES_DATA):
+        # 🔥 Generar automáticamente la URL desde el slug
+        image_url = f"https://res.cloudinary.com/playback-assets/image/upload/v1771748886/{cat_data['slug']}.png"
         existing = Category.query.filter_by(slug=cat_data["slug"]).first()
         if existing:
             print(f"  [UPDATE] Categoría ya existe: {cat_data['name']}")
             existing.position = cat_idx
+            existing.description = cat_data["description"]
+            existing.image_url = image_url
             category = existing
         else:
             category = Category(
                 name=cat_data["name"],
                 slug=cat_data["slug"],
                 description=cat_data["description"],
-                image_url=cat_data["image_url"],
+                image_url=image_url,
                 position=cat_idx,
             )
             db.session.add(category)
             print(f"  [OK]   Categoría creada: {cat_data['name']}")
         db.session.flush()
-
         for sub_idx, sub_data in enumerate(cat_data["subcategories"]):
             existing_sub = Subcategory.query.filter_by(
                 slug=sub_data["slug"]).first()
@@ -396,7 +399,6 @@ def seed_categories(db, Category, Subcategory, Item):
                 print(
                     f"         [OK]   Subcategoría creada: {sub_data['name']}")
             db.session.flush()
-
             for item_idx, item_data in enumerate(sub_data.get("items", [])):
                 existing_item = Item.query.filter_by(
                     slug=item_data["slug"]).first()
@@ -414,12 +416,10 @@ def seed_categories(db, Category, Subcategory, Item):
                         position=item_idx,
                     )
                     db.session.add(item)
-                    print(f"[OK] Item creado: {item_data['name']}")
-
+                    print(
+                        f"                [OK] Item creado: {item_data['name']}")
     db.session.commit()
     print("\n✅ Seed completado con éxito.")
-
-
 if __name__ == "__main__":
     import sys
     import os
