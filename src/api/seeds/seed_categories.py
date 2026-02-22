@@ -37,7 +37,7 @@ CATEGORIES_DATA = [
             },
             {
                 "name": "PlayStation Clásica y Xbox",
-                "slug": "playstation-clasica",
+                "slug": "playstation-xbox",
                 "description": "Consolas PlayStation de primera generación",
                 "items": [
                     {"name": "PS1", "slug": "ps1"},
@@ -45,7 +45,7 @@ CATEGORIES_DATA = [
                     {"name": "PSP", "slug": "psp"},
                     {"name": "Xbox", "slug": "xbox"},
                     {"name": "Accesorios", "slug": "accesorios"},
-                    {"name": "Otros", "slug": "otros-playstation-clasica"},
+                    {"name": "Otros", "slug": "otros-playstation-xbox"},
                 ],
             },
             {
@@ -118,7 +118,7 @@ CATEGORIES_DATA = [
         "subcategories": [
             {
                 "name": "Medios Físicos",
-                "slug": "vinilos",
+                "slug": "medios-fisicos",
                 "description": "Medios físicos de música",
                 "items": [
                     {"name": "Discos de vinilo", "slug": "discos-de-vinilo"},
@@ -150,6 +150,17 @@ CATEGORIES_DATA = [
                     {"name": "Tocadiscos", "slug": "tocadiscos"},
                     {"name": "Amplificadores", "slug": "amplificadores"},
                     {"name": "Otros", "slug": "otros-reproductores-audio"},
+                ],
+            },
+            {
+                "name": "Instrumentos",
+                "slug": "instrumentos",
+                "description": "Instrumentos musicales antiguos",
+                "items": [
+                    {"name": "Guitarras", "slug": "guitarras"},
+                    {"name": "Pianos", "slug": "pianos"},
+                    {"name": "Baterías", "slug": "baterias"},
+                    {"name": "Otros", "slug": "otros-instrumentos"},
                 ],
             },
         ],
@@ -358,17 +369,22 @@ CATEGORIES_DATA = [
 
 def seed_categories(db, Category, Subcategory, Item):
     for cat_idx, cat_data in enumerate(CATEGORIES_DATA):
+        # 🔥 Generar URL automática desde el slug
+        category_image_url = f"https://res.cloudinary.com/playback-assets/image/upload/{cat_data['slug']}.png"
+
         existing = Category.query.filter_by(slug=cat_data["slug"]).first()
         if existing:
             print(f"  [UPDATE] Categoría ya existe: {cat_data['name']}")
             existing.position = cat_idx
+            existing.description = cat_data["description"]
+            existing.image_url = category_image_url
             category = existing
         else:
             category = Category(
                 name=cat_data["name"],
                 slug=cat_data["slug"],
                 description=cat_data["description"],
-                image_url=cat_data["image_url"],
+                image_url=category_image_url,
                 position=cat_idx,
             )
             db.session.add(category)
@@ -376,19 +392,23 @@ def seed_categories(db, Category, Subcategory, Item):
         db.session.flush()
 
         for sub_idx, sub_data in enumerate(cat_data["subcategories"]):
+            # 🔥 URL automática para subcategoría
+            subcategory_image_url = f"https://res.cloudinary.com/playback-assets/image/upload/{sub_data['slug']}.png"
+
             existing_sub = Subcategory.query.filter_by(
                 slug=sub_data["slug"]).first()
             if existing_sub:
                 print(
                     f"         [UPDATE] Subcategoría ya existe: {sub_data['name']}")
                 existing_sub.position = sub_idx
+                existing_sub.image_url = subcategory_image_url
                 subcategory = existing_sub
             else:
                 subcategory = Subcategory(
                     name=sub_data["name"],
                     slug=sub_data["slug"],
                     description=sub_data["description"],
-                    image_url=None,
+                    image_url=subcategory_image_url,
                     category=category,
                     position=sub_idx,
                 )
@@ -398,28 +418,30 @@ def seed_categories(db, Category, Subcategory, Item):
             db.session.flush()
 
             for item_idx, item_data in enumerate(sub_data.get("items", [])):
+                # 🔥 URL automática para item
+                item_image_url = f"https://res.cloudinary.com/playback-assets/image/upload/{item_data['slug']}.png"
+
                 existing_item = Item.query.filter_by(
                     slug=item_data["slug"]).first()
                 if existing_item:
                     print(
                         f"                [UPDATE] Item ya existe: {item_data['name']}")
                     existing_item.position = item_idx
+                    existing_item.image_url = item_image_url
                 else:
                     item = Item(
                         name=item_data["name"],
                         slug=item_data["slug"],
                         description=None,
-                        image_url=None,
+                        image_url=item_image_url,
                         subcategory=subcategory,
                         position=item_idx,
                     )
                     db.session.add(item)
-                    print(f"[OK] Item creado: {item_data['name']}")
-
+                    print(
+                        f"                [OK] Item creado: {item_data['name']}")
     db.session.commit()
     print("\n✅ Seed completado con éxito.")
-
-
 if __name__ == "__main__":
     import sys
     import os
