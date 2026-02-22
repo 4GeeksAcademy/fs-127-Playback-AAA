@@ -3,7 +3,19 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.models import db
 from api.models.user import User
 import re
+import os
+import cloudinary
+import cloudinary.uploader
 
+# -------------------------
+# CONFIG CLOUDINARY
+# -------------------------
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 # -------------------------
 # VALIDACIONES
@@ -12,11 +24,6 @@ import re
 def validate_email(email):
     pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     return re.match(pattern, email)
-
-
-def validate_image_url(url):
-    pattern = r"^https?:\/\/.*\.(jpg|jpeg|png|webp)$"
-    return re.match(pattern, url, re.IGNORECASE)
 
 
 # -------------------------
@@ -35,7 +42,7 @@ def get_profile():
 
 
 # -------------------------
-# ACTUALIZAR DATOS BASICOS
+# ACTUALIZAR DATOS BÁSICOS
 # -------------------------
 
 @jwt_required()
@@ -50,19 +57,16 @@ def update_profile():
     if not body:
         abort(400, description="Body vacío")
 
-    # Nombre
     if "name" in body:
         if not body["name"].strip():
             abort(400, description="Nombre no puede estar vacío")
         user.name = body["name"].strip()
 
-    # Apellido
     if "last_name" in body:
         if not body["last_name"].strip():
             abort(400, description="Apellido no puede estar vacío")
         user.last_name = body["last_name"].strip()
 
-    # Email
     if "email" in body:
         if not validate_email(body["email"]):
             abort(400, description="Formato de email inválido")
@@ -78,12 +82,11 @@ def update_profile():
         user.email = body["email"]
 
     db.session.commit()
-
     return jsonify({"msg": "Perfil actualizado correctamente"}), 200
 
 
 # -------------------------
-# CAMBIAR IMAGEN
+# SUBIR IMAGEN DESDE DISPOSITIVO
 # -------------------------
 
 @jwt_required()
@@ -94,19 +97,42 @@ def update_profile_image():
     if not user:
         abort(404, description="Usuario no encontrado")
 
-    body = request.get_json()
-    if not body or "image_url" not in body:
-        abort(400, description="image_url es obligatorio")
+    if "image" not in request.files:
+        abort(400, description="No se envió ninguna imagen")
 
-    image_url = body["image_url"].strip()
+    image_file = request.files["image"]
 
-    if not validate_image_url(image_url):
-        abort(400, description="URL inválida (debe terminar en jpg, png o webp)")
+    if image_file.filename == "":
+        abort(400, description="Archivo vacío")
 
-    user.image_url = image_url
-    db.session.commit()
+    allowed_extensions = ["jpg", "jpeg", "png", "webp"]
+    
+    if "." not in image_file.filename:
+        abort(400, description="Formato inválido")
 
-    return jsonify({"msg": "Imagen actualizada correctamente"}), 200
+    file_extension = image_file.filename.rsplit(".", 1)[1].lower()
+
+    if file_extension not in allowed_extensions:
+        abort(400, description="Formato no permitido")
+
+    try:
+        result = cloudinary.uploader.upload(
+            image_file,
+            folder="profile_images"
+        )
+
+        image_url = result["secure_url"]
+
+        user.image_url = image_url
+        db.session.commit()
+
+        return jsonify({
+            "msg": "Imagen actualizada correctamente",
+            "image_url": image_url
+        }), 200
+
+    except Exception as e:
+        abort(500, description=f"Error subiendo imagen: {str(e)}")
 
 
 # -------------------------
@@ -126,6 +152,7 @@ def change_password():
         abort(400, description="Body vacío")
 
     required = ["current_password", "new_password", "confirm_password"]
+
     for field in required:
         if field not in body or not body[field]:
             abort(400, description=f"{field} es obligatorio")
