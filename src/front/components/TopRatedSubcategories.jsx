@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTopRatedSubcategoriesService } from "../services/categoryService";
+import { useTranslation } from "react-i18next";
+
 
 export const TopRatedSubcategories = () => {
+      const { t } = useTranslation();
+  
   const navigate = useNavigate();
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +24,7 @@ export const TopRatedSubcategories = () => {
     return (
       <section>
         <h2 className="text-lg font-semibold my-4 text-theme-text">
-          Categorías Destacadas
+{t("home.featuredCategories")}  
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
@@ -39,8 +43,8 @@ export const TopRatedSubcategories = () => {
   return (
     <section>
       <h2 className="text-lg font-semibold my-4 text-theme-text">
-        Categorías Destacadas
-      </h2>
+  {t("home.featuredCategories")}
+   </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {subcategories.map((sub) => (
           // Al hacer click navega a productos filtrando por categoría y subcategoría

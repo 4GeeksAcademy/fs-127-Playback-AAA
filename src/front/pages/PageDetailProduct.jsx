@@ -5,8 +5,10 @@ import { StarRating } from "../components/StarRating";
 import { ShoppingCart, Check, X } from "lucide-react";
 import { Accordion } from "../components/Accordion";
 import { FavoriteButton } from "../components/FavoriteButton";
+import { useTranslation } from "react-i18next";
 
 export const PageDetailProduct = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   useEffect(() => {
@@ -22,25 +24,21 @@ export const PageDetailProduct = () => {
   if (!product)
     return (
       <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
-        No se han encontrado productos
+        t("product.noFound")
       </div>
     );
   const inStock = product.stock == null ? true : product.stock > 0;
 
   const accordionItems = [
     {
-      label: "Descripción",
-      content: product.description || "Sin descripción disponible.",
+      label: t("product.descriptionLabel"),
+      content: product.description || t("product.description"),
     },
     {
-      label: "Características",
-      content: product.features || "Sin características especificadas.",
+      label: t("product.featuresLabel"),
+      content: product.features || t("product.features"),
     },
-    {
-      label: "Envío & Devoluciones",
-      content:
-        "Envío gratuito en pedidos superiores a 50 €. Devoluciones aceptadas durante 30 días.",
-    },
+    { label: t("product.shippingLabel"), content:  product.shipping || t("product.shipping") },
   ];
 
   return (
@@ -92,17 +90,21 @@ export const PageDetailProduct = () => {
             {inStock ? (
               <>
                 <Check size={15} className="text-emerald-600" />
-                <span className="text-emerald-700 font-medium">En stock</span>
+                <span className="text-emerald-700 font-medium">
+                  {t("product.inStock")}
+                </span>
                 {product.stock != null && (
                   <span className="text-stone-400">
-                    ({product.stock} disponibles)
+                    ({product.stock} {t("product.available")})
                   </span>
                 )}
               </>
             ) : (
               <>
                 <X size={15} className="text-red-500" />
-                <span className="text-red-500 font-medium">Sin stock</span>
+                <span className="text-red-500 font-medium">
+                  {t("product.outOfStock")}
+                </span>
               </>
             )}
           </div>
@@ -115,7 +117,7 @@ export const PageDetailProduct = () => {
             }`}
           >
             <ShoppingCart size={16} />
-            Añadir a la cesta
+            {t("product.addToCart")}
           </button>
         </div>
       </div>
