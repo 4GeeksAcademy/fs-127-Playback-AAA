@@ -228,15 +228,17 @@ export const Navbar = () => {
             className="w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 transition"
             aria-label="Menú"
           >
-            <span
-              className={`block h-0.5 bg-gray-600 dark:bg-gray-300 rounded transition-all duration-300 ${mobileOpen ? "w-[18px] rotate-45 translate-y-[7px]" : "w-[18px]"}`}
-            />
-            <span
-              className={`block h-0.5 bg-gray-600 dark:bg-gray-300 rounded transition-all duration-300 ${mobileOpen ? "opacity-0 w-0" : "w-[13px] self-start ml-[3px]"}`}
-            />
-            <span
-              className={`block h-0.5 bg-gray-600 dark:bg-gray-300 rounded transition-all duration-300 ${mobileOpen ? "w-[18px] -rotate-45 -translate-y-[7px]" : "w-[18px]"}`}
-            />
+            <span className="relative w-5 h-3.5 flex flex-col justify-between">
+              <span
+                className={`block h-px bg-current transition-all duration-200 origin-center ${mobileOpen ? "rotate-45 translate-y-[6px]" : ""}`}
+              />
+              <span
+                className={`block h-px bg-current transition-all duration-200 ${mobileOpen ? "opacity-0" : ""}`}
+              />
+              <span
+                className={`block h-px bg-current transition-all duration-200 origin-center ${mobileOpen ? "-rotate-45 -translate-y-[6px]" : ""}`}
+              />
+            </span>
           </button>
         </div>
       </div>
