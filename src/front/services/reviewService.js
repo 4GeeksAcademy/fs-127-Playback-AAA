@@ -1,6 +1,7 @@
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 async function getAllReviews() {
-  const response = await fetch("https://opulent-space-spoon-vqp7gggvgp5c996-3001.app.github.dev/api/review")
+  const response = await fetch(`${backendUrl}/api/review`);
   const data = await response.json();
   return data;
 }

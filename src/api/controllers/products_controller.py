@@ -1,10 +1,12 @@
 """
-Controlador de productos - Endpoints /api/productos
+Controlador de productos - Endpoints /api/product
 """
 
 from flask import Blueprint, request, jsonify,abort  
 from flask_jwt_extended import jwt_required
 from api.models import db, Product 
+from api.models.orderdetail import OrderDetail
+from sqlalchemy import func, text
 
 import cloudinary.uploader
 
@@ -36,7 +38,7 @@ def create_product():
         price = request.form.get("price")
         description = request.form.get("description")
         stock = request.form.get("stock", 1)
-        category_id = request.form.get("category_id")
+        item_id = request.form.get("item_id")
         imagen = request.files.get("imagen")
     else:
         body = request.get_json()
@@ -46,10 +48,10 @@ def create_product():
         price = body.get("price")
         description = body.get("description")
         stock = body.get("stock", 1)
-        category_id = body.get("category_id")
+        item_id = body.get("item_id")
         imagen = None
 
-    if not name or not price or not category_id:
+    if not name or not price or not item_id:
         abort(400, description="name, price y category_id son obligatorios")
 
     # Subir imagen a Cloudinary si viene una
@@ -69,7 +71,7 @@ def create_product():
             image_url=image_url,
             stock=int(stock),
             discount=0.0,
-            category_id=int(category_id)
+            item_id=int(item_id)
         )
         db.session.add(new_product)
         db.session.commit()
@@ -98,13 +100,34 @@ def update_product(id):
         product.weight = body.get("weight", product.weight)
         product.stock = body.get("stock", product.stock)
         product.discount = body.get("discount", product.discount)
-        product.category_id = body.get("category_id", product.category_id)
+        product.item_id = body.get("item_id", product.item_id)
         db.session.commit()
     except Exception:
         db.session.rollback()
         abort(500, description="Error al actualizar producto")
 
     return jsonify(product.serialize()), 200
+
+
+@product_bp.route('/top-sales', methods=['GET'])
+def get_top_sales():
+    """
+    Devuelve los 10 productos más vendidos ordenados por cantidad total vendida.
+    Suma el campo quantity de OrderDetail para calcular las ventas totales de cada producto.
+    """
+    result = db.session.query(
+        Product,
+        func.sum(OrderDetail.quantity).label("total_sold")
+    ).join(Product.order_details)\
+     .group_by(Product.id)\
+     .order_by(text("total_sold DESC"))\
+     .limit(10)\
+     .all()
+
+    return jsonify([{
+        **p.to_dict(),
+        "total_sold": int(total_sold)
+    } for p, total_sold in result]), 200
 
 
 @product_bp.route('/<int:id>', methods=['DELETE'])

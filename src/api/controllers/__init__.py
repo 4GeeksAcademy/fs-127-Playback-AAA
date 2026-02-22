@@ -14,6 +14,8 @@ Cada controller es un sub-blueprint que se registra en el blueprint
 principal 'api', por lo que todas las rutas quedan bajo /api/...
 """
 
+from .auth_controller import auth_bp
+from .categories_controller import categories_bp
 from api.controllers.products_controller import product_bp
 from api.controllers.review_controller import review_bp
 
@@ -25,5 +27,7 @@ def register_controllers(api):
     Registra todos los sub-blueprints (controladores) en el blueprint principal.
     Se llama desde routes.py al inicializar la API.
     """
+    api.register_blueprint(auth_bp)
+    api.register_blueprint(categories_bp)
     api.register_blueprint(product_bp)
     api.register_blueprint(review_bp)

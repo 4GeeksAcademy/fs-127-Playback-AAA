@@ -342,9 +342,9 @@ CATEGORIES_DATA = [
         "image_url": None,
         "subcategories": [
             {
-                "name": "Liquidación",
-                "slug": "liquidacion",
-                "description": "Artículos en liquidación",
+                "name": "Oportunidades",
+                "slug": "oportunidades",
+                "description": "Artículos y oportunidades especiales",
                 "items": [
                     {"name": "Últimas unidades", "slug": "ultimas-unidades"},
                     {"name": "Reacondicionados", "slug": "reacondicionados"},

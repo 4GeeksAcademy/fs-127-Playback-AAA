@@ -1,37 +1,35 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { Principal } from "../components/Principal.jsx";
+import { HeroBanner } from "../components/HeroBanner";
+import { TopRatedSubcategories } from "../components/TopRatedSubcategories";
+import { TopSales } from "../components/TopSales";
 
 export const Home = () => {
+  const { dispatch } = useGlobalReducer();
 
-	const { store, dispatch } = useGlobalReducer()
+  useEffect(() => {
+    const loadMessage = async () => {
+      try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
+        const response = await fetch(backendUrl + "/api/hello");
+        const data = await response.json();
+        if (response.ok) dispatch({ type: "set_hello", payload: data.message });
+      } catch (error) {
+        console.error("Could not fetch the message from the backend.", error);
+      }
+    };
 
-		const loadMessage = async () => {
-				try {
-							const backendUrl = import.meta.env.VITE_BACKEND_URL
+    loadMessage();
+  }, []);
 
-										if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
-
-													const response = await fetch(backendUrl + "/api/hello")
-																const data = await response.json()
-
-																			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
-
-																						return data
-
-																								} catch (error) {
-																											if (error.message) throw new Error(
-																															`Could not fetch the message from the backend.
-																																			Please check if the backend is running and the backend port is public.`
-																																						);
-																																								}
-
-																																									}
-
-																																										useEffect(() => {
-																																												loadMessage()
-																																													}, [])
-
-																																														return (
-																																																<Principal />);
-																																																}; 
+  return (
+    <div className="bg-theme-bg">
+      <HeroBanner />
+      <div className="w-full px-4 max-w-screen-2xl mx-auto">
+        <TopRatedSubcategories />
+        <TopSales />
+      </div>
+    </div>
+  );
+};
