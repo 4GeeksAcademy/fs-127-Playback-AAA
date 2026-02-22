@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import productServices from "../services/productService";
 import { HeroBanner } from "../components/HeroBanner";
-import { FeaturedCategories } from "../components/FeaturedCategories";
+import { TopRatedSubcategories } from "../components/TopRatedSubcategories";
 import { TopSales } from "../components/TopSales";
 
 export const Home = () => {
@@ -30,7 +30,7 @@ export const Home = () => {
     <div>
       <HeroBanner />
       <div className="w-full px-4 max-w-screen-2xl mx-auto">
-        <FeaturedCategories />
+        <TopRatedSubcategories />
         <TopSales products={products} />
       </div>
     </div>
