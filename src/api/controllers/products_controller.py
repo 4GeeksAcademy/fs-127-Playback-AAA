@@ -29,7 +29,9 @@ def get_product(id):
     product = Product.query.get(id)
     if product is None:
         abort(404, description=f"Producto con id {id} no encontrado")
-    return jsonify(product.serialize()), 200
+    # return jsonify(product.serialize()), 200
+    return jsonify(product.to_dict()), 200
+
 @product_bp.route('', methods=['POST'])
 def create_product():
     # Soporta tanto JSON como multipart/form-data

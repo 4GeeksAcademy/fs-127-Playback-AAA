@@ -34,8 +34,9 @@ export const router = createBrowserRouter(
         <Route path="/demo" element={<PrivateRoute><Demo /></PrivateRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/products" element={<PageProducts />} />
+        <Route path="/products/:category" element={<PageProducts />} />
+        <Route path="/products/:category/:subcategory" element={<PageProducts />} />
         <Route path="/PageDetailProduct/:id" element={<PageDetailProduct />} />
-
         <Route path="/signup" element={<Signup />} />
       </Route>
     )
