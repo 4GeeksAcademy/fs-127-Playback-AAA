@@ -2,7 +2,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const signupService = async ({ name, last_name, email, password }) => {
     try {
-        const response = await fetch(`${backendUrl}/api/signup`, {
+        const response = await fetch(backendUrl + "/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, last_name, email, password }),
@@ -19,7 +19,7 @@ export const signupService = async ({ name, last_name, email, password }) => {
 
 export const loginService = async ({ email, password }) => {
     try {
-        const response = await fetch(`${backendUrl}/api/login`, {
+        const response = await fetch(backendUrl + "/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
@@ -41,7 +41,7 @@ export const loginService = async ({ email, password }) => {
 
 export const getMeService = async (token) => {
     try {
-        const response = await fetch(`${backendUrl}/api/protected`, {
+        const response = await fetch(backendUrl + "/api/protected", {
             headers: { "Authorization": "Bearer " + token },
         });
         if (!response.ok) {
