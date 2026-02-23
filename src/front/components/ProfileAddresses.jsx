@@ -5,7 +5,9 @@ const ProfileAddresses = () => {
 
   const [addresses, setAddresses] = useState([]);
   const [form, setForm] = useState({
-    street: "",
+    address: "",
+    full_name: "",
+    phone: "",
     city: "",
     postal_code: "",
     country: ""
@@ -36,7 +38,7 @@ const ProfileAddresses = () => {
 
     const data = await res.json();
     setAddresses([...addresses, data]);
-    setForm({ street: "", city: "", postal_code: "", country: "" });
+    setForm({ address: "", full_name: "", phone: "", city: "", postal_code: "", country: "" });
   };
 
   const handleDelete = async (id) => {
@@ -54,7 +56,9 @@ const ProfileAddresses = () => {
         <h2 className="text-lg font-semibold mb-4">Agregar Dirección</h2>
 
         <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
-          <input name="street" value={form.street} onChange={handleChange} placeholder="Calle" className="border p-2 rounded-lg" required />
+          <input name="full_name" value={form.full_name} onChange={handleChange} placeholder="Nombre completo" className="border p-2 rounded-lg" required />
+          <input name="phone" value={form.phone} onChange={handleChange} placeholder="Teléfono" className="border p-2 rounded-lg" required />
+          <input name="address" value={form.address} onChange={handleChange} placeholder="Dirección" className="border p-2 rounded-lg md:col-span-2" required />
           <input name="city" value={form.city} onChange={handleChange} placeholder="Ciudad" className="border p-2 rounded-lg" required />
           <input name="postal_code" value={form.postal_code} onChange={handleChange} placeholder="Código Postal" className="border p-2 rounded-lg" required />
           <input name="country" value={form.country} onChange={handleChange} placeholder="País" className="border p-2 rounded-lg" required />
@@ -68,7 +72,7 @@ const ProfileAddresses = () => {
         {addresses.map(addr => (
           <div key={addr.id} className="bg-white p-4 rounded-xl shadow border flex justify-between">
             <div>
-              <p className="font-medium">{addr.street}</p>
+              <p className="font-medium">{addr.full_name} — {addr.address}</p>
               <p className="text-sm text-gray-500">
                 {addr.city} · {addr.postal_code} · {addr.country}
               </p>

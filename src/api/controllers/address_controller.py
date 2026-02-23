@@ -7,7 +7,7 @@ from api.models.user import User
 address_bp = Blueprint('address', __name__, url_prefix='/address')
 
 
-@address_bp.route("/addresses", methods=["POST"])
+@address_bp.route("", methods=["POST"])
 @jwt_required()
 def create_address():
     user_id = int(get_jwt_identity())
@@ -45,7 +45,7 @@ def create_address():
     return jsonify(new_address.serialize()), 201
 
 
-@address_bp.route("/addresses", methods=["GET"])
+@address_bp.route("", methods=["GET"])
 @jwt_required()
 def get_addresses():
     user_id = int(get_jwt_identity())
@@ -53,7 +53,7 @@ def get_addresses():
     return jsonify([a.serialize() for a in addresses]), 200
 
 
-@address_bp.route("/addresses/<int:address_id>", methods=["PUT"])
+@address_bp.route("/<int:address_id>", methods=["PUT"])
 @jwt_required()
 def update_address(address_id):
     user_id = int(get_jwt_identity())
@@ -88,7 +88,7 @@ def update_address(address_id):
     return jsonify(address.serialize()), 200
 
 
-@address_bp.route("/addresses/<int:address_id>", methods=["DELETE"])
+@address_bp.route("/<int:address_id>", methods=["DELETE"])
 @jwt_required()
 def delete_address(address_id):
     user_id = int(get_jwt_identity())
