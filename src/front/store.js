@@ -16,6 +16,7 @@ export const initialStore = () => {
     token: localStorage.getItem("token") || null,
     user: JSON.parse(localStorage.getItem("user")) || null,
     isAuthenticated: !!localStorage.getItem("token"),
+    favorites: [], 
   }
 }
 
@@ -26,6 +27,20 @@ export default function storeReducer(store, action = {}) {
         ...store,
         message: action.payload
       };
+
+
+      case 'fav_add':
+    return {
+        ...store,
+        favorites: [...store.favorites, action.payload]
+    };
+
+case 'fav_delete':
+    return {
+        ...store,
+        favorites: store.favorites.filter(fav => fav.id !== action.payload.id)
+    };
+
 
     case 'add_task': {
       const { id, color } = action.payload
