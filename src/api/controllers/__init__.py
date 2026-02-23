@@ -1,6 +1,7 @@
-
 """
+=============================================================================
                          CAPA DE CONTROLADORES
+=============================================================================
 
 Los controladores definen las rutas/endpoints de la API usando Blueprints.
 Cada controlador se encarga de:
@@ -17,8 +18,6 @@ from .auth_controller import auth_bp
 from .categories_controller import categories_bp
 from api.controllers.products_controller import product_bp
 from api.controllers.review_controller import review_bp
-from .user_controller import *
-from .address_controller import *
 
 
 
