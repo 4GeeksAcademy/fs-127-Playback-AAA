@@ -5,6 +5,7 @@ import ProfileDashboard from "../components/ProfileDashboard";
 import ProfileInfo from "../components/ProfileInfo";
 import ProfileSecurity from "../components/ProfileSecurity";
 import ProfileOrders from "../components/ProfileOrders";
+import ProfileAddresses from "../components/ProfileAddresses";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -18,6 +19,8 @@ const Profile = () => {
         return <ProfileSecurity />;
       case "orders":
         return <ProfileOrders />;
+      case "addresses":
+        return <ProfileAddresses />;
       default:
         return <ProfileDashboard />;
     }
@@ -25,7 +28,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-
       <ProfileSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -34,15 +36,12 @@ const Profile = () => {
       />
 
       <div className="flex-1 flex flex-col">
-
         <ProfileTopbar setIsOpen={setIsOpen} />
 
         <main className="p-6 md:p-10">
           {renderContent()}
         </main>
-
       </div>
-
     </div>
   );
 };

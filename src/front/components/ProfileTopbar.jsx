@@ -1,20 +1,10 @@
-import React from "react";
-import { Menu } from "lucide-react";
-
-const ProfileTopbar = ({ setIsOpen }) => {
+const ProfileTopbar = () => {
   return (
-    <header className="bg-white shadow-sm p-4 flex items-center justify-between">
-      <button
-        className="md:hidden"
-        onClick={() => setIsOpen(true)}
-      >
-        <Menu />
-      </button>
-
-      <h1 className="font-semibold text-lg">Panel de Usuario</h1>
-
-      <div className="w-8 h-8 rounded-full bg-gray-300" />
-    </header>
+    <div className="bg-white border-b border-gray-200 px-8 py-5">
+      <h1 className="text-xl font-semibold text-gray-700">
+        Panel de Usuario
+      </h1>
+    </div>
   );
 };
 
