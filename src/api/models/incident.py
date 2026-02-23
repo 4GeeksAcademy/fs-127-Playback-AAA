@@ -6,7 +6,7 @@ from api.models.order import Order
 from api.models.user import User
 
 
-class Incident(db.Model): 
+class Incident(db.Model):
     __tablename__ = 'incident'
 
     # Columnas
