@@ -1,0 +1,21 @@
+{
+  "home": {
+    "topSales": "Top Ventas",
+    "featuredCategories": "Categorías Destacadas"
+  },
+  "product": {
+    "noFound": "No se han encontrado productos",
+    "descriptionLabel": "Descripción",
+    "description": "Sin descripción disponible.",
+    "featuresLabel": "Características",
+    "features": "Sin características especificadas.",
+    "shippingLabel": "Envío & Devoluciones",
+    "shipping": "Envío gratuito en pedidos superiores a 50 €. Devoluciones aceptadas durante 30 días.",
+    "inStock": "En stock",
+    "outOfStock": "Sin stock",
+    "available": "disponibles",
+    "addToCart": "Añadir a la cesta",
+    "reviews": "Opiniones de clientes"
+
+  }
+}

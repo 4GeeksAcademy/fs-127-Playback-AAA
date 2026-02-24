@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { loginService } from "../services/authService";
+import favoriteServices from "../services/favoriteService";
+
 
 export const LoginForm = ({ onSuccess }) => {
   const { dispatch } = useGlobalReducer();
@@ -11,6 +13,7 @@ export const LoginForm = ({ onSuccess }) => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    
   };
 
   const handleSubmit = async (e) => {
@@ -31,6 +34,17 @@ export const LoginForm = ({ onSuccess }) => {
     });
     setLoading(false);
 
+    
+dispatch({
+    type: "login",
+    payload: { token: data.token, user: data.user },
+});
+
+// Cargar favoritos de la DB
+const [favorites] = await favoriteServices.getFavorites(data.token);
+if (favorites) {
+    dispatch({ type: "set_favorites", payload: favorites });
+}
     if (onSuccess) onSuccess();
     navigate("/");
   };

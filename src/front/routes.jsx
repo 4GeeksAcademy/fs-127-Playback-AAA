@@ -13,6 +13,8 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import { PageProducts } from "./pages/PageProducts";
 import { PageDetailProduct } from "./pages/PageDetailProduct";
+import { PageFavorites } from "./pages/PageFavorites";
+
 import Profile from "./pages/Profile";
 
 import { PrivateRoute } from "./components/PrivateRoute";
@@ -30,6 +32,8 @@ export const router = createBrowserRouter(
         <Route path="/products/:category/:subcategory" element={<PageProducts />} />
         <Route path="/PageDetailProduct/:id" element={<PageDetailProduct />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/:userEmail/favorites" element={<PageFavorites />} />
+
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       </Route>
     )

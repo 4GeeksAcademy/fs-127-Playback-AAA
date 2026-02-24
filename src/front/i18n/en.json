@@ -1,0 +1,20 @@
+{
+  "home": {
+    "topSales": "Top Sales",
+    "featuredCategories": "Featured Categories"
+  },
+  "product": {
+    "noFound": "No products found",
+    "descriptionLabel": "Description",
+    "featuresLabel": "Features",
+    "shippingLabel": "Shipping & Returns",
+    "features": "No features specified.",
+    "shipping": "Free shipping on orders over €50. Returns accepted within 30 days.",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "available": "available",
+    "addToCart": "Add to cart",
+    "reviews": "Customer reviews"
+
+  }
+}

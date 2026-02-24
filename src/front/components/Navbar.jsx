@@ -5,6 +5,7 @@ import { LoginForm } from "../components/LoginForm";
 import logo from "../assets/img/logo_navbar_playback_v1.png";
 import logo_dark from "../assets/img/logo_navbar_playback_vdark.png";
 import logo_mini from "../assets/img/logo_navbar_playback_vmini.png";
+import { useTranslation } from "react-i18next";
 
 export const Navbar = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -19,6 +20,13 @@ export const Navbar = () => {
   const loginRef = useRef();
 
   const userEmail = store.user?.email;
+  //Sierve para el idioma
+  const { i18n } = useTranslation();
+  const toggle = () => {
+    const newLang = i18n.language === "es" ? "en" : "es";
+    i18n.changeLanguage(newLang);
+    localStorage.setItem("lang", newLang);
+  };
 
   const userLinks = [
     { to: `/${userEmail}/profile`, icon: "👤", label: "Perfil" },
@@ -206,11 +214,18 @@ export const Navbar = () => {
           >
             🌙
           </button>
-          <button
+          {/* <button
             title="Idioma"
             className="w-10 h-10 flex items-center justify-center rounded-xl border border-theme-border bg-theme-input hover:bg-theme-muted text-base transition"
           >
             🌍
+          </button> */}
+          <button
+            onClick={toggle}
+            title="Idioma"
+            className="w-10 h-10 flex items-center justify-center rounded-xl border border-theme-border bg-theme-input hover:bg-theme-muted text-base transition"
+          >
+            {i18n.language === "es" ? "EN" : "ES"}
           </button>
         </div>
 
@@ -290,7 +305,7 @@ export const Navbar = () => {
               <LoginForm onSuccess={() => setMobileOpen(false)} />
             </div>
           )}
-          
+
           {/* Idioma */}
           <div className="border-t border-theme-border-sm pt-1">
             <button className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted transition w-full">

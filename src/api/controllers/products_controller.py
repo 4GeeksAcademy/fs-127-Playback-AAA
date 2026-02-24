@@ -1,40 +1,34 @@
-"""
-Controlador de productos - Endpoints /api/product
-"""
-
-from flask import Blueprint, request, jsonify,abort  
+from flask import Blueprint, request, jsonify, abort  
 from flask_jwt_extended import jwt_required
 from api.models import db, Product 
 from api.models.orderdetail import OrderDetail
 from sqlalchemy import func, text
-
+from deep_translator import GoogleTranslator
 import cloudinary.uploader
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
+def translate_text(text, target_lang):
+    if not text:
+        return None
+    return GoogleTranslator(source='auto', target=target_lang).translate(text)
+
 @product_bp.route('', methods=['GET'])
-# El JWT te obliga a hacer login 
-# @jwt_required()/
 def get_products():
+    locale = request.args.get("locale", "es")  
     products = Product.query.all()
-    return jsonify([p.to_dict() for p in products]), 200
-
-
-
-
-
+    return jsonify([p.to_dict(locale=locale) for p in products]), 200  
 
 @product_bp.route('/<int:id>', methods=['GET'])
 def get_product(id):
+    locale = request.args.get("locale", "es")
     product = Product.query.get(id)
     if product is None:
         abort(404, description=f"Producto con id {id} no encontrado")
-    # return jsonify(product.serialize()), 200
-    return jsonify(product.to_dict()), 200
+    return jsonify(product.to_dict(locale=locale)), 200
 
 @product_bp.route('', methods=['POST'])
 def create_product():
-    # Soporta tanto JSON como multipart/form-data
     if request.content_type and "multipart/form-data" in request.content_type:
         name = request.form.get("name")
         price = request.form.get("price")
@@ -54,9 +48,12 @@ def create_product():
         imagen = None
 
     if not name or not price or not item_id:
-        abort(400, description="name, price y category_id son obligatorios")
+        abort(400, description="name, price e item_id son obligatorios")
 
-    # Subir imagen a Cloudinary si viene una
+    # ← Traducir automáticamente
+    translated_name = translate_text(name, "en")
+    translated_desc = translate_text(description, "en")
+
     image_url = None
     if imagen:
         try:
@@ -67,8 +64,8 @@ def create_product():
 
     try:
         new_product = Product(
-            name=name,
-            description=description,
+            name={"es": name, "en": translated_name or name},  # ← JSON
+            description={"es": description, "en": translated_desc or description} if description else None,
             price=float(price),
             image_url=image_url,
             stock=int(stock),
@@ -94,8 +91,14 @@ def update_product(id):
         abort(400, description="El body no puede estar vacío")
 
     try:
-        product.name = body.get("name", product.name)
-        product.description = body.get("description", product.description)
+        if "name" in body:
+            new_name = body["name"]
+            product.name = {"es": new_name, "en": translate_text(new_name, "en") or new_name}
+
+        if "description" in body:
+            new_desc = body["description"]
+            product.description = {"es": new_desc, "en": translate_text(new_desc, "en") or new_desc}
+
         product.price = body.get("price", product.price)
         product.image_url = body.get("image_url", product.image_url)
         product.size = body.get("size", product.size)
@@ -104,19 +107,15 @@ def update_product(id):
         product.discount = body.get("discount", product.discount)
         product.item_id = body.get("item_id", product.item_id)
         db.session.commit()
-    except Exception:
+    except Exception as e:
         db.session.rollback()
         abort(500, description="Error al actualizar producto")
 
     return jsonify(product.serialize()), 200
 
-
 @product_bp.route('/top-sales', methods=['GET'])
 def get_top_sales():
-    """
-    Devuelve los 10 productos más vendidos ordenados por cantidad total vendida.
-    Suma el campo quantity de OrderDetail para calcular las ventas totales de cada producto.
-    """
+    locale = request.args.get("locale", "es")  # ← añadido
     result = db.session.query(
         Product,
         func.sum(OrderDetail.quantity).label("total_sold")
@@ -127,10 +126,9 @@ def get_top_sales():
      .all()
 
     return jsonify([{
-        **p.to_dict(),
+        **p.to_dict(locale=locale),  # ← locale
         "total_sold": int(total_sold)
     } for p, total_sold in result]), 200
-
 
 @product_bp.route('/<int:id>', methods=['DELETE'])
 def delete_product(id):
