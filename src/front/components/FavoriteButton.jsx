@@ -1,31 +1,44 @@
 import { Heart } from "lucide-react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import favoriteServices from "../services/favoriteService";
 
 export const FavoriteButton = ({ product, className = "" }) => {
+  const { store, dispatch } = useGlobalReducer();
+  const isLoggedIn = !!store.token;
+    if (!isLoggedIn) return null;
 
-
-    //Esta programado en store.js 
-    const { store, dispatch } = useGlobalReducer();
     const isFavorite = store.favorites?.find(fav => fav.id === product.id);
-    const toggle = (e) => {
-        e.preventDefault(); 
-        if (isFavorite) {
-            dispatch({ type: "fav_delete", payload: product });
-        } else {
-            dispatch({ type: "fav_add", payload: product });
-        }
-    };
+  const toggle = async (e) => {
+    e.preventDefault();
+    console.log("Token:", store.token); // ← añade esto
+    console.log("isLoggedIn:", isLoggedIn);
+    if (isFavorite) {
+      // Borrar del store
+      dispatch({ type: "fav_delete", payload: product });
+      // Si está logueado, borrar de la DB también
+      if (isLoggedIn) {
+        await favoriteServices.deleteFavorite(product.id, store.token);
+      }
+    } else {
+      // Añadir al store
+      dispatch({ type: "fav_add", payload: product });
+      // Si está logueado, guardar en la DB también
+      if (isLoggedIn) {
+        await favoriteServices.addFavorite(product.id, store.token);
+      }
+    }
+  };
 
-    return (
-        <button
-            onClick={toggle}
-            className={`bg-black/30 hover:bg-black/50 p-2 rounded-full transition-all ${className}`}
-        >
-            <Heart
-                size={16}
-                strokeWidth={2.5}
-                className={isFavorite ? "fill-red-500 text-red-500" : "text-white"}
-            />
-        </button>
-    );
+  return (
+    <button
+      onClick={toggle}
+      className={`bg-black/30 hover:bg-black/50 p-2 rounded-full transition-all ${className}`}
+    >
+      <Heart
+        size={16}
+        strokeWidth={2.5}
+        className={isFavorite ? "fill-red-500 text-red-500" : "text-white"}
+      />
+    </button>
+  );
 };

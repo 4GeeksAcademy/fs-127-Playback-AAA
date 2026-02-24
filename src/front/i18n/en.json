@@ -13,6 +13,8 @@
     "inStock": "In stock",
     "outOfStock": "Out of stock",
     "available": "available",
-    "addToCart": "Add to cart"
+    "addToCart": "Add to cart",
+    "reviews": "Customer reviews"
+
   }
 }

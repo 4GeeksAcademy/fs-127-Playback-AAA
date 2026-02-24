@@ -1,30 +1,31 @@
+import i18n from "../i18n/index"; // ajusta el path a tu archivo de configuración de i18n
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-// Obtiene todos los productos
+const getLocale = () => i18n.language?.split("-")[0] || "es";
+
 async function getAllProducts() {
-    const response = await fetch(`${backendUrl}/api/product`);
+    const response = await fetch(`${backendUrl}/api/product?locale=${getLocale()}`);
     const data = await response.json();
     if (!response.ok) return [null, data.description || "Error al cargar los productos"];
     return [data, null];
 }
 
-// Obtiene un producto por id
 async function getProduct(id) {
-    const response = await fetch(`${backendUrl}/api/product/${id}`);
+    const response = await fetch(`${backendUrl}/api/product/${id}?locale=${getLocale()}`);
     const data = await response.json();
     if (!response.ok) return [null, data.description || "Error al cargar el producto"];
     return [data, null];
 }
 
-// Obtiene los 10 productos más vendidos por cantidad total en pedidos
 async function getTopSales() {
-    const response = await fetch(`${backendUrl}/api/product/top-sales`);
+    const response = await fetch(`${backendUrl}/api/product/top-sales?locale=${getLocale()}`);
     const data = await response.json();
     if (!response.ok) return [null, data.description || "Error al cargar el top ventas"];
     return [data, null];
 }
 
-// Crea un nuevo producto — soporta JSON y multipart/form-data
+// POST, PUT y DELETE no cambian
 async function createProduct(body) {
     const response = await fetch(`${backendUrl}/api/product`, {
         method: "POST",
@@ -36,7 +37,6 @@ async function createProduct(body) {
     return [data, null];
 }
 
-// Actualiza un producto por id
 async function updateProduct(id, body) {
     const response = await fetch(`${backendUrl}/api/product/${id}`, {
         method: "PUT",
@@ -48,7 +48,6 @@ async function updateProduct(id, body) {
     return [data, null];
 }
 
-// Elimina un producto por id
 async function deleteProduct(id) {
     const response = await fetch(`${backendUrl}/api/product/${id}`, {
         method: "DELETE"
@@ -58,13 +57,5 @@ async function deleteProduct(id) {
     return [data, null];
 }
 
-const productServices = {
-    getAllProducts,
-    getProduct,
-    getTopSales,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-};
-
+const productServices = { getAllProducts, getProduct, getTopSales, createProduct, updateProduct, deleteProduct };
 export default productServices;

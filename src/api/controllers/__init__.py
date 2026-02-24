@@ -18,6 +18,8 @@ from .auth_controller import auth_bp
 from .categories_controller import categories_bp
 from api.controllers.products_controller import product_bp
 from api.controllers.review_controller import review_bp
+from api.controllers.favorites_controller import favorite_bp 
+
 
 
 
@@ -31,3 +33,5 @@ def register_controllers(api):
     api.register_blueprint(categories_bp)
     api.register_blueprint(product_bp)
     api.register_blueprint(review_bp)
+    api.register_blueprint(favorite_bp)
+

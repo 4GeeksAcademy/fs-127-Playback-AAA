@@ -14,6 +14,8 @@
     "inStock": "En stock",
     "outOfStock": "Sin stock",
     "available": "disponibles",
-    "addToCart": "Añadir a la cesta"
+    "addToCart": "Añadir a la cesta",
+    "reviews": "Opiniones de clientes"
+
   }
 }

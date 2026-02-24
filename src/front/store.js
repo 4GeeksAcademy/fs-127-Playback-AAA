@@ -41,7 +41,9 @@ case 'fav_delete':
         favorites: store.favorites.filter(fav => fav.id !== action.payload.id)
     };
 
-
+case 'set_favorites':
+    return { ...store, favorites: action.payload };
+    
     case 'add_task': {
       const { id, color } = action.payload
       return {

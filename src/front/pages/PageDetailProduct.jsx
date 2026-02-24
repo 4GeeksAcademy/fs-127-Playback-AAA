@@ -5,13 +5,15 @@ import { StarRating } from "../components/StarRating";
 import { ShoppingCart, Check, X } from "lucide-react";
 import { Accordion } from "../components/Accordion";
 import { FavoriteButton } from "../components/FavoriteButton";
+import { ReviewRating } from "../components/ReviewRating";
 import { useTranslation } from "react-i18next";
 
 export const PageDetailProduct = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  useEffect(() => {
+useEffect(() => {
+    console.log("useEffect ejecutado, idioma:", i18n.language);  // ← aquí
     productServices.getProduct(id).then(([data, error]) => {
       if (error) {
         console.error(error);
@@ -19,12 +21,12 @@ export const PageDetailProduct = () => {
       }
       setProduct(data);
     });
-  }, [id]);
+  }, [id, i18n.language]);
 
   if (!product)
     return (
       <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
-        t("product.noFound")
+{t("product.noFound")}
       </div>
     );
   const inStock = product.stock == null ? true : product.stock > 0;
@@ -38,7 +40,10 @@ export const PageDetailProduct = () => {
       label: t("product.featuresLabel"),
       content: product.features || t("product.features"),
     },
-    { label: t("product.shippingLabel"), content:  product.shipping || t("product.shipping") },
+    {
+      label: t("product.shippingLabel"),
+      content: product.shipping || t("product.shipping"),
+    },
   ];
 
   return (
@@ -123,6 +128,8 @@ export const PageDetailProduct = () => {
       </div>
 
       <Accordion items={accordionItems} />
+
+      <ReviewRating product={product} />
     </div>
   );
 };
