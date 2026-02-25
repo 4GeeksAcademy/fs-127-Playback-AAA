@@ -2,6 +2,10 @@ import productServices from "../services/productService";
 import { useState, useEffect } from "react";
 import { Pagination } from "../components/Pagination";
 import {  useParams } from "react-router-dom";
+import { CardProduct } from "../components/CardProduct";
+
+
+
 
 
 export const PageProducts = () => {
@@ -54,7 +58,7 @@ export const PageProducts = () => {
           {productosPaginados
             .filter((p) => p != null)
             .map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <CardProduct key={p.id} product={p} />
             ))}
         </div>
 

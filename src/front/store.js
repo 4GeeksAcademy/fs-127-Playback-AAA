@@ -43,6 +43,7 @@ case 'fav_delete':
 
 case 'set_favorites':
     return { ...store, favorites: action.payload };
+
     
     case 'add_task': {
       const { id, color } = action.payload

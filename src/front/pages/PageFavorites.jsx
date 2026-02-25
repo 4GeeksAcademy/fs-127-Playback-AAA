@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
-import { FavoriteButton } from "../components/FavoriteButton";
+import { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { CardProduct } from "../components/CardProduct";
+import favoriteServices from "../services/favoriteService"; 
 
 export const PageFavorites = () => {
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const favorites = store.favorites || [];
+
+
 
   if (favorites.length === 0)
     return (
@@ -22,7 +24,7 @@ export const PageFavorites = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {favorites.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <CardProduct key={p.id} product={p} />
           ))}
         </div>
       </section>

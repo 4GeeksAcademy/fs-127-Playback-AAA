@@ -4,27 +4,28 @@ import favoriteServices from "../services/favoriteService";
 
 export const FavoriteButton = ({ product, className = "" }) => {
   const { store, dispatch } = useGlobalReducer();
-  const isLoggedIn = !!store.token;
-    if (!isLoggedIn) return null;
+const isLoggedIn = !!(store.token || localStorage.getItem("token"));
+if (!isLoggedIn) return null;
 
     const isFavorite = store.favorites?.find(fav => fav.id === product.id);
   const toggle = async (e) => {
     e.preventDefault();
-    console.log("Token:", store.token); // ← añade esto
-    console.log("isLoggedIn:", isLoggedIn);
+     const token = store.token || localStorage.getItem("token"); 
+    const isLoggedIn = !!(store.token || localStorage.getItem("token"));
+
     if (isFavorite) {
       // Borrar del store
       dispatch({ type: "fav_delete", payload: product });
       // Si está logueado, borrar de la DB también
       if (isLoggedIn) {
-        await favoriteServices.deleteFavorite(product.id, store.token);
+        await favoriteServices.deleteFavorite(product.id, token);
       }
     } else {
       // Añadir al store
       dispatch({ type: "fav_add", payload: product });
       // Si está logueado, guardar en la DB también
       if (isLoggedIn) {
-        await favoriteServices.addFavorite(product.id, store.token);
+        await favoriteServices.addFavorite(product.id, token);
       }
     }
   };
