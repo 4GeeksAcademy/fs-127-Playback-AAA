@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: af704df3f1bf
+Revision ID: d8dc5bb7c3ab
 Revises: 
-Create Date: 2026-02-25 17:23:18.029916
+Create Date: 2026-02-25 18:24:14.031039
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'af704df3f1bf'
+revision = 'd8dc5bb7c3ab'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,9 +30,9 @@ def upgrade():
     )
     op.create_table('category',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.JSON(), nullable=False),
+    sa.Column('name', sa.String(length=80), nullable=False),
     sa.Column('slug', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
+    sa.Column('description', sa.String(length=500), nullable=False),
     sa.Column('image_url', sa.String(length=255), nullable=True),
     sa.Column('position', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -82,9 +82,9 @@ def upgrade():
     )
     op.create_table('subcategory',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.JSON(), nullable=False),
+    sa.Column('name', sa.String(length=80), nullable=False),
     sa.Column('slug', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
+    sa.Column('description', sa.String(length=500), nullable=True),
     sa.Column('image_url', sa.String(length=255), nullable=True),
     sa.Column('position', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
@@ -106,9 +106,9 @@ def upgrade():
     )
     op.create_table('item',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.JSON(), nullable=False),
+    sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('slug', sa.String(length=120), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
+    sa.Column('description', sa.String(length=500), nullable=True),
     sa.Column('image_url', sa.String(length=255), nullable=True),
     sa.Column('position', sa.Integer(), nullable=False),
     sa.Column('subcategory_id', sa.Integer(), nullable=False),
