@@ -98,7 +98,7 @@ export const Categorybar = () => {
                 {currentCategory?.image_url && (
                   <div className="hidden lg:block flex-shrink-0 w-56">
                     <Link
-                      to={`/category/${currentCategory.slug}`}
+                      to={`/search?category=${currentCategory.slug}`}
                       onClick={() => setActiveCategory(null)}
                       className="group block relative aspect-[3/4] overflow-hidden"
                     >
@@ -119,7 +119,7 @@ export const Categorybar = () => {
                   {currentCategory.subcategories.map((sub) => (
                     <div key={sub.id} className="flex flex-col gap-2.5">
                       <Link
-                        to={`/category/${currentCategory.slug}/${sub.slug}`}
+                        to={`/search?category=${currentCategory.slug}&subcategory=${sub.slug}`}
                         onClick={() => setActiveCategory(null)}
                         className="text-xs font-semibold tracking-widest uppercase text-theme-secondary hover:text-amber-600 transition-colors"
                       >
@@ -133,7 +133,7 @@ export const Categorybar = () => {
                           {sub.items.map((item) => (
                             <li key={item.id}>
                               <Link
-                                to={`/category/${currentCategory.slug}/${sub.slug}/${item.slug}`}
+                                to={`/search?category=${currentCategory.slug}&subcategory=${sub.slug}&item=${item.slug}`}
                                 onClick={() => setActiveCategory(null)}
                                 className="text-xs text-theme-muted hover:text-theme-text transition-colors leading-relaxed"
                               >
@@ -180,7 +180,7 @@ export const Categorybar = () => {
             to="/about"
             className="text-xs tracking-widest uppercase font-medium text-theme-muted hover:text-theme-text transition-colors"
           >
-            Acerca de Playback
+            {t("home.aboutPlayback")}
           </Link>
         </div>
 
@@ -215,7 +215,7 @@ export const Categorybar = () => {
                       {cat.subcategories.map((sub) => (
                         <div key={sub.id}>
                           <Link
-                            to={`/category/${cat.slug}/${sub.slug}`}
+                            to={`/search?category=${cat.slug}&subcategory=${sub.slug}`}
                             onClick={() => {
                               setMobileOpen(null);
                               setMobilePanelOpen(false);
@@ -232,7 +232,7 @@ export const Categorybar = () => {
                               {sub.items.map((item) => (
                                 <Link
                                   key={item.id}
-                                  to={`/category/${cat.slug}/${sub.slug}/${item.slug}`}
+                                  to={`/search?category=${cat.slug}&subcategory=${sub.slug}&item=${item.slug}`}
                                   onClick={() => {
                                     setMobileOpen(null);
                                     setMobilePanelOpen(false);
