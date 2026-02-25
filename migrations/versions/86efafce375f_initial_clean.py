@@ -1,8 +1,8 @@
-"""empty message
+"""initial clean
 
-Revision ID: 2e3c747ec809
-Revises:
-Create Date: 2026-02-22 02:06:01.641120
+Revision ID: 86efafce375f
+Revises: 
+Create Date: 2026-02-25 11:15:10.348847
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2e3c747ec809'
+revision = '86efafce375f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,6 +37,18 @@ def upgrade():
     sa.Column('position', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('slug')
+    )
+    op.create_table('user',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=80), nullable=False),
+    sa.Column('last_name', sa.String(length=120), nullable=False),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('password', sa.String(length=255), nullable=False),
+    sa.Column('image_url', sa.String(length=500), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     op.create_table('address',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -119,8 +131,8 @@ def upgrade():
     )
     op.create_table('product',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=200), nullable=False),
-    sa.Column('description', sa.String(length=1000), nullable=True),
+    sa.Column('name', sa.JSON(), nullable=False),
+    sa.Column('description', sa.JSON(), nullable=True),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('image_url', sa.Text(), nullable=True),
     sa.Column('size', sa.String(), nullable=True),
@@ -152,14 +164,14 @@ def upgrade():
     op.create_table('review',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('rating', sa.Integer(), nullable=False),
-    sa.Column('title', sa.String(length=255), nullable=False),
+    sa.Column('title', sa.String(length=255), nullable=True),
     sa.Column('comment', sa.String(length=2000), nullable=True),
     sa.Column('is_visible', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
-    sa.Column('order_id', sa.Integer(), nullable=True),
+    sa.Column('order_id', sa.Integer(), nullable=False),
     sa.CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
@@ -181,6 +193,7 @@ def downgrade():
     op.drop_table('subcategory')
     op.drop_table('order')
     op.drop_table('address')
+    op.drop_table('user')
     op.drop_table('category')
     op.drop_table('carrier')
     # ### end Alembic commands ###

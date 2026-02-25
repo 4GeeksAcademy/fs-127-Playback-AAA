@@ -54,15 +54,12 @@ pipenv run upgrade
 
 **7. Pobla la base de datos con datos iniciales:**
 ```bash
-pipenv run python src/api/seeds/seed_categories.py
-```
-> 📖 Consulta la [documentación completa del seed](../docs/README_SEED_CATEGORIES.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
-
-**7. Opcional: Poblar la base de datos con datos de prueba para desarrollo
-```bash
+pipenv run python src/api/seeds/seed_categories.py;
 pipenv run python src/api/seeds/seed_test_data.py
 ```
-> 📖 Consulta la [documentación completa del seed](../docs/README_SEED_TEST_DATA.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
+> 📖 Consulta la [documentación completa del seed_categories.py](../docs/README_SEED_CATEGORIES.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
+
+> 📖 Consulta la [documentación completa del seed_test_data.py](../docs/README_SEED_TEST_DATA.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
 
 ---
 

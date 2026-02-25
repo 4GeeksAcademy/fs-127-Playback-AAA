@@ -1,13 +1,12 @@
 import { Navigate } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
+    const { store } = useGlobalReducer();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+    if (!store.isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
 
-  return children;
+    return children;
 };
-
-console.log("TOKEN:", localStorage.getItem("token"));

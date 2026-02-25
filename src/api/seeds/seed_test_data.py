@@ -6,6 +6,7 @@ import sys
 import os
 import random
 from datetime import datetime, timezone, timedelta
+from sqlalchemy import cast, String
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
@@ -185,7 +186,7 @@ def seed_products():
     print("\n📦 Seeding productos...")
     products = []
     for p in PRODUCTS_DATA:
-        existing = Product.query.filter_by(name=p["name"]).first()
+        existing = Product.query.filter(cast(Product.name["es"], String) == f'"{p["name"]}"').first()
         if existing:
             print(f"  [UPDATE] Producto ya existe: {p['name']}")
             products.append(existing)
@@ -197,8 +198,8 @@ def seed_products():
             continue
 
         product = Product(
-            name=p["name"],
-            description=p["description"],
+            name={"es": p["name"], "en": p["name"]}, 
+            description={"es": p["description"], "en": p["description"]} if p.get("description") else None,
             price=p["price"],
             stock=p["stock"],
             discount=p["discount"],
