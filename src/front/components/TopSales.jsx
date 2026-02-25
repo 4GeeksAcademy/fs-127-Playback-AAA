@@ -6,10 +6,8 @@ import { Link } from "react-router-dom";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 
-
 export const TopSales = () => {
     const { t } = useTranslation();
-
   const carouselRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);

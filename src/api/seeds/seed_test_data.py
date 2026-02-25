@@ -220,7 +220,7 @@ def seed_orders(users, products):
     print("\n🛒 Seeding pedidos...")
     orders = []
     payment_methods = list(Payment)
-    statuses = list(Status)
+    status = list(Status)
 
     for user in users:
         # Cada usuario tiene entre 2 y 4 pedidos
@@ -239,7 +239,7 @@ def seed_orders(users, products):
                 shipping_cost=shipping_cost,
                 total_price=total_price,
                 payment_method=random.choice(payment_methods),
-                status=random.choice(statuses),
+                status=random.choice(status),
                 created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 90))
             )
             db.session.add(order)

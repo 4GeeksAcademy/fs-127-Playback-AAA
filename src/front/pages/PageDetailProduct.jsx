@@ -12,8 +12,8 @@ export const PageDetailProduct = () => {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-useEffect(() => {
-    console.log("useEffect ejecutado, idioma:", i18n.language);  // ← aquí
+  useEffect(() => {
+    console.log("useEffect ejecutado, idioma:", i18n.language); // ← aquí
     productServices.getProduct(id).then(([data, error]) => {
       if (error) {
         console.error(error);
@@ -26,7 +26,7 @@ useEffect(() => {
   if (!product)
     return (
       <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
-{t("product.noFound")}
+        {t("product.noFound")}
       </div>
     );
   const inStock = product.stock == null ? true : product.stock > 0;
