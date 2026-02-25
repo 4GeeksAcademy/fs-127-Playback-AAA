@@ -89,22 +89,35 @@ npm run start
 
 ## 🛠️ Solución de problemas
 
-### Errores con las migraciones
-Si obtienes errores como **"Multiple head revisions"** o **"constraint does not exist"**, resetea las migraciones desde cero:
+## Errores con las migraciones(solo para desarrollo)
+
+### 1. Elimina todas las migraciones existentes
 ```bash
-# 1. Elimina todas las migraciones existentes
-rm migrations/versions/*.py
-
-# 2. Genera una migración limpia desde tus modelos actuales
-pipenv run migrate
-
-# 3. Aplica la migración
-pipenv run upgrade
+rm -rf migrations
 ```
 
-> ⚠️ Esto borra el historial de migraciones pero **no afecta a tus modelos**. Si la base de datos tiene datos, se perderán. Úsalo solo en desarrollo.
+### 2. Entra a psql:
+```bash
+psql -h localhost -U gitpod -d example
+```
+Password: ```postgres```
 
-### El frontend no conecta con el backend
+Dentro ejecuta:
+```sql
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+\q
+```
+
+### 4. Inicializa la bd, hace la migración inicial y la upgradea.
+```bash
+pipenv run flask db init
+pipenv run flask db migrate -m "initial"
+pipenv run flask db upgrade
+```
+
+
+## El frontend no conecta con el backend
 - Verifica que ambos puertos están en **público** en Codespaces.
 - Comprueba que `VITE_BACKEND_URL` en el `.env` tiene la URL correcta y está descomentada.
 - Reinicia el frontend tras cualquier cambio en el `.env`.
