@@ -8,7 +8,7 @@ from api.models import db
 class Product(db.Model):
     __tablename__ = 'product'
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[dict] = mapped_column(JSON, nullable=False)        # ← cambiado
+    name: Mapped[dict] = mapped_column(JSON, nullable=False)        
     description: Mapped[dict] = mapped_column(JSON, nullable=True) 
     price: Mapped[float] = mapped_column(Float(), nullable=False, default=0.0)
     image_url: Mapped[str] = mapped_column(Text(), nullable=True)
@@ -34,7 +34,7 @@ class Product(db.Model):
     def __repr__(self):
         return f'<Product {self.id}: {self.name}>'
 
-    def serialize(self, locale="es"):  # ← locale como parámetro
+    def serialize(self, locale="es"):  
         return {
             "id": self.id,
             "name": self.name.get(locale) or self.name.get("es"),
@@ -51,7 +51,7 @@ class Product(db.Model):
             "category": self.item.subcategory.category.slug if self.item and self.item.subcategory and self.item.subcategory.category else None
         }
 
-    def to_dict(self, locale="es"):  # ← locale como parámetro
+    def to_dict(self, locale="es"):  
         avg_rating = round(sum(r.rating for r in self.reviews) /
                            len(self.reviews), 1) if self.reviews else 0
         return {
