@@ -15,7 +15,7 @@ const Profile = () => {
     switch (activeTab) {
       case "info":
         return <ProfileInfo />;
-      case "security":
+      case "security": 
         return <ProfileSecurity />;
       case "orders":
         return <ProfileOrders />;

@@ -61,33 +61,26 @@ def update_profile():
     if not body:
         abort(400, description="Body vacío")
 
+    updated = False
+
     if "name" in body:
         if not body["name"].strip():
             abort(400, description="Nombre no puede estar vacío")
         user.name = body["name"].strip()
+        updated = True
 
     if "last_name" in body:
         if not body["last_name"].strip():
             abort(400, description="Apellido no puede estar vacío")
         user.last_name = body["last_name"].strip()
+        updated = True
 
-    if "email" in body:
-        if not validate_email(body["email"]):
-            abort(400, description="Formato de email inválido")
-
-        existing_user = User.query.filter(
-            User.email == body["email"],
-            User.id != user.id
-        ).first()
-
-        if existing_user:
-            abort(409, description="Email ya existe")
-
-        user.email = body["email"]
+    if not updated:
+        abort(400, description="No hay datos para actualizar")
 
     db.session.commit()
-    return jsonify({"msg": "Perfil actualizado correctamente"}), 200
 
+    return jsonify({"msg": "Perfil actualizado correctamente"}), 200
 
 # -------------------------
 # SUBIR IMAGEN DESDE DISPOSITIVO

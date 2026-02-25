@@ -12,6 +12,15 @@ const ProfileInfo = () => {
 
   const [preview, setPreview] = useState(null);
 
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const [imageError, setImageError] = useState("");
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageSuccess, setImageSuccess] = useState(false);
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, {
       headers: { Authorization: "Bearer " + token }
@@ -20,64 +29,123 @@ const ProfileInfo = () => {
       .then(data => setUser(data));
   }, []);
 
-  const handleChange = (e) =>
+  const validate = () => {
+    const newErrors = {};
+
+    if (!user.name.trim()) {
+      newErrors.name = "El nombre es obligatorio";
+    }
+
+    if (!user.last_name.trim()) {
+      newErrors.last_name = "El apellido es obligatorio";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validate()) return;
+    setShowConfirm(true);
+  };
 
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify({
-        name: user.name,
-        last_name: user.last_name,
-        email: user.email
-      })
-    });
+  const confirmUpdate = async () => {
+    setShowConfirm(false);
+    setLoading(true);
 
-    alert("Perfil actualizado");
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({
+          name: user.name,
+          last_name: user.last_name
+        })
+      }
+    );
+
+    setLoading(false);
+
+    if (response.ok) {
+      setShowSuccess(true);
+    }
   };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    setImageError("");
+    setImageSuccess(false);
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const maxSize = 2 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      setImageError("Formato no permitido. Usa JPG, PNG o WEBP.");
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setImageError("La imagen no puede superar los 2MB.");
+      return;
+    }
+
+    setImageLoading(true);
     setPreview(URL.createObjectURL(file));
 
     const formData = new FormData();
     formData.append("image", file);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/image`,
-      {
-        method: "PUT",
-        headers: { Authorization: "Bearer " + token },
-        body: formData
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/image`,
+        {
+          method: "PUT",
+          headers: { Authorization: "Bearer " + token },
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setImageError(data.description || "Error al subir imagen");
+        setImageLoading(false);
+        return;
       }
-    );
 
-    const data = await response.json();
-
-    if (response.ok) {
       setUser(prev => ({
         ...prev,
         image_url: data.image_url
       }));
+
+      setImageSuccess(true);
+
+    } catch {
+      setImageError("Error de conexión");
     }
+
+    setImageLoading(false);
   };
 
   return (
-    <div className="space-y-10 max-w-3xl mx-auto">
+    <div className="space-y-12 max-w-3xl mx-auto px-4">
 
-      {/* ===================== INFO ACTUAL ===================== */}
-      <div className="bg-white p-8 rounded-xl shadow border">
+      {/* INFORMACIÓN ACTUAL */}
+      <div className="bg-white p-8 rounded-2xl shadow-sm border">
         <h2 className="text-lg font-semibold mb-6">Información Actual</h2>
 
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center gap-6">
           <img
             src={
               preview ||
@@ -92,18 +160,18 @@ const ProfileInfo = () => {
             <p className="text-xl font-medium">
               {user.name} {user.last_name}
             </p>
-            <p className="text-gray-500">{user.email}</p>
+            <p className="text-gray-500 text-sm">{user.email}</p>
           </div>
         </div>
       </div>
 
-      {/* ===================== EDITAR INFO ===================== */}
-      <div className="bg-white p-8 rounded-xl shadow border">
+      {/* EDITAR */}
+      <div className="bg-white p-8 rounded-2xl shadow-sm border">
         <h2 className="text-lg font-semibold mb-6">Editar Información</h2>
 
-        <div className="flex flex-col items-center mb-6">
+        <div className="flex flex-col items-center mb-6 space-y-3">
           <label className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-purple-700 transition text-sm">
-            Cambiar Imagen
+            {imageLoading ? "Subiendo..." : "Cambiar Imagen"}
             <input
               type="file"
               accept="image/*"
@@ -111,38 +179,100 @@ const ProfileInfo = () => {
               onChange={handleImageChange}
             />
           </label>
+
+          {imageError && (
+            <p className="text-sm text-red-600">{imageError}</p>
+          )}
+
+          {imageSuccess && (
+            <p className="text-sm text-green-600">
+              Imagen actualizada correctamente
+            </p>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            value={user.name}
-            onChange={handleChange}
-            placeholder="Nombre"
-            className="w-full border rounded-lg p-3"
-          />
+          <div>
+            <input
+              name="name"
+              value={user.name}
+              onChange={handleChange}
+              placeholder="Nombre"
+              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            />
+            {errors.name && (
+              <p className="text-sm text-red-600 mt-1">{errors.name}</p>
+            )}
+          </div>
 
-          <input
-            name="last_name"
-            value={user.last_name}
-            onChange={handleChange}
-            placeholder="Apellido"
-            className="w-full border rounded-lg p-3"
-          />
+          <div>
+            <input
+              name="last_name"
+              value={user.last_name}
+              onChange={handleChange}
+              placeholder="Apellido"
+              className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            />
+            {errors.last_name && (
+              <p className="text-sm text-red-600 mt-1">
+                {errors.last_name}
+              </p>
+            )}
+          </div>
 
-          <input
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className="w-full border rounded-lg p-3"
-          />
-
-          <button className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition w-full">
-            Guardar Cambios
+          <button
+            type="submit"
+            disabled={loading}
+            className={`${
+              loading ? "bg-gray-400" : "bg-purple-600 hover:bg-purple-700"
+            } text-white px-6 py-3 rounded-lg transition w-full`}
+          >
+            {loading ? "Guardando..." : "Guardar Cambios"}
           </button>
         </form>
       </div>
+
+      {/* CONFIRM MODAL */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 shadow-lg w-80">
+            <p className="mb-6 text-sm">
+              ¿Estás seguro de guardar los cambios?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 text-sm border rounded-lg"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmUpdate}
+                className="px-4 py-2 text-sm bg-purple-600 text-white rounded-lg"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUCCESS MODAL */}
+      {showSuccess && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 shadow-lg w-80 text-center">
+            <p className="text-green-600 font-medium mb-6">
+              Perfil actualizado correctamente
+            </p>
+            <button
+              onClick={() => setShowSuccess(false)}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
