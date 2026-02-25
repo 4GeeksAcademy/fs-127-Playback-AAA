@@ -7,9 +7,7 @@ import os
 import random
 from datetime import datetime, timezone, timedelta
 from sqlalchemy import cast, String
-
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-
 from app import app
 from api.models import db
 from api.models.user import User
