@@ -1,7 +1,8 @@
 {
   "home": {
     "topSales": "Top Ventas",
-    "featuredCategories": "Categorías Destacadas"
+    "featuredCategories": "Categorías Destacadas",
+    "aboutPlayback": "Acerca de Playback"
   },
   "product": {
     "noFound": "No se han encontrado productos",

@@ -1,7 +1,8 @@
 {
   "home": {
     "topSales": "Top Sales",
-    "featuredCategories": "Featured Categories"
+    "featuredCategories": "Featured Categories",
+    "aboutPlayback": "About Playback"
   },
   "product": {
     "noFound": "No products found",

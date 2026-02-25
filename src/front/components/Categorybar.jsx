@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getCategoriesService } from "../services/categoryService";
+import { useTranslation } from "react-i18next";
 
 export const Categorybar = () => {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(null);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     getCategoriesService().then(([data, error]) => {
@@ -30,7 +33,7 @@ export const Categorybar = () => {
 
       setCategories(sorted);
     });
-  }, []);
+  }, [i18n.language]);
 
   const currentCategory = categories.find((c) => c.name === activeCategory);
 
@@ -82,7 +85,7 @@ export const Categorybar = () => {
               to="/about"
               className="text-xs tracking-widest uppercase font-medium text-theme-muted hover:text-theme-text transition-colors whitespace-nowrap"
             >
-              Acerca de Playback
+              {t("home.aboutPlayback")}
             </Link>
           </div>
         </div>

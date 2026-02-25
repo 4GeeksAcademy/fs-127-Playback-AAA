@@ -55,7 +55,8 @@ pipenv run upgrade
 **7. Pobla la base de datos con datos iniciales:**
 ```bash
 pipenv run python src/api/seeds/seed_categories.py;
-pipenv run python src/api/seeds/seed_test_data.py
+pipenv run python src/api/seeds/seed_test_data.py;
+pipenv run flask shell < translate_existing.py
 ```
 > 📖 Consulta la [documentación completa del seed_categories.py](../docs/README_SEED_CATEGORIES.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
 
