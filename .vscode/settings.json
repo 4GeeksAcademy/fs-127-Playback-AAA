@@ -7,6 +7,5 @@
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "python-envs.defaultEnvManager": "ms-python.python:pipenv",
-  "python-envs.pythonProjects": []
+  "python-envs.defaultEnvManager": "ms-python.python:pipenv"
 }
