@@ -9,8 +9,6 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
-import { Login } from "./pages/Login";
-import { Signup } from "./pages/Signup";
 import { PageProducts } from "./pages/PageProducts";
 import { PageDetailProduct } from "./pages/PageDetailProduct";
 import { PageFavorites } from "./pages/PageFavorites";
@@ -26,12 +24,10 @@ export const router = createBrowserRouter(
         <Route path= "/" element={<Home />} />
         <Route path="/single/:theId" element={ <Single />} />
         <Route path="/demo" element={<PrivateRoute><Demo /></PrivateRoute>} />
-        <Route path="/login" element={<Login />} />
         <Route path="/products" element={<PageProducts />} />
         <Route path="/products/:category" element={<PageProducts />} />
         <Route path="/products/:category/:subcategory" element={<PageProducts />} />
         <Route path="/PageDetailProduct/:id" element={<PageDetailProduct />} />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/:userEmail/favorites" element={<PageFavorites />} />
 
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />

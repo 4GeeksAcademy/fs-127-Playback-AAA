@@ -1,14 +1,16 @@
 {
   "home": {
+    "loading": "Loading...",
     "topSales": "Top Sales",
     "featuredCategories": "Featured Categories",
     "heroBannerSpan1": "Special Offer!",
-    "heroBannerSpan2": "View Offers",
-    "aboutPlayback": "About Playback"
+    "heroBannerSpan2": "View Offers"
   },
+
   "product": {
     "noFound": "No products found",
     "descriptionLabel": "Description",
+    "description": "No description available.",
     "featuresLabel": "Features",
     "shippingLabel": "Shipping & Returns",
     "features": "No features specified.",
@@ -18,6 +20,28 @@
     "available": "available",
     "addToCart": "Add to cart",
     "reviews": "Customer reviews"
+  },
 
+  "navbar": {
+    "loginTitle": "Welcome back",
+    "signupTitle": "Create your account",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Your last name",
+    "passwordPlaceholder": "Your password",
+    "password": "Password",
+    "loginButton": "Log in",
+    "dontHaveAccount": "Don't have an account?",
+    "signupButton": "Sign up",
+    "alreadyHaveAccount": "Already have an account? ",
+    "profile": "Profile",
+    "orders": "Orders",
+    "favorites": "Favorites",
+    "cart": "Cart",
+    "logout": "Log out",
+    "labelCategories": "Categories",
+    "searchPlaceholder": "Search ...",
+    "aboutPlayback": "About Playback"
   }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getCategoriesService } from "../services/categoryService";
+import { getCategoriesService } from "../../services/categoryService";
 import { useTranslation } from "react-i18next";
 
 export const Categorybar = () => {
@@ -45,7 +45,7 @@ export const Categorybar = () => {
     <>
       {/* ─────────────── DESKTOP ─────────────── */}
       <div
-        className="relative bg-theme-bg border-b border-theme-border hidden md:block"
+        className="relative bg-theme-bg border-b border-theme-border max-[950px]:hidden"
         onMouseLeave={() => setActiveCategory(null)}
       >
         <div className="max-w-screen-xl mx-auto px-8 flex items-center justify-between">
@@ -85,7 +85,7 @@ export const Categorybar = () => {
               to="/about"
               className="text-xs tracking-widest uppercase font-medium text-theme-muted hover:text-theme-text transition-colors whitespace-nowrap"
             >
-              {t("home.aboutPlayback")}
+              {t("navbar.aboutPlayback")}
             </Link>
           </div>
         </div>
@@ -153,7 +153,7 @@ export const Categorybar = () => {
       </div>
 
       {/* ─────────────── MOBILE ─────────────── */}
-      <div className="md:hidden bg-theme-bg border-b border-theme-border">
+      <div className="max-[950px]:block hidden bg-theme-bg border-b border-theme-border">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={() => {
@@ -173,14 +173,14 @@ export const Categorybar = () => {
                 className={`block h-px bg-current transition-all duration-200 origin-center ${mobilePanelOpen ? "-rotate-45 -translate-y-[6px]" : ""}`}
               />
             </span>
-            Categorías
+            {t("navbar.labelCategories")}
           </button>
 
           <Link
             to="/about"
             className="text-xs tracking-widest uppercase font-medium text-theme-muted hover:text-theme-text transition-colors"
           >
-            {t("home.aboutPlayback")}
+            {t("navbar.aboutPlayback")}
           </Link>
         </div>
 

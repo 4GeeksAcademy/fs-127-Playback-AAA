@@ -1,11 +1,12 @@
 {
   "home": {
+    "loading": "Cargando...",
     "topSales": "Top Ventas",
     "featuredCategories": "Categorías Destacadas",
     "heroBannerSpan1": "¡Oferta especial!",
-    "heroBannerSpan2": "Ver Ofertas",
-    "aboutPlayback": "Acerca de Playback"
+    "heroBannerSpan2": "Ver Ofertas"
   },
+
   "product": {
     "noFound": "No se han encontrado productos",
     "descriptionLabel": "Descripción",
@@ -19,6 +20,28 @@
     "available": "disponibles",
     "addToCart": "Añadir a la cesta",
     "reviews": "Opiniones de clientes"
+  },
 
+  "navbar": {
+    "loginTitle": "Bienvenido de nuevo",
+    "signupTitle": "Crea tu cuenta",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "lastNameLabel": "Apellido",
+    "lastNamePlaceholder": "Tu apellido",
+    "passwordPlaceholder": "Tu contraseña",
+    "password": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "dontHaveAccount": "¿No tienes cuenta?",
+    "signupButton": "Registrarse",
+    "alreadyHaveAccount": "¿Ya tienes cuenta? ",
+    "profile": "Perfil",
+    "orders": "Pedidos",
+    "favorites": "Favoritos",
+    "cart": "Cesta",
+    "logout": "Cerrar sesión",
+    "labelCategories": "Categorías",
+    "searchPlaceholder": "Buscar ...",
+    "aboutPlayback": "Acerca de Playback"
   }
 }
