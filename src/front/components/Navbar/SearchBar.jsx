@@ -20,7 +20,7 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
       return;
     }
     setLoading(true);
-    const [data] = await productServices.searchProducts(q);
+    const [data] = await productServices.searchProducts({ q });
     setResults(data || []);
     setLoading(false);
     setOpen(true);
@@ -52,7 +52,7 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
   const handleSelect = (product) => {
     setOpen(false);
     setInputValue("");
-    navigate(`/product/${product.id}`);
+    navigate(`/PageDetailProduct/${product.id}`);
   };
 
   const handleClear = () => {

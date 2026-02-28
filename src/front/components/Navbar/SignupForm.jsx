@@ -92,7 +92,7 @@ export const SignupForm = ({ onSuccess }) => {
         {loading ? (
           <>
             <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            {t("navbar.loading")}
+            {t("home.loading")}
           </>
         ) : (
           t("navbar.signupButton")
