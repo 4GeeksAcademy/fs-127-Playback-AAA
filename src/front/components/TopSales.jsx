@@ -5,9 +5,11 @@ import productServices from "../services/productService";
 import { Link } from "react-router-dom";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { useTranslation } from "react-i18next";
+import { useFavorites } from "../hooks/useFavorites";
 
 export const TopSales = () => {
     const { t } = useTranslation();
+      useFavorites(); 
   const carouselRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
