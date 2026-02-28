@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Search } from "lucide-react";
 
 export const SearchBar = ({ placeholder = "", onSearch, className = "" }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -10,11 +11,7 @@ export const SearchBar = ({ placeholder = "", onSearch, className = "" }) => {
 
   return (
     <div className={`relative w-full ${className}`}>
-      <span
-        className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-      >
-        🔎
-      </span>
+      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none w-5 h-5 text-theme-muted"></Search>
 
       <input
         type="text"

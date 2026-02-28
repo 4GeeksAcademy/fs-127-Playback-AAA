@@ -46,7 +46,7 @@ export const HeroBanner = () => {
                             {banner.description}
                         </p>
                         <button
-                            onClick={() => navigate(`/products?category=${banner.category_slug}&subcategory=${banner.slug}`)}
+                            onClick={() => navigate(`/search?category=${banner.category_slug}&subcategory=${banner.slug}`)}
                             className="bg-stone-800 hover:bg-stone-700 text-white font-bold px-6 py-2.5 rounded-lg text-xs sm:text-sm transition-all w-full"
                         >
                             {banner.offer_count > 0

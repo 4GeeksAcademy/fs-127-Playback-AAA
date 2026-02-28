@@ -42,6 +42,51 @@
     "logout": "Log out",
     "labelCategories": "Categories",
     "searchPlaceholder": "Search ...",
+    "offers": "Offers",
     "aboutPlayback": "About Playback"
+  },
+
+  "enums": {
+    "productCondition": {
+      "new": "New",
+      "used": "Used",
+      "refurbished": "Refurbished",
+      "broken": "Broken"
+    }
+  },
+
+  "search": {
+    "filters": "Filters",
+    "sort": "Sort",
+    "applyPrice": "Apply price",
+    "clearAll": "Clear all filters",
+    "noResults": "No results",
+    "noResultsHint": "Try changing the filters or your search term.",
+    "clearFilters": "Remove all filters",
+    "searching": "Searching...",
+    "productCount_one": "{{count}} product",
+    "productCount_other": "{{count}} products",
+    "allProducts": "All products",
+    "priceSection": "Price",
+    "priceMin": "Min",
+    "priceMax": "Max",
+    "conditionSection": "Condition",
+    "onSale": "On sale",
+    "inStockOnly": "In stock only",
+    "lowStock": "Low stock",
+    "lowStockBadge": "Last units",
+    "seeAll": "See all results for \"{{query}}\" →",
+    "sort_relevance": "Relevance",
+    "sort_price_asc": "Price: low to high",
+    "sort_price_desc": "Price: high to low",
+    "sort_rating": "Best rated",
+    "sort_newest": "Newest",
+    "sort_discount": "Biggest discount",
+    "sort_stock_asc": "Low stock first",
+    "filterChip_min_price": "From {{value}}€",
+    "filterChip_max_price": "Up to {{value}}€",
+    "filterChip_in_stock": "In stock",
+    "filterChip_on_sale": "On offer",
+    "filterChip_low_stock": "Low stock"
   }
 }

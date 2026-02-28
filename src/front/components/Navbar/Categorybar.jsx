@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getCategoriesService } from "../../services/categoryService";
 import { useTranslation } from "react-i18next";
+import { ListFilter } from "lucide-react";
 
 export const Categorybar = () => {
   const [categories, setCategories] = useState([]);
@@ -18,7 +19,7 @@ export const Categorybar = () => {
         return;
       }
 
-      // 👇 Ordenar todo por position
+      // Ordenar todo por position
       const sorted = data
         .sort((a, b) => a.position - b.position)
         .map((cat) => ({
@@ -50,6 +51,7 @@ export const Categorybar = () => {
       >
         <div className="max-w-screen-xl mx-auto px-8 flex items-center justify-between">
           <nav className="flex items-center">
+            {/* ─── CATEGORIES ─── */}
             {categories.map((cat) => (
               <div
                 key={cat.id}
@@ -79,7 +81,7 @@ export const Categorybar = () => {
               </div>
             ))}
           </nav>
-
+          {/* ─── ABOUT PLAYBACK ─── */}
           <div className="pl-6 border-l border-theme-border ml-2 flex-shrink-0">
             <Link
               to="/about"
@@ -92,7 +94,7 @@ export const Categorybar = () => {
 
         {/* ── Dropdown ── */}
         {currentCategory?.subcategories?.length > 0 && (
-          <div className="absolute left-0 right-0 top-full z-50 bg-theme-bg border-b border-theme-border shadow-2xl">
+          <div className="absolute left-0 right-0 top-full z-50 bg-theme-bg border-b border-theme-border shadow-2xl capitalize">
             <div className="max-w-screen-xl mx-auto px-8 py-8">
               <div className="flex gap-10">
                 {currentCategory?.image_url && (
@@ -153,7 +155,7 @@ export const Categorybar = () => {
       </div>
 
       {/* ─────────────── MOBILE ─────────────── */}
-      <div className="max-[950px]:block hidden bg-theme-bg border-b border-theme-border">
+      <div className="max-[950px]:block hidden bg-theme-bg border-b border-theme-border ca">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={() => {
@@ -162,17 +164,11 @@ export const Categorybar = () => {
             }}
             className="flex items-center gap-2.5 text-xs tracking-widest uppercase font-medium text-theme-secondary"
           >
-            <span className="relative w-5 h-3.5 flex flex-col justify-between">
-              <span
-                className={`block h-px bg-current transition-all duration-200 origin-center ${mobilePanelOpen ? "rotate-45 translate-y-[6px]" : ""}`}
-              />
-              <span
-                className={`block h-px bg-current transition-all duration-200 ${mobilePanelOpen ? "opacity-0" : ""}`}
-              />
-              <span
-                className={`block h-px bg-current transition-all duration-200 origin-center ${mobilePanelOpen ? "-rotate-45 -translate-y-[6px]" : ""}`}
-              />
-            </span>
+            <ListFilter
+              className={`transition-transform duration-300 ease-in-out ${
+                mobilePanelOpen ? "rotate-180" : "rotate-0"
+              }`}
+            />
             {t("navbar.labelCategories")}
           </button>
 
@@ -197,11 +193,11 @@ export const Categorybar = () => {
                   </span>
                   {cat.subcategories?.length > 0 && (
                     <svg
-                      className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 text-theme-faint ${mobileOpen === cat.name ? "rotate-180" : ""}`}
+                      className={`w-2.5 h-2.5 text-theme-faint transition-transform ${mobileOpen === cat.name ? "rotate-180" : ""}`}
                       viewBox="0 0 10 6"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="1.5"
+                      strokeWidth="2"
                       strokeLinecap="round"
                     >
                       <path d="M1 1l4 4 4-4" />

@@ -336,23 +336,6 @@ CATEGORIES_DATA = [
             },
         ],
     },
-    {
-        "name": {"es": "Ofertas"},
-        "slug": "ofertas",
-        "description": {"es": "Las mejores ofertas en artículos"},
-        "subcategories": [
-            {
-                "name": {"es": "Oportunidades"},
-                "slug": "oportunidades",
-                "description": {"es": "Artículos y oportunidades especiales"},
-                "items": [
-                    {"name": {"es": "Últimas unidades"}, "slug": "ultimas-unidades"},
-                    {"name": {"es": "Reacondicionados"}, "slug": "reacondicionados"},
-                    {"name": {"es": "Packs"}, "slug": "packs"},
-                ],
-            },
-        ],
-    },
 ]
 
 

@@ -115,6 +115,11 @@ CREATE SCHEMA public;
 pipenv run flask db init
 pipenv run flask db migrate -m "initial"
 pipenv run flask db upgrade
+
+
+pipenv run python src/api/seeds/seed_categories.py;
+pipenv run python src/api/seeds/seed_test_data.py;
+pipenv run flask shell < translate_existing.py
 ```
 
 
