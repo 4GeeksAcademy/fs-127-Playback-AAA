@@ -12,7 +12,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab }) => {
 
       <div className="space-y-2">
         <div onClick={() => setActiveTab("dashboard")} className={linkClass("dashboard")}>
-          Dashboard
+          Panel de control
         </div>
 
         <div onClick={() => setActiveTab("info")} className={linkClass("info")}>
