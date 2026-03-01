@@ -161,6 +161,7 @@ def get_product(id):
 
 @product_bp.route('', methods=['POST'])
 def create_product():
+    #Revisa si tiene imagen o sin imagen, si tiene imagen en request.form.get y sino es un json seria request.get_son()
     if request.content_type and "multipart/form-data" in request.content_type:
         name = request.form.get("name")
         price = request.form.get("price")
@@ -184,7 +185,6 @@ def create_product():
     if not name or not price or not item_id:
         abort(400, description="name, price e item_id son obligatorios")
 
-    # ← Traducir automáticamente
     translated_name = translate_text(name, "en")
     translated_desc = translate_text(description, "en")
 
@@ -198,9 +198,8 @@ def create_product():
 
     try:
         new_product = Product(
-            name={"es": name, "en": translated_name or name},
-            description={
-                "es": description, "en": translated_desc or description} if description else None,
+            name={"es": name, "en": translated_name or name}, 
+            description={"es": description, "en": translated_desc or description} if description else None,
             price=float(price),
             image_url=image_url,
             stock=int(stock),
@@ -256,7 +255,7 @@ def update_product(id):
 
 @product_bp.route('/top-sales', methods=['GET'])
 def get_top_sales():
-    locale = request.args.get("locale", "es")
+    locale = request.args.get("locale", "es")  
     result = db.session.query(
         Product,
         func.sum(OrderDetail.quantity).label("total_sold")
@@ -267,7 +266,7 @@ def get_top_sales():
     .all()
 
     return jsonify([{
-        **p.to_dict(locale=locale),
+        **p.to_dict(locale=locale),  
         "total_sold": int(total_sold)
     } for p, total_sold in result]), 200
 
