@@ -5,7 +5,7 @@ export const PrivateRoute = ({ children }) => {
     const { store } = useGlobalReducer();
 
     if (!store.isAuthenticated) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/" replace />;
     }
 
     return children;

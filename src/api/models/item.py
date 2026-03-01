@@ -1,15 +1,14 @@
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from api.models import db
-
 
 class Item(db.Model):
     __tablename__ = 'item'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    name: Mapped[dict] = mapped_column(JSON, nullable=False)
     slug: Mapped[str] = mapped_column(String(120), nullable=False)
-    description: Mapped[str] = mapped_column(String(500), nullable=True)
+    description: Mapped[dict] = mapped_column(JSON, nullable=True)
     image_url: Mapped[str] = mapped_column(String(255), nullable=True)
     position: Mapped[int] = mapped_column(default=0, nullable=False)
 
@@ -26,12 +25,12 @@ class Item(db.Model):
     def __repr__(self):
         return f'<Item {self.id}: {self.name}>'
 
-    def serialize(self):
+    def serialize(self, locale="es"):
         return {
             "id": self.id,
-            "name": self.name,
+            "name": self.name.get(locale) or self.name.get("es"),
             "slug": self.slug,
-            "description": self.description,
+            "description": self.description.get(locale) if self.description else None,
             "image_url": self.image_url,
             "position": self.position,
             "subcategory_slug": self.subcategory.slug if self.subcategory else None,

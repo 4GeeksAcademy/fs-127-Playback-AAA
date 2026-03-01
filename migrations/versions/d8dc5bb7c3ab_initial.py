@@ -1,16 +1,21 @@
-"""Migracion limpia
+"""initial
 
-Revision ID: 3c035f68f781
+<<<<<<<< HEAD:migrations/versions/d8dc5bb7c3ab_initial.py
+Revision ID: d8dc5bb7c3ab
 Revises: 
-Create Date: 2026-02-25 17:24:28.519427
+Create Date: 2026-02-25 18:24:14.031039
+========
+Revision ID: 5da89afdbded
+Revises: 
+Create Date: 2026-02-25 18:25:54.832542
+>>>>>>>> 19729757ea8907716a21d61728f46cfa7eb3b2bd:migrations/versions/5da89afdbded_initial.py
 
 """
 from alembic import op
 import sqlalchemy as sa
 
 
-# revision identifiers, used by Alembic.
-revision = '3c035f68f781'
+revision = '5da89afdbded'
 down_revision = None
 branch_labels = None
 depends_on = None

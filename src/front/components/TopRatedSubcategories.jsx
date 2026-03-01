@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { getTopRatedSubcategoriesService } from "../services/categoryService";
 import { useTranslation } from "react-i18next";
 
-
 export const TopRatedSubcategories = () => {
-      const { t } = useTranslation();
-  
   const navigate = useNavigate();
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { t, i18n } = useTranslation();
 
   // Carga las 5 subcategorías con mejor valoración media y más productos al montar el componente
   useEffect(() => {
@@ -17,14 +16,14 @@ export const TopRatedSubcategories = () => {
       if (data) setSubcategories(data);
       setLoading(false);
     });
-  }, []);
+  }, [i18n.language]);
 
   // Mientras carga muestra un skeleton con el número de columnas del grid
   if (loading)
     return (
       <section>
         <h2 className="text-lg font-semibold my-4 text-theme-text">
-{t("home.featuredCategories")}  
+          {t("home.featuredCategories")}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
@@ -43,14 +42,14 @@ export const TopRatedSubcategories = () => {
   return (
     <section>
       <h2 className="text-lg font-semibold my-4 text-theme-text">
-  {t("home.featuredCategories")}
-   </h2>
+        {t("home.featuredCategories")}
+      </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {subcategories.map((sub) => (
           // Al hacer click navega a productos filtrando por categoría y subcategoría
           <div
             key={sub.id}
-            onClick={() => navigate(`/products/${sub.category_slug.toLowerCase()}/${sub.slug.toLowerCase()}`)}
+            onClick={() => navigate(`/search?category=${sub.category_slug.toLowerCase()}&subcategory=${sub.slug.toLowerCase()}`)}
             className="cursor-pointer group hover:shadow-md transition-all duration-200 bg-theme-bg"
           >
             <img

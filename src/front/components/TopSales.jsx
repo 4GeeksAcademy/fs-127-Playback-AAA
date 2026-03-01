@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 import { useFavorites } from "../hooks/useFavorites";
 
 export const TopSales = () => {
-    const { t } = useTranslation();
-      useFavorites(); 
+  const { t } = useTranslation();
+  useFavorites(); 
   const carouselRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ export const TopSales = () => {
       <section className="mt-8">
         <div className="flex items-center justify-between my-4">
           <h2 className="text-lg font-semibold tracking-tight text-theme-text">
- {t("product.outOfStock")}          </h2>
+            {t("product.outOfStock")}{" "}</h2>
         </div>
         <div className="flex gap-3">
           {[...Array(5)].map((_, i) => (
@@ -62,7 +62,7 @@ export const TopSales = () => {
     <section className="mt-8">
       <div className="flex items-center justify-between my-4">
         <h2 className="text-lg font-semibold tracking-tight text-theme-text">
-                  {t("home.topSales")}
+          {t("home.topSales")}
         </h2>
         <div>
           <button
