@@ -2,7 +2,6 @@
 .*
 
 # track this file .gitignore (i.e. do NOT ignore it)
-!.gitignore
 !.github
 php_errorlog
 .log
@@ -80,3 +79,6 @@ database.database
 database.db
 diagram.png
 __pycache__/
+migrations/*
+.gitignore
+src/api/seeds/seed_data.py

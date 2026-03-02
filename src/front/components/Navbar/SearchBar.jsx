@@ -5,12 +5,12 @@ import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 import productServices from "../../services/productService";
 
 export const SearchBar = ({ placeholder = "", className = "" }) => {
-  const [inputValue, setInputValue]   = useState("");
-  const [results, setResults]         = useState([]);
-  const [loading, setLoading]         = useState(false);
-  const [open, setOpen]               = useState(false);
-  const containerRef                  = useRef(null);
-  const navigate                      = useNavigate();
+  const [inputValue, setInputValue] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+  const navigate = useNavigate();
 
   // ── Llama a la API con debounce 300ms (evita llamadas en cada tecla)
   const fetchResults = useDebouncedCallback(async (q) => {
@@ -52,7 +52,7 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
   const handleSelect = (product) => {
     setOpen(false);
     setInputValue("");
-    navigate(`/PageDetailProduct/${product.id}`);
+    navigate(`/product/${product.id}`);
   };
 
   const handleClear = () => {
@@ -94,7 +94,10 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
           {loading ? (
             <Loader2 className="w-4 h-4 text-theme-muted animate-spin" />
           ) : inputValue ? (
-            <button onClick={handleClear} className="text-theme-muted hover:text-theme-text transition">
+            <button
+              onClick={handleClear}
+              className="text-theme-muted hover:text-theme-text transition"
+            >
               <X className="w-4 h-4" />
             </button>
           ) : null}
@@ -134,7 +137,11 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
                     </p>
                     {/* Breadcrumb: Categoría > Subcategoría > Item */}
                     <p className="text-xs text-theme-muted truncate">
-                      {[product.category_name, product.subcategory_name, product.item_name]
+                      {[
+                        product.category_name,
+                        product.subcategory_name,
+                        product.item_name,
+                      ]
                         .filter(Boolean)
                         .join(" › ")}
                     </p>
@@ -147,7 +154,10 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
                         <span className="line-through text-xs text-theme-muted font-normal">
                           {product.price.toFixed(2)}€
                         </span>
-                        {(product.price * (1 - product.discount / 100)).toFixed(2)}€
+                        {(product.price * (1 - product.discount / 100)).toFixed(
+                          2,
+                        )}
+                        €
                       </span>
                     ) : (
                       `${product.price.toFixed(2)}€`
@@ -160,7 +170,9 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
               <button
                 onClick={() => {
                   setOpen(false);
-                  navigate(`/search?q=${encodeURIComponent(inputValue.trim())}`);
+                  navigate(
+                    `/search?q=${encodeURIComponent(inputValue.trim())}`,
+                  );
                 }}
                 className="w-full text-center text-xs text-violet-600 dark:text-violet-400 font-semibold py-2.5 border-t border-theme-border hover:bg-theme-muted transition"
               >
