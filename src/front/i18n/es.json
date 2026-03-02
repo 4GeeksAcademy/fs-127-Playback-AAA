@@ -1,8 +1,12 @@
 {
   "home": {
+    "loading": "Cargando...",
     "topSales": "Top Ventas",
-    "featuredCategories": "Categorías Destacadas"
+    "featuredCategories": "Categorías Destacadas",
+    "heroBannerSpan1": "¡Oferta especial!",
+    "heroBannerSpan2": "Ver Ofertas"
   },
+
   "product": {
     "noFound": "No se han encontrado productos",
     "descriptionLabel": "Descripción",
@@ -16,6 +20,73 @@
     "available": "disponibles",
     "addToCart": "Añadir a la cesta",
     "reviews": "Opiniones de clientes"
+  },
 
+  "navbar": {
+    "loginTitle": "Bienvenido de nuevo",
+    "signupTitle": "Crea tu cuenta",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "lastNameLabel": "Apellido",
+    "lastNamePlaceholder": "Tu apellido",
+    "passwordPlaceholder": "Tu contraseña",
+    "password": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "dontHaveAccount": "¿No tienes cuenta?",
+    "signupButton": "Registrarse",
+    "alreadyHaveAccount": "¿Ya tienes cuenta? ",
+    "profile": "Perfil",
+    "orders": "Pedidos",
+    "favorites": "Favoritos",
+    "cart": "Cesta",
+    "logout": "Cerrar sesión",
+    "labelCategories": "Categorías",
+    "searchPlaceholder": "Buscar ...",
+    "offers": "Ofertas",
+    "aboutPlayback": "Acerca de Playback"
+  },
+
+  "enums": {
+    "productCondition": {
+      "new": "Nuevo",
+      "used": "Usado",
+      "refurbished": "Reacondicionado",
+      "broken": "Estropeado"
+    }
+  },
+
+  "search": {
+    "filters": "Filtros",
+    "sort": "Ordenar",
+    "applyPrice": "Aplicar precio",
+    "clearAll": "Limpiar todos los filtros",
+    "noResults": "Sin resultados",
+    "noResultsHint": "Prueba a cambiar los filtros o el término de búsqueda.",
+    "clearFilters": "Quitar todos los filtros",
+    "searching": "Buscando...",
+    "productCount_one": "{{count}} producto",
+    "productCount_other": "{{count}} productos",
+    "allProducts": "Todos los productos",
+    "priceSection": "Precio",
+    "priceMin": "Mín",
+    "priceMax": "Máx",
+    "conditionSection": "Estado",
+    "onSale": "En oferta",
+    "inStockOnly": "Solo en stock",
+    "lowStock": "Pocas unidades",
+    "lowStockBadge": "Últimas",
+    "seeAll": "Ver todos los resultados para \"{{query}}\" →",
+    "sort_relevance": "Relevancia",
+    "sort_price_asc": "Precio: menor a mayor",
+    "sort_price_desc": "Precio: mayor a menor",
+    "sort_rating": "Mejor valorados",
+    "sort_newest": "Más recientes",
+    "sort_discount": "Mayor descuento",
+    "sort_stock_asc": "Pocas unidades primero",
+    "filterChip_min_price": "Desde {{value}}€",
+    "filterChip_max_price": "Hasta {{value}}€",
+    "filterChip_in_stock": "En stock",
+    "filterChip_on_sale": "En oferta",
+    "filterChip_low_stock": "Pocas unidades"
   }
 }

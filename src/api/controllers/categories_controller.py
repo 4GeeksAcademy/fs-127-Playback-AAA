@@ -1,4 +1,4 @@
-from flask import jsonify, abort, Blueprint
+from flask import jsonify, abort, Blueprint, request
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func, text
 from api.models import db
@@ -13,26 +13,19 @@ categories_bp = Blueprint('categories', __name__)
 
 @categories_bp.route('/categories', methods=['GET'])
 def get_categories():
-    """
-    Obtiene todas las categorías con sus subcategorías e ítems anidados.
+    locale = request.args.get("locale", "es")
 
-    Retorna:
-        Respuesta JSON que incluye:
-        - Categorías
-        - Subcategorías asociadas
-        - Ítems pertenecientes a cada subcategoría
-    """
     categories = Category.query.options(
         joinedload(Category.subcategories).joinedload(Subcategory.items)
     ).all()
 
     result = []
     for cat in categories:
-        cat_data = cat.serialize()
+        cat_data = cat.serialize(locale=locale)
         cat_data["subcategories"] = []
         for sub in cat.subcategories:
-            sub_data = sub.serialize()
-            sub_data["items"] = [item.serialize() for item in sub.items]
+            sub_data = sub.serialize(locale=locale)
+            sub_data["items"] = [item.serialize(locale=locale) for item in sub.items]
             cat_data["subcategories"].append(sub_data)
         result.append(cat_data)
 
@@ -41,25 +34,8 @@ def get_categories():
 
 @categories_bp.route('/subcategories/top-discount', methods=['GET'])
 def get_featured_subcategory_banner():
-    """
-    Obtiene la subcategoría con mayor número de productos en oferta.
+    locale = request.args.get("locale", "es")
 
-    Lógica de negocio:
-        - Selecciona la subcategoría con más productos cuyo descuento sea mayor a 0.
-        - Si no existen productos en oferta, utiliza como alternativa la subcategoría
-          con slug 'ofertas'.
-
-    Retorna:
-        Respuesta JSON con:
-        - Datos de la subcategoría
-        - Slug de la categoría padre
-        - Número de productos en oferta (offer_count)
-
-    Errores:
-        - 404 si no existe ninguna subcategoría válida como alternativa.
-    """
-
-    # Consulta la subcategoría con mayor cantidad de productos con descuento
     result = db.session.query(
         Subcategory,
         func.count(Product.id).label("offer_count")
@@ -73,23 +49,22 @@ def get_featured_subcategory_banner():
     if result:
         subcategory, offer_count = result
         return jsonify({
-            "name": subcategory.name,
+            "name": subcategory.name.get(locale) or subcategory.name.get("es"),
             "slug": subcategory.slug,
-            "description": subcategory.description,
+            "description": subcategory.description.get(locale) if subcategory.description else None,
             "image_url": subcategory.image_url,
             "category_slug": subcategory.category.slug,
             "offer_count": offer_count
         }), 200
 
-    # Alternativa: buscar subcategoría estática "ofertas"
     subcategory = Subcategory.query.filter_by(slug="ofertas").first()
     if not subcategory:
         abort(404, description="No hay subcategorías en oferta disponibles")
 
     return jsonify({
-        "name": subcategory.name,
+        "name": subcategory.name.get(locale) or subcategory.name.get("es"),
         "slug": subcategory.slug,
-        "description": subcategory.description,
+        "description": subcategory.description.get(locale) if subcategory.description else None,
         "image_url": subcategory.image_url,
         "category_slug": subcategory.category.slug,
         "offer_count": 0
@@ -98,23 +73,7 @@ def get_featured_subcategory_banner():
 
 @categories_bp.route('/subcategories/top-rated', methods=['GET'])
 def get_top_rated_subcategories():
-    """
-    Obtiene las 5 subcategorías mejor valoradas.
-
-    Criterios de ordenación:
-        1. Mayor valoración media (descendente)
-        2. Mayor cantidad de productos (descendente)
-
-    Uso:
-        Se emplea en la sección de Categorías Destacadas de la página principal.
-
-    Retorna:
-        Lista JSON con:
-        - Datos básicos de la subcategoría
-        - Slug de la categoría padre
-        - Valoración media (redondeada a 1 decimal)
-        - Número total de productos
-    """
+    locale = request.args.get("locale", "es")
 
     result = db.session.query(
         Subcategory,
@@ -130,7 +89,7 @@ def get_top_rated_subcategories():
 
     return jsonify([{
         "id": sub.id,
-        "name": sub.name,
+        "name": sub.name.get(locale) or sub.name.get("es"),
         "slug": sub.slug,
         "image_url": sub.image_url,
         "category_slug": sub.category.slug,

@@ -1,13 +1,12 @@
-import { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { CardProduct } from "../components/CardProduct";
-import favoriteServices from "../services/favoriteService"; 
+import { useFavorites } from "../hooks/useFavorites";
 
 export const PageFavorites = () => {
-  const { store, dispatch } = useGlobalReducer();
+  const { store } = useGlobalReducer();
   const favorites = store.favorites || [];
-
-
+  
+  useFavorites(); // 👈 una sola línea
 
   if (favorites.length === 0)
     return (

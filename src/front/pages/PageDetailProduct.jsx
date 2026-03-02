@@ -7,22 +7,35 @@ import { Accordion } from "../components/Accordion";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { ReviewRating } from "../components/ReviewRating";
 import { useTranslation } from "react-i18next";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import orderServices from "../services/orderService";
+import { ReviewForm } from "../components/ReviewForm";
 
 export const PageDetailProduct = () => {
+  const { store } = useGlobalReducer();
+  const [hasBought, setHasBought] = useState(false);
   const { t, i18n } = useTranslation();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [orderId, setOrderId] = useState(null);
+
   useEffect(() => {
-    console.log("useEffect ejecutado, idioma:", i18n.language); // ← aquí
+    
     productServices.getProduct(id).then(([data, error]) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
+      if (error) return console.error(error);
       setProduct(data);
     });
-  }, [id, i18n.language]);
 
+    const token = store.token || localStorage.getItem("token");
+    if (token) {
+      orderServices.hasBought(id, token).then(([bought]) => {
+        if (bought && bought.has_bought) {
+          setHasBought(true);
+          setOrderId(bought.order_id);
+        }
+      });
+    }
+  }, [id, i18n.language]);
   if (!product)
     return (
       <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
@@ -130,6 +143,8 @@ export const PageDetailProduct = () => {
       <Accordion items={accordionItems} />
 
       <ReviewRating product={product} />
+
+      {hasBought && <ReviewForm productId={id} orderId={orderId} />}
     </div>
   );
 };
