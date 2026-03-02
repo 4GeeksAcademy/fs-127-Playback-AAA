@@ -32,11 +32,30 @@ def create_user():
             email=body["email"],
             is_active=True
         )
+        #correo de bienvenida
         new_user.set_password(body["password"])
         db.session.add(new_user)
         db.session.commit()
+
+        msg = Message(
+            subject="Bienvenido a Playback",
+            recipients=[new_user.email]
+        )
+
+        msg.body = (
+            f"Hola {new_user.name},\n\n"
+            "Muchas gracias por unirte a Playback.\n\n"
+            "Tu cuenta ha sido creada correctamente.\n\n"
+            "Ya puedes iniciar sesión y comenzar a usar la plataforma.\n\n"
+            "Equipo Playback"
+        )
+
+        mail.send(msg)
+
         access_token = create_access_token(identity=str(new_user.id))
+
         return jsonify({"user": new_user.serialize(), "token": access_token}), 201
+
     except Exception as error:
         db.session.rollback()
         abort(500, description=f"Error al crear usuario: {str(error)}")
@@ -68,6 +87,7 @@ def protected():
     if not user:
         abort(404, description="Usuario no encontrado")
     return jsonify({"id": user.id, "email": user.email}), 200
+
 
 #recuperacion de contraseña 
 @auth_bp.route("/forgot-password", methods=["POST"])
@@ -107,6 +127,7 @@ def forgot_password():
     mail.send(msg)
 
     return jsonify({"msg": "Email enviado correctamente"}), 200
+
 
 #recuperacion de contraseña
 @auth_bp.route("/reset-password", methods=["POST"])
