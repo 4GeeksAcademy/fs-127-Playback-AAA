@@ -13,6 +13,8 @@ import { PageProducts } from "./pages/PageProducts";
 import { PageDetailProduct } from "./pages/PageDetailProduct";
 import { PageFavorites } from "./pages/PageFavorites";
 import { SearchPage } from "./pages/SearchPage";
+import { Success } from "./pages/Success"
+
 
 import Profile from "./pages/Profile";
 
@@ -31,6 +33,8 @@ export const router = createBrowserRouter(
         <Route path="/:userEmail/favorites" element={<PageFavorites />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/success/:orderId" element={<Success />} />
+
       </Route>
     )
 );
