@@ -39,7 +39,8 @@ def create_user():
 
         msg = Message(
             subject="Bienvenido a Playback",
-            recipients=[new_user.email]
+            recipients=[new_user.email],
+            sender=("Playback", os.getenv("MAIL_USERNAME"))
         )
 
         msg.body = (

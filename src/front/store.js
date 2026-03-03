@@ -17,6 +17,7 @@ export const initialStore = () => {
     user: JSON.parse(localStorage.getItem("user")) || null,
     isAuthenticated: !!localStorage.getItem("token"),
     favorites: [], 
+    cart: []
   }
 }
 
@@ -81,7 +82,56 @@ case 'set_favorites':
         isAuthenticated: false,
       };
 
-    default:
+      case 'cart_add': {
+      const existingProduct = store.cart.find(
+        item => item.id === action.payload.id
+      );
+
+      if (existingProduct) {
+        return {
+          ...store,
+          cart: store.cart.map(item =>
+            item.id === action.payload.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        };
+      }
+
+      return {
+        ...store,
+        cart: [
+          ...store.cart,
+          { ...action.payload, quantity: 1 }
+        ]
+      };
+    }
+    case 'cart_decrease':
+  return {
+    ...store,
+    cart: store.cart.map(item =>
+      item.id === action.payload.id
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    )
+  };
+
+    case 'cart_remove':
+      return {
+        ...store,
+        cart: store.cart.filter(
+          item => item.id !== action.payload.id
+        )
+      };
+
+    case 'cart_clear':
+      return {
+        ...store,
+        cart: []
+      };
+      
+      default:
       throw Error('Unknown action.');
   }
 }
+

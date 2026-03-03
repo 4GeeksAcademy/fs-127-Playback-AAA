@@ -12,7 +12,7 @@ import orderServices from "../services/orderService";
 import { ReviewForm } from "../components/ReviewForm";
 
 export const PageDetailProduct = () => {
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const [hasBought, setHasBought] = useState(false);
   const { t, i18n } = useTranslation();
   const { id } = useParams();
@@ -36,13 +36,23 @@ export const PageDetailProduct = () => {
       });
     }
   }, [id, i18n.language]);
+
   if (!product)
     return (
       <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
         {t("product.noFound")}
       </div>
     );
+
   const inStock = product.stock == null ? true : product.stock > 0;
+
+  //Función para añadir producto al carrito
+  const handleAddToCart = () => {
+    dispatch({
+      type: "cart_add",
+      payload: product
+    });
+  };
 
   const accordionItems = [
     {
@@ -126,7 +136,9 @@ export const PageDetailProduct = () => {
               </>
             )}
           </div>
+
           <button
+            onClick={handleAddToCart}
             disabled={!inStock}
             className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
               inStock
@@ -141,9 +153,7 @@ export const PageDetailProduct = () => {
       </div>
 
       <Accordion items={accordionItems} />
-
       <ReviewRating product={product} />
-
       {hasBought && <ReviewForm productId={id} orderId={orderId} />}
     </div>
   );

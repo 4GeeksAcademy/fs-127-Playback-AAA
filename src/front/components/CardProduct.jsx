@@ -1,9 +1,23 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { FavoriteButton } from "./FavoriteButton";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const CardProduct = ({ product }) => {
     const { id, name, price, image_url } = product;
+    const { dispatch } = useGlobalReducer();
+
+    const handleAddToCart = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        dispatch({
+            type: "cart_add",
+            payload: product
+        });
+
+        console.log("Añadido al carrito:", product);
+    };
 
     return (
         <Link to={`/PageDetailProduct/${id}`} className="block">
@@ -17,12 +31,17 @@ export const CardProduct = ({ product }) => {
                     />
                     <FavoriteButton product={product} className="absolute top-3 right-3" />
                 </div>
+
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm pt-3">{name}</p>
                         <p className="text-sm font-medium pb-3">{price}€</p>
                     </div>
-                    <button className="bg-stone-800 hover:bg-stone-500 text-white transition-all flex items-center justify-center p-2">
+
+                    <button
+                        onClick={handleAddToCart}
+                        className="bg-stone-800 hover:bg-stone-500 text-white transition-all flex items-center justify-center p-2"
+                    >
                         <ShoppingCart size={16} />
                     </button>
                 </div>
