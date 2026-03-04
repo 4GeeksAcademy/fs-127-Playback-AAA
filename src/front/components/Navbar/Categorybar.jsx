@@ -100,7 +100,7 @@ export const Categorybar = () => {
                 {currentCategory?.image_url && (
                   <div className="hidden lg:block flex-shrink-0 w-56">
                     <Link
-                      to={`/search?category=${currentCategory.slug}`}
+                      to={`/products?category=${currentCategory.slug}`}
                       onClick={() => setActiveCategory(null)}
                       className="group block relative aspect-[3/4] overflow-hidden"
                     >
@@ -121,7 +121,7 @@ export const Categorybar = () => {
                   {currentCategory.subcategories.map((sub) => (
                     <div key={sub.id} className="flex flex-col gap-2.5">
                       <Link
-                        to={`/search?category=${currentCategory.slug}&subcategory=${sub.slug}`}
+                        to={`/products?category=${currentCategory.slug}&subcategory=${sub.slug}`}
                         onClick={() => setActiveCategory(null)}
                         className="text-xs font-semibold tracking-widest uppercase text-theme-secondary hover:text-amber-600 transition-colors"
                       >
@@ -135,7 +135,7 @@ export const Categorybar = () => {
                           {sub.items.map((item) => (
                             <li key={item.id}>
                               <Link
-                                to={`/search?category=${currentCategory.slug}&subcategory=${sub.slug}&item=${item.slug}`}
+                                to={`/products?category=${currentCategory.slug}&subcategory=${sub.slug}&item=${item.slug}`}
                                 onClick={() => setActiveCategory(null)}
                                 className="text-xs text-theme-muted hover:text-theme-text transition-colors leading-relaxed"
                               >
@@ -211,7 +211,7 @@ export const Categorybar = () => {
                       {cat.subcategories.map((sub) => (
                         <div key={sub.id}>
                           <Link
-                            to={`/search?category=${cat.slug}&subcategory=${sub.slug}`}
+                            to={`/products?category=${cat.slug}&subcategory=${sub.slug}`}
                             onClick={() => {
                               setMobileOpen(null);
                               setMobilePanelOpen(false);
@@ -228,7 +228,7 @@ export const Categorybar = () => {
                               {sub.items.map((item) => (
                                 <Link
                                   key={item.id}
-                                  to={`/search?category=${cat.slug}&subcategory=${sub.slug}&item=${item.slug}`}
+                                  to={`/products?category=${cat.slug}&subcategory=${sub.slug}&item=${item.slug}`}
                                   onClick={() => {
                                     setMobileOpen(null);
                                     setMobilePanelOpen(false);

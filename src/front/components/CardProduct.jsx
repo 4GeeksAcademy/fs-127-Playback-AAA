@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { FavoriteButton } from "./FavoriteButton";
+import { ProductBadges } from "./Common/ProductBadges";
+import { ProductPrice } from "./Common/ProductPrice";
 
 export const CardProduct = ({ product }) => {
-  const { id, name, price, image_url } = product;
+  const { id, name, price, image_url, discount, low_stock, condition } = product;
 
   return (
     <Link to={`/product/${id}`} className="block">
@@ -17,6 +19,7 @@ export const CardProduct = ({ product }) => {
               (e.target.src = "https://placehold.co/300x300?text=Sin+imagen")
             }
           />
+          <ProductBadges discount={discount} lowStock={low_stock} condition={condition} className="absolute top-2 left-2" />
           <FavoriteButton
             product={product}
             className="absolute top-3 right-3"
@@ -25,7 +28,7 @@ export const CardProduct = ({ product }) => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm pt-3">{name}</p>
-            <p className="text-sm font-medium pb-3">{price}€</p>
+            <ProductPrice price={price} discount={discount} className="pb-3" />
           </div>
           <button className="bg-stone-800 hover:bg-stone-500 text-white transition-all flex items-center justify-center p-2">
             <ShoppingCart size={16} />

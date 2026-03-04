@@ -42,7 +42,7 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim()) {
       setOpen(false);
-      navigate(`/search?q=${encodeURIComponent(inputValue.trim())}`);
+      navigate(`/products?q=${encodeURIComponent(inputValue.trim())}`);
     }
     if (e.key === "Escape") {
       setOpen(false);
@@ -171,7 +171,7 @@ export const SearchBar = ({ placeholder = "", className = "" }) => {
                 onClick={() => {
                   setOpen(false);
                   navigate(
-                    `/search?q=${encodeURIComponent(inputValue.trim())}`,
+                    `/products?q=${encodeURIComponent(inputValue.trim())}`,
                   );
                 }}
                 className="w-full text-center text-xs text-violet-600 dark:text-violet-400 font-semibold py-2.5 border-t border-theme-border hover:bg-theme-muted transition"

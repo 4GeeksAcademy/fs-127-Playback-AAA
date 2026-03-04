@@ -23,30 +23,12 @@ export const router = createBrowserRouter(
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>}>
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />
-      <Route
-        path="/demo"
-        element={
-          <PrivateRoute>
-            <Demo />
-          </PrivateRoute>
-        }
-      />
+      <Route path="/demo" element={ <PrivateRoute> <Demo /> </PrivateRoute> } />
       <Route path="/products" element={<PageProducts />} />
-      <Route path="/products/:category" element={<PageProducts />} />
-      <Route
-        path="/products/:category/:subcategory"
-        element={<PageProducts />}
-      />
       <Route path="/product/:id" element={<PageDetailProduct />} />
-      <Route path="/:userEmail/favorites" element={<PageFavorites />} />
+      <Route path="/favorites" element={ <PrivateRoute> <PageFavorites /> </PrivateRoute> } />
       <Route path="/search" element={<SearchPage />} />
-      <Route
-        path="/profile"
-        element={
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        }
+      <Route path="/profile" element={ <PrivateRoute> <Profile /> </PrivateRoute> }
       />
     </Route>,
   ),
