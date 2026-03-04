@@ -43,7 +43,12 @@
     "labelCategories": "Categories",
     "searchPlaceholder": "Search ...",
     "offers": "Offers",
-    "aboutPlayback": "About Playback"
+    "aboutPlayback": "About Playback",
+    "title": "Opportunities",
+    "onSale": "On sale",
+    "lowStock": "Low stock",
+    "refurbished": "Refurbished",
+    "viewAll": "View all"
   },
 
   "enums": {

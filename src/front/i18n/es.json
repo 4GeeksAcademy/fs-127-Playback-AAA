@@ -43,7 +43,12 @@
     "labelCategories": "Categorías",
     "searchPlaceholder": "Buscar ...",
     "offers": "Ofertas",
-    "aboutPlayback": "Acerca de Playback"
+    "aboutPlayback": "Acerca de Playback",
+    "title": "Oportunidades",
+    "onSale": "En oferta",
+    "lowStock": "Últimas unidades",
+    "refurbished": "Reacondicionado",
+    "viewAll": "Ver todos"
   },
 
   "enums": {
