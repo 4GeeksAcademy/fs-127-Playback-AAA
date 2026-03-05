@@ -61,7 +61,7 @@ export const CategorybarDesktop = ({ categories }) => {
                 ${activeCategory === FEATURED_KEY ? "text-theme-text" : "text-theme-muted hover:text-theme-text"}
               `}
             >
-              {t("navbar.title")}
+              {t("navbar.opportunities")}
               {activeCategory === FEATURED_KEY && (
                 <span className="absolute bottom-0 left-4 right-4 h-[2px] bg-amber-500 rounded-sm" />
               )}
@@ -142,6 +142,23 @@ export const CategorybarDesktop = ({ categories }) => {
         <div className="absolute left-0 right-0 top-full z-50 bg-theme-bg border-b border-theme-border shadow-2xl">
           <div className="max-w-screen-xl mx-auto px-8 py-8">
             <div className="flex gap-10">
+              <div className="hidden lg:block flex-shrink-0 w-56">
+                <Link
+                  to={`/products?on_sale=true&condition=refurbished&low_stock=true`}
+                  onClick={() => setActiveCategory(null)}
+                  className="group block relative aspect-[3/4] overflow-hidden"
+                >
+                  <img
+                    src="https://res.cloudinary.com/playback-assets/image/upload/v1771748886/ofertas.png"
+                    alt="Oportunidades"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <p className="absolute bottom-3 left-3 text-xs text-white font-medium tracking-wider uppercase">
+                    {t("navbar.opportunities")}
+                  </p>
+                </Link>
+              </div>
               {FEATURED_LINKS.map((link) => (
                 <Link
                   key={link.key}

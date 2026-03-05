@@ -130,7 +130,7 @@ export const CategorybarMobile = ({ categories }) => {
               className="w-full flex items-center justify-between px-4 py-3.5 text-left"
             >
               <span className="text-xs tracking-widest uppercase font-medium text-theme-secondary">
-                {t("navbar.title")}
+                {t("navbar.opportunities")}
               </span>
               <svg
                 className={`w-2.5 h-2.5 text-theme-faint transition-transform ${mobileOpen === FEATURED_KEY ? "rotate-180" : ""}`}
