@@ -12,8 +12,9 @@ export const Layout = () => {
   const { store, dispatch } = useGlobalReducer();
 
   useEffect(() => {
-     const token = store.token || localStorage.getItem("token"); 
-       if (!token) return; 
+    const token = store.token || localStorage.getItem("token");
+    if (!token) return;
+
     getMeService(token).then(([data, error]) => {
       if (error) {
         dispatch({ type: "logout" });
@@ -21,6 +22,7 @@ export const Layout = () => {
       }
       dispatch({ type: "set_user", payload: data });
     });
+
   }, []);
 
   return (

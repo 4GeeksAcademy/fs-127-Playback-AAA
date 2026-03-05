@@ -1,173 +1,206 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import { useState } from "react";
+import addressService from "../services/addressService";
 
 export const Checkout = () => {
+
   const { store, dispatch } = useGlobalReducer();
   const navigate = useNavigate();
 
+  const [addresses, setAddresses] = useState([]);
+  const [shippingAddress, setShippingAddress] = useState(null);
+  const [billingAddress, setBillingAddress] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("credit_card");
   const [loading, setLoading] = useState(false);
-  const [completed, setCompleted] = useState(false);
 
-  const [shippingData, setShippingData] = useState({
-    name: "",
-    address: "",
-    city: "",
-    postal: "",
-  });
+  useEffect(() => {
 
-  const total = store.cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+    const token = store.token || localStorage.getItem("token");
 
-  const handleChange = (e) => {
-    setShippingData({
-      ...shippingData,
-      [e.target.name]: e.target.value,
+    if (!token) return;
+
+    addressService.getAddresses(token).then(([data]) => {
+
+      if (data) {
+        setAddresses(data);
+      }
+
     });
-  };
 
-  const handleConfirm = async () => {
-    if (!shippingData.name || !shippingData.address) {
-      alert("Completa los datos de envío");
+  }, []);
+
+  const handleCheckout = async () => {
+
+    if (!shippingAddress || !billingAddress) {
+      alert("Selecciona dirección de envío y facturación");
       return;
     }
 
+    const token = store.token || localStorage.getItem("token");
+
     setLoading(true);
 
-    const orderPayload = {
-      products: store.cart,
-      total,
-      shipping: shippingData,
-    };
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/checkout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({
+        shipping_address_id: shippingAddress,
+        billing_address_id: billingAddress,
+        payment_method: paymentMethod
+      })
+    });
 
-    console.log("Pedido listo para enviar:", orderPayload);
+    if (res.ok) {
 
-    setTimeout(() => {
-      setLoading(false);
-      setCompleted(true);
-      dispatch({ type: "cart_clear" });
+      // vaciar carrito
+      dispatch({
+        type: "set_cart",
+        payload: []
+      });
 
       setTimeout(() => {
-        navigate("/");
-      }, 2500);
-    }, 1500);
+
+        navigate("/orders");
+
+      }, 1500);
+
+    } else {
+
+      setLoading(false);
+      alert("Error al realizar el pedido");
+
+    }
+
   };
 
-  if (completed) {
-    return (
-      <div className="flex flex-col items-center justify-center h-96 text-center">
-        <h2 className="text-2xl font-semibold mb-4 text-violet-600">
-          ✅ Pago procesado correctamente
-        </h2>
-        <p className="text-stone-500">
-          Redirigiendo al inicio...
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-semibold mb-10">
-        Checkout
-      </h1>
 
-      <div className="grid md:grid-cols-2 gap-10">
+    <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-10">
 
-        {/* FORMULARIO ENVÍO */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">
-            Datos de envío
+      {/* COLUMNA IZQUIERDA */}
+
+      <div>
+
+        <h1 className="text-2xl font-semibold mb-8">
+          Checkout
+        </h1>
+
+        {/* DIRECCIÓN ENVÍO */}
+
+        <div className="mb-8">
+
+          <h2 className="text-lg font-medium mb-4">
+            Dirección de envío
           </h2>
 
-          <div className="flex flex-col gap-4">
-            <input
-              name="name"
-              placeholder="Nombre completo"
-              onChange={handleChange}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-            <input
-              name="address"
-              placeholder="Dirección"
-              onChange={handleChange}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-            <input
-              name="city"
-              placeholder="Ciudad"
-              onChange={handleChange}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-            <input
-              name="postal"
-              placeholder="Código postal"
-              onChange={handleChange}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-          </div>
+          {addresses.map(address => (
 
-          <h2 className="text-xl font-semibold mt-8 mb-4">
-            Pago (Simulado)
-          </h2>
-
-          <div className="flex flex-col gap-4">
-            <input
-              placeholder="Número de tarjeta"
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-            <input
-              placeholder="MM/AA"
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-            <input
-              placeholder="CVC"
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-            />
-          </div>
-        </div>
-
-        {/* RESUMEN */}
-        <div className="border rounded-xl p-6 shadow-sm h-fit">
-          <h2 className="text-xl font-semibold mb-6">
-            Resumen del pedido
-          </h2>
-
-          {store.cart.map((item) => (
             <div
-              key={item.id}
-              className="flex justify-between mb-3 text-sm"
+              key={address.id}
+              onClick={() => setShippingAddress(address.id)}
+              className={`border rounded-lg p-4 mb-3 cursor-pointer transition
+              ${shippingAddress === address.id ? "border-violet-600 bg-violet-50" : "border-gray-200"}
+              `}
             >
-              <span>
-                {item.quantity} x {item.name}
-              </span>
-              <span>
-                {(item.quantity * item.price).toFixed(2)}€
-              </span>
+
+              <p className="font-medium">{address.full_name}</p>
+              <p>{address.address}</p>
+              <p>{address.city}</p>
+              <p>{address.country}</p>
+
             </div>
+
           ))}
 
-          <div className="border-t pt-4 mt-4 flex justify-between font-semibold text-lg">
-            <span>Total</span>
-            <span>{total.toFixed(2)}€</span>
-          </div>
+        </div>
 
-          <button
-            onClick={handleConfirm}
-            disabled={loading}
-            className="w-full mt-6 py-4 rounded-xl font-medium text-white
-            bg-gradient-to-r from-violet-500 to-purple-600
-            hover:from-violet-600 hover:to-purple-700
-            shadow-md shadow-violet-200 dark:shadow-violet-900/30
-            transition disabled:opacity-50 disabled:cursor-not-allowed"
+        {/* DIRECCIÓN FACTURACIÓN */}
+
+        <div className="mb-8">
+
+          <h2 className="text-lg font-medium mb-4">
+            Dirección de facturación
+          </h2>
+
+          {addresses.map(address => (
+
+            <div
+              key={address.id}
+              onClick={() => setBillingAddress(address.id)}
+              className={`border rounded-lg p-4 mb-3 cursor-pointer transition
+              ${billingAddress === address.id ? "border-violet-600 bg-violet-50" : "border-gray-200"}
+              `}
+            >
+
+              <p className="font-medium">{address.full_name}</p>
+              <p>{address.address}</p>
+              <p>{address.city}</p>
+              <p>{address.country}</p>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        {/* MÉTODO DE PAGO */}
+
+        <div className="mb-8">
+
+          <h2 className="text-lg font-medium mb-4">
+            Método de pago
+          </h2>
+
+          <select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="border rounded-lg p-3 w-full"
           >
-            {loading ? "Procesando..." : "Pagar ahora"}
-          </button>
+
+            <option value="credit_card">
+              Tarjeta de crédito
+            </option>
+
+            <option value="bizum">
+              Bizum
+            </option>
+
+          </select>
+
         </div>
 
       </div>
+
+      {/* RESUMEN PEDIDO */}
+
+      <div className="bg-white border rounded-xl p-6 h-fit">
+
+        <h2 className="text-lg font-semibold mb-6">
+          Resumen del pedido
+        </h2>
+
+        <p className="text-gray-500 text-sm mb-6">
+          Los productos de tu carrito se procesarán al confirmar el pedido.
+        </p>
+
+        <button
+          onClick={handleCheckout}
+          disabled={loading}
+          className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition"
+        >
+
+          {loading ? "Procesando pedido..." : "Confirmar pedido"}
+
+        </button>
+
+      </div>
+
     </div>
+
   );
+
 };
