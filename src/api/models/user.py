@@ -58,6 +58,7 @@ class User(db.Model):
     reviews: Mapped[list["Review"]] = relationship("Review", back_populates="user", cascade="all, delete-orphan")
     incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="user", cascade="all, delete-orphan")
     favorites: Mapped[list["Favorite"]] = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
+    seller: Mapped["Seller"] = relationship("Seller", back_populates="user", uselist=False)
 
     def set_password(self, password):
         """Hashea un password en texto plano y lo almacena."""

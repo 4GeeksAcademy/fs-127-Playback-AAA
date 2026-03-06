@@ -79,6 +79,3 @@ database.database
 database.db
 diagram.png
 __pycache__/
-migrations/*
-.gitignore
-src/api/seeds/seed_data.py
