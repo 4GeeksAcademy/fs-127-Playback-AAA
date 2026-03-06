@@ -6,6 +6,8 @@
   :root {
     /* ── FONDOS ── */
     --color-bg:          255 255 255;   /* Fondo principal        white      */
+    --color-bg-pagination:  black;   /* Fondo principal        negro      */
+
     --color-bg-subtle:   249 250 251;   /* Fondo secundario       gray-50    */
     --color-bg-muted:    243 244 246;   /* Fondo hover / cards    gray-100   */
     --color-bg-input:    249 250 251;   /* Inputs y textareas     gray-50    */

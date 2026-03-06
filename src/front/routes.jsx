@@ -14,6 +14,8 @@ import { PageDetailProduct } from "./pages/PageDetailProduct";
 import { PageFavorites } from "./pages/PageFavorites";
 import { SearchPage } from "./pages/SearchPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
+import { Success } from "./pages/Success"
+
 
 import Profile from "./pages/Profile";
 
@@ -31,6 +33,7 @@ export const router = createBrowserRouter(
       <Route path="/search" element={<SearchPage />} />
       <Route path="/profile" element={ <PrivateRoute> <Profile /> </PrivateRoute> }/>
       <Route path="/reset-password" element={<ResetPasswordPage />} />
-    </Route>,
-  ),
+      <Route path="/success/:orderId" element={<Success />} />
+    </Route>
+  )
 );
