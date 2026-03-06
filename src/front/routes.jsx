@@ -18,7 +18,6 @@ import { Success } from "./pages/Success"
 
 
 import Profile from "./pages/Profile";
-
 import { PrivateRoute } from "./components/PrivateRoute";
 
 export const router = createBrowserRouter(

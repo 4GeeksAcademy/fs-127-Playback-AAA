@@ -33,9 +33,11 @@ class Product(db.Model):
 
     # ── ForeignKey ─────────────────────────────────────────────────────────────
     item_id: Mapped[int] = mapped_column(ForeignKey("item.id"), nullable=False)
+    seller_id: Mapped[int] = mapped_column(ForeignKey("seller.id"), nullable=False)
 
     # ── Relationships ──────────────────────────────────────────────────────────
     item: Mapped["Item"] = relationship("Item", back_populates="products")
+    seller: Mapped["Seller"] = relationship("Seller", back_populates="products")
     order_details: Mapped[list["OrderDetail"]] = relationship(
         "OrderDetail", back_populates="product", cascade="all, delete-orphan")
     reviews: Mapped[list["Review"]] = relationship(
@@ -47,6 +49,8 @@ class Product(db.Model):
         return f'<Product {self.id}: {self.name}>'
 
     def serialize(self, locale="es"):
+        avg_rating = round(sum(r.rating for r in self.reviews) / len(self.reviews), 1) if self.reviews else 0
+
         return {
             "id": self.id,
             "name": self.name.get(locale) or self.name.get("es"),
@@ -62,6 +66,20 @@ class Product(db.Model):
             "item": self.item.slug if self.item else None,
             "subcategory": self.item.subcategory.slug if self.item and self.item.subcategory else None,
             "category": self.item.subcategory.category.slug if self.item and self.item.subcategory and self.item.subcategory.category else None,
+            "rating": avg_rating,
+            "Review": len(self.reviews),
+            "reviews": [
+                {
+                    "id": r.id,
+                    "rating": r.rating,
+                    "title": r.title,
+                    "comment": r.comment,
+                    "user": r.user.name if r.user else None,
+                    "created_at": r.created_at.isoformat() if r.created_at else None,
+                }
+                for r in self.reviews if r.is_visible
+            ],
+            "seller": self.seller.serialize_public() if self.seller else None,
         }
 
     def to_dict(self, locale="es"):
@@ -95,4 +113,5 @@ class Product(db.Model):
                 }
                 for r in self.reviews if r.is_visible
             ],
+            "seller": self.seller.serialize_public() if self.seller else None,
         }

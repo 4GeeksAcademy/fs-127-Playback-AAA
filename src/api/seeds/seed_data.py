@@ -6,8 +6,8 @@ Incluye condiciones variadas, descuentos, stock bajo, pedidos en todos los
 estados, reviews realistas y favoritos aleatorios.
 
 Uso:
-    python seed_data.py
-    python seed_data.py --reset   (borra todos los datos antes de insertar)
+    pipenv run python src/api/seeds/seed_data.py
+    pipenv run python src/api/seeds/seed_data.py --reset   (borra todos los datos antes de insertar)
 """
 
 import sys
@@ -17,11 +17,13 @@ import argparse
 from datetime import datetime, timezone, timedelta
 from sqlalchemy import cast, String
 
+sys.stdout.reconfigure(encoding='utf-8')
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 from app import app
 from api.models import db
-from api.models.user import User
+from api.models.user import User, RoleName
+from api.models.seller import Seller, SellerStatus
 from api.models.product import Product
 from api.models.item import Item
 from api.models.order import Order, Payment, Status
@@ -32,25 +34,79 @@ from api.models.favorite import Favorite
 
 # ══════════════════════════════════════════════════════════════════════════════
 # USUARIOS
+# role: "buyer" | "seller" | "admin"
 # ══════════════════════════════════════════════════════════════════════════════
 
 USERS_DATA = [
-    {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",  "password": "Test1234!"},
-    {"name": "María",     "last_name": "López",     "email": "maria@test.com",   "password": "Test1234!"},
-    {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",    "password": "Test1234!"},
-    {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",   "password": "Test1234!"},
-    {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",   "password": "Test1234!"},
-    {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",   "password": "Test1234!"},
-    {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",  "password": "Test1234!"},
-    {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",     "password": "Test1234!"},
+    {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",                 "password": "Test1234!",       "role": "seller"},
+    {"name": "María",     "last_name": "López",     "email": "maria@test.com",                  "password": "Test1234!",       "role": "seller"},
+    {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",                   "password": "Test1234!",       "role": "seller"},
+    {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",                  "password": "Test1234!",       "role": "buyer" },
+    {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",                  "password": "Test1234!",       "role": "buyer" },
+    {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!",       "role": "buyer" },
+    {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!",       "role": "buyer" },
+    {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer" },
+    {"name": "PlayBack",  "last_name": "Admin",     "email": "playback_admin_1@protonmail.com", "password": "=SZ;u7r97Jib'$u", "role": "admin" },
+]
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SELLERS
+# Un registro por cada usuario con role="seller"
+# ══════════════════════════════════════════════════════════════════════════════
+
+SELLERS_DATA = [
+    {
+        "email": "carlos@test.com",
+        "store_name": "RetroConsolas García",
+        "description": "Especialista en consolas Nintendo y accesorios retro de los 80 y 90.",
+        "phone": "+34 612 345 678",
+        "nif_cif": "12345678A",
+        "iban": "ES91 2100 0418 4502 0005 1332",
+        "account_holder": "Carlos García",
+        "origin_address": "Calle Mayor 12",
+        "origin_city": "Madrid",
+        "origin_zip": "28001",
+        "origin_country": "España",
+        "status": "verified",
+    },
+    {
+        "email": "maria@test.com",
+        "store_name": "VinylParadise",
+        "description": "Colección de vinilos y música retro de los 60, 70 y 80. Envío cuidadoso garantizado.",
+        "phone": "+34 623 456 789",
+        "nif_cif": "23456789B",
+        "iban": "ES80 2310 0001 1800 0001 2345",
+        "account_holder": "María López",
+        "origin_address": "Passeig de Gràcia 55",
+        "origin_city": "Barcelona",
+        "origin_zip": "08007",
+        "origin_country": "España",
+        "status": "verified",
+    },
+    {
+        "email": "alex@test.com",
+        "store_name": "Bits & Pixels",
+        "description": "Videojuegos retro en cartucho y CD. Especializados en Sega y PlayStation clásica.",
+        "phone": "+34 634 567 890",
+        "nif_cif": "34567890C",
+        "iban": "ES76 0049 0001 5021 0001 2345",
+        "account_holder": "Alejandro Martínez",
+        "origin_address": "Gran Vía 10",
+        "origin_city": "Valencia",
+        "origin_zip": "46002",
+        "origin_country": "España",
+        "status": "pending",
+    },
 ]
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PRODUCTOS
 # Campos: name, name_en, description, description_en, price, stock,
-#         discount, condition, item_slug, image_url
+#         discount, condition, item_slug, image_url, seller_email
 # condition: "new" | "used" | "refurbished" | "broken"
+# seller_email: email del vendedor al que pertenece el producto
 # ══════════════════════════════════════════════════════════════════════════════
 
 PRODUCTS_DATA = [
@@ -64,6 +120,7 @@ PRODUCTS_DATA = [
         "price": 89.99, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "nes",
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "NES con 10 juegos",
@@ -73,6 +130,7 @@ PRODUCTS_DATA = [
         "price": 140.00, "stock": 2, "discount": 10.0, "condition": "used",
         "item_slug": "nes",
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
+        "seller_email": "carlos@test.com",
     },
 
     # ── snes ───────────────────────────────────────────────────────────────────
@@ -84,6 +142,7 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 3, "discount": 10.0, "condition": "used",
         "item_slug": "snes",
         "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "SNES Reacondicionada",
@@ -93,6 +152,7 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 4, "discount": 0.0, "condition": "refurbished",
         "item_slug": "snes",
         "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "carlos@test.com",
     },
 
     # ── nintendo-64 ────────────────────────────────────────────────────────────
@@ -104,6 +164,7 @@ PRODUCTS_DATA = [
         "price": 110.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "nintendo-64",
         "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Nintendo 64 con Expansion Pak",
@@ -113,6 +174,7 @@ PRODUCTS_DATA = [
         "price": 135.00, "stock": 2, "discount": 5.0, "condition": "used",
         "item_slug": "nintendo-64",
         "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
+        "seller_email": "carlos@test.com",
     },
 
     # ── gamecube ───────────────────────────────────────────────────────────────
@@ -124,6 +186,7 @@ PRODUCTS_DATA = [
         "price": 130.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "gamecube",
         "image_url": "https://media2.gameplaystores.es/74876-large_default/gamecube-plateada-mando-sin-caja-gc.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "GameCube Negra con Lector Roto",
@@ -133,6 +196,7 @@ PRODUCTS_DATA = [
         "price": 25.00, "stock": 1, "discount": 0.0, "condition": "broken",
         "item_slug": "gamecube",
         "image_url": "https://media2.gameplaystores.es/74876-large_default/gamecube-plateada-mando-sin-caja-gc.jpg",
+        "seller_email": "carlos@test.com",
     },
 
     # ── game-boy ───────────────────────────────────────────────────────────────
@@ -144,6 +208,7 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "game-boy",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Game Boy Color Morada",
@@ -153,6 +218,7 @@ PRODUCTS_DATA = [
         "price": 70.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "game-boy",
         "image_url": "https://www.todoconsolas.com/344840-large_default/game_boy_color_violeta_po215947.jpg",
+        "seller_email": "carlos@test.com",
     },
 
     # ── game-boy-advance ───────────────────────────────────────────────────────
@@ -164,6 +230,7 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 3, "discount": 5.0, "condition": "used",
         "item_slug": "game-boy-advance",
         "image_url": "https://m.media-amazon.com/images/I/61hNR9cWhZL.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Game Boy Advance Transparente",
@@ -173,9 +240,10 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
         "item_slug": "game-boy-advance",
         "image_url": "https://m.media-amazon.com/images/I/61hNR9cWhZL.jpg",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── accesorios (nintendo-clasica) ──────────────────────────────────────────
+    # ── accesorios ────────────────────────────────────────────────────────────
     {
         "name": "Mando NES Original",
         "name_en": "Original NES Controller",
@@ -184,6 +252,7 @@ PRODUCTS_DATA = [
         "price": 12.00, "stock": 10, "discount": 0.0, "condition": "used",
         "item_slug": "accesorios",
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Pack Mandos SNES x2",
@@ -193,6 +262,7 @@ PRODUCTS_DATA = [
         "price": 20.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "accesorios",
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
+        "seller_email": "carlos@test.com",
     },
 
     # ── otros-nintendo-clasica ─────────────────────────────────────────────────
@@ -204,9 +274,10 @@ PRODUCTS_DATA = [
         "price": 180.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-nintendo-clasica",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── CONSOLAS › SEGA ── master-system ──────────────────────────────────────
+    # ── CONSOLAS › SEGA ───────────────────────────────────────────────────────
     {
         "name": "Sega Master System II",
         "name_en": "Sega Master System II",
@@ -215,9 +286,8 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "master-system",
         "image_url": "https://m.media-amazon.com/images/I/71-4crm7mML.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── mega-drive ─────────────────────────────────────────────────────────────
     {
         "name": "Mega Drive II",
         "name_en": "Mega Drive II",
@@ -226,6 +296,7 @@ PRODUCTS_DATA = [
         "price": 75.00, "stock": 4, "discount": 5.0, "condition": "used",
         "item_slug": "mega-drive",
         "image_url": "https://m.media-amazon.com/images/I/71-4crm7mML.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Mega Drive Sin Cables (Piezas)",
@@ -235,9 +306,8 @@ PRODUCTS_DATA = [
         "price": 20.00, "stock": 2, "discount": 0.0, "condition": "broken",
         "item_slug": "mega-drive",
         "image_url": "https://m.media-amazon.com/images/I/71-4crm7mML.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── saturn ─────────────────────────────────────────────────────────────────
     {
         "name": "Sega Saturn Gris",
         "name_en": "Grey Sega Saturn",
@@ -246,9 +316,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "saturn",
         "image_url": "https://m.media-amazon.com/images/I/71-4crm7mML.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── dreamcast ─────────────────────────────────────────────────────────────
     {
         "name": "Sega Dreamcast",
         "name_en": "Sega Dreamcast",
@@ -257,9 +326,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "dreamcast",
         "image_url": "https://i.blogs.es/5ad1a1/dreamcast_01/650_1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── game-gear ─────────────────────────────────────────────────────────────
     {
         "name": "Sega Game Gear Roja",
         "name_en": "Red Sega Game Gear",
@@ -268,6 +336,7 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 3, "discount": 10.0, "condition": "used",
         "item_slug": "game-gear",
         "image_url": "https://www.japanzon.com/24351-product_hd/sega-game-gear-micro-rojo.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Game Gear Reacondicionada",
@@ -277,9 +346,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
         "item_slug": "game-gear",
         "image_url": "https://www.japanzon.com/24351-product_hd/sega-game-gear-micro-rojo.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-sega ────────────────────────────────────────────────────────────
     {
         "name": "Sega Pico (Consola Infantil)",
         "name_en": "Sega Pico (Kids Console)",
@@ -288,9 +356,10 @@ PRODUCTS_DATA = [
         "price": 40.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "otros-sega",
         "image_url": "https://i.blogs.es/5ad1a1/dreamcast_01/650_1200.jpg",
+        "seller_email": "alex@test.com",
     },
 
-    # ── CONSOLAS › PlayStation Clásica y Xbox ── ps1 ──────────────────────────
+    # ── CONSOLAS › PlayStation y Xbox ─────────────────────────────────────────
     {
         "name": "PlayStation 1 PAL",
         "name_en": "PlayStation 1 PAL",
@@ -299,6 +368,7 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "ps1",
         "image_url": "https://m.media-amazon.com/images/I/71TCoWMwK+L.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "PlayStation 1 Reacondicionada",
@@ -308,9 +378,8 @@ PRODUCTS_DATA = [
         "price": 80.00, "stock": 3, "discount": 0.0, "condition": "refurbished",
         "item_slug": "ps1",
         "image_url": "https://m.media-amazon.com/images/I/71TCoWMwK+L.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── ps2 ───────────────────────────────────────────────────────────────────
     {
         "name": "PlayStation 2 Slim Negra",
         "name_en": "Black PlayStation 2 Slim",
@@ -319,9 +388,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "ps2",
         "image_url": "https://d2e6ccujb3mkqf.cloudfront.net/2eb54452-73ab-4cc2-83ce-dece99b9a1f9-1_959ca981-d879-41b7-807e-204efb73d96d.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── psp ───────────────────────────────────────────────────────────────────
     {
         "name": "PSP 3000 Blanca",
         "name_en": "White PSP 3000",
@@ -330,6 +398,7 @@ PRODUCTS_DATA = [
         "price": 80.00, "stock": 5, "discount": 5.0, "condition": "used",
         "item_slug": "psp",
         "image_url": "https://m.media-amazon.com/images/I/51CbBOgUaGL.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "PSP sin Pantalla (Piezas)",
@@ -339,9 +408,8 @@ PRODUCTS_DATA = [
         "price": 15.00, "stock": 2, "discount": 0.0, "condition": "broken",
         "item_slug": "psp",
         "image_url": "https://m.media-amazon.com/images/I/51CbBOgUaGL.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── xbox ──────────────────────────────────────────────────────────────────
     {
         "name": "Xbox Clásica Negra",
         "name_en": "Classic Black Xbox",
@@ -350,9 +418,8 @@ PRODUCTS_DATA = [
         "price": 70.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "xbox",
         "image_url": "https://i.blogs.es/f65b01/xbox-original/650_1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-playstation-xbox ────────────────────────────────────────────────
     {
         "name": "Mando DualShock 2 Azul",
         "name_en": "Blue DualShock 2 Controller",
@@ -361,9 +428,10 @@ PRODUCTS_DATA = [
         "price": 18.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "otros-playstation-xbox",
         "image_url": "https://m.media-amazon.com/images/I/71TCoWMwK+L.jpg",
+        "seller_email": "alex@test.com",
     },
 
-    # ── CONSOLAS › Otras Consolas ── atari ────────────────────────────────────
+    # ── CONSOLAS › Otras Consolas ──────────────────────────────────────────────
     {
         "name": "Atari 2600",
         "name_en": "Atari 2600",
@@ -372,9 +440,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "atari",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Atari-2600-Wood-4Sw-Set.jpg/1024px-Atari-2600-Wood-4Sw-Set.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── neo-geo ───────────────────────────────────────────────────────────────
     {
         "name": "Neo Geo Pocket Color",
         "name_en": "Neo Geo Pocket Color",
@@ -383,9 +450,8 @@ PRODUCTS_DATA = [
         "price": 150.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "neo-geo",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Atari-2600-Wood-4Sw-Set.jpg/1024px-Atari-2600-Wood-4Sw-Set.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── pc-engine ─────────────────────────────────────────────────────────────
     {
         "name": "NEC PC Engine",
         "name_en": "NEC PC Engine",
@@ -394,9 +460,8 @@ PRODUCTS_DATA = [
         "price": 130.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "pc-engine",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Atari-2600-Wood-4Sw-Set.jpg/1024px-Atari-2600-Wood-4Sw-Set.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── commodore-64 ──────────────────────────────────────────────────────────
     {
         "name": "Commodore 64 con Datasette",
         "name_en": "Commodore 64 with Datasette",
@@ -405,9 +470,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "commodore-64",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── amstrad (consolas) ────────────────────────────────────────────────────
     {
         "name": "Amstrad CPC 464",
         "name_en": "Amstrad CPC 464",
@@ -416,9 +480,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "amstrad",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Amstrad_CPC464.jpg/1024px-Amstrad_CPC464.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── otros-otras-consolas ──────────────────────────────────────────────────
     {
         "name": "Magnavox Odyssey",
         "name_en": "Magnavox Odyssey",
@@ -427,9 +490,10 @@ PRODUCTS_DATA = [
         "price": 200.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-otras-consolas",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Atari-2600-Wood-4Sw-Set.jpg/1024px-Atari-2600-Wood-4Sw-Set.jpg",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── VIDEOJUEGOS › Cartucho ── juegos-nes ─────────────────────────────────
+    # ── VIDEOJUEGOS › Cartucho ─────────────────────────────────────────────────
     {
         "name": "Super Mario Bros 3 NES",
         "name_en": "Super Mario Bros 3 NES",
@@ -438,6 +502,7 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-nes",
         "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Mega Man 2 NES",
@@ -447,9 +512,8 @@ PRODUCTS_DATA = [
         "price": 38.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-nes",
         "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-snes ───────────────────────────────────────────────────────────
     {
         "name": "Zelda A Link to the Past SNES",
         "name_en": "Zelda A Link to the Past SNES",
@@ -458,6 +522,7 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-snes",
         "image_url": "https://cdn11.bigcommerce.com/s-ymgqt/images/stencil/1000w/products/26452/33322/Legend-of-Zelda-A-Link-To-t__89317.1712937460.jpg?c=2",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Donkey Kong Country SNES",
@@ -467,9 +532,8 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-snes",
         "image_url": "https://cdn11.bigcommerce.com/s-ymgqt/images/stencil/1000w/products/26452/33322/Legend-of-Zelda-A-Link-To-t__89317.1712937460.jpg?c=2",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-nintendo-64 ────────────────────────────────────────────────────
     {
         "name": "GoldenEye 007 N64",
         "name_en": "GoldenEye 007 N64",
@@ -478,6 +542,7 @@ PRODUCTS_DATA = [
         "price": 50.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-nintendo-64",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPo0fYRIsSTEYir_VND0m40qs6Oc2kdggSDg&s",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Super Mario 64",
@@ -487,9 +552,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-nintendo-64",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPo0fYRIsSTEYir_VND0m40qs6Oc2kdggSDg&s",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-mega-drive ─────────────────────────────────────────────────────
     {
         "name": "Sonic the Hedgehog Mega Drive",
         "name_en": "Sonic the Hedgehog Mega Drive",
@@ -498,6 +562,7 @@ PRODUCTS_DATA = [
         "price": 40.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-mega-drive",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROg9k-9v7OYh9H9bwlun7oh7n9pyqI_bcq9Q&s",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Streets of Rage 2 Mega Drive",
@@ -507,9 +572,8 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 3, "discount": 15.0, "condition": "used",
         "item_slug": "juegos-mega-drive",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROg9k-9v7OYh9H9bwlun7oh7n9pyqI_bcq9Q&s",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-game-boy ───────────────────────────────────────────────────────
     {
         "name": "Pokémon Edición Roja",
         "name_en": "Pokémon Red Edition",
@@ -518,6 +582,7 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 7, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-game-boy",
         "image_url": "https://media2.gameplaystores.es/77648-large_default/pokemon-rojo-cartucho-gb.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Pokémon Edición Azul",
@@ -527,6 +592,7 @@ PRODUCTS_DATA = [
         "price": 33.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-game-boy",
         "image_url": "https://media2.gameplaystores.es/77646-large_default/pokemon-azul-cartucho-gb.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Tetris Game Boy",
@@ -536,9 +602,8 @@ PRODUCTS_DATA = [
         "price": 15.00, "stock": 10, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-game-boy",
         "image_url": "https://media2.gameplaystores.es/77648-large_default/pokemon-rojo-cartucho-gb.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-cartucho ────────────────────────────────────────────────────────
     {
         "name": "Lote 20 Cartuchos Variados",
         "name_en": "Lot of 20 Mixed Cartridges",
@@ -547,9 +612,10 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 2, "discount": 20.0, "condition": "used",
         "item_slug": "otros-cartucho",
         "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
+        "seller_email": "alex@test.com",
     },
 
-    # ── VIDEOJUEGOS › CD/DVD ── juegos-ps1 ───────────────────────────────────
+    # ── VIDEOJUEGOS › CD/DVD ───────────────────────────────────────────────────
     {
         "name": "Final Fantasy VII PS1",
         "name_en": "Final Fantasy VII PS1",
@@ -558,6 +624,7 @@ PRODUCTS_DATA = [
         "price": 75.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-ps1",
         "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Metal Gear Solid PS1",
@@ -567,9 +634,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-ps1",
         "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-ps2 ────────────────────────────────────────────────────────────
     {
         "name": "GTA San Andreas PS2",
         "name_en": "GTA San Andreas PS2",
@@ -578,6 +644,7 @@ PRODUCTS_DATA = [
         "price": 25.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-ps2",
         "image_url": "https://media.game.es/COVERV2/3D_L/049/049906.png",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Shadow of the Colossus PS2",
@@ -587,9 +654,8 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 3, "discount": 10.0, "condition": "used",
         "item_slug": "juegos-ps2",
         "image_url": "https://media.game.es/COVERV2/3D_L/049/049906.png",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-dreamcast ──────────────────────────────────────────────────────
     {
         "name": "Shenmue Dreamcast",
         "name_en": "Shenmue Dreamcast",
@@ -598,6 +664,7 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-dreamcast",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Soul Calibur Dreamcast",
@@ -607,9 +674,8 @@ PRODUCTS_DATA = [
         "price": 30.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-dreamcast",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-saturn ─────────────────────────────────────────────────────────
     {
         "name": "Panzer Dragoon Saga Saturn",
         "name_en": "Panzer Dragoon Saga Saturn",
@@ -618,9 +684,8 @@ PRODUCTS_DATA = [
         "price": 200.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-saturn",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juegos-pc ─────────────────────────────────────────────────────────────
     {
         "name": "Half-Life PC CD-ROM",
         "name_en": "Half-Life PC CD-ROM",
@@ -629,6 +694,7 @@ PRODUCTS_DATA = [
         "price": 20.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-pc",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Diablo II PC",
@@ -638,9 +704,8 @@ PRODUCTS_DATA = [
         "price": 25.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "juegos-pc",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-cd-dvd ──────────────────────────────────────────────────────────
     {
         "name": "Lote 10 Juegos PS1 Variados",
         "name_en": "Lot of 10 Mixed PS1 Games",
@@ -649,9 +714,10 @@ PRODUCTS_DATA = [
         "price": 40.00, "stock": 3, "discount": 15.0, "condition": "used",
         "item_slug": "otros-cd-dvd",
         "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "seller_email": "alex@test.com",
     },
 
-    # ── VIDEOJUEGOS › Ediciones Especiales ── collectors-edition ─────────────
+    # ── VIDEOJUEGOS › Ediciones Especiales ────────────────────────────────────
     {
         "name": "Zelda Ocarina of Time Collector's",
         "name_en": "Zelda Ocarina of Time Collector's",
@@ -660,9 +726,8 @@ PRODUCTS_DATA = [
         "price": 300.00, "stock": 1, "discount": 0.0, "condition": "new",
         "item_slug": "collectors-edition",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPo0fYRIsSTEYir_VND0m40qs6Oc2kdggSDg&s",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── steelbook ─────────────────────────────────────────────────────────────
     {
         "name": "Metal Gear Solid 3 Steelbook",
         "name_en": "Metal Gear Solid 3 Steelbook",
@@ -671,9 +736,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "steelbook",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── precintados ───────────────────────────────────────────────────────────
     {
         "name": "Final Fantasy X Precintado PAL",
         "name_en": "Final Fantasy X Sealed PAL",
@@ -682,9 +746,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 1, "discount": 0.0, "condition": "new",
         "item_slug": "precintados",
         "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── japoneses-import ──────────────────────────────────────────────────────
     {
         "name": "Dragon Ball Z Super Butōden Import SNES",
         "name_en": "Dragon Ball Z Super Butōden Import SNES",
@@ -693,9 +756,8 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "japoneses-import",
         "image_url": "https://cdn11.bigcommerce.com/s-ymgqt/images/stencil/1000w/products/26452/33322/Legend-of-Zelda-A-Link-To-t__89317.1712937460.jpg?c=2",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── otros-ediciones-especiales ────────────────────────────────────────────
     {
         "name": "Press Kit Resident Evil 2",
         "name_en": "Resident Evil 2 Press Kit",
@@ -704,9 +766,10 @@ PRODUCTS_DATA = [
         "price": 250.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-ediciones-especiales",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── MÚSICA › Medios Físicos ── discos-de-vinilo ───────────────────────────
+    # ── MÚSICA › Medios Físicos ────────────────────────────────────────────────
     {
         "name": "Vinilo Led Zeppelin IV",
         "name_en": "Led Zeppelin IV Vinyl",
@@ -715,6 +778,7 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Vinilo Pink Floyd The Wall",
@@ -724,6 +788,7 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://www.emp-online.es/dw/image/v2/BBQV_PRD/on/demandware.static/-/Sites-master-emp/default/dw9a04de7a/images/2/2/7/4/227441-emp.jpg",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Vinilo Nirvana Nevermind",
@@ -733,6 +798,7 @@ PRODUCTS_DATA = [
         "price": 50.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Vinilo Michael Jackson Thriller",
@@ -742,9 +808,8 @@ PRODUCTS_DATA = [
         "price": 70.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2024/12/Michael-Jackson-e1734520718418.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── cds ───────────────────────────────────────────────────────────────────
     {
         "name": "CD Radiohead OK Computer",
         "name_en": "Radiohead OK Computer CD",
@@ -753,6 +818,7 @@ PRODUCTS_DATA = [
         "price": 12.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "cds",
         "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "CD Daft Punk Random Access Memories",
@@ -762,9 +828,8 @@ PRODUCTS_DATA = [
         "price": 15.00, "stock": 5, "discount": 20.0, "condition": "new",
         "item_slug": "cds",
         "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "seller_email": "maria@test.com",
     },
-
-    # ── casetes ───────────────────────────────────────────────────────────────
     {
         "name": "Casete Depeche Mode Violator",
         "name_en": "Depeche Mode Violator Cassette",
@@ -773,6 +838,7 @@ PRODUCTS_DATA = [
         "price": 12.00, "stock": 10, "discount": 20.0, "condition": "used",
         "item_slug": "casetes",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHVBpFFP68FQd9Gh1OWGXo4awKfdLAho6Qvg&s",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Casete Metallica Black Album",
@@ -782,6 +848,7 @@ PRODUCTS_DATA = [
         "price": 10.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "casetes",
         "image_url": "https://i.ebayimg.com/images/g/zK8AAOSwnh1i5Ykf/s-l1200.jpg",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Casete Madonna Like a Virgin",
@@ -791,9 +858,8 @@ PRODUCTS_DATA = [
         "price": 8.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "casetes",
         "image_url": "https://i.etsystatic.com/20964828/r/il/203b03/7004577808/il_570xN.7004577808_o5pm.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── otros-vinilos ─────────────────────────────────────────────────────────
     {
         "name": "Mini Disc Sony MZ-R70",
         "name_en": "Sony MZ-R70 MiniDisc",
@@ -802,9 +868,10 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "otros-vinilos",
         "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "seller_email": "maria@test.com",
     },
 
-    # ── MÚSICA › Épocas ── los-60 ─────────────────────────────────────────────
+    # ── MÚSICA › Épocas ───────────────────────────────────────────────────────
     {
         "name": "Vinilo The Beatles Abbey Road",
         "name_en": "The Beatles Abbey Road Vinyl",
@@ -813,6 +880,7 @@ PRODUCTS_DATA = [
         "price": 80.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "los-60",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Vinilo The Rolling Stones Exile",
@@ -822,9 +890,8 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "los-60",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── los-70 ────────────────────────────────────────────────────────────────
     {
         "name": "Vinilo David Bowie Ziggy Stardust",
         "name_en": "David Bowie Ziggy Stardust Vinyl",
@@ -833,9 +900,8 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "los-70",
         "image_url": "https://static.fnac-static.com/multimedia/Images/ES/NR/59/39/74/7616857/1540-1.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── los-80 ────────────────────────────────────────────────────────────────
     {
         "name": "Vinilo Madonna Like a Virgin",
         "name_en": "Madonna Like a Virgin Vinyl",
@@ -844,6 +910,7 @@ PRODUCTS_DATA = [
         "price": 30.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "los-80",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Vinilo Michael Jackson Bad",
@@ -853,9 +920,8 @@ PRODUCTS_DATA = [
         "price": 40.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "los-80",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2024/12/Michael-Jackson-e1734520718418.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── los-90 ────────────────────────────────────────────────────────────────
     {
         "name": "CD Nirvana Nevermind 1991",
         "name_en": "Nirvana Nevermind CD 1991",
@@ -864,6 +930,7 @@ PRODUCTS_DATA = [
         "price": 18.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "los-90",
         "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "CD Oasis (What's the Story) Morning Glory?",
@@ -873,9 +940,8 @@ PRODUCTS_DATA = [
         "price": 14.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "los-90",
         "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "seller_email": "maria@test.com",
     },
-
-    # ── otros-epocas ──────────────────────────────────────────────────────────
     {
         "name": "Vinilo Jazz Blue Note Años 50",
         "name_en": "50s Blue Note Jazz Vinyl",
@@ -884,9 +950,10 @@ PRODUCTS_DATA = [
         "price": 90.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-epocas",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
+        "seller_email": "maria@test.com",
     },
 
-    # ── MÚSICA › Reproductores ── walkman ─────────────────────────────────────
+    # ── MÚSICA › Reproductores ────────────────────────────────────────────────
     {
         "name": "Walkman Sony WM-F10",
         "name_en": "Sony WM-F10 Walkman",
@@ -895,6 +962,7 @@ PRODUCTS_DATA = [
         "price": 40.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "walkman",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Walkman Sony WM-EX1 Reacondicionado",
@@ -904,9 +972,8 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
         "item_slug": "walkman",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
+        "seller_email": "maria@test.com",
     },
-
-    # ── discman ───────────────────────────────────────────────────────────────
     {
         "name": "Discman Sony D-EJ955",
         "name_en": "Sony D-EJ955 Discman",
@@ -915,9 +982,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 4, "discount": 5.0, "condition": "used",
         "item_slug": "discman",
         "image_url": "https://static-data2.manualslib.com/product-images/299/214754/sony-cd-walkman-d-ej1000-cd-player.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── radiocassettes ────────────────────────────────────────────────────────
     {
         "name": "Radiocassette JVC PC-W330",
         "name_en": "JVC PC-W330 Radiocassette",
@@ -926,9 +992,8 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "radiocassettes",
         "image_url": "https://hifivintage.eu/38222-large_default/jvc-pc-w330-l.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── tocadiscos ────────────────────────────────────────────────────────────
     {
         "name": "Tocadiscos Technics SL-1200",
         "name_en": "Technics SL-1200 Turntable",
@@ -937,9 +1002,8 @@ PRODUCTS_DATA = [
         "price": 350.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "tocadiscos",
         "image_url": "https://i.blogs.es/2c45fe/direct_drive_turntable_system_sl_1200gae_3/1366_2000.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── amplificadores ────────────────────────────────────────────────────────
     {
         "name": "Amplificador Marantz PM-80",
         "name_en": "Marantz PM-80 Amplifier",
@@ -948,9 +1012,8 @@ PRODUCTS_DATA = [
         "price": 180.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "amplificadores",
         "image_url": "https://i.blogs.es/2c45fe/direct_drive_turntable_system_sl_1200gae_3/1366_2000.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── otros-reproductores-audio ─────────────────────────────────────────────
     {
         "name": "Equipo de Música Aiwa CX-NA777",
         "name_en": "Aiwa CX-NA777 Hi-Fi System",
@@ -959,9 +1022,10 @@ PRODUCTS_DATA = [
         "price": 90.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-reproductores-audio",
         "image_url": "https://i.blogs.es/2c45fe/direct_drive_turntable_system_sl_1200gae_3/1366_2000.jpg",
+        "seller_email": "maria@test.com",
     },
 
-    # ── MÚSICA › Instrumentos ── guitarras ────────────────────────────────────
+    # ── MÚSICA › Instrumentos ─────────────────────────────────────────────────
     {
         "name": "Guitarra Fender Stratocaster 80s",
         "name_en": "Fender Stratocaster 80s Guitar",
@@ -970,9 +1034,8 @@ PRODUCTS_DATA = [
         "price": 650.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "guitarras",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
+        "seller_email": "maria@test.com",
     },
-
-    # ── pianos ────────────────────────────────────────────────────────────────
     {
         "name": "Piano Casio CT-310 Vintage",
         "name_en": "Vintage Casio CT-310 Piano",
@@ -981,9 +1044,8 @@ PRODUCTS_DATA = [
         "price": 90.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "pianos",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
+        "seller_email": "maria@test.com",
     },
-
-    # ── baterias ──────────────────────────────────────────────────────────────
     {
         "name": "Batería Pearl Export 90s",
         "name_en": "Pearl Export 90s Drum Kit",
@@ -992,9 +1054,8 @@ PRODUCTS_DATA = [
         "price": 400.00, "stock": 1, "discount": 10.0, "condition": "used",
         "item_slug": "baterias",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
+        "seller_email": "maria@test.com",
     },
-
-    # ── otros-instrumentos ────────────────────────────────────────────────────
     {
         "name": "Trompeta Yamaha YTR-2320 Vintage",
         "name_en": "Vintage Yamaha YTR-2320 Trumpet",
@@ -1003,9 +1064,10 @@ PRODUCTS_DATA = [
         "price": 220.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-instrumentos",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
+              "seller_email": "maria@test.com",
     },
 
-    # ── TECNOLOGÍA › Ordenadores ── ibm ──────────────────────────────────────
+    # ── TECNOLOGÍA › Ordenadores ──────────────────────────────────────────────
     {
         "name": "IBM PC XT 5160",
         "name_en": "IBM PC XT 5160",
@@ -1014,9 +1076,8 @@ PRODUCTS_DATA = [
         "price": 200.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "ibm",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── commodore (tecnología) ────────────────────────────────────────────────
     {
         "name": "Commodore 64 Completo",
         "name_en": "Complete Commodore 64",
@@ -1025,9 +1086,8 @@ PRODUCTS_DATA = [
         "price": 130.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "commodore",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── amiga ─────────────────────────────────────────────────────────────────
     {
         "name": "Amiga 500",
         "name_en": "Amiga 500",
@@ -1036,9 +1096,8 @@ PRODUCTS_DATA = [
         "price": 160.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "amiga",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── amstrad-tech ──────────────────────────────────────────────────────────
     {
         "name": "Amstrad PC 1512",
         "name_en": "Amstrad PC 1512",
@@ -1047,9 +1106,8 @@ PRODUCTS_DATA = [
         "price": 110.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "amstrad-tech",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Amstrad_CPC464.jpg/1024px-Amstrad_CPC464.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── macintosh ─────────────────────────────────────────────────────────────
     {
         "name": "Apple Macintosh 128K",
         "name_en": "Apple Macintosh 128K",
@@ -1058,9 +1116,8 @@ PRODUCTS_DATA = [
         "price": 450.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "macintosh",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── otros-ordenadores ─────────────────────────────────────────────────────
     {
         "name": "Spectrum ZX 48K",
         "name_en": "ZX Spectrum 48K",
@@ -1069,9 +1126,10 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "otros-ordenadores",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── TECNOLOGÍA › Telefonía ── telefonos-fijos ─────────────────────────────
+    # ── TECNOLOGÍA › Telefonía ────────────────────────────────────────────────
     {
         "name": "Teléfono Ericofon",
         "name_en": "Ericofon Fixed Phone",
@@ -1080,9 +1138,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "telefonos-fijos",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── moviles-antiguos ──────────────────────────────────────────────────────
     {
         "name": "Nokia 3310 Azul",
         "name_en": "Blue Nokia 3310",
@@ -1091,6 +1148,7 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Motorola Razr V3 Plata",
@@ -1100,6 +1158,7 @@ PRODUCTS_DATA = [
         "price": 50.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://m.media-amazon.com/images/I/81EAOq92VaL.jpg",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Sony Ericsson T610",
@@ -1109,9 +1168,8 @@ PRODUCTS_DATA = [
         "price": 30.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://m.media-amazon.com/images/I/81EAOq92VaL.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── smartphones ───────────────────────────────────────────────────────────
     {
         "name": "iPhone 2G Original",
         "name_en": "Original iPhone 2G",
@@ -1120,9 +1178,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "smartphones",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── accesorios-telefonia ──────────────────────────────────────────────────
     {
         "name": "Cargador Nokia Universal",
         "name_en": "Universal Nokia Charger",
@@ -1131,9 +1188,8 @@ PRODUCTS_DATA = [
         "price": 8.00, "stock": 15, "discount": 0.0, "condition": "new",
         "item_slug": "accesorios-telefonia",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── otros-telefonia ───────────────────────────────────────────────────────
     {
         "name": "Walkie Talkie Motorola TalkAbout",
         "name_en": "Motorola TalkAbout Walkie Talkie",
@@ -1142,9 +1198,10 @@ PRODUCTS_DATA = [
         "price": 28.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "otros-telefonia",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── TECNOLOGÍA › Fotografía ── camaras-analogicas ─────────────────────────
+    # ── TECNOLOGÍA › Fotografía ───────────────────────────────────────────────
     {
         "name": "Olympus OM-1",
         "name_en": "Olympus OM-1",
@@ -1153,6 +1210,7 @@ PRODUCTS_DATA = [
         "price": 150.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "camaras-analogicas",
         "image_url": "https://cameramarket.es/cdn/shop/files/OlympusOM-1-Camera_0.png",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Canon AE-1 Program",
@@ -1162,6 +1220,7 @@ PRODUCTS_DATA = [
         "price": 180.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "camaras-analogicas",
         "image_url": "https://cameramarket.es/cdn/shop/files/CapturadePantalla2023-10-05alas20.05.01.png",
+        "seller_email": "carlos@test.com",
     },
     {
         "name": "Pentax K1000",
@@ -1171,9 +1230,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "camaras-analogicas",
         "image_url": "https://cdn.assets.lomography.com/ea/26f4004e1867352fe39b5b45504d2e7623031a/1216x794x2.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── polaroid ──────────────────────────────────────────────────────────────
     {
         "name": "Polaroid 600",
         "name_en": "Polaroid 600",
@@ -1182,9 +1240,8 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "polaroid",
         "image_url": "https://tiendainstant.com/1306-thickbox_default/polaroid-600.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── super-8 ───────────────────────────────────────────────────────────────
     {
         "name": "Cámara Super 8 Chinon",
         "name_en": "Chinon Super 8 Camera",
@@ -1193,9 +1250,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "super-8",
         "image_url": "https://cameramarket.es/cdn/shop/files/OlympusOM-1-Camera_0.png",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── objetivos-antiguos ────────────────────────────────────────────────────
     {
         "name": "Objetivo Takumar 50mm f/1.4",
         "name_en": "Takumar 50mm f/1.4 Lens",
@@ -1204,9 +1260,8 @@ PRODUCTS_DATA = [
         "price": 75.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "objetivos-antiguos",
         "image_url": "https://cameramarket.es/cdn/shop/files/OlympusOM-1-Camera_0.png",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── otros-fotografia ──────────────────────────────────────────────────────
     {
         "name": "Proyector de Diapositivas Leitz",
         "name_en": "Leitz Slide Projector",
@@ -1215,9 +1270,10 @@ PRODUCTS_DATA = [
         "price": 70.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-fotografia",
         "image_url": "https://cameramarket.es/cdn/shop/files/OlympusOM-1-Camera_0.png",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── TECNOLOGÍA › Accesorios Tech ── ratones-antiguos ─────────────────────
+    # ── TECNOLOGÍA › Accesorios Tech ──────────────────────────────────────────
     {
         "name": "Ratón Microsoft Serial Vintage",
         "name_en": "Vintage Microsoft Serial Mouse",
@@ -1226,9 +1282,8 @@ PRODUCTS_DATA = [
         "price": 25.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "ratones-antiguos",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── teclados-mecanicos ────────────────────────────────────────────────────
     {
         "name": "Teclado IBM Model M",
         "name_en": "IBM Model M Keyboard",
@@ -1237,9 +1292,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "teclados-mecanicos",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── cables ────────────────────────────────────────────────────────────────
     {
         "name": "Cable SCART Dorado",
         "name_en": "Gold SCART Cable",
@@ -1248,9 +1302,8 @@ PRODUCTS_DATA = [
         "price": 8.00, "stock": 20, "discount": 0.0, "condition": "new",
         "item_slug": "cables",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
-
-    # ── otros-accesorios-tech ─────────────────────────────────────────────────
     {
         "name": "Módem 56K US Robotics",
         "name_en": "US Robotics 56K Modem",
@@ -1259,9 +1312,10 @@ PRODUCTS_DATA = [
         "price": 20.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "otros-accesorios-tech",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Commodore64.jpg/1024px-Commodore64.jpg",
+        "seller_email": "carlos@test.com",
     },
 
-    # ── MODA › Ropa ── camisetas-80s-90s ─────────────────────────────────────
+    # ── MODA ──────────────────────────────────────────────────────────────────
     {
         "name": "Camiseta Nirvana Nevermind 90s",
         "name_en": "Nirvana Nevermind 90s T-Shirt",
@@ -1270,6 +1324,7 @@ PRODUCTS_DATA = [
         "price": 22.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "camisetas-80s-90s",
         "image_url": "https://media.camden.es/product/camiseta-nirvana-unisex-nevermind-album-800x800.jpg",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Camiseta AC/DC Back in Black Tour",
@@ -1279,9 +1334,8 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "camisetas-80s-90s",
         "image_url": "https://media.camden.es/product/camiseta-nirvana-unisex-nevermind-album-800x800.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── sudaderas ─────────────────────────────────────────────────────────────
     {
         "name": "Sudadera Champion Vintage",
         "name_en": "Vintage Champion Sweatshirt",
@@ -1290,9 +1344,8 @@ PRODUCTS_DATA = [
         "price": 38.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "sudaderas",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSep2jVyni3fNTPvcuEB5a72p7TfWok-Xf__Q&s",
+        "seller_email": "maria@test.com",
     },
-
-    # ── chaquetas ─────────────────────────────────────────────────────────────
     {
         "name": "Chaqueta Levi's Trucker Vintage",
         "name_en": "Vintage Levi's Trucker Jacket",
@@ -1301,9 +1354,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "chaquetas",
         "image_url": "https://lsco.scene7.com/is/image/lsco/501540107-alt2-pdp-lse",
+        "seller_email": "maria@test.com",
     },
-
-    # ── chandales-clasicos ────────────────────────────────────────────────────
     {
         "name": "Chándal Adidas Firebird Vintage",
         "name_en": "Vintage Adidas Firebird Tracksuit",
@@ -1312,9 +1364,8 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 3, "discount": 15.0, "condition": "used",
         "item_slug": "chandales-clasicos",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSep2jVyni3fNTPvcuEB5a72p7TfWok-Xf__Q&s",
+        "seller_email": "maria@test.com",
     },
-
-    # ── levis ─────────────────────────────────────────────────────────────────
     {
         "name": "Vaqueros Levi's 501 Vintage",
         "name_en": "Vintage Levi's 501 Jeans",
@@ -1323,9 +1374,8 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "levis",
         "image_url": "https://lsco.scene7.com/is/image/lsco/501540107-alt2-pdp-lse",
+        "seller_email": "maria@test.com",
     },
-
-    # ── MODA › Zapatos ── zapatos ─────────────────────────────────────────────
     {
         "name": "Zapatos Oxford Vintage",
         "name_en": "Vintage Oxford Shoes",
@@ -1334,9 +1384,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "zapatos",
         "image_url": "https://www.opticauniversitaria.es/dw/image/v2/BJDL_PRD/on/demandware.static/-/Sites-optica-master-catalog/default/dw4a6a13e1/images/hi-res/2025/RAYBAN25/RB-2140/159953/0RB2140__901__P21__shad__qt.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── zapatillas ────────────────────────────────────────────────────────────
     {
         "name": "Zapatillas Nike Air Max 90",
         "name_en": "Nike Air Max 90 Sneakers",
@@ -1345,9 +1394,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "zapatillas",
         "image_url": "https://www.dooerssneakers.com/images/nike-zapatillas-hombre-air-max-90-drift-lateral-exterior-1001014908-1200x1200-d",
+        "seller_email": "maria@test.com",
     },
-
-    # ── botas ─────────────────────────────────────────────────────────────────
     {
         "name": "Botas Doc Martens 1460",
         "name_en": "Doc Martens 1460 Boots",
@@ -1356,9 +1404,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "botas",
         "image_url": "https://www.dooerssneakers.com/images/nike-zapatillas-hombre-air-max-90-drift-lateral-exterior-1001014908-1200x1200-d",
+        "seller_email": "maria@test.com",
     },
-
-    # ── otros-zapatos ─────────────────────────────────────────────────────────
     {
         "name": "Sandalias Birkenstock Arizona Vintage",
         "name_en": "Vintage Birkenstock Arizona Sandals",
@@ -1367,9 +1414,8 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "otros-zapatos",
         "image_url": "https://www.dooerssneakers.com/images/nike-zapatillas-hombre-air-max-90-drift-lateral-exterior-1001014908-1200x1200-d",
+        "seller_email": "maria@test.com",
     },
-
-    # ── MODA › Joyería y Relojes ── anillos ───────────────────────────────────
     {
         "name": "Anillo de Plata Años 70",
         "name_en": "70s Silver Ring",
@@ -1378,9 +1424,8 @@ PRODUCTS_DATA = [
         "price": 28.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "anillos",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── pendientes ────────────────────────────────────────────────────────────
     {
         "name": "Pendientes Vintage Clip Dorados",
         "name_en": "Vintage Gold Clip-On Earrings",
@@ -1389,9 +1434,8 @@ PRODUCTS_DATA = [
         "price": 15.00, "stock": 6, "discount": 0.0, "condition": "used",
         "item_slug": "pendientes",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── collares ──────────────────────────────────────────────────────────────
     {
         "name": "Collar Medallón Años 70",
         "name_en": "70s Medallion Necklace",
@@ -1400,9 +1444,8 @@ PRODUCTS_DATA = [
         "price": 22.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "collares",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── relojes ───────────────────────────────────────────────────────────────
     {
         "name": "Reloj Casio F-91W",
         "name_en": "Casio F-91W Watch",
@@ -1411,6 +1454,7 @@ PRODUCTS_DATA = [
         "price": 18.00, "stock": 15, "discount": 0.0, "condition": "new",
         "item_slug": "relojes",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Reloj Seiko 5 Automático Vintage",
@@ -1420,9 +1464,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
         "item_slug": "relojes",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── otros-joyeria-relojes ─────────────────────────────────────────────────
     {
         "name": "Broche Camafeo Vintage",
         "name_en": "Vintage Cameo Brooch",
@@ -1431,9 +1474,8 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "otros-joyeria-relojes",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
+        "seller_email": "maria@test.com",
     },
-
-    # ── MODA › Accesorios ── bolsos ───────────────────────────────────────────
     {
         "name": "Bolso Gucci Vintage GG Canvas",
         "name_en": "Vintage Gucci GG Canvas Bag",
@@ -1442,9 +1484,8 @@ PRODUCTS_DATA = [
         "price": 250.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "bolsos",
         "image_url": "https://www.opticauniversitaria.es/dw/image/v2/BJDL_PRD/on/demandware.static/-/Sites-optica-master-catalog/default/dw4a6a13e1/images/hi-res/2025/RAYBAN25/RB-2140/159953/0RB2140__901__P21__shad__qt.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── rinoneras ─────────────────────────────────────────────────────────────
     {
         "name": "Riñonera Fila Vintage",
         "name_en": "Vintage Fila Fanny Pack",
@@ -1453,9 +1494,8 @@ PRODUCTS_DATA = [
         "price": 20.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "rinoneras",
         "image_url": "https://www.opticauniversitaria.es/dw/image/v2/BJDL_PRD/on/demandware.static/-/Sites-optica-master-catalog/default/dw4a6a13e1/images/hi-res/2025/RAYBAN25/RB-2140/159953/0RB2140__901__P21__shad__qt.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── gafas ─────────────────────────────────────────────────────────────────
     {
         "name": "Gafas Ray-Ban Wayfarer Vintage",
         "name_en": "Vintage Ray-Ban Wayfarer Sunglasses",
@@ -1464,9 +1504,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "gafas",
         "image_url": "https://www.opticauniversitaria.es/dw/image/v2/BJDL_PRD/on/demandware.static/-/Sites-optica-master-catalog/default/dw4a6a13e1/images/hi-res/2025/RAYBAN25/RB-2140/159953/0RB2140__901__P21__shad__qt.png",
+        "seller_email": "maria@test.com",
     },
-
-    # ── parches ───────────────────────────────────────────────────────────────
     {
         "name": "Parche Led Zeppelin Bordado",
         "name_en": "Embroidered Led Zeppelin Patch",
@@ -1475,6 +1514,7 @@ PRODUCTS_DATA = [
         "price": 5.00, "stock": 30, "discount": 0.0, "condition": "new",
         "item_slug": "parches",
         "image_url": "https://media.camden.es/product/camiseta-nirvana-unisex-nevermind-album-800x800.jpg",
+        "seller_email": "maria@test.com",
     },
     {
         "name": "Pack 10 Parches Rock Vintage",
@@ -1484,9 +1524,10 @@ PRODUCTS_DATA = [
         "price": 18.00, "stock": 8, "discount": 10.0, "condition": "new",
         "item_slug": "parches",
         "image_url": "https://media.camden.es/product/camiseta-nirvana-unisex-nevermind-album-800x800.jpg",
+        "seller_email": "maria@test.com",
     },
 
-    # ── COLECCIONISMO › Figuras ── action-figures-80s-90s ─────────────────────
+    # ── COLECCIONISMO ─────────────────────────────────────────────────────────
     {
         "name": "Figura He-Man Masters of the Universe",
         "name_en": "He-Man Masters of the Universe Figure",
@@ -1495,6 +1536,7 @@ PRODUCTS_DATA = [
         "price": 28.00, "stock": 3, "discount": 15.0, "condition": "used",
         "item_slug": "action-figures-80s-90s",
         "image_url": "https://tajmahalcomics.com/wp-content/uploads/2024/01/x_matthyd17.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Figura Leonardo TMNT",
@@ -1504,6 +1546,7 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "action-figures-80s-90s",
         "image_url": "https://m.media-amazon.com/images/I/61FLOrTtrIL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Figura Optimus Prime G1",
@@ -1513,9 +1556,8 @@ PRODUCTS_DATA = [
         "price": 80.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "action-figures-80s-90s",
         "image_url": "https://m.media-amazon.com/images/I/61FLOrTtrIL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── figuras-anime ─────────────────────────────────────────────────────────
     {
         "name": "Figura Mazinger Z Japonesa",
         "name_en": "Japanese Mazinger Z Figure",
@@ -1524,6 +1566,7 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "figuras-anime",
         "image_url": "https://m.media-amazon.com/images/I/71i2t-c7JWL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Figura Dragon Ball Z Goku",
@@ -1533,9 +1576,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "figuras-anime",
         "image_url": "https://m.media-amazon.com/images/I/71i2t-c7JWL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── resina-edicion-limitada ───────────────────────────────────────────────
     {
         "name": "Figura Evangelion Unit 01 Resina",
         "name_en": "Evangelion Unit 01 Resin Figure",
@@ -1544,9 +1586,8 @@ PRODUCTS_DATA = [
         "price": 180.00, "stock": 1, "discount": 0.0, "condition": "new",
         "item_slug": "resina-edicion-limitada",
         "image_url": "https://m.media-amazon.com/images/I/71i2t-c7JWL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── juguetes-antiguos ─────────────────────────────────────────────────────
     {
         "name": "Pista Scalextric Años 80",
         "name_en": "80s Scalextric Track",
@@ -1555,6 +1596,7 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "juguetes-antiguos",
         "image_url": "https://tajmahalcomics.com/wp-content/uploads/2024/01/x_matthyd17.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Etch-a-Sketch Original",
@@ -1564,9 +1606,8 @@ PRODUCTS_DATA = [
         "price": 18.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "juguetes-antiguos",
         "image_url": "https://tajmahalcomics.com/wp-content/uploads/2024/01/x_matthyd17.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-figuras ─────────────────────────────────────────────────────────
     {
         "name": "Figura Star Wars Han Solo Kenner",
         "name_en": "Star Wars Han Solo Kenner Figure",
@@ -1575,9 +1616,8 @@ PRODUCTS_DATA = [
         "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "otros-figuras",
         "image_url": "https://m.media-amazon.com/images/I/61FLOrTtrIL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── COLECCIONISMO › Cartas ── pokemon ─────────────────────────────────────
     {
         "name": "Carta Pikachu Base Set Holo",
         "name_en": "Pikachu Base Set Holo Card",
@@ -1586,6 +1626,7 @@ PRODUCTS_DATA = [
         "price": 60.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "pokemon",
         "image_url": "https://m.media-amazon.com/images/I/51MxHNZf0GL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Carta Charizard Holo Base Set 1999",
@@ -1595,9 +1636,8 @@ PRODUCTS_DATA = [
         "price": 250.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "pokemon",
         "image_url": "https://m.media-amazon.com/images/I/81y6KqdilQL._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── magic ─────────────────────────────────────────────────────────────────
     {
         "name": "Carta Magic Black Lotus Alpha",
         "name_en": "Alpha Magic Black Lotus Card",
@@ -1606,6 +1646,7 @@ PRODUCTS_DATA = [
         "price": 500.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "magic",
         "image_url": "https://i.ebayimg.com/00/s/MTYwMFgxMTU2/z/2pgAAOSwoaNePCCr/$_57.JPG",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Lote 50 Cartas Magic Vintage",
@@ -1615,9 +1656,8 @@ PRODUCTS_DATA = [
         "price": 80.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "magic",
         "image_url": "https://i.ebayimg.com/00/s/MTYwMFgxMTU2/z/2pgAAOSwoaNePCCr/$_57.JPG",
+        "seller_email": "alex@test.com",
     },
-
-    # ── yugioh ────────────────────────────────────────────────────────────────
     {
         "name": "Carta Red-Eyes Black Dragon 1ª Ed",
         "name_en": "Red-Eyes Black Dragon 1st Ed Card",
@@ -1626,9 +1666,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "yugioh",
         "image_url": "https://images.saymedia-content.com/.image/t_share/MTc0NDYwODA5NDc1OTI1MzUy/top-10-cards-you-need-for-your-red-eyes-black-dragon-yu-gi-oh-deck.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-cartas ──────────────────────────────────────────────────────────
     {
         "name": "Lote Cromos Panini Mundial 82",
         "name_en": "Panini World Cup 82 Sticker Lot",
@@ -1637,9 +1676,8 @@ PRODUCTS_DATA = [
         "price": 30.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "otros-cartas",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── COLECCIONISMO › Ediciones Limitadas ── ediciones-numeradas ─────────────
     {
         "name": "Litografía Star Wars Numerada 1/500",
         "name_en": "Numbered Star Wars Lithograph 1/500",
@@ -1648,9 +1686,8 @@ PRODUCTS_DATA = [
         "price": 150.00, "stock": 1, "discount": 0.0, "condition": "new",
         "item_slug": "ediciones-numeradas",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── descatalogadas ────────────────────────────────────────────────────────
     {
         "name": "Game Boy Light Edición Japonesa",
         "name_en": "Japanese Game Boy Light Edition",
@@ -1659,9 +1696,8 @@ PRODUCTS_DATA = [
         "price": 220.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "descatalogadas",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png",
+        "seller_email": "alex@test.com",
     },
-
-    # ── rarezas ───────────────────────────────────────────────────────────────
     {
         "name": "Cartucho Prototipo NES",
         "name_en": "NES Prototype Cartridge",
@@ -1670,189 +1706,8 @@ PRODUCTS_DATA = [
         "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "rarezas",
         "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
+        "seller_email": "alex@test.com",
     },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },  {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-      {
-        "name": "Cartucho Prototipo NES",
-        "name_en": "NES Prototype Cartridge",
-        "description": "Cartucho prototipo NES sin lanzamiento comercial, rarísimo.",
-        "description_en": "NES prototype cartridge never commercially released, very rare.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
-        "item_slug": "rarezas",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
-    },
-    
-
-    # ── otros-ediciones-limitadas ─────────────────────────────────────────────
     {
         "name": "Set LEGO Classic Space 928 Vintage",
         "name_en": "Vintage LEGO Classic Space 928",
@@ -1861,9 +1716,8 @@ PRODUCTS_DATA = [
         "price": 400.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-ediciones-limitadas",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── COLECCIONISMO › Libros, Comics, Revistas ── primeras-ediciones ─────────
     {
         "name": "Don Quijote Facsímil 1ª Edición 1605",
         "name_en": "Don Quixote Facsimile 1st Edition 1605",
@@ -1872,9 +1726,8 @@ PRODUCTS_DATA = [
         "price": 180.00, "stock": 2, "discount": 0.0, "condition": "new",
         "item_slug": "primeras-ediciones",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── ediciones-especiales (libros) ─────────────────────────────────────────
     {
         "name": "El Señor de los Anillos Ilustrado Tolkien",
         "name_en": "Illustrated Lord of the Rings Tolkien",
@@ -1883,9 +1736,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "new",
         "item_slug": "ediciones-especiales",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── descatalogados (libros) ───────────────────────────────────────────────
     {
         "name": "Guía Oficial Zelda Ocarina of Time",
         "name_en": "Official Zelda Ocarina of Time Guide",
@@ -1894,9 +1746,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "descatalogados",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── marvel ────────────────────────────────────────────────────────────────
     {
         "name": "Amazing Fantasy #15 Réplica Certificada",
         "name_en": "Amazing Fantasy #15 Certified Replica",
@@ -1905,9 +1756,8 @@ PRODUCTS_DATA = [
         "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "marvel",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── dc-comics ─────────────────────────────────────────────────────────────
     {
         "name": "Detective Comics #27 Réplica",
         "name_en": "Detective Comics #27 Replica",
@@ -1916,9 +1766,8 @@ PRODUCTS_DATA = [
         "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "dc-comics",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── posters-originales ────────────────────────────────────────────────────
     {
         "name": "Póster Star Wars Original 1977",
         "name_en": "Original Star Wars Poster 1977",
@@ -1927,9 +1776,8 @@ PRODUCTS_DATA = [
         "price": 120.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "posters-originales",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── publicidad ────────────────────────────────────────────────────────────
     {
         "name": "Revista Micromania Nº1 1988",
         "name_en": "Micromania Magazine No.1 1988",
@@ -1938,6 +1786,7 @@ PRODUCTS_DATA = [
         "price": 40.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "publicidad",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Cartel Publicitario Coca-Cola 1950",
@@ -1947,9 +1796,8 @@ PRODUCTS_DATA = [
         "price": 65.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "publicidad",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-libros-comics-revistas ──────────────────────────────────────────
     {
         "name": "Catálogo IKEA 1975",
         "name_en": "1975 IKEA Catalogue",
@@ -1958,9 +1806,8 @@ PRODUCTS_DATA = [
         "price": 25.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "otros-libros-comics-revistas",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── COLECCIONISMO › Otros Coleccionables ── monedas ───────────────────────
     {
         "name": "Moneda Peseta 1 Pta 1947",
         "name_en": "1947 Spanish Peseta Coin",
@@ -1969,6 +1816,7 @@ PRODUCTS_DATA = [
         "price": 8.00, "stock": 10, "discount": 0.0, "condition": "used",
         "item_slug": "monedas",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Lote 20 Monedas Pesetas",
@@ -1978,9 +1826,8 @@ PRODUCTS_DATA = [
         "price": 30.00, "stock": 4, "discount": 0.0, "condition": "used",
         "item_slug": "monedas",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── sellos ────────────────────────────────────────────────────────────────
     {
         "name": "Colección Sellos España 1930s",
         "name_en": "Spain 1930s Stamp Collection",
@@ -1989,9 +1836,8 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "sellos",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── postales ──────────────────────────────────────────────────────────────
     {
         "name": "Postal Fotográfica Barcelona 1910",
         "name_en": "Old Barcelona Photographic Postcard 1910",
@@ -2000,6 +1846,7 @@ PRODUCTS_DATA = [
         "price": 12.00, "stock": 5, "discount": 0.0, "condition": "used",
         "item_slug": "postales",
         "image_url": "https://i.blogs.es/bd03d8/nova-et-accurata-tabula-hispaniae-1652/650_1200.jpg",
+        "seller_email": "alex@test.com",
     },
     {
         "name": "Mapa Antiguo España 1652",
@@ -2009,9 +1856,8 @@ PRODUCTS_DATA = [
         "price": 35.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "postales",
         "image_url": "https://i.blogs.es/bd03d8/nova-et-accurata-tabula-hispaniae-1652/650_1200.jpg",
+        "seller_email": "alex@test.com",
     },
-
-    # ── otros-coleccionables ──────────────────────────────────────────────────
     {
         "name": "Mechero Zippo Vintage",
         "name_en": "Vintage Zippo Lighter",
@@ -2020,6 +1866,7 @@ PRODUCTS_DATA = [
         "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "otros-coleccionables",
         "image_url": "https://i.ebayimg.com/images/g/7o0AAOSweE9j9C4U/s-l1200.jpg",
+        "seller_email": "alex@test.com",
     },
 ]
 
@@ -2056,6 +1903,7 @@ def reset_data():
     OrderDetail.query.delete()
     Order.query.delete()
     Product.query.delete()
+    Seller.query.delete()
     User.query.delete()
     db.session.commit()
     print("  [OK] Datos eliminados.")
@@ -2064,6 +1912,11 @@ def reset_data():
 def seed_users():
     print("\n👤 Seeding usuarios...")
     users = []
+    role_map = {
+        "buyer":  RoleName.buyer,
+        "seller": RoleName.seller,
+        "admin":  RoleName.admin,
+    }
     for u in USERS_DATA:
         existing = User.query.filter_by(email=u["email"]).first()
         if existing:
@@ -2075,16 +1928,60 @@ def seed_users():
                 last_name=u["last_name"],
                 email=u["email"],
                 is_active=True,
+                role=role_map.get(u.get("role", "buyer"), RoleName.buyer),
             )
             user.set_password(u["password"])
             db.session.add(user)
             users.append(user)
-            print(f"  [OK]   {u['email']}")
+            print(f"  [OK]   {u['email']} [{u.get('role', 'buyer')}]")
     db.session.flush()
     return users
 
 
-def seed_products():
+def seed_sellers():
+    """Crea los perfiles de vendedor para los usuarios con role=seller."""
+    print("\n🏪 Seeding vendedores...")
+    sellers = {}
+    status_map = {
+        "pending":  SellerStatus.pending,
+        "verified": SellerStatus.verified,
+        "rejected": SellerStatus.rejected,
+    }
+    for s in SELLERS_DATA:
+        user = User.query.filter_by(email=s["email"]).first()
+        if not user:
+            print(f"  [WARN] Usuario no encontrado: {s['email']}")
+            continue
+
+        existing = Seller.query.filter_by(user_id=user.id).first()
+        if existing:
+            print(f"  [SKIP] {s['store_name']}")
+            sellers[s["email"]] = existing
+            continue
+
+        seller = Seller(
+            user_id=user.id,
+            store_name=s["store_name"],
+            description=s["description"],
+            phone=s["phone"],
+            nif_cif=s["nif_cif"],
+            iban=s["iban"],
+            account_holder=s["account_holder"],
+            origin_address=s["origin_address"],
+            origin_city=s["origin_city"],
+            origin_zip=s["origin_zip"],
+            origin_country=s["origin_country"],
+            status=status_map.get(s.get("status", "pending"), SellerStatus.pending),
+        )
+        db.session.add(seller)
+        sellers[s["email"]] = seller
+        print(f"  [OK]   {s['store_name']} [{s.get('status', 'pending')}]")
+
+    db.session.flush()
+    return sellers
+
+
+def seed_products(sellers):
     print("\n📦 Seeding productos...")
     products = []
     skipped_slugs = set()
@@ -2106,6 +2003,11 @@ def seed_products():
                 skipped_slugs.add(p["item_slug"])
             continue
 
+        seller = sellers.get(p["seller_email"])
+        if not seller:
+            print(f"  [WARN] Vendedor no encontrado: {p['seller_email']} — omitiendo {p['name']}")
+            continue
+
         product = Product(
             name={"es": p["name"], "en": p.get("name_en", p["name"])},
             description={
@@ -2117,6 +2019,7 @@ def seed_products():
             discount=p["discount"],
             condition=p.get("condition", "used"),
             item_id=item.id,
+            seller_id=seller.id,
             image_url=p["image_url"],
             created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 365)),
         )
@@ -2124,7 +2027,7 @@ def seed_products():
         products.append(product)
         cond = p.get("condition", "used")
         disc = f" 🏷️ -{p['discount']}%" if p["discount"] > 0 else ""
-        print(f"  [OK]   {p['name']} [{cond}]{disc} — {p['price']}€")
+        print(f"  [OK]   {p['name']} [{cond}]{disc} — {p['price']}€ → {p['seller_email']}")
 
     db.session.flush()
     print(f"\n  Total productos: {len(products)}")
@@ -2134,31 +2037,33 @@ def seed_products():
 def seed_orders(users, products):
     """
     Crea pedidos con TODOS los estados garantizados.
-    Distribuye los estados de forma que cada uno aparezca al menos 2 veces.
+    Solo los buyers y admins hacen pedidos.
     """
     print("\n🛒 Seeding pedidos...")
     orders = []
     all_statuses = list(Status)
     all_payments = list(Payment)
 
+    # Solo usuarios no vendedores hacen pedidos
+    buyers = [u for u in users if u.role != RoleName.seller]
+
     # Cola de estados garantizados (cada estado aparece al menos 3 veces)
     status_queue = all_statuses * 3
     random.shuffle(status_queue)
 
-    for user in users:
+    for user in buyers:
         n_orders = random.randint(3, 6)
         for _ in range(n_orders):
             n_prods = random.randint(1, 4)
             order_products = random.sample(products, min(n_prods, len(products)))
 
-            subtotal     = round(sum(p.price * (1 - p.discount / 100) for p in order_products), 2)
-            tax          = round(subtotal * 0.21, 2)
-            shipping     = round(random.uniform(3.5, 9.99), 2)
-            total_price  = round(subtotal + tax + shipping, 2)
+            subtotal    = round(sum(p.price * (1 - p.discount / 100) for p in order_products), 2)
+            tax         = round(subtotal * 0.21, 2)
+            shipping    = round(random.uniform(3.5, 9.99), 2)
+            total_price = round(subtotal + tax + shipping, 2)
 
             status = status_queue.pop(0) if status_queue else random.choice(all_statuses)
 
-            # Fecha coherente con el estado
             days_ago = random.randint(1, 30)
             if status == Status.delivered:
                 days_ago = random.randint(7, 180)
@@ -2191,7 +2096,6 @@ def seed_orders(users, products):
     db.session.flush()
     print(f"\n  Total pedidos: {len(orders)}")
 
-    # Verificar que todos los estados están presentes
     status_counts = {}
     for o in orders:
         status_counts[o.status.value] = status_counts.get(o.status.value, 0) + 1
@@ -2203,22 +2107,18 @@ def seed_orders(users, products):
 
 
 def seed_reviews(users, products, orders):
-    """
-    Reviews solo para pedidos entregados.
-    Ratings distribuidos con sesgo hacia positivos pero con negativos presentes.
-    """
+    """Reviews solo para pedidos entregados."""
     print("\n⭐ Seeding reviews...")
     count = 0
     delivered = [o for o in orders if o.status == Status.delivered]
 
-    # Asegurar que todos los ratings (1-5) aparecen
     forced_ratings = [1, 2, 3, 4, 5] * 2
     random.shuffle(forced_ratings)
 
     for order in delivered:
         details = list(order.order_details)
         for detail in details:
-            if random.random() > 0.35:  # 65% de probabilidad de review
+            if random.random() > 0.35:
                 exists = Review.query.filter_by(
                     user_id=order.user_id,
                     product_id=detail.product_id,
@@ -2256,7 +2156,9 @@ def seed_reviews(users, products, orders):
 def seed_favorites(users, products):
     print("\n❤️  Seeding favoritos...")
     count = 0
-    for user in users:
+    # Solo buyers tienen favoritos
+    buyers = [u for u in users if u.role != RoleName.seller]
+    for user in buyers:
         n = random.randint(4, 10)
         fav_pool = random.sample(products, min(n, len(products)))
         for product in fav_pool:
@@ -2287,7 +2189,8 @@ if __name__ == "__main__":
                 reset_data()
 
             users    = seed_users()
-            products = seed_products()
+            sellers  = seed_sellers()
+            products = seed_products(sellers)
 
             if not products:
                 print("\n⚠️  Sin productos — ejecuta seed_categories.py primero.")
@@ -2303,11 +2206,12 @@ if __name__ == "__main__":
             print("✅ Seed completado con éxito.")
             print("═" * 50)
             print(f"\n  👤 Usuarios:   {len(users)}")
+            print(f"  🏪 Vendedores: {len(sellers)}")
             print(f"  📦 Productos:  {len(products)}")
             print(f"  🛒 Pedidos:    {len(orders)}")
             print(f"\n📋 Credenciales:")
             for u in USERS_DATA:
-                print(f"   {u['email']:30} / {u['password']}")
+                print(f"   {u['email']:30} / {u['password']:12} [{u.get('role', 'buyer')}]")
 
         except Exception as e:
             db.session.rollback()
