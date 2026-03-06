@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 01b340eb84f8
+Revision ID: d3e0ff940c97
 Revises: 
-Create Date: 2026-03-02 17:41:17.373922
+Create Date: 2026-03-05 19:14:01.931574
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '01b340eb84f8'
+revision = 'd3e0ff940c97'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -67,19 +67,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('order',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('total_price', sa.Float(), nullable=False),
-    sa.Column('tax', sa.Float(), nullable=False),
-    sa.Column('subtotal', sa.Float(), nullable=False),
-    sa.Column('payment_method', sa.Enum('credit_card', 'bizum', name='payment'), nullable=False),
-    sa.Column('shipping_cost', sa.Float(), nullable=False),
-    sa.Column('status', sa.Enum('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('subcategory',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.JSON(), nullable=False),
@@ -89,19 +76,6 @@ def upgrade():
     sa.Column('position', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('incident',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('title', sa.String(length=255), nullable=False),
-    sa.Column('description', sa.String(length=1000), nullable=False),
-    sa.Column('status', sa.Enum('open', 'in_progress', 'resolved', 'rejected', name='incident_status'), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('order_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('item',
@@ -115,18 +89,34 @@ def upgrade():
     sa.ForeignKeyConstraint(['subcategory_id'], ['subcategory.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('shipment',
+    op.create_table('order',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('shipping_code', sa.String(length=100), nullable=False),
-    sa.Column('tracking_number', sa.String(length=100), nullable=True),
-    sa.Column('estimated_delivery_date', sa.DateTime(), nullable=True),
-    sa.Column('shipping_date', sa.DateTime(), nullable=True),
-    sa.Column('delivery_date', sa.DateTime(), nullable=True),
-    sa.Column('shipment_status', sa.Enum('PENDING', 'SHIPPED', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED', name='shipmentstatus'), nullable=False),
-    sa.Column('order_id', sa.Integer(), nullable=False),
-    sa.Column('carrier_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['carrier_id'], ['carrier.id'], ),
+    sa.Column('total_price', sa.Float(), nullable=False),
+    sa.Column('tax', sa.Float(), nullable=False),
+    sa.Column('subtotal', sa.Float(), nullable=False),
+    sa.Column('payment_method', sa.Enum('credit_card', 'bizum', name='payment'), nullable=False),
+    sa.Column('shipping_cost', sa.Float(), nullable=False),
+    sa.Column('status', sa.Enum('cart', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('shipping_address_id', sa.Integer(), nullable=True),
+    sa.Column('billing_address_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['billing_address_id'], ['address.id'], ),
+    sa.ForeignKeyConstraint(['shipping_address_id'], ['address.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('incident',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.String(length=255), nullable=False),
+    sa.Column('description', sa.String(length=1000), nullable=False),
+    sa.Column('status', sa.Enum('open', 'in_progress', 'resolved', 'rejected', name='incident_status'), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('order_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('product',
@@ -143,6 +133,20 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['item.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('shipment',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('shipping_code', sa.String(length=100), nullable=False),
+    sa.Column('tracking_number', sa.String(length=100), nullable=True),
+    sa.Column('estimated_delivery_date', sa.DateTime(), nullable=True),
+    sa.Column('shipping_date', sa.DateTime(), nullable=True),
+    sa.Column('delivery_date', sa.DateTime(), nullable=True),
+    sa.Column('shipment_status', sa.Enum('PENDING', 'SHIPPED', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED', name='shipmentstatus'), nullable=False),
+    sa.Column('order_id', sa.Integer(), nullable=False),
+    sa.Column('carrier_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['carrier_id'], ['carrier.id'], ),
+    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('favorite',
@@ -187,12 +191,12 @@ def downgrade():
     op.drop_table('review')
     op.drop_table('order_detail')
     op.drop_table('favorite')
-    op.drop_table('product')
     op.drop_table('shipment')
-    op.drop_table('item')
+    op.drop_table('product')
     op.drop_table('incident')
-    op.drop_table('subcategory')
     op.drop_table('order')
+    op.drop_table('item')
+    op.drop_table('subcategory')
     op.drop_table('address')
     op.drop_table('user')
     op.drop_table('category')

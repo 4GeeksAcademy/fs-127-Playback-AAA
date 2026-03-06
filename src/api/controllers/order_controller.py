@@ -252,7 +252,7 @@ def checkout():
 
     order.payment_method = payment_method
 
-    order.status = Status.pending
+    order.status = Status.confirmed
 
 
     db.session.commit()
