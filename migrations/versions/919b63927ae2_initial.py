@@ -1,21 +1,16 @@
 """initial
 
-<<<<<<<< HEAD:migrations/versions/d8dc5bb7c3ab_initial.py
-Revision ID: d8dc5bb7c3ab
+Revision ID: 919b63927ae2
 Revises: 
-Create Date: 2026-02-25 18:24:14.031039
-========
-Revision ID: 5da89afdbded
-Revises: 
-Create Date: 2026-02-25 18:25:54.832542
->>>>>>>> 19729757ea8907716a21d61728f46cfa7eb3b2bd:migrations/versions/5da89afdbded_initial.py
+Create Date: 2026-03-01 16:50:27.270400
 
 """
 from alembic import op
 import sqlalchemy as sa
 
 
-revision = '5da89afdbded'
+# revision identifiers, used by Alembic.
+revision = '919b63927ae2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,9 +30,9 @@ def upgrade():
     )
     op.create_table('category',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=80), nullable=False),
+    sa.Column('name', sa.JSON(), nullable=False),
     sa.Column('slug', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.String(length=500), nullable=False),
+    sa.Column('description', sa.JSON(), nullable=True),
     sa.Column('image_url', sa.String(length=255), nullable=True),
     sa.Column('position', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -87,9 +82,9 @@ def upgrade():
     )
     op.create_table('subcategory',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=80), nullable=False),
+    sa.Column('name', sa.JSON(), nullable=False),
     sa.Column('slug', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.String(length=500), nullable=True),
+    sa.Column('description', sa.JSON(), nullable=True),
     sa.Column('image_url', sa.String(length=255), nullable=True),
     sa.Column('position', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
@@ -111,9 +106,9 @@ def upgrade():
     )
     op.create_table('item',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=100), nullable=False),
+    sa.Column('name', sa.JSON(), nullable=False),
     sa.Column('slug', sa.String(length=120), nullable=False),
-    sa.Column('description', sa.String(length=500), nullable=True),
+    sa.Column('description', sa.JSON(), nullable=True),
     sa.Column('image_url', sa.String(length=255), nullable=True),
     sa.Column('position', sa.Integer(), nullable=False),
     sa.Column('subcategory_id', sa.Integer(), nullable=False),
@@ -144,6 +139,7 @@ def upgrade():
     sa.Column('weight', sa.Float(), nullable=True),
     sa.Column('stock', sa.Integer(), nullable=False),
     sa.Column('discount', sa.Float(), nullable=False),
+    sa.Column('condition', sa.Enum('new', 'used', 'refurbished', 'broken', name='productcondition'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['item.id'], ),

@@ -59,6 +59,22 @@ export const PageDetailProduct = () => {
     },
   ];
 
+const handleCheckout = async () => {
+  const token = store.token || localStorage.getItem("token");
+
+  if (!token) {
+    alert("Debes iniciar sesión para comprar");
+    return;
+  }
+
+  const [order, orderError] = await orderServices.createOrder(product.id, token);
+  if (orderError) return console.error(orderError);
+
+  const [checkout, checkoutError] = await orderServices.checkout(order.order_id, token);
+  if (checkoutError) return console.error(checkoutError);
+
+  if (checkout.url) window.location.href = checkout.url;
+};
   return (
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
       <div className="flex flex-col lg:flex-row gap-10">
@@ -145,6 +161,10 @@ export const PageDetailProduct = () => {
       <ReviewRating product={product} />
 
       {hasBought && <ReviewForm productId={id} orderId={orderId} />}
+
+
+      <button onClick={handleCheckout}>Pagar</button>
+
     </div>
   );
 };

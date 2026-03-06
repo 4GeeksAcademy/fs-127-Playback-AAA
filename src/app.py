@@ -14,12 +14,19 @@ from datetime import timedelta
 from flask_jwt_extended import JWTManager
 import cloudinary                         
 import cloudinary.uploader   
+import stripe 
+
 
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
+
+
+#API STRIPE La busca en el .env
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
 
 # from models import Person
 
