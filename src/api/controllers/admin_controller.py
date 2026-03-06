@@ -2,6 +2,7 @@ from flask import request, jsonify, abort, Blueprint
 from flask_jwt_extended import jwt_required
 from api.models import db
 from api.models.seller import Seller, SellerStatus
+from api.models.user import User, RoleName        # ← añadir
 from api.utils import require_role
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -49,9 +50,24 @@ def update_seller_status(seller_id):
     try:
         new_status = SellerStatus(body["status"])
     except ValueError:
-        abort(400, description=f"Estado inválido: {body['status']}. Usa: pending, verified, rejected")
+        abort(400, description=f"Estado inválido: {body['status']}")
 
     seller.status = new_status
+
+    # Guardar motivo de rechazo si se proporciona, limpiar si se aprueba
+    if new_status == SellerStatus.rejected:
+        seller.rejection_reason = body.get("rejection_reason") or None
+    else:
+        seller.rejection_reason = None
+
+    # Cambiar rol del usuario según el estado
+    user = User.query.get(seller.user_id)
+    if user:
+        if new_status == SellerStatus.verified:
+            user.role = RoleName.seller
+        elif new_status in (SellerStatus.rejected, SellerStatus.pending):
+            user.role = RoleName.buyer
+
     db.session.commit()
 
     return jsonify({

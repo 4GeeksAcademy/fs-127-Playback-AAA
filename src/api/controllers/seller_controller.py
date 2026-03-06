@@ -8,46 +8,37 @@ seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
 
 
 # -------------------------
-# REGISTRO DE VENDEDOR
+# CREAR PERFIL DE VENDEDOR
 # -------------------------
 
-@seller_bp.route("/register", methods=["POST"])
-def register_seller():
+@seller_bp.route("/profile", methods=["POST"])
+@jwt_required()
+def create_seller_profile():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        abort(404, description="Usuario no encontrado")
+
+    if Seller.query.filter_by(user_id=user_id).first():
+        abort(409, description="Ya tienes un perfil de vendedor")
+
     body = request.get_json()
     if not body:
         abort(400, description="El body no puede estar vacío")
 
-    # ── Validar campos obligatorios ──────────────────────────────────────────
-    required_user   = ["name", "last_name", "email", "password"]
-    required_seller = ["store_name", "nif_cif", "iban", "account_holder",
-                       "origin_address", "origin_city", "origin_zip", "origin_country"]
-
-    for field in required_user + required_seller:
+    required = ["store_name", "nif_cif", "iban", "account_holder",
+                "origin_address", "origin_city", "origin_zip", "origin_country"]
+    for field in required:
         if field not in body or not body[field]:
             abort(400, description=f"El campo '{field}' es obligatorio")
-
-    if User.query.filter_by(email=body["email"]).first():
-        abort(409, description="Ya existe un usuario con ese email")
 
     if Seller.query.filter_by(nif_cif=body["nif_cif"]).first():
         abort(409, description="Ya existe un vendedor con ese NIF/CIF")
 
     try:
-        # ── Crear usuario con rol seller ─────────────────────────────────────
-        new_user = User(
-            name=body["name"],
-            last_name=body["last_name"],
-            email=body["email"],
-            is_active=True,
-            role=RoleName.seller
-        )
-        new_user.set_password(body["password"])
-        db.session.add(new_user)
-        db.session.flush()
-
-        # ── Crear perfil de vendedor ─────────────────────────────────────────
-        new_seller = Seller(
-            user_id=new_user.id,
+        seller = Seller(
+            user_id=user_id,
             store_name=body["store_name"],
             description=body.get("description"),
             phone=body.get("phone"),
@@ -60,18 +51,17 @@ def register_seller():
             origin_country=body["origin_country"],
             status=SellerStatus.pending
         )
-        db.session.add(new_seller)
+        db.session.add(seller)
         db.session.commit()
 
         return jsonify({
-            "msg": "Solicitud de vendedor recibida, pendiente de aprobación",
-            "user": new_user.serialize(),
-            "seller": new_seller.serialize()
+            "msg": "Perfil de vendedor creado correctamente",
+            "seller": seller.serialize()
         }), 201
 
     except Exception as error:
         db.session.rollback()
-        abort(500, description=f"Error al registrar vendedor: {str(error)}")
+        abort(500, description=f"Error al crear perfil: {str(error)}")
 
 
 # -------------------------
@@ -119,6 +109,32 @@ def update_seller_profile():
 
     if not updated:
         abort(400, description="No hay datos para actualizar")
+        
+    # Si está rechazado y reenvía, vuelve a pending y se limpia el motivo
+    if seller.status == SellerStatus.rejected:
+        seller.status = SellerStatus.pending
+        seller.rejection_reason = None
 
     db.session.commit()
     return jsonify({"msg": "Perfil actualizado correctamente", "seller": seller.serialize()}), 200
+
+# -------------------------
+# BORRAR PERFIL
+# -------------------------
+
+@seller_bp.route("/me", methods=["DELETE"])
+@jwt_required()
+def delete_seller_profile():
+    user_id = get_jwt_identity()
+    seller = Seller.query.filter_by(user_id=user_id).first()
+
+    if not seller:
+        abort(404, description="Perfil de vendedor no encontrado")
+
+    # Solo se puede cancelar si no está verificado
+    if seller.status == SellerStatus.verified:
+        abort(403, description="No puedes cancelar una tienda ya verificada")
+
+    db.session.delete(seller)
+    db.session.commit()
+    return jsonify({"msg": "Solicitud cancelada"}), 200

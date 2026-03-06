@@ -14,9 +14,7 @@ import { PageDetailProduct } from "./pages/PageDetailProduct";
 import { PageFavorites } from "./pages/PageFavorites";
 import { SearchPage } from "./pages/SearchPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
-
 import Profile from "./pages/Profile";
-
 import { PrivateRoute } from "./components/PrivateRoute";
 
 export const router = createBrowserRouter(

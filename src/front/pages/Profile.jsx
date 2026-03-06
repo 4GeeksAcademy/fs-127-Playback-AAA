@@ -1,26 +1,29 @@
-import { useState } from "react";
-import ProfileSidebar from "../components/ProfileSidebar";
-import ProfileTopbar from "../components/ProfileTopbar";
-import ProfileDashboard from "../components/ProfileDashboard";
-import ProfileInfo from "../components/ProfileInfo";
-import ProfileSecurity from "../components/ProfileSecurity";
-import ProfileOrders from "../components/ProfileOrders";
-import ProfileAddresses from "../components/ProfileAddresses";
+import { useState } from 'react';
+import ProfileSidebar from '../components/ProfileSidebar';
+import ProfileTopbar from '../components/ProfileTopbar';
+import ProfileDashboard from '../components/ProfileDashboard';
+import ProfileInfo from '../components/ProfileInfo';
+import ProfileSecurity from '../components/ProfileSecurity';
+import ProfileOrders from '../components/ProfileOrders';
+import ProfileAddresses from '../components/ProfileAddresses';
+import ProfileRole from '../components/Profile/ProfileRole/ProfileRole';
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isOpen, setIsOpen] = useState(false);
 
   const renderContent = () => {
     switch (activeTab) {
-      case "info":
+      case 'info':
         return <ProfileInfo />;
-      case "security": 
+      case 'security':
         return <ProfileSecurity />;
-      case "orders":
+      case 'orders':
         return <ProfileOrders />;
-      case "addresses":
+      case 'addresses':
         return <ProfileAddresses />;
+      case 'seller':
+        return <ProfileRole />;
       default:
         return <ProfileDashboard />;
     }
@@ -38,9 +41,7 @@ const Profile = () => {
       <div className="flex-1 flex flex-col">
         <ProfileTopbar setIsOpen={setIsOpen} />
 
-        <main className="p-6 md:p-10">
-          {renderContent()}
-        </main>
+        <main className="p-6 md:p-10">{renderContent()}</main>
       </div>
     </div>
   );

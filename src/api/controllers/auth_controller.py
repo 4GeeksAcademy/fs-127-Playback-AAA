@@ -70,4 +70,4 @@ def protected():
     user = User.query.get(current_user_id)
     if not user:
         abort(404, description="Usuario no encontrado")
-    return jsonify({"id": user.id, "email": user.email}), 200
+    return jsonify(user.serialize()), 200

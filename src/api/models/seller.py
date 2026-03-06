@@ -30,6 +30,7 @@ class Seller(db.Model):
     origin_zip: Mapped[str] = mapped_column(String(10), nullable=False)
     origin_country: Mapped[str] = mapped_column(String(100), nullable=False)
     status: Mapped[SellerStatus] = mapped_column(Enum(SellerStatus), nullable=False, default=SellerStatus.pending)
+    rejection_reason: Mapped[str] = mapped_column(Text(), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
 
     #---------------------ForeignKey
@@ -39,7 +40,7 @@ class Seller(db.Model):
     #----------------------RelationShip
 
     user: Mapped["User"] = relationship("User", back_populates="seller")
-    products: Mapped[list["Product"]] = relationship("Product", back_populates="seller")
+    products: Mapped[list["Product"]] = relationship("Product", back_populates="seller", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Seller {self.id}: {self.store_name} ({self.status.value})>'
@@ -57,8 +58,29 @@ class Seller(db.Model):
             "origin_zip": self.origin_zip,
             "origin_country": self.origin_country,
             "status": self.status.value,
+            "rejection_reason": self.rejection_reason,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "user": self.user.serialize() if self.user else None,
+        }
+        
+    def serialize_full(self, locale="es"):
+        """Datos completos incluyendo productos — solo para perfil detallado."""
+        return {
+            "id": self.id,
+            "store_name": self.store_name,
+            "description": self.description,
+            "phone": self.phone,
+            "nif_cif": self.nif_cif,
+            "logo_url": self.logo_url,
+            "origin_address": self.origin_address,
+            "origin_city": self.origin_city,
+            "origin_zip": self.origin_zip,
+            "origin_country": self.origin_country,
+            "status": self.status.value,
+            "rejection_reason": self.rejection_reason,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "user": self.user.serialize() if self.user else None,
+            "products": [p.serialize(locale) for p in self.products],
         }
 
     def serialize_public(self):
