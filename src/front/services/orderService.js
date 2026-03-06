@@ -23,5 +23,20 @@ async function createReview(body, token) {
     return [data, null];
 }
 
-const orderServices = { hasBought, createReview };
+async function getCart(token) {
+    const response = await fetch(`${backendUrl}/api/order/cart`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) return [null, data.description || "Error al cargar carrito"];
+
+    return [data, null];
+}
+
+const orderServices = { hasBought, createReview, getCart };
+
 export default orderServices;

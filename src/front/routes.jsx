@@ -13,7 +13,10 @@ import { PageProducts } from "./pages/PageProducts";
 import { PageDetailProduct } from "./pages/PageDetailProduct";
 import { PageFavorites } from "./pages/PageFavorites";
 import { SearchPage } from "./pages/SearchPage";
-
+import { PageCart } from "./pages/PageCart";
+import { Checkout } from "./pages/Checkout";
+import { MyOrders } from "./pages/MyOrders";
+import { ResetPassword } from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 
 import { PrivateRoute } from "./components/PrivateRoute";
@@ -31,6 +34,10 @@ export const router = createBrowserRouter(
         <Route path="/:userEmail/favorites" element={<PageFavorites />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/cart" element={<PageCart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/orders" element={<PrivateRoute><MyOrders /></PrivateRoute>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Route>
     )
 );
