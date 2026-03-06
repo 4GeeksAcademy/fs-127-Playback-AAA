@@ -1064,7 +1064,7 @@ PRODUCTS_DATA = [
         "price": 220.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-instrumentos",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
-        "seller_email": "maria@test.com",
+              "seller_email": "maria@test.com",
     },
 
     # ── TECNOLOGÍA › Ordenadores ──────────────────────────────────────────────

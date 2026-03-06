@@ -22,6 +22,7 @@ bcrypt = "*"
 deep-translator = "*"
 flask-migrate = "*"
 cloudinary = "*"
+stripe = "*"
 
 [requires]
 python_version = "3.13"
