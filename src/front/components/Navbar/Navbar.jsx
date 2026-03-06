@@ -47,10 +47,6 @@ export const Navbar = () => {
     navigate("/");
   };
 
-  const handleToggleDarkMode = () => {
-    document.documentElement.classList.toggle("dark");
-  };
-
   const handleSelectLanguage = (lang) => {
     i18n.changeLanguage(lang);
     setLangOpen(false);
@@ -108,7 +104,6 @@ export const Navbar = () => {
           {...sharedProps}
           userMenuOpen={userMenuOpen} setUserMenuOpen={setUserMenuOpen} userRef={userRef}
           loginOpen={loginOpen}       setLoginOpen={setLoginOpen}       loginRef={loginRef}
-          handleToggleDarkMode={handleToggleDarkMode}
         />
 
         {/* Acciones móvil — icono usuario + selector de idioma */}

@@ -1,26 +1,27 @@
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export const SearchHeader = ({
-  // Slugs — usados solo para saber si mostrar el breadcrumb y para navegación
-  category,
-  subcategory,
-  item,
-  q,
-  // Nombres — estos son los que se muestran al usuario
-  categoryName,
-  subcategoryName,
-  itemName,
-  // Estado
   loading,
   resultsCount,
-  // Callbacks para eliminar cada nivel del breadcrumb
-  onRemoveCategory,
-  onRemoveSubcategory,
-  onRemoveItem,
+  // Nombres traducidos, si no llegan usa el slug como fallback
+  categoryName: categoryNameProp,
+  subcategoryName: subcategoryNameProp,
+  itemName: itemNameProp,
 }) => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Título de la página: item > subcategoría > categoría > búsqueda > "Todos"
+  const q = searchParams.get("q") || "";
+  const category = searchParams.get("category") || "";
+  const subcategory = searchParams.get("subcategory") || "";
+  const item = searchParams.get("item") || "";
+
+  // Usa el nombre traducido si llega como prop, si no formatea el slug
+  const categoryName = categoryNameProp || category.replace(/-/g, " ");
+  const subcategoryName = subcategoryNameProp || subcategory.replace(/-/g, " ");
+  const itemName = itemNameProp || item.replace(/-/g, " ");
+
   const pageTitle = item
     ? itemName
     : subcategory
@@ -31,40 +32,55 @@ export const SearchHeader = ({
           ? `"${q}"`
           : t("search.allProducts");
 
+  const removeCategory = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("category");
+    next.delete("subcategory");
+    next.delete("item");
+    setSearchParams(next);
+  };
+
+  const removeSubcategory = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("subcategory");
+    next.delete("item");
+    setSearchParams(next);
+  };
+
+  const removeItem = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("item");
+    setSearchParams(next);
+  };
+
   return (
     <div className="mb-6">
-      {/* Breadcrumb — solo si hay al menos un filtro de categoría activo */}
       {(category || subcategory || item) && (
         <div className="flex items-center gap-1 flex-wrap mb-1">
-          {/* Categoría: al pulsar elimina categoría + subcategoría + item */}
           {category && (
             <button
-              onClick={onRemoveCategory}
+              onClick={removeCategory}
               className="text-xs tracking-widest text-theme-muted hover:text-red-500 capitalize transition"
             >
               {categoryName}
             </button>
           )}
-
-          {/* Subcategoría: al pulsar elimina subcategoría + item */}
           {subcategory && (
             <>
               <span className="text-xs text-theme-faint">›</span>
               <button
-                onClick={onRemoveSubcategory}
+                onClick={removeSubcategory}
                 className="text-xs tracking-widest text-theme-muted hover:text-red-500 capitalize transition"
               >
                 {subcategoryName}
               </button>
             </>
           )}
-
-          {/* Item: al pulsar solo elimina el item */}
           {item && (
             <>
               <span className="text-xs text-theme-faint">›</span>
               <button
-                onClick={onRemoveItem}
+                onClick={removeItem}
                 className="text-xs tracking-widest text-theme-muted hover:text-red-500 capitalize transition"
               >
                 {itemName}
@@ -74,7 +90,6 @@ export const SearchHeader = ({
         </div>
       )}
 
-      {/* Título y contador de resultados */}
       <h1 className="text-2xl font-semibold text-theme-text capitalize">
         {pageTitle}
       </h1>
