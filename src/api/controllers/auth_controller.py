@@ -1,12 +1,11 @@
 from flask import request, jsonify, abort, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from api.models import db
-from api.models.user import User
+from api.models.user import User, RoleName
 from extensions import mail
 from flask_mail import Message
 from datetime import timedelta
 import os
-
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -15,7 +14,7 @@ auth_bp = Blueprint('auth', __name__)
 def create_user():
     body = request.get_json()
     if not body:
-        abort(400, description="El body no puede estar vacio")
+        abort(400, description="El body no puede estar vacío")
 
     required_fields = ["name", "last_name", "email", "password"]
     for field in required_fields:
@@ -25,18 +24,24 @@ def create_user():
     if User.query.filter_by(email=body["email"]).first():
         abort(409, description="Ya existe un usuario con ese email")
 
+    # Solo buyer o seller están permitidos desde el registro público
+    requested_role = body.get("role", "buyer")
+    role_map = {"buyer": RoleName.buyer, "seller": RoleName.seller}
+    role = role_map.get(requested_role, RoleName.buyer)
+
     try:
         new_user = User(
             name=body["name"],
             last_name=body["last_name"],
             email=body["email"],
-            is_active=True
+            is_active=True,
+            role=role
         )
         #correo de bienvenida
         new_user.set_password(body["password"])
         db.session.add(new_user)
         db.session.commit()
-
+        
         msg = Message(
             subject="Bienvenido a Playback",
             recipients=[new_user.email],
@@ -66,7 +71,7 @@ def create_user():
 def login():
     body = request.get_json()
     if not body:
-        abort(400, description="El body no puede estar vacio")
+        abort(400, description="El body no puede estar vacío")
     if "email" not in body or "password" not in body:
         abort(400, description="Email y password son obligatorios")
 
@@ -87,8 +92,7 @@ def protected():
     user = User.query.get(current_user_id)
     if not user:
         abort(404, description="Usuario no encontrado")
-    return jsonify({"id": user.id, "email": user.email}), 200
-
+    return jsonify(user.serialize()), 200
 
 #recuperacion de contraseña 
 @auth_bp.route("/forgot-password", methods=["POST"])
@@ -130,7 +134,7 @@ def forgot_password():
     return jsonify({"msg": "Email enviado correctamente"}), 200
 
 
-#recuperacion de contraseña
+#cambio de contraseña
 @auth_bp.route("/reset-password", methods=["POST"])
 def reset_password():
 

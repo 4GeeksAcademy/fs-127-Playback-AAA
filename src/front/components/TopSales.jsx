@@ -9,7 +9,7 @@ import { useFavorites } from "../hooks/useFavorites";
 
 export const TopSales = () => {
   const { t } = useTranslation();
-  useFavorites(); 
+  useFavorites();
   const carouselRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,8 @@ export const TopSales = () => {
       <section className="mt-8">
         <div className="flex items-center justify-between my-4">
           <h2 className="text-lg font-semibold tracking-tight text-theme-text">
-            {t("product.outOfStock")}{" "}</h2>
+            {t("product.outOfStock")}{" "}
+          </h2>
         </div>
         <div className="flex gap-3">
           {[...Array(5)].map((_, i) => (
@@ -83,7 +84,7 @@ export const TopSales = () => {
         <div ref={carouselRef} className="flex gap-4 overflow-x-hidden">
           {products.map((p) => (
             <Link
-              to={`/PageDetailProduct/${p.id}`}
+              to={`/product/${p.id}`}
               key={p.id}
               className="w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-4rem)/5)] flex-none border border-theme-border bg-theme-bg overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200"
             >

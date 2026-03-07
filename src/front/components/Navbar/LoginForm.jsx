@@ -35,11 +35,6 @@ export const LoginForm = ({ onSuccess }) => {
     });
     setLoading(false);
 
-    dispatch({
-      type: "login",
-      payload: { token: data.token, user: data.user },
-    });
-
     // Cargar favoritos de la DB
     const [favorites] = await favoriteServices.getFavorites(data.token);
     if (favorites) {

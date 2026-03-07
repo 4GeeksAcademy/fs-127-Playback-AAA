@@ -27,7 +27,7 @@ export const ProductCard = ({ product }) => {
 
   return (
     <Link
-      to={`/PageDetailProduct/${product.id}`}
+      to={`/product/${product.id}`}
       className="group rounded-2xl border border-theme-border bg-theme-bg hover:shadow-lg transition overflow-hidden flex flex-col"
     >
       {/* Imagen con badges superpuestos */}

@@ -49,7 +49,11 @@ export const TopRatedSubcategories = () => {
           // Al hacer click navega a productos filtrando por categoría y subcategoría
           <div
             key={sub.id}
-            onClick={() => navigate(`/search?category=${sub.category_slug.toLowerCase()}&subcategory=${sub.slug.toLowerCase()}`)}
+            onClick={() =>
+              navigate(
+                `/products?category=${sub.category_slug.toLowerCase()}&subcategory=${sub.slug.toLowerCase()}`,
+              )
+            }
             className="cursor-pointer group hover:shadow-md transition-all duration-200 bg-theme-bg"
           >
             <img

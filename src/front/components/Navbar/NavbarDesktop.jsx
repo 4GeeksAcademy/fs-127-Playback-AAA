@@ -4,32 +4,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { LanguagePicker } from "./LanguagePicker";
 import { AuthPanel } from "./AuthPanel";
 
-export const NavbarDesktop = ({
-  // Usuario
-  store,
-  userEmail,
-  userLinks,
-  handleLogout,
-  // Menú usuario
-  userMenuOpen,
-  setUserMenuOpen,
-  userRef,
-  // Login / signup
-  loginOpen,
-  setLoginOpen,
-  loginRef,
-  authView,
-  setAuthView,
-  // Idioma y tema
-  langRefDesktop,
-  langOpen,
-  setLangOpen,
-  handleToggleDarkMode,
-  handleSelectLanguage,
-  // i18n
-  currentLang,
-  t,
-}) => (
+export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userMenuOpen, setUserMenuOpen, userRef, loginOpen, setLoginOpen, loginRef, authView, setAuthView, langRefDesktop, langOpen, setLangOpen, handleSelectLanguage, currentLang, t, }) => (
   <div className="hidden md:flex items-center gap-2 flex-shrink-0 ml-auto">
     {store.isAuthenticated ? (
       // ── Menú de usuario autenticado ──
@@ -121,7 +96,8 @@ export const NavbarDesktop = ({
       </div>
     )}
 
-    <ThemeToggle onToggle={handleToggleDarkMode} />
+    {/* ThemeToggle autosuficiente — no necesita props */}
+    <ThemeToggle />
     <LanguagePicker
       langRef={langRefDesktop}
       langOpen={langOpen}
