@@ -1,14 +1,8 @@
 """initial
 
-<<<<<<<< HEAD:migrations/versions/919b63927ae2_initial.py
-Revision ID: 919b63927ae2
+Revision ID: cb65ab105540
 Revises: 
-Create Date: 2026-03-01 16:50:27.270400
-========
-Revision ID: d3e0ff940c97
-Revises: 
-Create Date: 2026-03-05 19:14:01.931574
->>>>>>>> 29b89f34b6a73e67c8569c7ff68957f2763faf13:migrations/versions/d3e0ff940c97_initial.py
+Create Date: 2026-03-07 02:00:46.137330
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/919b63927ae2_initial.py
-revision = '919b63927ae2'
-========
-revision = 'd3e0ff940c97'
->>>>>>>> 29b89f34b6a73e67c8569c7ff68957f2763faf13:migrations/versions/d3e0ff940c97_initial.py
+revision = 'cb65ab105540'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -57,6 +47,7 @@ def upgrade():
     sa.Column('image_url', sa.String(length=500), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('role', sa.Enum('buyer', 'seller', 'admin', name='rolename'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -76,6 +67,28 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('seller',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('store_name', sa.String(length=120), nullable=False),
+    sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('phone', sa.String(length=20), nullable=True),
+    sa.Column('nif_cif', sa.String(length=20), nullable=False),
+    sa.Column('logo_url', sa.String(length=500), nullable=True),
+    sa.Column('iban', sa.String(length=34), nullable=False),
+    sa.Column('account_holder', sa.String(length=120), nullable=False),
+    sa.Column('origin_address', sa.String(length=255), nullable=False),
+    sa.Column('origin_city', sa.String(length=100), nullable=False),
+    sa.Column('origin_zip', sa.String(length=10), nullable=False),
+    sa.Column('origin_country', sa.String(length=100), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
+    sa.Column('rejection_reason', sa.Text(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('nif_cif'),
+    sa.UniqueConstraint('user_id')
     )
     op.create_table('subcategory',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -116,20 +129,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-<<<<<<<< HEAD:migrations/versions/919b63927ae2_initial.py
-    op.create_table('subcategory',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.JSON(), nullable=False),
-    sa.Column('slug', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
-    sa.Column('image_url', sa.String(length=255), nullable=True),
-    sa.Column('position', sa.Integer(), nullable=False),
-    sa.Column('category_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-========
->>>>>>>> 29b89f34b6a73e67c8569c7ff68957f2763faf13:migrations/versions/d3e0ff940c97_initial.py
     op.create_table('incident',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
@@ -146,14 +145,6 @@ def upgrade():
     op.create_table('product',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.JSON(), nullable=False),
-<<<<<<<< HEAD:migrations/versions/919b63927ae2_initial.py
-    sa.Column('slug', sa.String(length=120), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
-    sa.Column('image_url', sa.String(length=255), nullable=True),
-    sa.Column('position', sa.Integer(), nullable=False),
-    sa.Column('subcategory_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['subcategory_id'], ['subcategory.id'], ),
-========
     sa.Column('description', sa.JSON(), nullable=True),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('image_url', sa.Text(), nullable=True),
@@ -164,8 +155,9 @@ def upgrade():
     sa.Column('condition', sa.Enum('new', 'used', 'refurbished', 'broken', name='productcondition'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('item_id', sa.Integer(), nullable=False),
+    sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['item.id'], ),
->>>>>>>> 29b89f34b6a73e67c8569c7ff68957f2763faf13:migrations/versions/d3e0ff940c97_initial.py
+    sa.ForeignKeyConstraint(['seller_id'], ['seller.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('shipment',
@@ -182,25 +174,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-<<<<<<<< HEAD:migrations/versions/919b63927ae2_initial.py
-    op.create_table('product',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.JSON(), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
-    sa.Column('price', sa.Float(), nullable=False),
-    sa.Column('image_url', sa.Text(), nullable=True),
-    sa.Column('size', sa.String(), nullable=True),
-    sa.Column('weight', sa.Float(), nullable=True),
-    sa.Column('stock', sa.Integer(), nullable=False),
-    sa.Column('discount', sa.Float(), nullable=False),
-    sa.Column('condition', sa.Enum('new', 'used', 'refurbished', 'broken', name='productcondition'), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('item_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['item_id'], ['item.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-========
->>>>>>>> 29b89f34b6a73e67c8569c7ff68957f2763faf13:migrations/versions/d3e0ff940c97_initial.py
     op.create_table('favorite',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -249,6 +222,7 @@ def downgrade():
     op.drop_table('order')
     op.drop_table('item')
     op.drop_table('subcategory')
+    op.drop_table('seller')
     op.drop_table('address')
     op.drop_table('user')
     op.drop_table('category')
