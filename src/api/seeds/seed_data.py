@@ -46,7 +46,8 @@ USERS_DATA = [
     {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!",       "role": "buyer" },
     {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!",       "role": "buyer" },
     {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer" },
-    {"name": "PlayBack",  "last_name": "Admin",     "email": "playback_admin_1@protonmail.com", "password": "=SZ;u7r97Jib'$u", "role": "admin" },
+    {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",          "role": "admin" },
+
 ]
 
 
