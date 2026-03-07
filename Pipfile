@@ -23,6 +23,7 @@ deep-translator = "*"
 flask-migrate = "*"
 cloudinary = "*"
 stripe = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.13"

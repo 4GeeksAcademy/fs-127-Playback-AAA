@@ -36,12 +36,15 @@ export const PageDetailProduct = () => {
       });
     }
   }, [id, i18n.language]);
+
   if (!product)
     return (
       <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
         {t("product.noFound")}
       </div>
     );
+
+  // Comprobamos si el producto tiene stock disponible
   const inStock = product.stock == null ? true : product.stock > 0;
 
   const accordionItems = [
@@ -59,25 +62,27 @@ export const PageDetailProduct = () => {
     },
   ];
 
-const handleCheckout = async () => {
-  const token = store.token || localStorage.getItem("token");
+  const handleCheckout = async () => {
+    const token = store.token || localStorage.getItem("token");
 
-  if (!token) {
-    alert("Debes iniciar sesión para comprar");
-    return;
-  }
+    if (!token) {
+      alert("Debes iniciar sesión para comprar");
+      return;
+    }
 
-  const [order, orderError] = await orderServices.createOrder(product.id, token);
-  if (orderError) return console.error(orderError);
+    const [order, orderError] = await orderServices.createOrder(product.id, token);
+    if (orderError) return console.error(orderError);
 
-  const [checkout, checkoutError] = await orderServices.checkout(order.order_id, token);
-  if (checkoutError) return console.error(checkoutError);
+    const [checkout, checkoutError] = await orderServices.checkout(order.order_id, token);
+    if (checkoutError) return console.error(checkoutError);
 
-  if (checkout.url) window.location.href = checkout.url;
-};
+    if (checkout.url) window.location.href = checkout.url;
+  };
+
   return (
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
       <div className="flex flex-col lg:flex-row gap-10">
+
         {/* div Imagen  */}
         <div className="flex flex-col gap-3 lg:w-1/2">
           <div className="relative overflow-hidden bg-stone-100">
@@ -142,6 +147,8 @@ const handleCheckout = async () => {
               </>
             )}
           </div>
+
+          {/* Botón añadir al carrito */}
           <button
             disabled={!inStock}
             className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
@@ -161,7 +168,6 @@ const handleCheckout = async () => {
       <ReviewRating product={product} />
 
       {hasBought && <ReviewForm productId={id} orderId={orderId} />}
-
 
       <button onClick={handleCheckout}>Pagar</button>
 

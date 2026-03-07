@@ -33,17 +33,33 @@ export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userM
 
         {userMenuOpen && (
           <div className="absolute right-0 mt-2 w-52 bg-theme-bg border border-theme-border rounded-2xl shadow-xl py-1.5 z-50">
-            {userLinks.map(({ to, icon, label }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setUserMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted hover:text-theme-text transition"
-              >
-                <span className="text-base w-5 text-center">{icon}</span>
-                {label}
-              </Link>
-            ))}
+            {userLinks.map(({ to, icon, label }) => {
+              const cartTotal = store.cart.reduce((acc, item) => {
+                return acc + item.quantity;
+              }, 0);
+
+              const isCart = to === "/cart";
+
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 mx-1.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted hover:text-theme-text transition"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-base w-5 text-center">{icon}</span>
+                    {label}
+                  </div>
+
+                  {isCart && cartTotal > 0 && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                      {cartTotal}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
             <div className="my-1.5 mx-3 border-t border-theme-border-sm" />
             <button
               onClick={handleLogout}

@@ -11,6 +11,7 @@ class Payment(enum.Enum):
     bizum = "bizum"
 
 class Status(enum.Enum):
+    cart = "cart"
     pending = "pending"
     confirmed = "confirmed"
     processing = "processing"
@@ -33,6 +34,8 @@ class Order(db.Model):
     #---------------------ForeignKey
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    shipping_address_id: Mapped[int] = mapped_column(ForeignKey("address.id"), nullable=True)
+    billing_address_id: Mapped[int] = mapped_column(ForeignKey("address.id"), nullable=True)
 
     #----------------------RelationShip
     user: Mapped["User"] = relationship("User", back_populates="orders")
@@ -40,6 +43,8 @@ class Order(db.Model):
     shipment: Mapped["Shipment"] = relationship("Shipment", back_populates="order", uselist=False, cascade="all, delete-orphan")
     reviews: Mapped[list["Review"]] = relationship("Review", back_populates="order", cascade="all, delete-orphan")
     incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="order", cascade="all, delete-orphan")
+    shipping_address: Mapped["Address"] = relationship("Address", foreign_keys=[shipping_address_id])
+    billing_address: Mapped["Address"] = relationship("Address", foreign_keys=[billing_address_id])
 
 
     def serialize(self):
@@ -47,12 +52,13 @@ class Order(db.Model):
             "id": self.id,
             "total_price": self.total_price,
             "tax": self.tax,
-            "subtotal": self.subtotal,
             "payment_method": self.payment_method,
             "subtotal": self.subtotal,
             "shipping_cost": self.shipping_cost,
             "status": self.status,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "shipping_address": self.shipping_address.serialize() if self.shipping_address else None,
+            "billing_address": self.billing_address.serialize() if self.billing_address else None,
         }
 
     def serialize_with_user_id(self):
