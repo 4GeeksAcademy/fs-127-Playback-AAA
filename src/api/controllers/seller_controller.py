@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.models import db
 from api.models.user import User, RoleName
 from api.models.seller import Seller, SellerStatus
+from api.utils import generate_initial_avatar
 
 seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
 
@@ -36,6 +37,8 @@ def create_seller_profile():
     if Seller.query.filter_by(nif_cif=body["nif_cif"]).first():
         abort(409, description="Ya existe un vendedor con ese NIF/CIF")
 
+    logo_url = generate_initial_avatar(store_name=body.get("store_name"))
+    
     try:
         seller = Seller(
             user_id=user_id,
@@ -49,7 +52,8 @@ def create_seller_profile():
             origin_city=body["origin_city"],
             origin_zip=body["origin_zip"],
             origin_country=body["origin_country"],
-            status=SellerStatus.pending
+            status=SellerStatus.pending,
+            logo_url=logo_url
         )
         db.session.add(seller)
         db.session.commit()

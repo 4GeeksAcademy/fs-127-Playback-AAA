@@ -80,3 +80,21 @@ def require_permission(permission_name):
             return fn(*args, **kwargs)
         return wrapper
     return decorator
+
+
+def generate_initial_avatar(*, name=None, last_name=None, store_name=None):
+    """
+    Genera una URL de avatar con iniciales usando ui-avatars.com
+    - Usuarios: pasarle name y last_name
+    - Tiendas:  pasarle store_name
+    """
+    if store_name:
+        formatted = store_name
+    elif name and last_name:
+        formatted = f"{name}+{last_name}"
+    else:
+        raise ValueError("Debes pasar (name + last_name) o store_name")
+
+    return (
+        f"https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name={formatted}"
+    )

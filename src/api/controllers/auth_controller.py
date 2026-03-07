@@ -7,6 +7,7 @@ from flask_mail import Message
 from datetime import timedelta
 import os
 from api.emails import build_welcome_email, build_reset_password_email
+from api.utils import generate_initial_avatar
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -30,13 +31,15 @@ def create_user():
     role_map = {"buyer": RoleName.buyer, "seller": RoleName.seller}
     role = role_map.get(requested_role, RoleName.buyer)
 
+    image_url = generate_initial_avatar(name=body.get("name"), last_name=body.get("last_name"))
     try:
         new_user = User(
             name=body["name"],
             last_name=body["last_name"],
             email=body["email"],
             is_active=True,
-            role=role
+            role=role,
+            image_url=image_url
         )
         #correo de bienvenida
         new_user.set_password(body["password"])

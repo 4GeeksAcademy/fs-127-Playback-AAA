@@ -147,13 +147,13 @@ const ProfileInfo = () => {
 
         <div className="flex items-center gap-6">
           <img
-            src={
-              preview ||
-              user.image_url ||
-              "https://via.placeholder.com/150"
-            }
-            alt="Perfil"
             className="w-24 h-24 rounded-full object-cover border-4 border-gray-200"
+            src={user.image_url}
+            alt={user.name}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = `https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png`;
+            }}
           />
 
           <div>
