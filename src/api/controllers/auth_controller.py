@@ -6,6 +6,7 @@ from extensions import mail
 from flask_mail import Message
 from datetime import timedelta
 import os
+from api.emails import build_welcome_email, build_reset_password_email
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -42,21 +43,7 @@ def create_user():
         db.session.add(new_user)
         db.session.commit()
         
-        msg = Message(
-            subject="Bienvenido a Playback",
-            recipients=[new_user.email],
-            sender=("Playback", os.getenv("MAIL_USERNAME"))
-        )
-
-        msg.body = (
-            f"Hola {new_user.name},\n\n"
-            "Muchas gracias por unirte a Playback.\n\n"
-            "Tu cuenta ha sido creada correctamente.\n\n"
-            "Ya puedes iniciar sesión y comenzar a usar la plataforma.\n\n"
-            "Equipo Playback"
-        )
-
-        mail.send(msg)
+        mail.send(build_welcome_email(new_user))
 
         access_token = create_access_token(identity=str(new_user.id))
 
@@ -113,23 +100,10 @@ def forgot_password():
         expires_delta=timedelta(minutes=15)
     )
 
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-    reset_url = f"{frontend_url}/reset-password?token={token}"
+    frontend_url = os.getenv("FRONTEND_URL")
+    reset_url = f"{frontend_url}reset-password?token={token}"
 
-    msg = Message(
-        subject="Recuperación de contraseña",
-        recipients=[user.email]
-    )
-
-    msg.body = (
-        f"Hola {user.name},\n\n"
-        "Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n"
-        f"{reset_url}\n\n"
-        "Este enlace expira en 15 minutos.\n\n"
-        "Si no solicitaste este cambio, puedes ignorar este mensaje."
-    )
-
-    mail.send(msg)
+    mail.send(build_reset_password_email(user, reset_url))
 
     return jsonify({"msg": "Email enviado correctamente"}), 200
 
