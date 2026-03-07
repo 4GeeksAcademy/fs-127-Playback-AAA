@@ -26,7 +26,16 @@ async function createReview(body, token) {
     return [data, null];
 }
 
-
+async function getCart(token) {
+    const response = await fetch(`${backendUrl}/api/order/cart`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al cargar carrito"];
+    return [data, null];
+}
 
 async function createOrder(productId, token) {
   const response = await fetch(`${backendUrl}/api/order/create`, {
@@ -42,7 +51,6 @@ async function createOrder(productId, token) {
   return [data, null];
 }
 
-
 async function checkout(orderId, token) {
   const response = await fetch(`${backendUrl}/api/order/${orderId}/checkout`, {
     method: "POST",
@@ -53,7 +61,8 @@ async function checkout(orderId, token) {
   return [data, null];
 }
 
-const orderServices = { hasBought, createReview,createOrder, checkout };
+const orderServices = { hasBought, createReview, createOrder, checkout, getCart };
+
 export default orderServices;
 
 
