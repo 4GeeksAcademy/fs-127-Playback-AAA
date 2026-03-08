@@ -1,4 +1,4 @@
-from sqlalchemy import DateTime, Float,Enum,ForeignKey
+from sqlalchemy import DateTime, Float, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
@@ -11,13 +11,13 @@ class Payment(enum.Enum):
     bizum = "bizum"
 
 class Status(enum.Enum):
-    cart = "cart"
-    pending = "pending"
-    confirmed = "confirmed"
-    processing = "processing"
-    shipped = "shipped"
-    delivered = "delivered"
-    cancelled = "cancelled"
+    pending = "pending"         #--Está en el carrito
+    processing = "processing"   #--Se está procesando el pago
+    paid = "paid"               #--Pago confirmado
+    confirmed = "confirmed"     #--Vendedor recibe/abre el aviso
+    shipped = "shipped"         #--Vendedor confirma envió con el código de envío
+    delivered = "delivered"     #--Entregado
+    cancelled = "cancelled"     #--Cancelado
 
 
 class Order(db.Model):
@@ -29,6 +29,7 @@ class Order(db.Model):
     payment_method:Mapped[Payment] = mapped_column(Enum(Payment), nullable=False)
     shipping_cost: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     status:Mapped[Status] = mapped_column(Enum(Status), nullable=False)
+    stripe_payment_intent_id: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column( DateTime(),default=datetime.now(timezone.utc))
 
     #---------------------ForeignKey
@@ -52,13 +53,14 @@ class Order(db.Model):
             "id": self.id,
             "total_price": self.total_price,
             "tax": self.tax,
-            "payment_method": self.payment_method,
+            "payment_method": self.payment_method.value,
             "subtotal": self.subtotal,
             "shipping_cost": self.shipping_cost,
-            "status": self.status,
+            "status": self.status.value,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "shipping_address": self.shipping_address.serialize() if self.shipping_address else None,
             "billing_address": self.billing_address.serialize() if self.billing_address else None,
+            "stripe_payment_intent_id": self.stripe_payment_intent_id,
         }
 
     def serialize_with_user_id(self):

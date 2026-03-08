@@ -1,8 +1,8 @@
-"""initial
+"""empty message
 
-Revision ID: c94cdb05bdbe
+Revision ID: 93765f49b878
 Revises: 
-Create Date: 2026-03-08 16:43:15.285085
+Create Date: 2026-03-08 19:25:22.956180
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c94cdb05bdbe'
+revision = '93765f49b878'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -120,7 +120,8 @@ def upgrade():
     sa.Column('subtotal', sa.Float(), nullable=False),
     sa.Column('payment_method', sa.Enum('credit_card', 'bizum', name='payment'), nullable=False),
     sa.Column('shipping_cost', sa.Float(), nullable=False),
-    sa.Column('status', sa.Enum('cart', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'processing', 'paid', 'confirmed', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
+    sa.Column('stripe_payment_intent_id', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('shipping_address_id', sa.Integer(), nullable=True),
