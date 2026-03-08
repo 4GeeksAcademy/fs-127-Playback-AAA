@@ -4,6 +4,7 @@ from api.models import db
 from api.models.user import User, RoleName
 from api.models.seller import Seller, SellerStatus
 from api.utils import generate_initial_avatar
+import stripe
 
 seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
 
@@ -122,6 +123,7 @@ def update_seller_profile():
     db.session.commit()
     return jsonify({"msg": "Perfil actualizado correctamente", "seller": seller.serialize()}), 200
 
+
 # -------------------------
 # BORRAR PERFIL
 # -------------------------
@@ -142,3 +144,73 @@ def delete_seller_profile():
     db.session.delete(seller)
     db.session.commit()
     return jsonify({"msg": "Solicitud cancelada"}), 200
+
+
+# -------------------------
+# CREAR CUENTA STRIPE CONNECT
+# -------------------------
+
+@seller_bp.route("/stripe/connect", methods=["POST"])
+@jwt_required()
+def create_stripe_connect_account():
+    user_id = get_jwt_identity()
+    seller = Seller.query.filter_by(user_id=user_id).first()
+
+    if not seller:
+        abort(404, description="Perfil de vendedor no encontrado")
+
+    # Si ya tiene cuenta, no creamos otra
+    if seller.stripe_account_id:
+        return jsonify({
+            "message": "La cuenta Stripe ya existe",
+            "stripe_account_id": seller.stripe_account_id
+        }), 200
+
+    try:
+        account = stripe.Account.create(
+            type="express",
+            country="ES",
+            email=seller.user.email,
+            capabilities={
+                "card_payments": {"requested": True},
+                "transfers": {"requested": True},
+            },
+        )
+
+        seller.stripe_account_id = account.id
+        db.session.commit()
+
+        return jsonify({"stripe_account_id": account.id}), 201
+
+    except stripe.error.StripeError as e:
+        abort(500, description=f"Error de Stripe: {str(e)}")
+
+
+# -------------------------
+# LINK DE ONBOARDING STRIPE
+# -------------------------
+
+@seller_bp.route("/stripe/onboarding", methods=["GET"])
+@jwt_required()
+def get_stripe_onboarding_link():
+    user_id = get_jwt_identity()
+    seller = Seller.query.filter_by(user_id=user_id).first()
+
+    if not seller:
+        abort(404, description="Perfil de vendedor no encontrado")
+
+    if not seller.stripe_account_id:
+        abort(400, description="El vendedor no tiene cuenta Stripe. Llama primero a POST /seller/stripe/connect")
+
+    try:
+        account_link = stripe.AccountLink.create(
+            account=seller.stripe_account_id,
+            refresh_url="http://localhost:3000/seller/stripe/refresh",
+            return_url="http://localhost:3000/seller/stripe/return",
+            type="account_onboarding",
+        )
+
+        return jsonify({"onboarding_url": account_link.url}), 200
+
+    except stripe.error.StripeError as e:
+        abort(500, description=f"Error de Stripe: {str(e)}")

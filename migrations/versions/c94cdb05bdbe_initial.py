@@ -1,14 +1,8 @@
 """initial
 
-<<<<<<<< HEAD:migrations/versions/5aaf7bb1d3b2_initial.py
-Revision ID: 5aaf7bb1d3b2
+Revision ID: c94cdb05bdbe
 Revises: 
-Create Date: 2026-03-06 20:53:35.683375
-========
-Revision ID: cb65ab105540
-Revises: 
-Create Date: 2026-03-07 02:00:46.137330
->>>>>>>> 81cd182115012f3d9ed0214ba3461160668b2faf:migrations/versions/cb65ab105540_initial.py
+Create Date: 2026-03-08 16:43:15.285085
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/5aaf7bb1d3b2_initial.py
-revision = '5aaf7bb1d3b2'
-========
-revision = 'cb65ab105540'
->>>>>>>> 81cd182115012f3d9ed0214ba3461160668b2faf:migrations/versions/cb65ab105540_initial.py
+revision = 'c94cdb05bdbe'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -93,6 +83,7 @@ def upgrade():
     sa.Column('origin_country', sa.String(length=100), nullable=False),
     sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
     sa.Column('rejection_reason', sa.Text(), nullable=True),
+    sa.Column('stripe_account_id', sa.String(length=120), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
