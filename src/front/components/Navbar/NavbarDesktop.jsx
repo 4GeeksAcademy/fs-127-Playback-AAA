@@ -13,9 +13,16 @@ export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userM
           onClick={() => setUserMenuOpen(!userMenuOpen)}
           className="flex items-center gap-2 h-10 px-3 rounded-full border border-theme-border bg-theme-input hover:bg-theme-muted text-theme-secondary text-sm font-medium transition"
         >
-          <span className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-            {(store.user?.username || userEmail || "U")[0].toUpperCase()}
-          </span>
+        <img
+          className="w-6 h-6 rounded-full flex-shrink-0"
+          src={store.user?.image_url}
+          alt={store.user?.name}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = `https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png`;
+          }}
+        />
+
           <span className="max-w-[110px] truncate">
             {store.user?.username || userEmail}
           </span>

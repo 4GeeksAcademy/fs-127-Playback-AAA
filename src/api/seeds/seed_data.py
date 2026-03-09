@@ -38,15 +38,17 @@ from api.models.favorite import Favorite
 # ══════════════════════════════════════════════════════════════════════════════
 
 USERS_DATA = [
-    {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",                 "password": "Test1234!",       "role": "seller"},
-    {"name": "María",     "last_name": "López",     "email": "maria@test.com",                  "password": "Test1234!",       "role": "seller"},
-    {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",                   "password": "Test1234!",       "role": "seller"},
-    {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",                  "password": "Test1234!",       "role": "buyer" },
-    {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",                  "password": "Test1234!",       "role": "buyer" },
-    {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!",       "role": "buyer" },
-    {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!",       "role": "buyer" },
-    {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer" },
-    {"name": "PlayBack",  "last_name": "Admin",     "email": "playback_admin_1@protonmail.com", "password": "=SZ;u7r97Jib'$u", "role": "admin" },
+    {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",                 "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Carlos+Garcia"     },
+    {"name": "María",     "last_name": "López",     "email": "maria@test.com",                  "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Maria+Lopez"       },
+    {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",                   "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Alex+Martínez"     },
+    {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Lucía+Sánchez"     },
+    {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Pablo+Fernández"   },
+    {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Elena+Ruiz"        },
+    {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Javier+Moreno"     },
+    {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Ana+Jimenez"       },
+    {"name": "PlayBack",  "last_name": "Seller",    "email": "seller@playback.com",             "password": "Seller!",         "role": "seller",   "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
+    {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",          "role": "admin",    "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
+
 ]
 
 
@@ -1929,6 +1931,7 @@ def seed_users():
                 email=u["email"],
                 is_active=True,
                 role=role_map.get(u.get("role", "buyer"), RoleName.buyer),
+                image_url=u.get("image_url"),
             )
             user.set_password(u["password"])
             db.session.add(user)
