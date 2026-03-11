@@ -1,3 +1,4 @@
+import os
 from flask import request, jsonify, abort, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.models import db
@@ -205,8 +206,8 @@ def get_stripe_onboarding_link():
     try:
         account_link = stripe.AccountLink.create(
             account=seller.stripe_account_id,
-            refresh_url="http://localhost:3000/seller/stripe/refresh",
-            return_url="http://localhost:3000/seller/stripe/return",
+            refresh_url=f"{os.getenv('FRONTEND_URL')}seller/stripe/refresh",
+            return_url=f"{os.getenv('FRONTEND_URL')}seller/stripe/return",
             type="account_onboarding",
         )
 

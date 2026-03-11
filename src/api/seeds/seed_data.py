@@ -90,7 +90,7 @@ SELLERS_DATA = [
         "origin_zip": "28001",
         "origin_country": "España",
         "status": "verified",
-        "stripe_account_id": "acct_1T8kLqC8PDf7HCsD",
+        "stripe_account_id": "acct_1T999pFipMSWCWoO",
     },
     {
         "email": "maria@test.com",
@@ -106,7 +106,7 @@ SELLERS_DATA = [
         "origin_zip": "08007",
         "origin_country": "España",
         "status": "verified",
-        "stripe_account_id": "acct_1T8kLqC8PDf7HCsD",
+        "stripe_account_id": "acct_1T9rmyFv1VkR1kmz",
     },
     {
         "email": "alex@test.com",
@@ -122,7 +122,7 @@ SELLERS_DATA = [
         "origin_zip": "46002",
         "origin_country": "España",
         "status": "pending",
-        "stripe_account_id": "acct_1T8kLqC8PDf7HCsD",
+        "stripe_account_id": "acct_1T9rsRC9ziS9X0PW",
     },
 ]
 

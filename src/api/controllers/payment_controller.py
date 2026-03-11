@@ -85,6 +85,7 @@ def create_payment():
         intent = stripe.PaymentIntent.create(
             amount=amount_cents,
             currency="eur",
+            payment_method_types=["card"],
             metadata={
                 "order_id": str(order.id),
                 "user_id": str(user_id),
@@ -123,3 +124,74 @@ def create_payment():
 
     except stripe.error.StripeError as e:
         abort(500, description=f"Error de Stripe: {str(e)}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# POST /api/payment/webhook
+# Recibe eventos de Stripe y procesa el pago confirmado
+# ─────────────────────────────────────────────────────────────────────────────
+
+@payment_bp.route("/webhook", methods=["POST"])
+def stripe_webhook():
+    payload = request.get_data()
+    sig_header = request.headers.get("Stripe-Signature")
+    webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+    # Verifica que el evento viene realmente de Stripe
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+    except ValueError:
+        abort(400, description="Payload inválido")
+    except stripe.error.SignatureVerificationError:
+        abort(400, description="Firma inválida")
+
+    # Solo procesamos el evento de pago completado
+    if event["type"] == "payment_intent.succeeded":
+        intent = event["data"]["object"]
+        _handle_payment_succeeded(intent)
+
+    # Stripe espera un 200 para saber que recibimos el evento
+    return jsonify({"status": "ok"}), 200
+
+
+def _handle_payment_succeeded(intent):
+    """Procesa un pago confirmado — actualiza el pedido y transfiere a vendedores."""
+    order_id = intent.get("metadata", {}).get("order_id")
+    if not order_id:
+        return
+
+    order = Order.query.filter_by(id=int(order_id)).first()
+    if not order:
+        return
+
+    # Evita procesar el mismo pago dos veces
+    if order.status == Status.paid:
+        return
+
+    # Recupera el desglose de vendedores guardado en los metadatos
+    seller_breakdown_raw = intent.get("metadata", {}).get("seller_breakdown")
+    if seller_breakdown_raw:
+        try:
+            import ast
+            seller_breakdown = ast.literal_eval(seller_breakdown_raw)
+
+            # Transfiere a cada vendedor
+            for seller_id, data in seller_breakdown.items():
+                transfer_amount_cents = int(round(data["transfer_amount"] * 100))
+
+                if transfer_amount_cents > 0:
+                    stripe.Transfer.create(
+                        amount=transfer_amount_cents,
+                        currency="eur",
+                        destination=data["stripe_account_id"],
+                        transfer_group=f"order_{order_id}",
+                        metadata={"order_id": order_id, "seller_id": str(seller_id)},
+                    )
+
+        except Exception as e:
+            # Log del error pero no abortamos — el pedido se marca como pagado igualmente
+            print(f"[Webhook] Error al transferir a vendedores: {str(e)}")
+
+    # Actualiza el estado del pedido
+    order.status = Status.paid
+    db.session.commit()
