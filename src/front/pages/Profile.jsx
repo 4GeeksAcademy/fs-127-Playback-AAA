@@ -6,6 +6,7 @@ import ProfileInfo from '../components/ProfileInfo';
 import ProfileSecurity from '../components/ProfileSecurity';
 import ProfileOrders from '../components/ProfileOrders';
 import ProfileAddresses from '../components/ProfileAddresses';
+import ProfileIncidents from '../components/ProfileIncidents';
 import ProfileRole from '../components/Profile/ProfileRole/ProfileRole';
 
 const Profile = () => {
@@ -22,6 +23,8 @@ const Profile = () => {
         return <ProfileOrders />;
       case 'addresses':
         return <ProfileAddresses />;
+      case 'incidents':
+        return <ProfileIncidents />;
       case 'seller':
         return <ProfileRole />;
       default:

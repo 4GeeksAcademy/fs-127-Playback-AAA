@@ -37,8 +37,18 @@ const ProfileSidebar = ({ activeTab, setActiveTab }) => {
           Direcciones
         </div>
 
+        {/* ── Pedidos ────────────────────────── */}
+        <div onClick={() => setActiveTab("orders")} className={linkClass("orders")}>
+          📦 Pedidos
+        </div>
+
         <div onClick={() => setActiveTab("security")} className={linkClass("security")}>
           Seguridad
+        </div>
+
+        {/* ── Incidencias ────────────────────────── */}
+        <div onClick={() => setActiveTab("incidents")} className={linkClass("incidents")}>
+          ⚠️ Incidencias
         </div>
 
         {/* ── Seller / Admin ────────────────────────── */}
