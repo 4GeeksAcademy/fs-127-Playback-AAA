@@ -49,3 +49,12 @@ export const deleteSellerProfileService = async (token) => {
   if (!response.ok) throw new Error(json.description || json.msg || 'Error al cancelar');
   return json;
 };
+
+export const getMyProductsService = async (token) => {
+  const response = await fetch(`${BACKEND_URL}/api/seller/me/products`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const json = await response.json();
+  if (!response.ok) throw new Error(json.description || "Error al cargar productos");
+  return json;
+};
