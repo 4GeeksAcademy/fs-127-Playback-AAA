@@ -6,6 +6,7 @@ from deep_translator import GoogleTranslator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.models.order import Order, Status, Payment
 from api.models.orderdetail import OrderDetail
+from api.models.seller import Seller
 from api.models.product import Product
 import stripe
 import os
@@ -332,3 +333,80 @@ def confirm_order(order_id):
     order.status = Status.confirmed
     db.session.commit()
     return jsonify(order.serialize())
+
+
+
+@order_bp.route('/seller-orders', methods=['GET'])
+@jwt_required()
+def seller_orders():
+    user_id = int(get_jwt_identity())
+    seller = Seller.query.filter_by(user_id=user_id).first()
+    if not seller:
+        abort(403, description="No tienes perfil de vendedor")
+
+    # Pedidos que contienen al menos un producto tuyo
+    orders = Order.query.join(OrderDetail).join(Product).filter(
+        Product.seller_id == seller.id,
+        Order.status != Status.cart
+    ).order_by(Order.created_at.desc()).all()
+
+    result = []
+    for order in orders:
+        # Solo los productos de este pedido que son tuyos
+        my_details = [d for d in order.order_details if d.product.seller_id == seller.id]
+        result.append({
+    "id": order.id,
+    "status": order.status.value,
+    "total_price": order.total_price,
+    "subtotal": order.subtotal,
+    "tax": order.tax,
+    "shipping_cost": order.shipping_cost,
+    "created_at": order.created_at.isoformat(),
+    "payment_method": order.payment_method.value if order.payment_method else None,
+    "customer": order.user.name if order.user else None,
+    "customer_email": order.user.email if order.user else None,
+    "shipping_address": order.shipping_address.serialize() if order.shipping_address else None,
+    "billing_address": order.billing_address.serialize() if order.billing_address else None,
+    "products": [{
+        "id": d.product.id,
+        "name": d.product.name.get("es"),
+        "price": d.product.price,
+        "quantity": d.quantity,
+        "image_url": d.product.image_url,
+    } for d in my_details]
+})
+
+    return jsonify(result), 200
+
+
+@order_bp.route('/seller-orders/<int:order_id>/status', methods=['PATCH'])
+@jwt_required()
+def update_seller_order_status(order_id):
+    user_id = int(get_jwt_identity())
+    seller = Seller.query.filter_by(user_id=user_id).first()
+    if not seller:
+        abort(403, description="No tienes perfil de vendedor")
+
+    order = Order.query.get_or_404(order_id)
+
+    # Verificar que el pedido tiene productos de este seller
+    has_products = any(d.product.seller_id == seller.id for d in order.order_details)
+    if not has_products:
+        abort(403, description="Este pedido no es tuyo")
+
+    body = request.get_json()
+    new_status = body.get("status")
+
+    VALID_TRANSITIONS = {
+        "confirmed":  ["processing", "cancelled"],
+        "processing": ["shipped",    "cancelled"],
+        "shipped":    ["delivered"],
+    }
+
+    current = order.status.value
+    if new_status not in VALID_TRANSITIONS.get(current, []):
+        abort(400, description=f"No puedes pasar de '{current}' a '{new_status}'")
+
+    order.status = Status(new_status)
+    db.session.commit()
+    return jsonify({"msg": "Estado actualizado", "status": order.status.value}), 200
