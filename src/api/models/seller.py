@@ -31,6 +31,7 @@ class Seller(db.Model):
     origin_country: Mapped[str] = mapped_column(String(100), nullable=False)
     status: Mapped[SellerStatus] = mapped_column(Enum(SellerStatus), nullable=False, default=SellerStatus.pending)
     rejection_reason: Mapped[str] = mapped_column(Text(), nullable=True)
+    stripe_account_id: Mapped[str] = mapped_column(String(120), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
 
     #---------------------ForeignKey
@@ -48,6 +49,7 @@ class Seller(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "stripe_account_id": self.stripe_account_id,
             "store_name": self.store_name,
             "description": self.description,
             "phone": self.phone,
@@ -67,6 +69,7 @@ class Seller(db.Model):
         """Datos completos incluyendo productos — solo para perfil detallado."""
         return {
             "id": self.id,
+            "stripe_account_id": self.stripe_account_id,
             "store_name": self.store_name,
             "description": self.description,
             "phone": self.phone,

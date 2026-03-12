@@ -138,7 +138,7 @@ def build_welcome_email(user):
         f"Hola {user.name},\n\n"
         "Tu cuenta en Playback está lista.\n\n"
         "Ya puedes explorar el mercado retro: videojuegos, música, cartas, ropa vintage y mucho más.\n\n"
-        f"Entra aquí: {os.getenv('FRONTEND_URL', 'http://localhost:3000')}\n\n"
+        f"Entra aquí: {os.getenv('FRONTEND_URL')}\n\n"
         "Equipo Playback"
     )
 
