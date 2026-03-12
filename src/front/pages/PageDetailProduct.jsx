@@ -12,7 +12,7 @@ import orderServices from "../services/orderService";
 import { ReviewForm } from "../components/ReviewForm";
 
 export const PageDetailProduct = () => {
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const [hasBought, setHasBought] = useState(false);
   const { t, i18n } = useTranslation();
   const { id } = useParams();
@@ -77,6 +77,54 @@ export const PageDetailProduct = () => {
     if (checkoutError) return console.error(checkoutError);
 
     if (checkout.url) window.location.href = checkout.url;
+  };
+
+  // Función que se ejecuta al pulsar "Añadir al carrito"
+  const handleAddToCart = async () => {
+
+    // Obtenemos el token del usuario logueado
+    const token = store.token || localStorage.getItem("token");
+
+    // Si el usuario no está logueado no puede añadir al carrito
+    if (!token) {
+      alert("Debes iniciar sesión para añadir productos al carrito");
+      return;
+    }
+
+    try {
+
+      // Llamada al backend para añadir el producto al carrito
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({
+          product_id: product.id,
+          quantity: 1
+        })
+           
+      });
+
+      // Actualizamos el carrito en el store para que el contador del navbar se refresque
+      dispatch({
+        type: "cart_add",
+        payload: {
+          id: product.id,
+          quantity: 1
+        }
+      });
+
+      // Mensaje en consola para confirmar que el producto se añadió
+      console.log("Producto añadido al carrito");
+
+    } catch (error) {
+
+      // Si ocurre un error lo mostramos en consola
+      console.error("Error añadiendo al carrito:", error);
+
+    }
   };
 
   return (
@@ -150,6 +198,7 @@ export const PageDetailProduct = () => {
 
           {/* Botón añadir al carrito */}
           <button
+            onClick={handleAddToCart}
             disabled={!inStock}
             className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
               inStock

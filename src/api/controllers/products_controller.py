@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity  
 from api.models import db, Product
 from api.models.orderdetail import OrderDetail
 from api.models.item import Item
@@ -9,6 +9,7 @@ from sqlalchemy import func, text
 from sqlalchemy.orm import joinedload
 from deep_translator import GoogleTranslator
 import cloudinary.uploader
+from api.models.seller import Seller
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
@@ -160,8 +161,14 @@ def get_product(id):
 
 
 @product_bp.route('', methods=['POST'])
+@jwt_required()
 def create_product():
+    user_id = get_jwt_identity()
     #Revisa si tiene imagen o sin imagen, si tiene imagen en request.form.get y sino es un json seria request.get_son()
+    seller = Seller.query.filter_by(user_id=user_id).first()
+    if not seller:
+        abort(403, description="No tienes perfil de vendedor")
+    
     if request.content_type and "multipart/form-data" in request.content_type:
         name = request.form.get("name")
         price = request.form.get("price")
@@ -205,7 +212,8 @@ def create_product():
             stock=int(stock),
             discount=0.0,
             condition=condition,
-            item_id=int(item_id)
+            item_id=int(item_id),
+            seller_id=seller.id
         )
         db.session.add(new_product)
         db.session.commit()
@@ -245,6 +253,11 @@ def update_product(id):
         product.discount = body.get("discount", product.discount)
         product.condition = body.get("condition", product.condition)
         product.item_id = body.get("item_id", product.item_id)
+
+        if "condition" in body:
+            from api.models.product import ProductCondition
+            product.condition = ProductCondition(body["condition"])
+
         db.session.commit()
     except Exception as e:
         db.session.rollback()

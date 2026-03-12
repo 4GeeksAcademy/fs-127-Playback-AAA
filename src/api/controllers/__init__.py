@@ -25,6 +25,8 @@ from .order_controller import order_bp
 from .seller_controller import seller_bp
 from .admin_controller import admin_bp
 from .payment_controller import payment_bp
+from api.controllers.incident_controller import incident_bp
+
 
 
 def register_controllers(api):
@@ -43,3 +45,5 @@ def register_controllers(api):
     api.register_blueprint(seller_bp)
     api.register_blueprint(admin_bp)
     api.register_blueprint(payment_bp)
+    api.register_blueprint(incident_bp)
+

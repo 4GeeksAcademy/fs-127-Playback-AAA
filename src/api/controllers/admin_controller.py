@@ -1,8 +1,9 @@
 from flask import request, jsonify, abort, Blueprint
-from flask_jwt_extended import jwt_required
-from api.models import db
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from api.models import db, User
 from api.models.seller import Seller, SellerStatus
-from api.models.user import User, RoleName        # ← añadir
+from api.models.user import User, RoleName        
 from api.utils import require_role
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -28,6 +29,8 @@ def get_sellers():
         sellers = Seller.query.all()
 
     return jsonify([s.serialize() for s in sellers]), 200
+
+
 
 
 # -------------------------
