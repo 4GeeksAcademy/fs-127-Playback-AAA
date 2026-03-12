@@ -27,6 +27,7 @@ from .admin_controller import admin_bp
 from .incident_controller import incident_bp
 
 
+
 def register_controllers(api):
     """
     Registra todos los sub-blueprints (controladores) en el blueprint principal.

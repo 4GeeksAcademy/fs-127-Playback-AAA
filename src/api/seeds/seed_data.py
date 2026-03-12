@@ -48,6 +48,8 @@ USERS_DATA = [
     {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Ana+Jimenez"       },
     {"name": "PlayBack",  "last_name": "Seller",    "email": "seller@playback.com",             "password": "Seller!",         "role": "seller",   "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
     {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",          "role": "admin",    "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
+    {"name": "Arantxa", "last_name": "Ordoyo", "email": "pro.arantxa.ordoyo@gmail.com", "password": "123456", "role": "seller", "image_url": ""},
+
 
 ]
 
@@ -100,6 +102,20 @@ SELLERS_DATA = [
         "origin_country": "España",
         "status": "pending",
     },
+    {
+    "email": "pro.arantxa.ordoyo@gmail.com",
+    "store_name": "ArantxaTienda",
+    "description": "Tienda oficial de PlayBack.",
+    "phone": "+34 600 000 000",
+    "nif_cif": "99999999Z",
+    "iban": "ES91 2100 0418 4502 0005 9999",
+    "account_holder": "PlayBack Seller",
+    "origin_address": "Calle Test 1",
+    "origin_city": "Madrid",
+    "origin_zip": "28001",
+    "origin_country": "España",
+    "status": "verified",
+},
 ]
 
 
@@ -124,6 +140,12 @@ PRODUCTS_DATA = [
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
         "seller_email": "carlos@test.com",
     },
+    # ── PRODUCTOS DE ARANTXA ──────────────────────────────────────────────────
+{"name": "NES Arantxa Classic", "name_en": "Arantxa Classic NES", "description": "NES en perfecto estado con mando.", "description_en": "NES in perfect condition with controller.", "price": 79.99, "stock": 3, "discount": 0.0, "condition": "used", "item_slug": "nes", "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+{"name": "Vinilo Arantxa Led Zeppelin IV", "name_en": "Arantxa Led Zeppelin IV Vinyl", "description": "Led Zeppelin IV edición original.", "description_en": "Led Zeppelin IV original edition.", "price": 42.00, "stock": 2, "discount": 10.0, "condition": "used", "item_slug": "discos-de-vinilo", "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+{"name": "Game Boy Arantxa DMG", "name_en": "Arantxa Game Boy DMG", "description": "Game Boy original DMG funcionando.", "description_en": "Working original DMG Game Boy.", "price": 52.00, "stock": 4, "discount": 0.0, "condition": "used", "item_slug": "game-boy", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+{"name": "Nokia 3310 Arantxa", "name_en": "Arantxa Nokia 3310", "description": "Nokia 3310 azul con batería nueva.", "description_en": "Blue Nokia 3310 with new battery.", "price": 32.00, "stock": 5, "discount": 0.0, "condition": "used", "item_slug": "moviles-antiguos", "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+{"name": "Walkman Sony Arantxa", "name_en": "Arantxa Sony Walkman", "description": "Walkman Sony con radio FM.", "description_en": "Sony Walkman with FM radio.", "price": 38.00, "stock": 3, "discount": 5.0, "condition": "used", "item_slug": "walkman", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
     {
         "name": "NES con 10 juegos",
         "name_en": "NES with 10 games",
@@ -1891,6 +1913,7 @@ REVIEWS_DATA = [
     (2, "Podría ser mejor",          "El artículo tiene más desgaste del que aparecía en las fotos."),
     (1, "Decepcionante",             "No funciona correctamente, no se corresponde con la descripción."),
 ]
+ 
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -2179,6 +2202,121 @@ def seed_favorites(users, products):
 # ══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ══════════════════════════════════════════════════════════════════════════════
+def seed_playback_seller_orders(users, products):
+    """Crea pedidos específicos para el seller seller@playback.com."""
+    print("\n🛒 Seeding pedidos para PlayBack Seller...")
+
+    # Buscar el seller de playback
+    playback_user = User.query.filter_by(email="seller@playback.com").first()
+    if not playback_user:
+        print("  [WARN] seller@playback.com no encontrado")
+        return []
+
+    playback_seller = Seller.query.filter_by(user_id=playback_user.id).first()
+    if not playback_seller:
+        print("  [WARN] Seller profile no encontrado para seller@playback.com")
+        return []
+
+    # Productos de este seller
+    my_products = [p for p in products if p.seller_id == playback_seller.id]
+    if not my_products:
+        print("  [WARN] Este seller no tiene productos")
+        return []
+
+    # Compradores que harán los pedidos
+    buyers = [u for u in users if u.role == RoleName.buyer]
+
+    all_statuses = [Status.confirmed, Status.processing, Status.shipped, Status.delivered, Status.cancelled]
+    orders = []
+
+    for i, buyer in enumerate(buyers):
+        n_orders = random.randint(1, 3)
+        for _ in range(n_orders):
+            order_products = random.sample(my_products, min(random.randint(1, 3), len(my_products)))
+
+            subtotal    = round(sum(p.price for p in order_products), 2)
+            tax         = round(subtotal * 0.21, 2)
+            shipping    = round(random.uniform(3.5, 9.99), 2)
+            total_price = round(subtotal + tax + shipping, 2)
+            status      = random.choice(all_statuses)
+
+            order = Order(
+                user_id=buyer.id,
+                subtotal=subtotal,
+                tax=tax,
+                shipping_cost=shipping,
+                total_price=total_price,
+                payment_method=random.choice(list(Payment)),
+                status=status,
+                created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 120)),
+            )
+            db.session.add(order)
+            db.session.flush()
+
+            for product in order_products:
+                db.session.add(OrderDetail(
+                    order_id=order.id,
+                    product_id=product.id,
+                    quantity=random.randint(1, 2),
+                ))
+
+            orders.append(order)
+            print(f"  [OK]   {buyer.email} → {status.value:12} | {total_price:.2f}€")
+
+    db.session.flush()
+    print(f"\n  Total pedidos PlayBack: {len(orders)}")
+    return orders
+def seed_arantxa_orders(users, products):
+    print("\n🛒 Seeding pedidos para Arantxa...")
+
+    arantxa_user = User.query.filter_by(email="pro.arantxa.ordoyo@gmail.com").first()
+    if not arantxa_user:
+        print("  [WARN] pro.arantxa.ordoyo@gmail.com no encontrado")
+        return []
+
+    arantxa_seller = Seller.query.filter_by(user_id=arantxa_user.id).first()
+    if not arantxa_seller:
+        print("  [WARN] Seller profile no encontrado")
+        return []
+
+    my_products = [p for p in products if p.seller_id == arantxa_seller.id]
+    if not my_products:
+        print("  [WARN] Sin productos para Arantxa")
+        return []
+
+    buyers = [u for u in users if u.role == RoleName.buyer]
+    all_statuses = [Status.confirmed, Status.processing, Status.shipped, Status.delivered, Status.cancelled]
+    orders = []
+
+    for buyer in buyers:
+        for _ in range(random.randint(1, 3)):
+            order_products = random.sample(my_products, min(random.randint(1, 3), len(my_products)))
+            subtotal    = round(sum(p.price for p in order_products), 2)
+            tax         = round(subtotal * 0.21, 2)
+            shipping    = round(random.uniform(3.5, 9.99), 2)
+            total_price = round(subtotal + tax + shipping, 2)
+            status      = random.choice(all_statuses)
+
+            order = Order(
+                user_id=buyer.id,
+                subtotal=subtotal, tax=tax,
+                shipping_cost=shipping, total_price=total_price,
+                payment_method=random.choice(list(Payment)),
+                status=status,
+                created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 120)),
+            )
+            db.session.add(order)
+            db.session.flush()
+
+            for p in order_products:
+                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=random.randint(1, 2)))
+
+            orders.append(order)
+            print(f"  [OK]   {buyer.email} → {status.value} | {total_price:.2f}€")
+
+    db.session.flush()
+    print(f"  Total: {len(orders)} pedidos")
+    return orders
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seed de datos de prueba")
@@ -2200,6 +2338,8 @@ if __name__ == "__main__":
                 sys.exit(1)
 
             orders = seed_orders(users, products)
+            seed_playback_seller_orders(users, products) 
+            seed_arantxa_orders(users, products)
             seed_reviews(users, products, orders)
             seed_favorites(users, products)
 

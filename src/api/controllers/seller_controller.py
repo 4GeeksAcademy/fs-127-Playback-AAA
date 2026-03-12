@@ -142,3 +142,15 @@ def delete_seller_profile():
     db.session.delete(seller)
     db.session.commit()
     return jsonify({"msg": "Solicitud cancelada"}), 200
+
+
+
+@seller_bp.route('/me/products', methods=['GET'])
+@jwt_required()
+def get_my_products():
+    from api.models.seller import Seller
+    seller = Seller.query.filter_by(user_id=get_jwt_identity()).first()
+    if not seller:
+        abort(404, description="Seller no encontrado")
+    locale = request.args.get("locale", "es")
+    return jsonify([p.serialize(locale=locale) for p in seller.products]), 200

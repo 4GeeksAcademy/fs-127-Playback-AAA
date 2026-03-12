@@ -32,3 +32,4 @@ export const updateSellerStatusService = async (token, sellerId, status, rejecti
   if (!response.ok) throw new Error(json.description || json.msg || 'Error al actualizar');
   return json;
 };
+
