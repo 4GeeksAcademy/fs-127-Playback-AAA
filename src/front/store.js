@@ -89,12 +89,29 @@ export default function storeReducer(store, action = {}) {
         cart: action.payload
       };
 
-    case 'cart_add':
-      return {
-        ...store,
-        cart: [...store.cart, action.payload]
-      };
+ case 'cart_add': {
+  const exists = store.cart.find(item => item.id === action.payload.id);
+  if (exists) {
+    return {
+      ...store,
+      cart: store.cart.map(item =>
+        item.id === action.payload.id
+          ? { ...item, quantity: item.quantity + action.payload.quantity }
+          : item
+      )
+    };
+  }
+  return {
+    ...store,
+    cart: [...store.cart, action.payload]
+  };
+}
 
+case 'cart_remove':
+  return {
+    ...store,
+    cart: store.cart.filter(item => item.id !== action.payload.id)
+  };
     default:
       throw Error('Unknown action.');
   }

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 export const PageCart = () => {
 
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
@@ -28,17 +28,39 @@ export const PageCart = () => {
   }, []);
 
   const handleRemove = async (productId) => {
-
     const token = store.token || localStorage.getItem("token");
 
     await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/product/${productId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + token
-      }
+      headers: { Authorization: "Bearer " + token }
     });
 
     setCart(cart.filter(p => p.id !== productId));
+    dispatch({ type: "cart_remove", payload: { id: productId } });
+  };
+
+  const handleQuantity = async (productId, delta) => {
+    const item = cart.find(p => p.id === productId);
+    if (!item) return;
+
+    if (item.quantity + delta <= 0) {
+      handleRemove(productId);
+      return;
+    }
+
+    const token = store.token || localStorage.getItem("token");
+
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({ product_id: productId, quantity: delta })
+    });
+
+    setCart(cart.map(p => p.id === productId ? { ...p, quantity: p.quantity + delta } : p));
+    dispatch({ type: "cart_add", payload: { id: productId, quantity: delta } });
   };
 
   const total = cart.reduce(
@@ -100,18 +122,30 @@ export const PageCart = () => {
                       <p className="text-sm text-stone-500">
                         {item.price} €
                       </p>
+                    {/* CANTIDAD */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <button
+                          onClick={() => handleQuantity(item.id, -1)}
+                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm w-4 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => handleQuantity(item.id, 1)}
+                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => handleRemove(item.id)}
+                          className="text-sm text-red-500 hover:underline ml-2"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
 
-                      <p className="text-sm text-stone-400">
-                        Cantidad: {item.quantity}
-                      </p>
-
-                      <button
-                        onClick={() => handleRemove(item.id)}
-                        className="text-sm text-red-500 hover:underline"
-                      >
-                        Eliminar
-                      </button>
-
+                     
                     </div>
 
                   </div>
