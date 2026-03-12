@@ -38,16 +38,18 @@ from api.models.favorite import Favorite
 # ══════════════════════════════════════════════════════════════════════════════
 
 USERS_DATA = [
+    {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",          "role": "admin",    "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
+    {"name": "PlayBack",  "last_name": "Seller",    "email": "seller@playback.com",             "password": "Seller!",         "role": "seller",   "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
+    
     {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",                 "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Carlos+Garcia"     },
     {"name": "María",     "last_name": "López",     "email": "maria@test.com",                  "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Maria+Lopez"       },
     {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",                   "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Alex+Martínez"     },
+    
     {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Lucía+Sánchez"     },
     {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Pablo+Fernández"   },
     {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Elena+Ruiz"        },
     {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Javier+Moreno"     },
     {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Ana+Jimenez"       },
-    {"name": "PlayBack",  "last_name": "Seller",    "email": "seller@playback.com",             "password": "Seller!",         "role": "seller",   "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
-    {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",          "role": "admin",    "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
     {"name": "Arantxa", "last_name": "Ordoyo", "email": "pro.arantxa.ordoyo@gmail.com", "password": "123456", "role": "seller", "image_url": ""},
 
 
@@ -61,9 +63,26 @@ USERS_DATA = [
 
 SELLERS_DATA = [
     {
+        "email": "seller@playback.com",
+        "store_name": "Playback",
+        "description": "Productos revisados, certificados y con garantía.",
+        "logo_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png",
+        "phone": "+34 666 000 666",
+        "nif_cif": "12345678Z",
+        "iban": "ES91 2100 0418 4502 0005 1332",
+        "account_holder": "Playback",
+        "origin_address": "Calle Sin Nombre",
+        "origin_city": "Madrid",
+        "origin_zip": "28001",
+        "origin_country": "España",
+        "status": "verified",
+        "stripe_account_id": "acct_1T8kLqC8PDf7HCsD",
+    },
+    {
         "email": "carlos@test.com",
         "store_name": "RetroConsolas García",
         "description": "Especialista en consolas Nintendo y accesorios retro de los 80 y 90.",
+        "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=RetroConsolas+García",
         "phone": "+34 612 345 678",
         "nif_cif": "12345678A",
         "iban": "ES91 2100 0418 4502 0005 1332",
@@ -73,11 +92,13 @@ SELLERS_DATA = [
         "origin_zip": "28001",
         "origin_country": "España",
         "status": "verified",
+        "stripe_account_id": "acct_1T999pFipMSWCWoO",
     },
     {
         "email": "maria@test.com",
         "store_name": "VinylParadise",
         "description": "Colección de vinilos y música retro de los 60, 70 y 80. Envío cuidadoso garantizado.",
+        "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=VinylParadise",
         "phone": "+34 623 456 789",
         "nif_cif": "23456789B",
         "iban": "ES80 2310 0001 1800 0001 2345",
@@ -87,11 +108,13 @@ SELLERS_DATA = [
         "origin_zip": "08007",
         "origin_country": "España",
         "status": "verified",
+        "stripe_account_id": "acct_1T9rmyFv1VkR1kmz",
     },
     {
         "email": "alex@test.com",
         "store_name": "Bits & Pixels",
         "description": "Videojuegos retro en cartucho y CD. Especializados en Sega y PlayStation clásica.",
+        "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Bits+&+Pixels",
         "phone": "+34 634 567 890",
         "nif_cif": "34567890C",
         "iban": "ES76 0049 0001 5021 0001 2345",
@@ -101,6 +124,7 @@ SELLERS_DATA = [
         "origin_zip": "46002",
         "origin_country": "España",
         "status": "pending",
+        "stripe_account_id": "acct_1T9rsRC9ziS9X0PW",
     },
     {
     "email": "pro.arantxa.ordoyo@gmail.com",
@@ -1989,6 +2013,7 @@ def seed_sellers():
             user_id=user.id,
             store_name=s["store_name"],
             description=s["description"],
+            logo_url=s.get("logo_url"),
             phone=s["phone"],
             nif_cif=s["nif_cif"],
             iban=s["iban"],
@@ -1998,6 +2023,7 @@ def seed_sellers():
             origin_zip=s["origin_zip"],
             origin_country=s["origin_country"],
             status=status_map.get(s.get("status", "pending"), SellerStatus.pending),
+            stripe_account_id=s.get("stripe_account_id"),
         )
         db.session.add(seller)
         sellers[s["email"]] = seller

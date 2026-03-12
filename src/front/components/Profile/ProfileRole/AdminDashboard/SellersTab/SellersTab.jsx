@@ -106,7 +106,6 @@ const SellersTab = ({ onPendingChange }) => {
                   updating={updating}
                   onApprove={() => handleStatus(seller.id, 'verified')}
                   onReject={e => { e.stopPropagation(); setRejectTarget(seller); }}
-                  onPending={() => handleStatus(seller.id, 'pending')}
                 />
               ))
         }

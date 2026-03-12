@@ -16,14 +16,15 @@ principal 'api', por lo que todas las rutas quedan bajo /api/...
 
 from .auth_controller import auth_bp
 from .categories_controller import categories_bp
-from api.controllers.products_controller import product_bp
-from api.controllers.review_controller import review_bp
-from api.controllers.favorites_controller import favorite_bp
+from .products_controller import product_bp
+from .review_controller import review_bp
+from .favorites_controller import favorite_bp
 from .user_controller import user_bp
 from .address_controller import address_bp
-from api.controllers.order_controller import order_bp
+from .order_controller import order_bp
 from .seller_controller import seller_bp
 from .admin_controller import admin_bp
+from .payment_controller import payment_bp
 from api.controllers.incident_controller import incident_bp
 
 
@@ -43,5 +44,6 @@ def register_controllers(api):
     api.register_blueprint(order_bp)
     api.register_blueprint(seller_bp)
     api.register_blueprint(admin_bp)
+    api.register_blueprint(payment_bp)
     api.register_blueprint(incident_bp)
 
