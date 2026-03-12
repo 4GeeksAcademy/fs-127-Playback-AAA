@@ -62,23 +62,6 @@ export const PageDetailProduct = () => {
     },
   ];
 
-  const handleCheckout = async () => {
-    const token = store.token || localStorage.getItem("token");
-
-    if (!token) {
-      alert("Debes iniciar sesión para comprar");
-      return;
-    }
-
-    const [order, orderError] = await orderServices.createOrder(product.id, token);
-    if (orderError) return console.error(orderError);
-
-    const [checkout, checkoutError] = await orderServices.checkout(order.order_id, token);
-    if (checkoutError) return console.error(checkoutError);
-
-    if (checkout.url) window.location.href = checkout.url;
-  };
-
   // Función que se ejecuta al pulsar "Añadir al carrito"
   const handleAddToCart = async () => {
 
@@ -218,7 +201,6 @@ export const PageDetailProduct = () => {
 
       {hasBought && <ReviewForm productId={id} orderId={orderId} />}
 
-      <button onClick={handleCheckout}>Pagar</button>
 
     </div>
   );
