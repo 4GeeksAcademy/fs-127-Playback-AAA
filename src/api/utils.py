@@ -1,4 +1,7 @@
 from flask import jsonify, url_for
+from functools import wraps
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+
 
 class APIException(Exception):
     status_code = 400
@@ -39,3 +42,59 @@ def generate_sitemap(app):
         <p>Start working on your project by following the <a href="https://start.4geeksacademy.com/starters/full-stack" target="_blank">Quick Start</a></p>
         <p>Remember to specify a real endpoint path like: </p>
         <ul style="text-align: left;">"""+links_html+"</ul></div>"
+
+
+def require_role(*roles):
+    """Restringe el acceso a usuarios con alguno de los roles indicados.
+    Uso: @require_role("admin") o @require_role("admin", "seller")
+    """
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            verify_jwt_in_request()
+            from api.models.user import User
+            user = User.query.get(get_jwt_identity())
+            if not user or not user.role:
+                return jsonify({"error": "Sin rol asignado"}), 403
+            if user.role.value not in roles:
+                return jsonify({"error": "Acceso denegado"}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def require_permission(permission_name):
+    """Restringe el acceso a usuarios que tengan el permiso indicado.
+    Uso: @require_permission("product:create")
+    """
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            verify_jwt_in_request()
+            from api.models.user import User
+            user = User.query.get(get_jwt_identity())
+            if not user or not user.role:
+                return jsonify({"error": "Sin permisos"}), 403
+            if permission_name not in user.get_permissions():
+                return jsonify({"error": f"Permiso requerido: {permission_name}"}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def generate_initial_avatar(*, name=None, last_name=None, store_name=None):
+    """
+    Genera una URL de avatar con iniciales usando ui-avatars.com
+    - Usuarios: pasarle name y last_name
+    - Tiendas:  pasarle store_name
+    """
+    if store_name:
+        formatted = store_name
+    elif name and last_name:
+        formatted = f"{name}+{last_name}"
+    else:
+        raise ValueError("Debes pasar (name + last_name) o store_name")
+
+    return (
+        f"https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name={formatted}"
+    )

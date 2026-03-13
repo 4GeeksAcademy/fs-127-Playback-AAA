@@ -10,6 +10,24 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from datetime import timedelta
+from flask_jwt_extended import JWTManager
+from extensions import mail
+import cloudinary                         
+import cloudinary.uploader   
+import stripe 
+
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+
+
+#API STRIPE La busca en el .env
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
 
 # from models import Person
 
@@ -19,7 +37,18 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-# database condiguration
+#--para envio de email--
+app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT", 587))
+app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS", "True") == "True"
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")
+
+mail.init_app(app)
+
+# database configuration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
@@ -30,6 +59,26 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+
+# JWT configuration
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "super-secret-key-change-in-production")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+jwt = JWTManager(app)
+
+
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_payload):
+    return jsonify({"message": "Token ha expirado"}), 401
+
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({"message": "Token invalido"}), 401
+
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({"message": "Token requerido"}), 401
 
 # add the admin
 setup_admin(app)
