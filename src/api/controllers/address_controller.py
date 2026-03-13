@@ -36,7 +36,6 @@ def create_address():
         municipality=body.get("municipality"),
         postal_code=body["postal_code"].strip(),
         country=body["country"].strip(),
-        address_type=body.get("address_type", "shipping")
     )
 
     db.session.add(new_address)
@@ -76,7 +75,6 @@ def update_address(address_id):
         "municipality",
         "postal_code",
         "country",
-        "address_type"
     ]
 
     for field in editable_fields:

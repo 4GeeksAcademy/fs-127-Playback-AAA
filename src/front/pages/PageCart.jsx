@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderServices from "../services/orderService";
 import { useTranslation } from "react-i18next";
+import { ProductPrice } from "../components/Common/ProductPrice";
+import OrderSummary from "../components/Checkout/OrderSummary";
 
 export const PageCart = () => {
 
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
@@ -28,23 +30,40 @@ export const PageCart = () => {
   }, []);
 
   const handleRemove = async (productId) => {
-
     const token = store.token || localStorage.getItem("token");
 
     await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/product/${productId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + token
-      }
+      headers: { Authorization: "Bearer " + token }
     });
 
     setCart(cart.filter(p => p.id !== productId));
+    dispatch({ type: "cart_remove", payload: { id: productId } });
   };
 
-  const total = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const handleQuantity = async (productId, delta) => {
+    const item = cart.find(p => p.id === productId);
+    if (!item) return;
+
+    if (item.quantity + delta <= 0) {
+      handleRemove(productId);
+      return;
+    }
+
+    const token = store.token || localStorage.getItem("token");
+
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({ product_id: productId, quantity: delta })
+    });
+
+    setCart(cart.map(p => p.id === productId ? { ...p, quantity: p.quantity + delta } : p));
+    dispatch({ type: "cart_add", payload: { id: productId, quantity: delta } });
+  };
 
   return (
 
@@ -74,7 +93,8 @@ export const PageCart = () => {
                 item.name?.es ||
                 item.name?.en;
 
-              const subtotal = item.price * item.quantity;
+              const priceWithDiscount = item.price * (1 - (item.discount || 0) / 100);
+              const lineTotal = priceWithDiscount * item.quantity;
 
               return (
 
@@ -97,21 +117,32 @@ export const PageCart = () => {
                         {name}
                       </h2>
 
-                      <p className="text-sm text-stone-500">
-                        {item.price} €
-                      </p>
+                      <ProductPrice price={item.price} discount={item.discount} />
 
-                      <p className="text-sm text-stone-400">
-                        Cantidad: {item.quantity}
-                      </p>
+                      {/* CANTIDAD */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <button
+                          onClick={() => handleQuantity(item.id, -1)}
+                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm w-4 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => handleQuantity(item.id, 1)}
+                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => handleRemove(item.id)}
+                          className="text-sm text-red-500 hover:underline ml-2"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
 
-                      <button
-                        onClick={() => handleRemove(item.id)}
-                        className="text-sm text-red-500 hover:underline"
-                      >
-                        Eliminar
-                      </button>
-
+                     
                     </div>
 
                   </div>
@@ -123,7 +154,7 @@ export const PageCart = () => {
                     </p>
 
                     <p className="font-semibold text-stone-900">
-                      {subtotal.toFixed(2)} €
+                      {lineTotal.toFixed(2)} €
                     </p>
 
                   </div>
@@ -136,35 +167,11 @@ export const PageCart = () => {
           </div>
 
           {/* RESUMEN */}
-          <div className="border rounded-lg p-6 h-fit">
-
-            <h2 className="text-lg font-semibold mb-6">
-              Resumen del pedido
-            </h2>
-
-            <div className="flex justify-between text-sm mb-3">
-              <span>Subtotal</span>
-              <span>{total.toFixed(2)} €</span>
-            </div>
-
-            <div className="flex justify-between text-sm mb-6">
-              <span>Envío</span>
-              <span>Gratis</span>
-            </div>
-
-            <div className="flex justify-between font-semibold text-lg border-t pt-4 mb-6">
-              <span>Total</span>
-              <span>{total.toFixed(2)} €</span>
-            </div>
-
-            <button
-              onClick={() => navigate("/checkout")}
-              className="w-full bg-stone-900 text-white py-3 text-sm uppercase tracking-widest hover:bg-stone-700 transition"
-            >
-              Ir al pago
-            </button>
-
-          </div>
+          <OrderSummary
+            cart={cart}
+            step="cart"
+            onContinue={() => navigate("/checkout")}
+          />
 
         </div>
 

@@ -38,21 +38,19 @@ from api.models.favorite import Favorite
 # ══════════════════════════════════════════════════════════════════════════════
 
 USERS_DATA = [
-    {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",          "role": "admin",    "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
-    {"name": "PlayBack",  "last_name": "Seller",    "email": "seller@playback.com",             "password": "Seller!",         "role": "seller",   "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"    },
-    
-    {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",                 "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Carlos+Garcia"     },
-    {"name": "María",     "last_name": "López",     "email": "maria@test.com",                  "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Maria+Lopez"       },
-    {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",                   "password": "Test1234!",       "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Alex+Martínez"     },
-    
-    {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Lucía+Sánchez"     },
-    {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Pablo+Fernández"   },
-    {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Elena+Ruiz"        },
-    {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Javier+Moreno"     },
-    {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!",       "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Ana+Jimenez"       },
-    {"name": "Arantxa", "last_name": "Ordoyo", "email": "pro.arantxa.ordoyo@gmail.com", "password": "123456", "role": "seller", "image_url": ""},
+    {"name": "PlayBack",  "last_name": "Admin",     "email": "admin@playback.com",              "password": "Admin!",    "role": "admin",    "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"},
+    {"name": "PlayBack",  "last_name": "Seller",    "email": "seller@playback.com",             "password": "Seller!",   "role": "seller",   "image_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png"},
 
+    {"name": "Carlos",    "last_name": "García",    "email": "carlos@test.com",                 "password": "Test1234!", "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Carlos+Garcia"},
+    {"name": "María",     "last_name": "López",     "email": "maria@test.com",                  "password": "Test1234!", "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Maria+Lopez"},
+    {"name": "Alejandro", "last_name": "Martínez",  "email": "alex@test.com",                   "password": "Test1234!", "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Alex+Martínez"},
+    {"name": "Arantxa",   "last_name": "Ordoyo",    "email": "pro.arantxa.ordoyo@gmail.com",    "password": "123456",    "role": "seller",   "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Arantxa+Ordoyo"},
 
+    {"name": "Lucía",     "last_name": "Sánchez",   "email": "lucia@test.com",                  "password": "Test1234!", "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Lucía+Sánchez"},
+    {"name": "Pablo",     "last_name": "Fernández", "email": "pablo@test.com",                  "password": "Test1234!", "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Pablo+Fernández"},
+    {"name": "Elena",     "last_name": "Ruiz",      "email": "elena@test.com",                  "password": "Test1234!", "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Elena+Ruiz"},
+    {"name": "Javier",    "last_name": "Moreno",    "email": "javier@test.com",                 "password": "Test1234!", "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Javier+Moreno"},
+    {"name": "Ana",       "last_name": "Jiménez",   "email": "ana@test.com",                    "password": "Test1234!", "role": "buyer",    "image_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Ana+Jimenez"},
 ]
 
 
@@ -69,14 +67,13 @@ SELLERS_DATA = [
         "logo_url": "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vmini.png",
         "phone": "+34 666 000 666",
         "nif_cif": "12345678Z",
-        "iban": "ES91 2100 0418 4502 0005 1332",
-        "account_holder": "Playback",
         "origin_address": "Calle Sin Nombre",
         "origin_city": "Madrid",
         "origin_zip": "28001",
         "origin_country": "España",
         "status": "verified",
         "stripe_account_id": "acct_1T8kLqC8PDf7HCsD",
+				"stripe_onboarding_completed": True,
     },
     {
         "email": "carlos@test.com",
@@ -85,14 +82,13 @@ SELLERS_DATA = [
         "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=RetroConsolas+García",
         "phone": "+34 612 345 678",
         "nif_cif": "12345678A",
-        "iban": "ES91 2100 0418 4502 0005 1332",
-        "account_holder": "Carlos García",
         "origin_address": "Calle Mayor 12",
         "origin_city": "Madrid",
         "origin_zip": "28001",
         "origin_country": "España",
         "status": "verified",
         "stripe_account_id": "acct_1T999pFipMSWCWoO",
+				"stripe_onboarding_completed": True,
     },
     {
         "email": "maria@test.com",
@@ -101,14 +97,13 @@ SELLERS_DATA = [
         "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=VinylParadise",
         "phone": "+34 623 456 789",
         "nif_cif": "23456789B",
-        "iban": "ES80 2310 0001 1800 0001 2345",
-        "account_holder": "María López",
         "origin_address": "Passeig de Gràcia 55",
         "origin_city": "Barcelona",
         "origin_zip": "08007",
         "origin_country": "España",
         "status": "verified",
         "stripe_account_id": "acct_1T9rmyFv1VkR1kmz",
+				"stripe_onboarding_completed": True,
     },
     {
         "email": "alex@test.com",
@@ -117,29 +112,28 @@ SELLERS_DATA = [
         "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Bits+&+Pixels",
         "phone": "+34 634 567 890",
         "nif_cif": "34567890C",
-        "iban": "ES76 0049 0001 5021 0001 2345",
-        "account_holder": "Alejandro Martínez",
         "origin_address": "Gran Vía 10",
         "origin_city": "Valencia",
         "origin_zip": "46002",
         "origin_country": "España",
         "status": "pending",
         "stripe_account_id": "acct_1T9rsRC9ziS9X0PW",
+				"stripe_onboarding_completed": True,
     },
     {
-    "email": "pro.arantxa.ordoyo@gmail.com",
-    "store_name": "ArantxaTienda",
-    "description": "Tienda oficial de PlayBack.",
-    "phone": "+34 600 000 000",
-    "nif_cif": "99999999Z",
-    "iban": "ES91 2100 0418 4502 0005 9999",
-    "account_holder": "PlayBack Seller",
-    "origin_address": "Calle Test 1",
-    "origin_city": "Madrid",
-    "origin_zip": "28001",
-    "origin_country": "España",
-    "status": "verified",
-},
+        "email": "pro.arantxa.ordoyo@gmail.com",
+        "store_name": "ArantxaTienda",
+        "description": "Tienda oficial de PlayBack.",
+        "phone": "+34 600 000 000",
+        "nif_cif": "99999999Z",
+        "origin_address": "Calle Test 1",
+        "origin_city": "Madrid",
+        "origin_zip": "28001",
+        "origin_country": "España",
+        "status": "verified",
+        "stripe_account_id": "acct_1TAKZrFsAabo2lvo",
+				"stripe_onboarding_completed": True,
+    },
 ]
 
 
@@ -153,6 +147,42 @@ SELLERS_DATA = [
 
 PRODUCTS_DATA = [
 
+    # ── PRODUCTOS DE ARANTXA ──────────────────────────────────────────────────
+    {
+        "name": "NES Arantxa Classic",
+        "name_en": "Arantxa Classic NES",
+        "description": "NES en perfecto estado con mando.",
+        "description_en": "NES in perfect condition with controller.",
+        "price": 79.99,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
+        "item_slug": "nes",
+        "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
+        "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+    {
+        "name": "Vinilo Arantxa Led Zeppelin IV",
+        "name_en": "Arantxa Led Zeppelin IV Vinyl",
+        "description": "Led Zeppelin IV edición original.",
+        "description_en": "Led Zeppelin IV original edition.",
+        "price": 42.00,
+        "stock": 2,
+        "discount": 10.0,
+        "condition": "used",
+        "item_slug": "discos-de-vinilo",
+        "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
+        "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+    {
+        "name": "Game Boy Arantxa DMG", "name_en": "Arantxa Game Boy DMG", "description": "Game Boy original DMG funcionando.", "description_en": "Working original DMG Game Boy.", "price": 52.00, "stock": 4, "discount": 0.0,
+        "condition": "used", "item_slug": "game-boy", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+    {
+        "name": "Nokia 3310 Arantxa", "name_en": "Arantxa Nokia 3310", "description": "Nokia 3310 azul con batería nueva.", "description_en": "Blue Nokia 3310 with new battery.", "price": 32.00, "stock": 5,
+        "discount": 0.0, "condition": "used", "item_slug": "moviles-antiguos", "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
+    {
+        "name": "Walkman Sony Arantxa", "name_en": "Arantxa Sony Walkman", "description": "Walkman Sony con radio FM.", "description_en": "Sony Walkman with FM radio.", "price": 38.00, "stock": 3, "discount": 5.0,
+        "condition": "used", "item_slug": "walkman", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s", "seller_email": "pro.arantxa.ordoyo@gmail.com"
+    },
+    
     # ── CONSOLAS › Nintendo Clásica ── nes ─────────────────────────────────────
     {
         "name": "NES Classic Edition",
@@ -164,12 +194,6 @@ PRODUCTS_DATA = [
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
         "seller_email": "carlos@test.com",
     },
-    # ── PRODUCTOS DE ARANTXA ──────────────────────────────────────────────────
-{"name": "NES Arantxa Classic", "name_en": "Arantxa Classic NES", "description": "NES en perfecto estado con mando.", "description_en": "NES in perfect condition with controller.", "price": 79.99, "stock": 3, "discount": 0.0, "condition": "used", "item_slug": "nes", "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
-{"name": "Vinilo Arantxa Led Zeppelin IV", "name_en": "Arantxa Led Zeppelin IV Vinyl", "description": "Led Zeppelin IV edición original.", "description_en": "Led Zeppelin IV original edition.", "price": 42.00, "stock": 2, "discount": 10.0, "condition": "used", "item_slug": "discos-de-vinilo", "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
-{"name": "Game Boy Arantxa DMG", "name_en": "Arantxa Game Boy DMG", "description": "Game Boy original DMG funcionando.", "description_en": "Working original DMG Game Boy.", "price": 52.00, "stock": 4, "discount": 0.0, "condition": "used", "item_slug": "game-boy", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
-{"name": "Nokia 3310 Arantxa", "name_en": "Arantxa Nokia 3310", "description": "Nokia 3310 azul con batería nueva.", "description_en": "Blue Nokia 3310 with new battery.", "price": 32.00, "stock": 5, "discount": 0.0, "condition": "used", "item_slug": "moviles-antiguos", "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
-{"name": "Walkman Sony Arantxa", "name_en": "Arantxa Sony Walkman", "description": "Walkman Sony con radio FM.", "description_en": "Sony Walkman with FM radio.", "price": 38.00, "stock": 3, "discount": 5.0, "condition": "used", "item_slug": "walkman", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
     {
         "name": "NES con 10 juegos",
         "name_en": "NES with 10 games",
@@ -1112,7 +1136,7 @@ PRODUCTS_DATA = [
         "price": 220.00, "stock": 1, "discount": 0.0, "condition": "used",
         "item_slug": "otros-instrumentos",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
-              "seller_email": "maria@test.com",
+        "seller_email": "maria@test.com",
     },
 
     # ── TECNOLOGÍA › Ordenadores ──────────────────────────────────────────────
@@ -2016,14 +2040,13 @@ def seed_sellers():
             logo_url=s.get("logo_url"),
             phone=s["phone"],
             nif_cif=s["nif_cif"],
-            iban=s["iban"],
-            account_holder=s["account_holder"],
             origin_address=s["origin_address"],
             origin_city=s["origin_city"],
             origin_zip=s["origin_zip"],
             origin_country=s["origin_country"],
             status=status_map.get(s.get("status", "pending"), SellerStatus.pending),
             stripe_account_id=s.get("stripe_account_id"),
+            stripe_onboarding_completed=s.get("stripe_onboarding_completed", False),
         )
         db.session.add(seller)
         sellers[s["email"]] = seller

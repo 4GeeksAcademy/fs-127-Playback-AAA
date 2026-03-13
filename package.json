@@ -57,6 +57,8 @@
 		]
 	},
 	"dependencies": {
+		"@stripe/react-stripe-js": "^5.6.1",
+		"@stripe/stripe-js": "^8.9.0",
 		"i18next": "^25.8.13",
 		"lucide-react": "^0.575.0",
 		"prop-types": "^15.8.1",

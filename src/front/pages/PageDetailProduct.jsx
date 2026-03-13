@@ -18,9 +18,10 @@ export const PageDetailProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [orderId, setOrderId] = useState(null);
+  const [toast, setToast] = useState(false);
 
   useEffect(() => {
-    
+
     productServices.getProduct(id).then(([data, error]) => {
       if (error) return console.error(error);
       setProduct(data);
@@ -77,30 +78,23 @@ export const PageDetailProduct = () => {
     try {
 
       // Llamada al backend para añadir el producto al carrito
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token
         },
-        body: JSON.stringify({
-          product_id: product.id,
-          quantity: 1
-        })
-           
+        body: JSON.stringify({ product_id: product.id, quantity: 1 })
       });
+      if (!res.ok) return;
 
       // Actualizamos el carrito en el store para que el contador del navbar se refresque
-      dispatch({
-        type: "cart_add",
-        payload: {
-          id: product.id,
-          quantity: 1
-        }
-      });
+      dispatch({ type: "cart_add", payload: { id: product.id, quantity: 1 } });
+      setToast(true);
+      setTimeout(() => setToast(false), 2000);
 
       // Mensaje en consola para confirmar que el producto se añadió
-      console.log("Producto añadido al carrito");
+
 
     } catch (error) {
 
@@ -112,6 +106,12 @@ export const PageDetailProduct = () => {
 
   return (
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-stone-900 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
+          <ShoppingCart size={15} />
+          Producto añadido a tu cesta
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-10">
 
         {/* div Imagen  */}
@@ -183,11 +183,10 @@ export const PageDetailProduct = () => {
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
-              inStock
+            className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${inStock
                 ? "bg-stone-900 hover:bg-stone-700 text-white"
                 : "bg-stone-200 text-stone-400 cursor-not-allowed"
-            }`}
+              }`}
           >
             <ShoppingCart size={16} />
             {t("product.addToCart")}

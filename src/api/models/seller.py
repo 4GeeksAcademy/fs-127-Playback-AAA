@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import String, Text, Enum, DateTime, ForeignKey
+from sqlalchemy import String, Text, Enum, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
@@ -23,8 +23,6 @@ class Seller(db.Model):
     phone: Mapped[str] = mapped_column(String(20), nullable=True)
     nif_cif: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     logo_url: Mapped[str] = mapped_column(String(500), nullable=True)
-    iban: Mapped[str] = mapped_column(String(34), nullable=False)
-    account_holder: Mapped[str] = mapped_column(String(120), nullable=False)
     origin_address: Mapped[str] = mapped_column(String(255), nullable=False)
     origin_city: Mapped[str] = mapped_column(String(100), nullable=False)
     origin_zip: Mapped[str] = mapped_column(String(10), nullable=False)
@@ -32,6 +30,7 @@ class Seller(db.Model):
     status: Mapped[SellerStatus] = mapped_column(Enum(SellerStatus), nullable=False, default=SellerStatus.pending)
     rejection_reason: Mapped[str] = mapped_column(Text(), nullable=True)
     stripe_account_id: Mapped[str] = mapped_column(String(120), nullable=True)
+    stripe_onboarding_completed: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
 
     #---------------------ForeignKey
@@ -50,6 +49,7 @@ class Seller(db.Model):
         return {
             "id": self.id,
             "stripe_account_id": self.stripe_account_id,
+            "stripe_onboarding_completed": self.stripe_onboarding_completed,
             "store_name": self.store_name,
             "description": self.description,
             "phone": self.phone,
@@ -70,6 +70,7 @@ class Seller(db.Model):
         return {
             "id": self.id,
             "stripe_account_id": self.stripe_account_id,
+            "stripe_onboarding_completed": self.stripe_onboarding_completed,
             "store_name": self.store_name,
             "description": self.description,
             "phone": self.phone,

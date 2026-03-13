@@ -6,8 +6,33 @@ import { Link } from "react-router-dom";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import { useFavorites } from "../hooks/useFavorites";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const TopSales = () => {
+  const { store, dispatch } = useGlobalReducer();
+
+  const [toast, setToast] = useState(null);
+
+  const handleAddToCart = async (e, productId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const token = store.token || localStorage.getItem("token");
+
+ const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token
+  },
+  body: JSON.stringify({ product_id: productId, quantity: 1 })
+});
+
+if (!res.ok) return; // si falla, no muestra el toast ni actualiza
+
+dispatch({ type: "cart_add", payload: { id: productId, quantity: 1 } });
+setToast(productId);
+setTimeout(() => setToast(null), 2000);
+  };
   const { t } = useTranslation();
   useFavorites();
   const carouselRef = useRef(null);
@@ -61,6 +86,12 @@ export const TopSales = () => {
 
   return (
     <section className="mt-8">
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-stone-900 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in">
+          <ShoppingCart size={15} />
+          Producto añadido a tu cesta
+        </div>
+      )}
       <div className="flex items-center justify-between my-4">
         <h2 className="text-lg font-semibold tracking-tight text-theme-text">
           {t("home.topSales")}
@@ -99,8 +130,8 @@ export const TopSales = () => {
                     alt={p.name}
                     className="w-full h-full object-cover"
                     onError={(e) =>
-                      (e.target.src =
-                        "https://placehold.co/300x300?text=Sin+imagen")
+                    (e.target.src =
+                      "https://placehold.co/300x300?text=Sin+imagen")
                     }
                   />
                   <FavoriteButton
@@ -126,7 +157,10 @@ export const TopSales = () => {
                         </>
                       )}
                     </div>
-                    <button className="bg-stone-800 hover:bg-stone-500 text-white transition-all flex items-center justify-center p-2">
+                    <button
+                      onClick={(e) => handleAddToCart(e, p.id)}
+                      className="bg-stone-800 hover:bg-stone-500 text-white transition-all flex items-center justify-center p-2"
+                    >
                       <ShoppingCart size={16} />
                     </button>
                   </div>

@@ -22,6 +22,14 @@ export const Layout = () => {
       }
       dispatch({ type: "set_user", payload: data });
     });
+    //Es para que revise el carrito 
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/cart`, {
+      headers: { Authorization: "Bearer " + token }
+    })
+      .then(res => res.json())
+      .then(data => {
+        dispatch({ type: "set_cart", payload: data.products || [] });
+      });
 
   }, []);
 
