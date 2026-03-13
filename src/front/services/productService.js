@@ -45,10 +45,13 @@ async function createProduct(body) {
   return [data, null];
 }
 
-async function updateProduct(id, body) {
+async function updateProduct(id, body, token) {
   const response = await fetch(`${backendUrl}/api/product/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`  // ← añade esto
+    },
     body: JSON.stringify(body),
   });
   const data = await response.json();
@@ -56,7 +59,6 @@ async function updateProduct(id, body) {
     return [null, data.description || "Error al actualizar el producto"];
   return [data, null];
 }
-
 async function deleteProduct(id) {
   const response = await fetch(`${backendUrl}/api/product/${id}`, {
     method: "DELETE",
