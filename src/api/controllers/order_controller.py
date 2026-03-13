@@ -69,13 +69,13 @@ def add_product():
     product_id = data.get("product_id")
     quantity = data.get("quantity", 1)
 
-    order = Order.query.filter_by(user_id=user_id, status=Status.cart).first()
+    order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
 
     if not order:
 
         order = Order(
             user_id=user_id,
-            status=Status.cart,
+            status=Status.pending,
             subtotal=0,
             tax=0,
             total_price=0,
@@ -115,7 +115,7 @@ def get_cart():
 
     user_id = int(get_jwt_identity())
 
-    order = Order.query.filter_by(user_id=user_id, status=Status.cart).first()
+    order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
 
     if not order:
         return jsonify({"products": []}), 200
@@ -146,7 +146,7 @@ def remove_product(product_id):
 
     user_id = int(get_jwt_identity())
 
-    order = Order.query.filter_by(user_id=user_id, status=Status.cart).first()
+    order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
 
     if not order:
         return jsonify({"msg": "Carrito vacío"}), 404
@@ -177,7 +177,7 @@ def my_orders():
 
     orders = Order.query.filter(
         Order.user_id == user_id,
-        Order.status != Status.cart
+        Order.status != Status.pending
     ).order_by(Order.created_at.desc()).all()
 
     result = []
@@ -223,7 +223,7 @@ def checkout():
     billing_address_id = data.get("billing_address_id")
     payment_method = data.get("payment_method", "credit_card")
 
-    order = Order.query.filter_by(user_id=user_id, status=Status.cart).first()
+    order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
 
     if not order:
         return jsonify({"msg": "Carrito vacío"}), 400
@@ -347,7 +347,7 @@ def seller_orders():
     # Pedidos que contienen al menos un producto tuyo
     orders = Order.query.join(OrderDetail).join(Product).filter(
         Product.seller_id == seller.id,
-        Order.status != Status.cart
+        Order.status != Status.pending
     ).order_by(Order.created_at.desc()).all()
 
     result = []

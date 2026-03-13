@@ -32,6 +32,16 @@ def create_incidence(order_id):
     if order.user_id != int(user_id):
         abort(403, description="No puedes abrir incidencias en pedidos de otros usuarios")
 
+    # Solo permitir incidencias si el pedido está entregado
+    if order.status.value != "delivered":
+        abort(400, description="Solo puedes abrir incidencias en pedidos entregados")
+
+    # Evitar incidencias duplicadas
+    existing = Incident.query.filter_by(order_id=order_id).first()
+
+    if existing:
+        abort(400, description="Este pedido ya tiene una incidencia")
+
     # Crear la incidencia
     incident = Incident(
         title=body["title"],
@@ -54,7 +64,28 @@ def get_my_incidences():
 
     user_id = get_jwt_identity()
 
-    incidents = Incident.query.filter_by(user_id=user_id).all()
+    incidents = (
+        Incident.query
+        .filter_by(user_id=user_id)
+        .order_by(Incident.created_at.desc())
+        .all()
+    )
+
+    return jsonify([incident.serialize() for incident in incidents]), 200
+
+
+# Obtener TODAS las incidencias (solo admin o seller)
+@incident_bp.route("/incidences", methods=["GET"])
+@jwt_required()
+def get_all_incidences():
+
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if user.role not in [RoleName.admin, RoleName.seller]:
+        abort(403, description="No autorizado")
+
+    incidents = Incident.query.order_by(Incident.created_at.desc()).all()
 
     return jsonify([incident.serialize() for incident in incidents]), 200
 

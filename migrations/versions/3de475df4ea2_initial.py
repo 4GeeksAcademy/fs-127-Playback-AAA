@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 32d6ebf4e0ec
+Revision ID: 3de475df4ea2
 Revises: 
-Create Date: 2026-03-09 17:44:48.838285
+Create Date: 2026-03-12 18:27:21.753881
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '32d6ebf4e0ec'
+revision = '3de475df4ea2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -83,6 +83,7 @@ def upgrade():
     sa.Column('origin_country', sa.String(length=100), nullable=False),
     sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
     sa.Column('rejection_reason', sa.Text(), nullable=True),
+    sa.Column('stripe_account_id', sa.String(length=120), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -119,7 +120,8 @@ def upgrade():
     sa.Column('subtotal', sa.Float(), nullable=False),
     sa.Column('payment_method', sa.Enum('credit_card', 'bizum', name='payment'), nullable=False),
     sa.Column('shipping_cost', sa.Float(), nullable=False),
-    sa.Column('status', sa.Enum('cart', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'processing', 'paid', 'confirmed', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
+    sa.Column('stripe_payment_intent_id', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('shipping_address_id', sa.Integer(), nullable=True),

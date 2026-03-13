@@ -17,7 +17,7 @@ import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { Success } from "./pages/Success"
 import { PageCart } from "./pages/PageCart";
 import { Checkout } from "./pages/Checkout";
-import { MyOrders } from "./pages/MyOrders";
+
 import Profile from "./pages/Profile";
 import { PrivateRoute } from "./components/PrivateRoute";
 
@@ -36,7 +36,7 @@ export const router = createBrowserRouter(
       <Route path="/success/:orderId" element={<Success />} />
       <Route path="/cart" element={<PageCart />} />
       <Route path="/checkout" element={<Checkout />} />
-      <Route path="/orders" element={<PrivateRoute><MyOrders /></PrivateRoute>} />
+     
       </Route>
     )
 );

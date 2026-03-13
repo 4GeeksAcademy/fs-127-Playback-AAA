@@ -49,7 +49,7 @@ export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userM
 
               return (
                 <Link
-                  key={to}
+                  key={label}
                   to={to}
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center justify-between px-3 py-2 mx-1.5 rounded-xl text-sm text-theme-muted hover:bg-theme-muted hover:text-theme-text transition"
