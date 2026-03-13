@@ -1,5 +1,5 @@
 // ── StepShipping ──────────────────────────────────────────────────────────────
-// Paso 1 del wizard — dirección de origen y datos bancarios
+// Paso 1 del wizard — dirección de origen
 
 import { useTranslation } from 'react-i18next';
 import { Field, Input } from './FormFields';
@@ -25,21 +25,6 @@ const StepShipping = ({ form, errors, onChange }) => {
       <Field label={`${t('seller.country')} *`} error={errors.origin_country}>
         <Input name="origin_country" value={form.origin_country} onChange={onChange} />
       </Field>
-
-      {/* Sección de datos bancarios */}
-      <div className="border-t border-theme-border-sm pt-4 mt-2">
-        <p className="text-xs font-semibold text-theme-muted uppercase tracking-wide mb-3">
-          {t('seller.iban')}
-        </p>
-        <div className="space-y-4">
-          <Field label={`${t('seller.iban')} *`} error={errors.iban}>
-            <Input name="iban" value={form.iban} onChange={onChange} placeholder="ES91 2100 0418 4502 0005 1332" />
-          </Field>
-          <Field label={`${t('seller.accountHolder')} *`} error={errors.account_holder}>
-            <Input name="account_holder" value={form.account_holder} onChange={onChange} placeholder="Carlos García" />
-          </Field>
-        </div>
-      </div>
     </div>
   );
 };

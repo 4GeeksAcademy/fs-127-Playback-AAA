@@ -142,12 +142,33 @@ const SellerRow = ({ seller, updating, onApprove, onReject }) => {
               </div>
             </div>
 
-            {/* Incidencias — pendiente de desarrollo */}
+            {/* Stripe */}
             <div>
+              <p className="text-xs font-bold text-theme-muted uppercase tracking-widest mb-3">
+                💳 Stripe
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <DetailRow
+                  label="Account ID"
+                  value={seller.stripe_account_id}
+                />
+                <DetailRow
+                  label="Cuenta creada"
+                  value={seller.stripe_account_id ? '✅ Sí' : '❌ No'}
+                />
+                <DetailRow
+                  label="Onboarding"
+                  value={seller.stripe_onboarding_completed ? '✅ Completado' : '⏳ Pendiente'}
+                />
+              </div>
+            </div>
+
+            {/* Incidencias — pendiente de desarrollo */}
+            <div className="col-span-2">
               <p className="text-xs font-bold text-theme-muted uppercase tracking-widest mb-3">
                 🚨 Incidencias
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <DetailRow label="En productos" value="— (próximamente)" />
                 <DetailRow label="En pedidos" value="— (próximamente)" />
                 <DetailRow

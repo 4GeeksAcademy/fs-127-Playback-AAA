@@ -1,206 +1,171 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import addressService from "../services/addressService";
+import orderServices from "../services/orderService";
+import paymentService from "../services/paymentService";
+import AddressSelector from "../components/Checkout/AddressSelector";
+import OrderSummary from "../components/Checkout/OrderSummary";
+import PaymentForm from "../components/Checkout/PaymentForm";
+import CheckoutSuccess from "../components/Checkout/CheckoutSuccess";
+
+// Inicializa Stripe fuera del componente para evitar recrearlo en cada render
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export const Checkout = () => {
 
-  const { store, dispatch } = useGlobalReducer();
-  const navigate = useNavigate();
+    const { store, dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
 
-  const [addresses, setAddresses] = useState([]);
-  const [shippingAddress, setShippingAddress] = useState(null);
-  const [billingAddress, setBillingAddress] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("credit_card");
-  const [loading, setLoading] = useState(false);
+    const [addresses, setAddresses] = useState([]);
+    const [cart, setCart] = useState([]);
+    const [shippingAddress, setShippingAddress] = useState(null);
+    const [billingAddress, setBillingAddress] = useState(null);
+    const [sameAsBilling, setSameAsBilling] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [clientSecret, setClientSecret] = useState(null);
+    const [step, setStep] = useState("addresses"); // "addresses" | "payment" | "success"
 
-  useEffect(() => {
+    useEffect(() => {
+        const token = store.token || localStorage.getItem("token");
+        if (!token) return;
 
-    const token = store.token || localStorage.getItem("token");
+        // Carga direcciones y carrito en paralelo
+        Promise.all([
+            addressService.getAddresses(token),
+            orderServices.getCart(token)
+        ]).then(([[addressData], [cartData]]) => {
 
-    if (!token) return;
+            if (addressData && addressData.length > 0) {
+                setAddresses(addressData);
+                setShippingAddress(addressData[0].id);
+                setBillingAddress(addressData[0].id);
+            }
 
-    addressService.getAddresses(token).then(([data]) => {
+            if (cartData) setCart(cartData.products || []);
+        });
+    }, []);
 
-      if (data) {
-        setAddresses(data);
-      }
+    const handleShippingSelect = (id) => {
+        setShippingAddress(id);
+        if (sameAsBilling) setBillingAddress(id);
+    };
 
-    });
+    const handleSameAsBilling = (e) => {
+        setSameAsBilling(e.target.checked);
+        if (e.target.checked) setBillingAddress(shippingAddress);
+    };
 
-  }, []);
+    const handleAddressCreated = (newAddress) => {
+        const updated = [...addresses, newAddress];
+        setAddresses(updated);
+        if (!shippingAddress) {
+            setShippingAddress(newAddress.id);
+            setBillingAddress(newAddress.id);
+        }
+    };
 
-  const handleCheckout = async () => {
+    // Paso 1 — guardar direcciones, calcular totales y crear PaymentIntent
+    const handleCheckout = async () => {
 
-    if (!shippingAddress || !billingAddress) {
-      alert("Selecciona dirección de envío y facturación");
-      return;
-    }
+        if (!shippingAddress || !billingAddress) {
+            alert("Selecciona dirección de envío y facturación");
+            return;
+        }
 
-    const token = store.token || localStorage.getItem("token");
+        const token = store.token || localStorage.getItem("token");
+        setLoading(true);
 
-    setLoading(true);
+        // Guarda direcciones y calcula totales
+        const [orderData, orderError] = await orderServices.checkout(token, shippingAddress, billingAddress);
+        if (orderError) {
+            alert(orderError);
+            setLoading(false);
+            return;
+        }
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/checkout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify({
-        shipping_address_id: shippingAddress,
-        billing_address_id: billingAddress,
-        payment_method: paymentMethod
-      })
-    });
+        // Crea el PaymentIntent y obtiene el clientSecret
+        const [paymentData, paymentError] = await paymentService.createPaymentIntent(token, orderData.order_id);
+        if (paymentError) {
+            alert(paymentError);
+            setLoading(false);
+            return;
+        }
 
-    if (res.ok) {
+        setClientSecret(paymentData.client_secret);
+        setStep("payment");
+        setLoading(false);
+    };
 
-      // vaciar carrito
-      dispatch({
-        type: "set_cart",
-        payload: []
-      });
+    const handleSuccess = () => {
+        dispatch({ type: "set_cart", payload: [] });
+        setStep("success");
+        setTimeout(() => navigate("/orders"), 3000);
+    };
 
-      setTimeout(() => {
+    if (step === "success") return <CheckoutSuccess />;
 
-        navigate("/orders");
+    return (
+        <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-10">
 
-      }, 1500);
+            {/* COLUMNA IZQUIERDA */}
+            <div>
+                <h1 className="text-2xl font-semibold mb-8">Checkout</h1>
 
-    } else {
+                {step === "addresses" && (
+                    <>
+                        <AddressSelector
+                            title="Dirección de envío"
+                            addresses={addresses}
+                            selected={shippingAddress}
+                            onSelect={handleShippingSelect}
+                            onAddressCreated={handleAddressCreated}
+                        />
 
-      setLoading(false);
-      alert("Error al realizar el pedido");
+                        <label className="flex items-center gap-2 mb-6 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={sameAsBilling}
+                                onChange={handleSameAsBilling}
+                                className="accent-violet-600 w-4 h-4"
+                            />
+                            <span className="text-sm text-stone-600">
+                                Usar la misma dirección para facturación
+                            </span>
+                        </label>
 
-    }
+                        {!sameAsBilling && (
+                            <AddressSelector
+                                title="Dirección de facturación"
+                                addresses={addresses}
+                                selected={billingAddress}
+                                onSelect={setBillingAddress}
+                                onAddressCreated={handleAddressCreated}
+                            />
+                        )}
+                    </>
+                )}
 
-  };
-
-  return (
-
-    <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-10">
-
-      {/* COLUMNA IZQUIERDA */}
-
-      <div>
-
-        <h1 className="text-2xl font-semibold mb-8">
-          Checkout
-        </h1>
-
-        {/* DIRECCIÓN ENVÍO */}
-
-        <div className="mb-8">
-
-          <h2 className="text-lg font-medium mb-4">
-            Dirección de envío
-          </h2>
-
-          {addresses.map(address => (
-
-            <div
-              key={address.id}
-              onClick={() => setShippingAddress(address.id)}
-              className={`border rounded-lg p-4 mb-3 cursor-pointer transition
-              ${shippingAddress === address.id ? "border-violet-600 bg-violet-50" : "border-gray-200"}
-              `}
-            >
-
-              <p className="font-medium">{address.full_name}</p>
-              <p>{address.address}</p>
-              <p>{address.city}</p>
-              <p>{address.country}</p>
-
+                {step === "payment" && clientSecret && (
+                    <div>
+                        <h2 className="text-lg font-medium mb-6">Introduce tu método de pago</h2>
+                        <Elements stripe={stripePromise} options={{ clientSecret }}>
+                            <PaymentForm onSuccess={handleSuccess} />
+                        </Elements>
+                    </div>
+                )}
             </div>
 
-          ))}
+            {/* COLUMNA DERECHA */}
+            <OrderSummary
+                step={step}
+                loading={loading}
+                onContinue={handleCheckout}
+                cart={cart}
+            />
 
         </div>
-
-        {/* DIRECCIÓN FACTURACIÓN */}
-
-        <div className="mb-8">
-
-          <h2 className="text-lg font-medium mb-4">
-            Dirección de facturación
-          </h2>
-
-          {addresses.map(address => (
-
-            <div
-              key={address.id}
-              onClick={() => setBillingAddress(address.id)}
-              className={`border rounded-lg p-4 mb-3 cursor-pointer transition
-              ${billingAddress === address.id ? "border-violet-600 bg-violet-50" : "border-gray-200"}
-              `}
-            >
-
-              <p className="font-medium">{address.full_name}</p>
-              <p>{address.address}</p>
-              <p>{address.city}</p>
-              <p>{address.country}</p>
-
-            </div>
-
-          ))}
-
-        </div>
-
-        {/* MÉTODO DE PAGO */}
-
-        <div className="mb-8">
-
-          <h2 className="text-lg font-medium mb-4">
-            Método de pago
-          </h2>
-
-          <select
-            value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            className="border rounded-lg p-3 w-full"
-          >
-
-            <option value="credit_card">
-              Tarjeta de crédito
-            </option>
-
-            <option value="bizum">
-              Bizum
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-      {/* RESUMEN PEDIDO */}
-
-      <div className="bg-white border rounded-xl p-6 h-fit">
-
-        <h2 className="text-lg font-semibold mb-6">
-          Resumen del pedido
-        </h2>
-
-        <p className="text-gray-500 text-sm mb-6">
-          Los productos de tu carrito se procesarán al confirmar el pedido.
-        </p>
-
-        <button
-          onClick={handleCheckout}
-          disabled={loading}
-          className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition"
-        >
-
-          {loading ? "Procesando pedido..." : "Confirmar pedido"}
-
-        </button>
-
-      </div>
-
-    </div>
-
-  );
-
+    );
 };

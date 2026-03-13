@@ -19,12 +19,9 @@ const INITIAL_FORM = {
   origin_city: '',
   origin_zip: '',
   origin_country: 'España',
-  iban: '',
-  account_holder: '',
 };
 
 // Precarga los datos del perfil existente en modo edición
-// El IBAN no se precarga por seguridad — el usuario debe reintroducirlo
 const formFromProfile = (data) => ({
   store_name: data.store_name || '',
   nif_cif: data.nif_cif || '',
@@ -34,11 +31,9 @@ const formFromProfile = (data) => ({
   origin_city: data.origin_city || '',
   origin_zip: data.origin_zip || '',
   origin_country: data.origin_country || 'España',
-  iban: '',
-  account_holder: '',
 });
 
-const steps = ['Tienda', 'Envío y pagos', 'Revisión'];
+const steps = ['Tienda', 'Dirección de Envío', 'Revisión'];
 
 const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
   const { t } = useTranslation();
@@ -73,15 +68,10 @@ const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
       if (!form.nif_cif) newErrors.nif_cif = t('seller.errorRequired');
     }
     if (step === 1) {
-      if (!form.origin_address)
-        newErrors.origin_address = t('seller.errorRequired');
+      if (!form.origin_address) newErrors.origin_address = t('seller.errorRequired');
       if (!form.origin_city) newErrors.origin_city = t('seller.errorRequired');
       if (!form.origin_zip) newErrors.origin_zip = t('seller.errorRequired');
-      if (!form.origin_country)
-        newErrors.origin_country = t('seller.errorRequired');
-      if (!form.iban) newErrors.iban = t('seller.errorRequired');
-      if (!form.account_holder)
-        newErrors.account_holder = t('seller.errorRequired');
+      if (!form.origin_country) newErrors.origin_country = t('seller.errorRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

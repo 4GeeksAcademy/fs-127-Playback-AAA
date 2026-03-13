@@ -58,3 +58,23 @@ export const getMyProductsService = async (token) => {
   if (!response.ok) throw new Error(json.description || "Error al cargar productos");
   return json;
 };
+
+export const getStripeOnboardingLinkService = async (token) => {
+  const response = await fetch(`${BACKEND_URL}/api/seller/stripe/onboarding`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const json = await response.json();
+  if (!response.ok)
+    throw new Error(json.description || json.msg || 'Error al obtener link de onboarding');
+  return json;
+};
+
+export const getStripeAccountStatusService = async (token) => {
+  const response = await fetch(`${BACKEND_URL}/api/seller/stripe/status`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const json = await response.json();
+  if (!response.ok)
+    throw new Error(json.description || json.msg || 'Error al verificar cuenta Stripe');
+  return json;
+};
