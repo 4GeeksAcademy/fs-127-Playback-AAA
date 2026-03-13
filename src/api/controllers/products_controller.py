@@ -223,48 +223,64 @@ def create_product():
 
     return jsonify(new_product.serialize()), 201
 
-
 @product_bp.route('/<int:id>', methods=['PUT'])
+@jwt_required()
 def update_product(id):
     product = Product.query.get(id)
     if product is None:
         abort(404, description=f"Producto con id {id} no encontrado")
 
-    body = request.get_json()
-    if not body:
-        abort(400, description="El body no puede estar vacío")
+    if request.content_type and "multipart/form-data" in request.content_type:
+        name        = request.form.get("name")
+        description = request.form.get("description")
+        price       = request.form.get("price")
+        stock       = request.form.get("stock")
+        item_id     = request.form.get("item_id")
+        condition   = request.form.get("condition")
+        discount    = request.form.get("discount")
+        size        = request.form.get("size")
+        weight      = request.form.get("weight")
+        imagen      = request.files.get("imagen")
+    else:
+        body = request.get_json()
+        if not body:
+            abort(400, description="El body no puede estar vacío")
+        name        = body.get("name")
+        description = body.get("description")
+        price       = body.get("price")
+        stock       = body.get("stock")
+        item_id     = body.get("item_id")
+        condition   = body.get("condition")
+        discount    = body.get("discount")
+        size        = body.get("size")
+        weight      = body.get("weight")
+        imagen      = None
 
     try:
-        if "name" in body:
-            new_name = body["name"]
-            product.name = {"es": new_name, "en": translate_text(
-                new_name, "en") or new_name}
+        if name:
+            product.name = {"es": name, "en": translate_text(name, "en") or name}
+        if description:
+            product.description = {"es": description, "en": translate_text(description, "en") or description}
+        if price:       product.price    = float(price)
+        if stock:       product.stock    = int(stock)
+        if item_id and item_id != "undefined": product.item_id = int(item_id)
 
-        if "description" in body:
-            new_desc = body["description"]
-            product.description = {
-                "es": new_desc, "en": translate_text(new_desc, "en") or new_desc}
-
-        product.price = body.get("price", product.price)
-        product.image_url = body.get("image_url", product.image_url)
-        product.size = body.get("size", product.size)
-        product.weight = body.get("weight", product.weight)
-        product.stock = body.get("stock", product.stock)
-        product.discount = body.get("discount", product.discount)
-        product.condition = body.get("condition", product.condition)
-        product.item_id = body.get("item_id", product.item_id)
-
-        if "condition" in body:
+        if condition:
             from api.models.product import ProductCondition
-            product.condition = ProductCondition(body["condition"])
+            product.condition = ProductCondition(condition)
+        if discount is not None: product.discount = float(discount)
+        if size:        product.size     = size
+        if weight:      product.weight   = float(weight)
+        if imagen:
+            resultado = cloudinary.uploader.upload(imagen, folder="productos")
+            product.image_url = resultado["secure_url"]
 
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        abort(500, description="Error al actualizar producto")
+        abort(500, description=f"Error al actualizar producto: {str(e)}")
 
     return jsonify(product.serialize()), 200
-
 
 @product_bp.route('/top-sales', methods=['GET'])
 def get_top_sales():
