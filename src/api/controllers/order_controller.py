@@ -121,6 +121,7 @@ def get_cart():
             "id": product.id,
             "name": product.name,
             "price": product.price,
+            "discount": product.discount,
             "quantity": detail.quantity,
             "image_url": product.image_url
         })
@@ -185,6 +186,7 @@ def my_orders():
                 "id": product.id,
                 "name": product.name,
                 "price": product.price,
+                "discount": product.discount,
                 "quantity": detail.quantity,
                 "image_url": product.image_url
             })
@@ -229,11 +231,14 @@ def checkout():
     for detail in order.order_details:
 
         product = detail.product
-        subtotal += product.price * detail.quantity
+        # Aplica descuento si existe — el precio ya incluye IVA
+        price_with_discount = product.price * (1 - product.discount / 100)
+        subtotal += price_with_discount * detail.quantity
 
-    tax = subtotal * 0.21
-    shipping_cost = 5
-    total_price = subtotal + tax + shipping_cost
+    # IVA ya incluido en el precio — extraemos cuánto es
+    tax = subtotal - (subtotal / 1.21)
+    shipping_cost = 5.00
+    total_price = subtotal + shipping_cost
 
 
     # -----------------------------
@@ -294,6 +299,7 @@ def seller_orders():
         "id": d.product.id,
         "name": d.product.name.get("es"),
         "price": d.product.price,
+        "discount": d.product.discount,
         "quantity": d.quantity,
         "image_url": d.product.image_url,
     } for d in my_details]

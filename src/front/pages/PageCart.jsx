@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderServices from "../services/orderService";
 import { useTranslation } from "react-i18next";
+import { ProductPrice } from "../components/Common/ProductPrice";
+import OrderSummary from "../components/Checkout/OrderSummary";
 
 export const PageCart = () => {
 
@@ -63,11 +65,6 @@ export const PageCart = () => {
     dispatch({ type: "cart_add", payload: { id: productId, quantity: delta } });
   };
 
-  const total = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
   return (
 
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -96,7 +93,8 @@ export const PageCart = () => {
                 item.name?.es ||
                 item.name?.en;
 
-              const subtotal = item.price * item.quantity;
+              const priceWithDiscount = item.price * (1 - (item.discount || 0) / 100);
+              const lineTotal = priceWithDiscount * item.quantity;
 
               return (
 
@@ -119,10 +117,9 @@ export const PageCart = () => {
                         {name}
                       </h2>
 
-                      <p className="text-sm text-stone-500">
-                        {item.price} €
-                      </p>
-                    {/* CANTIDAD */}
+                      <ProductPrice price={item.price} discount={item.discount} />
+
+                      {/* CANTIDAD */}
                       <div className="flex items-center gap-2 mt-1">
                         <button
                           onClick={() => handleQuantity(item.id, -1)}
@@ -157,7 +154,7 @@ export const PageCart = () => {
                     </p>
 
                     <p className="font-semibold text-stone-900">
-                      {subtotal.toFixed(2)} €
+                      {lineTotal.toFixed(2)} €
                     </p>
 
                   </div>
@@ -170,35 +167,11 @@ export const PageCart = () => {
           </div>
 
           {/* RESUMEN */}
-          <div className="border rounded-lg p-6 h-fit">
-
-            <h2 className="text-lg font-semibold mb-6">
-              Resumen del pedido
-            </h2>
-
-            <div className="flex justify-between text-sm mb-3">
-              <span>Subtotal</span>
-              <span>{total.toFixed(2)} €</span>
-            </div>
-
-            <div className="flex justify-between text-sm mb-6">
-              <span>Envío</span>
-              <span>Gratis</span>
-            </div>
-
-            <div className="flex justify-between font-semibold text-lg border-t pt-4 mb-6">
-              <span>Total</span>
-              <span>{total.toFixed(2)} €</span>
-            </div>
-
-            <button
-              onClick={() => navigate("/checkout")}
-              className="w-full bg-stone-900 text-white py-3 text-sm uppercase tracking-widest hover:bg-stone-700 transition"
-            >
-              Ir al pago
-            </button>
-
-          </div>
+          <OrderSummary
+            cart={cart}
+            step="cart"
+            onContinue={() => navigate("/checkout")}
+          />
 
         </div>
 
