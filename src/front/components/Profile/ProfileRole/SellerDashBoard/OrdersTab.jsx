@@ -3,6 +3,7 @@ import useGlobalReducer from "../../../../hooks/useGlobalReducer";
 
 const STATUS_STYLE = {
   pending: "bg-yellow-100 text-yellow-700",
+  paid: "bg-teal-100 text-teal-700",
   confirmed: "bg-blue-100 text-blue-700",
   processing: "bg-purple-100 text-purple-700",
   shipped: "bg-indigo-100 text-indigo-700",
@@ -12,6 +13,7 @@ const STATUS_STYLE = {
 
 const STATUS_LABEL = {
   pending: "Pendiente",
+  paid: "Pagado",
   confirmed: "Confirmado",
   processing: "Procesando",
   shipped: "Enviado",
@@ -20,12 +22,14 @@ const STATUS_LABEL = {
 };
 
 const NEXT_STATUSES = {
+  pending:[],
+  paid: ["confirmed", "cancelled"],
   confirmed: ["processing", "cancelled"],
   processing:["shipped", "cancelled"],
   shipped: ["delivered"],
   delivered: [],
   cancelled:[],
-  pending:[],
+  
 };
 
 const PAYMENT_LABEL = {
@@ -261,7 +265,7 @@ const OrdersTab = () => {
                   <span>€{Number(selected.subtotal).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-500">
-                  <span>IVA (21%)</span>
+                  <span>IVA incluido  (21%)</span>
                   <span>€{Number(selected.tax).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-500">
