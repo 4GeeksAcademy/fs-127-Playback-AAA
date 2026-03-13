@@ -13,7 +13,6 @@ class Address(db.Model):
     # =========================
     id: Mapped[int] = mapped_column(primary_key=True)
     address: Mapped[str] = mapped_column(String(255), nullable=False)
-    address_type: Mapped[str] = mapped_column(String(50), default="shipping", nullable=False)
     full_name: Mapped[str] = mapped_column(String(150), nullable=False)
     phone: Mapped[str] = mapped_column(String(30), nullable=False)
     city: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -40,7 +39,6 @@ class Address(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "address": self.address,
-            "address_type": self.address_type,
             "full_name": self.full_name,
             "phone": self.phone,
             "city": self.city,

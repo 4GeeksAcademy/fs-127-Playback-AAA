@@ -30,8 +30,7 @@ def create_seller_profile():
     if not body:
         abort(400, description="El body no puede estar vacío")
 
-    required = ["store_name", "nif_cif", "iban", "account_holder",
-                "origin_address", "origin_city", "origin_zip", "origin_country"]
+    required = ["store_name", "nif_cif", "origin_address", "origin_city", "origin_zip", "origin_country"]
     for field in required:
         if field not in body or not body[field]:
             abort(400, description=f"El campo '{field}' es obligatorio")
@@ -48,8 +47,6 @@ def create_seller_profile():
             description=body.get("description"),
             phone=body.get("phone"),
             nif_cif=body["nif_cif"],
-            iban=body["iban"],
-            account_holder=body["account_holder"],
             origin_address=body["origin_address"],
             origin_city=body["origin_city"],
             origin_zip=body["origin_zip"],
@@ -58,6 +55,21 @@ def create_seller_profile():
             logo_url=logo_url
         )
         db.session.add(seller)
+        db.session.flush()
+
+        try:
+            account = stripe.Account.create(
+                type="express",
+                email=user.email,
+                capabilities={
+                    "card_payments": {"requested": True},
+                    "transfers": {"requested": True},
+                },
+            )
+            seller.stripe_account_id = account.id
+        except stripe.error.StripeError:
+            pass 
+
         db.session.commit()
 
         return jsonify({
@@ -103,7 +115,7 @@ def update_seller_profile():
     if not body:
         abort(400, description="Body vacío")
 
-    # Campos actualizables — el NIF y el IBAN no se pueden cambiar una vez creados
+    # Campos actualizables — el NIF no se pueden cambiar una vez creados
     updatable = ["store_name", "description", "phone", "logo_url",
                  "origin_address", "origin_city", "origin_zip", "origin_country"]
 
@@ -148,46 +160,6 @@ def delete_seller_profile():
 
 
 # -------------------------
-# CREAR CUENTA STRIPE CONNECT
-# -------------------------
-
-@seller_bp.route("/stripe/connect", methods=["POST"])
-@jwt_required()
-def create_stripe_connect_account():
-    user_id = get_jwt_identity()
-    seller = Seller.query.filter_by(user_id=user_id).first()
-
-    if not seller:
-        abort(404, description="Perfil de vendedor no encontrado")
-
-    # Si ya tiene cuenta, no creamos otra
-    if seller.stripe_account_id:
-        return jsonify({
-            "message": "La cuenta Stripe ya existe",
-            "stripe_account_id": seller.stripe_account_id
-        }), 200
-
-    try:
-        account = stripe.Account.create(
-            type="express",
-            country="ES",
-            email=seller.user.email,
-            capabilities={
-                "card_payments": {"requested": True},
-                "transfers": {"requested": True},
-            },
-        )
-
-        seller.stripe_account_id = account.id
-        db.session.commit()
-
-        return jsonify({"stripe_account_id": account.id}), 201
-
-    except stripe.error.StripeError as e:
-        abort(500, description=f"Error de Stripe: {str(e)}")
-
-
-# -------------------------
 # LINK DE ONBOARDING STRIPE
 # -------------------------
 
@@ -215,6 +187,44 @@ def get_stripe_onboarding_link():
 
     except stripe.error.StripeError as e:
         abort(500, description=f"Error de Stripe: {str(e)}")
+
+
+# -------------------------
+# ESTADO DE CUENTA STRIPE
+# -------------------------
+
+@seller_bp.route("/stripe/status", methods=["GET"])
+@jwt_required()
+def get_stripe_account_status():
+    user_id = get_jwt_identity()
+    seller = Seller.query.filter_by(user_id=user_id).first()
+
+    if not seller or not seller.stripe_account_id:
+        return jsonify({"connected": False}), 200
+
+    try:
+        account = stripe.Account.retrieve(seller.stripe_account_id)
+
+        # details_submitted = el usuario completó el formulario de onboarding
+        # charges_enabled   = Stripe activó los cobros (puede tardar en test)
+        connected = account.charges_enabled or account.details_submitted
+
+        if connected and not seller.stripe_onboarding_completed:
+            try:
+                seller.stripe_onboarding_completed = True
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                abort(500, description=f"Error al guardar estado: {str(e)}")
+
+        return jsonify({
+            "connected": connected,
+            "onboarding_completed": seller.stripe_onboarding_completed
+        }), 200
+
+    except stripe.error.StripeError as e:
+        abort(500, description=f"Error de Stripe: {str(e)}")
+
 
 # -------------------------
 # MOSTRAR PRODUCTOS (DEL PROPIO VENDEDOR)

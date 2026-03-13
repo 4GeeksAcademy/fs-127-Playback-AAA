@@ -55,6 +55,10 @@ def update_seller_status(seller_id):
     except ValueError:
         abort(400, description=f"Estado inválido: {body['status']}")
 
+    # No se puede verificar un seller sin onboarding de Stripe completado
+    if new_status == SellerStatus.verified and not seller.stripe_onboarding_completed:
+        abort(400, description="El vendedor no ha completado el registro en Stripe")
+
     seller.status = new_status
 
     # Guardar motivo de rechazo si se proporciona, limpiar si se aprueba

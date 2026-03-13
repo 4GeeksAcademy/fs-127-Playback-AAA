@@ -17,8 +17,6 @@ const StepReview = ({ form, isEdit }) => {
           [t('seller.nifCif'),        form.nif_cif],
           [t('seller.city'),          `${form.origin_city} (${form.origin_zip})`],
           [t('seller.country'),       form.origin_country],
-          [t('seller.iban'),          form.iban],
-          [t('seller.accountHolder'), form.account_holder],
         ].map(([label, value]) => (
           <div key={label} className="flex gap-2">
             <span className="text-theme-muted w-40 shrink-0">{label}</span>

@@ -85,7 +85,7 @@ def create_payment():
         intent = stripe.PaymentIntent.create(
             amount=amount_cents,
             currency="eur",
-            payment_method_types=["card"],
+            automatic_payment_methods={"enabled": True},
             metadata={
                 "order_id": str(order.id),
                 "user_id": str(user_id),
