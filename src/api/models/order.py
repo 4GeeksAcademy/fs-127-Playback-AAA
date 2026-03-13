@@ -12,9 +12,9 @@ class Payment(enum.Enum):
 
 class Status(enum.Enum):
     pending = "pending"         #--Está en el carrito
-    processing = "processing"   #--Se está procesando el pago
     paid = "paid"               #--Pago confirmado
     confirmed = "confirmed"     #--Vendedor recibe/abre el aviso
+    processing = "processing"   #--Se está  está preparando el envío
     shipped = "shipped"         #--Vendedor confirma envió con el código de envío
     delivered = "delivered"     #--Entregado
     cancelled = "cancelled"     #--Cancelado
