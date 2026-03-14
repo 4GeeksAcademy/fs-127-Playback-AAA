@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
+import { AlertCircle } from "lucide-react";
 
 const STATUS_STYLE = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -22,14 +23,14 @@ const STATUS_LABEL = {
 };
 
 const NEXT_STATUSES = {
-  pending:[],
+  pending: [],
   paid: ["confirmed", "cancelled"],
   confirmed: ["processing", "cancelled"],
-  processing:["shipped", "cancelled"],
+  processing: ["shipped", "cancelled"],
   shipped: ["delivered"],
   delivered: [],
-  cancelled:[],
-  
+  cancelled: [],
+
 };
 
 const PAYMENT_LABEL = {
@@ -72,13 +73,19 @@ const AddressBlock = ({ label, address }) => {
 // ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────
 const OrdersTab = () => {
   const { store } = useGlobalReducer();
-  
+
   // Estados
   const [orders, setOrders] = useState([]);
-  const[loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState(null);
+  const showToast = (msg, type = "error") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
 
   // Función para cargar los pedidos
   const loadOrders = () => {
@@ -94,17 +101,17 @@ const OrdersTab = () => {
 
   useEffect(() => {
     loadOrders();
-  },[]);
+  }, []);
 
   // Funciones para el Modal
-  const openModal = (order) => { 
-    setSelected(order); 
-    setNewStatus(order.status); 
+  const openModal = (order) => {
+    setSelected(order);
+    setNewStatus(order.status);
   };
-  
-  const closeModal = () => { 
-    setSelected(null); 
-    setNewStatus(""); 
+
+  const closeModal = () => {
+    setSelected(null);
+    setNewStatus("");
   };
 
   const handleSaveStatus = async () => {
@@ -114,7 +121,7 @@ const OrdersTab = () => {
     }
 
     setSaving(true);
-    
+
     try {
       const response = await fetch(`${API}/api/order/seller-orders/${selected.id}/status`, {
         method: "PATCH",
@@ -127,7 +134,7 @@ const OrdersTab = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert(errorData.description || "Error al actualizar estado");
+        showToast(errorData.description || "Error al actualizar estado");
         return;
       }
 
@@ -145,7 +152,14 @@ const OrdersTab = () => {
   }
 
   return (
+
     <div className="pt-6 space-y-4">
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-red-600 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
+          <AlertCircle size={15} />
+          {toast.msg}
+        </div>
+      )}
       <p className="text-sm text-gray-500">{orders.length} pedidos encontrados</p>
 
       {/* ── TABLA DE PEDIDOS ── */}
@@ -206,7 +220,7 @@ const OrdersTab = () => {
       {selected && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={closeModal}>
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            
+
             {/* Header del Modal */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <div>
@@ -282,7 +296,7 @@ const OrdersTab = () => {
             {/* Bloque: Cambiar Estado */}
             <div className="px-6 py-4">
               <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-3">Estado del pedido</p>
-              
+
               {NEXT_STATUSES[selected.status]?.length > 0 ? (
                 <div className="space-y-3">
                   <select

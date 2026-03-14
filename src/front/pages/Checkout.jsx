@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { AlertCircle } from "lucide-react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import addressService from "../services/addressService";
 import orderServices from "../services/orderService";
@@ -11,7 +12,9 @@ import OrderSummary from "../components/Checkout/OrderSummary";
 import PaymentForm from "../components/Checkout/PaymentForm";
 import CheckoutSuccess from "../components/Checkout/CheckoutSuccess";
 
+
 // Inicializa Stripe fuera del componente para evitar recrearlo en cada render
+
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export const Checkout = () => {
@@ -26,24 +29,30 @@ export const Checkout = () => {
     const [sameAsBilling, setSameAsBilling] = useState(true);
     const [loading, setLoading] = useState(false);
     const [clientSecret, setClientSecret] = useState(null);
-    const [step, setStep] = useState("addresses"); // "addresses" | "payment" | "success"
+    const [step, setStep] = useState("addresses");// "addresses" | "payment" | "success"
+
+    const [toast, setToast] = useState(null);
+
+    const showToast = (msg, type = "error") => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 3000);
+    };
 
     useEffect(() => {
         const token = store.token || localStorage.getItem("token");
         if (!token) return;
 
         // Carga direcciones y carrito en paralelo
+
         Promise.all([
             addressService.getAddresses(token),
             orderServices.getCart(token)
         ]).then(([[addressData], [cartData]]) => {
-
             if (addressData && addressData.length > 0) {
                 setAddresses(addressData);
                 setShippingAddress(addressData[0].id);
                 setBillingAddress(addressData[0].id);
             }
-
             if (cartData) setCart(cartData.products || []);
         });
     }, []);
@@ -68,10 +77,10 @@ export const Checkout = () => {
     };
 
     // Paso 1 — guardar direcciones, calcular totales y crear PaymentIntent
-    const handleCheckout = async () => {
 
+    const handleCheckout = async () => {
         if (!shippingAddress || !billingAddress) {
-            alert("Selecciona dirección de envío y facturación");
+            showToast("Selecciona dirección de envío y facturación");
             return;
         }
 
@@ -81,15 +90,16 @@ export const Checkout = () => {
         // Guarda direcciones y calcula totales
         const [orderData, orderError] = await orderServices.checkout(token, shippingAddress, billingAddress);
         if (orderError) {
-            alert(orderError);
+            showToast(orderError);
             setLoading(false);
             return;
         }
 
         // Crea el PaymentIntent y obtiene el clientSecret
+
         const [paymentData, paymentError] = await paymentService.createPaymentIntent(token, orderData.order_id);
         if (paymentError) {
-            alert(paymentError);
+            showToast(paymentError);
             setLoading(false);
             return;
         }
@@ -109,8 +119,15 @@ export const Checkout = () => {
 
     return (
         <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-10">
-
             {/* COLUMNA IZQUIERDA */}
+            {toast && (
+                <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${toast.type === "error" ? "bg-red-600" : "bg-stone-900"
+                    }`}>
+                    <AlertCircle size={15} />
+                    {toast.msg}
+                </div>
+            )}
+
             <div>
                 <h1 className="text-2xl font-semibold mb-8">Checkout</h1>
 
@@ -157,7 +174,6 @@ export const Checkout = () => {
                     </div>
                 )}
             </div>
-
             {/* COLUMNA DERECHA */}
             <OrderSummary
                 step={step}
