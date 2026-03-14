@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useTranslation } from "react-i18next";
 
 export const MyOrders = () => {
 
   const { store } = useGlobalReducer();
   const [orders, setOrders] = useState([]);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
 
@@ -81,7 +83,7 @@ export const MyOrders = () => {
                   Total
                 </p>
                 <p className="font-semibold">
-                  {order.total_price} €
+                  {parseFloat(order.total_price).toFixed(2)} €
                 </p>
               </div>
 
@@ -100,30 +102,49 @@ export const MyOrders = () => {
 
                   <img
                     src={product.image_url}
-                    alt={product.name?.es}
+                    alt={product.name?.[i18n.language]}
                     className="w-20 h-20 object-cover rounded"
                   />
 
                   <div className="flex-1">
 
                     <p className="font-medium">
-                      {product.name?.es}
+                      {product.name?.[i18n.language]}
                     </p>
 
                     <p className="text-sm text-gray-500">
-                      Cantidad: {product.quantity}
+                      <span className="text-sm text-gray-400"> {(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)} € / ud </span> X {product.quantity} Unidades
                     </p>
 
                   </div>
 
                   <p className="font-semibold">
-                    {product.price} €
+                    {(product.price * (1 - (product.discount || 0) / 100) * product.quantity).toFixed(2)} €
                   </p>
 
                 </div>
 
               ))}
 
+            </div>
+
+            <div className="px-6 pb-6 space-y-6">
+              <div className="flex gap-4 items-center">
+                <div className="w-20 h-20 rounded flex items-center justify-center text-gray-400 text-4xl">
+                  🚚
+                </div>
+
+                <div className="flex-1">
+                  <p className="font-medium">Gastos de envío</p>
+                  <p className="text-sm text-gray-500">
+                    <span>{order.shipping_address.address} - {order.shipping_address.city} - {order.shipping_address.country}</span>
+                    </p>
+                </div>
+
+                <p className="font-semibold">
+                  {parseFloat(order.shipping_cost ?? 0).toFixed(2)} €
+                </p>
+              </div>
             </div>
 
             {/* DIRECCIONES */}

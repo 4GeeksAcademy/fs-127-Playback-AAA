@@ -164,6 +164,7 @@ export const Checkout = () => {
                 loading={loading}
                 onContinue={handleCheckout}
                 cart={cart}
+                disabled={!shippingAddress || (!sameAsBilling && !billingAddress)}
             />
 
         </div>

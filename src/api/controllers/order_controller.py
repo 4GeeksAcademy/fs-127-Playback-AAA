@@ -195,6 +195,7 @@ def my_orders():
             "id": order.id,
             "status": order.status.value,
             "total_price": order.total_price,
+            "shipping_cost": order.shipping_cost,
             "created_at": order.created_at.isoformat(),
             "products": products,
             "shipping_address": order.shipping_address.serialize() if order.shipping_address else None,

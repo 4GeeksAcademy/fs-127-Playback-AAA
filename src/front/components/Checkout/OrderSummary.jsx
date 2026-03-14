@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { ProductPrice } from "../Common/ProductPrice";
 
-const OrderSummary = ({ step, loading, onContinue, cart }) => {
+const OrderSummary = ({ step, loading, onContinue, cart, disabled }) => {
 
     const { i18n } = useTranslation();
 
@@ -86,7 +86,7 @@ const OrderSummary = ({ step, loading, onContinue, cart }) => {
 					<button
 						onClick={onContinue}
 						disabled={cart.length === 0}
-						className="bg-stone-900 hover:bg-stone-700 text-white w-full py-3 text-sm uppercase tracking-widest transition disabled:opacity-50"
+						className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Ir al pago
 					</button>
@@ -95,8 +95,8 @@ const OrderSummary = ({ step, loading, onContinue, cart }) => {
 				{step === "addresses" && (
 					<button
 						onClick={onContinue}
-						disabled={loading || cart.length === 0}
-						className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition disabled:opacity-50"
+						disabled={loading || cart.length === 0 || disabled}
+						className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{loading ? "Procesando..." : "Continuar al pago"}
 					</button>
