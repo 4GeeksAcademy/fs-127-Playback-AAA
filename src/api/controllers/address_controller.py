@@ -37,6 +37,7 @@ def create_address():
         postal_code=body["postal_code"].strip(),
         country=body["country"].strip(),
         community_code=body.get("community_code"),
+        community=body.get("community"), 
         province_code=body.get("province_code"),
     )
 
@@ -78,6 +79,7 @@ def update_address(address_id):
         "postal_code",
         "country",
         "community_code",
+        "community",
          "province_code",
     ]
 

@@ -90,7 +90,7 @@ const SettingsTab = () => {
           <SellerAdressForm
             form={form}
             onChange={handleChange}
-            onLocationChange={(fields) => setForm(prev => ({ ...prev, ...fields }))}
+onLocationChange={(fields) => setForm(prev => ({ ...prev, ...fields }))}
           />
         </div>
       </div>

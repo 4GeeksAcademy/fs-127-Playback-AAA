@@ -25,20 +25,18 @@ const SellerAdressForm = ({ form, onChange, onLocationChange }) => {
   const hasAddress = !!(form.origin_city || form.origin_address);
 
   // Cuando el modal guarda, propagamos todos los cambios al form padre
-  const handleSave = (localForm) => {
-    setShowToast(true);
-    // Campos de localización (códigos + ciudad + zip)
-    onLocationChange({
-      origin_city: localForm.origin_city || "",
-      origin_zip: localForm.origin_zip || "",
-      origin_community_code: localForm.origin_community_code || "",
-      origin_province_code: localForm.origin_province_code || "",
-    });
-    // Campos de texto libre (simulamos eventos para el onChange estándar)
-    ["origin_address", "origin_country"].forEach((name) => {
-      onChange({ target: { name, value: localForm[name] || "" } });
-    });
-  };
+const handleSave = (localForm) => {
+    console.log("localForm recibido:", localForm); 
+  setShowToast(true);
+  onLocationChange({
+    origin_city:           localForm.origin_city || "",
+    origin_zip:            localForm.origin_zip || "",
+    origin_community_code: localForm.origin_community_code || "",
+    origin_province_code:  localForm.origin_province_code || "",
+    origin_address:        localForm.origin_address || "",   // ← añade estos
+    origin_country:        localForm.origin_country || "",   // ← añade estos
+  });
+};
 
   return (
     <>

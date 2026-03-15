@@ -20,6 +20,7 @@ class Address(db.Model):
     municipality: Mapped[str] = mapped_column(String(100), nullable=True)
     postal_code: Mapped[str] = mapped_column(String(20), nullable=False)
     community_code = db.Column(db.String(10), nullable=True)
+    community = db.Column(db.String(150), nullable=True)
     province_code = db.Column(db.String(10), nullable=True)
     country: Mapped[str] = mapped_column(String(100), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
@@ -48,6 +49,7 @@ class Address(db.Model):
             "municipality": self.municipality,
             "postal_code": self.postal_code,
             "community_code": self.community_code,
+            "community": self.community,
             "province_code": self.province_code,
             "country": self.country,
             "created_at": self.created_at.isoformat() if self.created_at else None,

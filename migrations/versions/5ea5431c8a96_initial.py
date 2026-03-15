@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 64cd343362c4
+Revision ID: 5ea5431c8a96
 Revises: 
-Create Date: 2026-03-15 18:54:24.293611
+Create Date: 2026-03-15 18:36:20.856806
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '64cd343362c4'
+revision = '5ea5431c8a96'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -61,6 +61,7 @@ def upgrade():
     sa.Column('municipality', sa.String(length=100), nullable=True),
     sa.Column('postal_code', sa.String(length=20), nullable=False),
     sa.Column('community_code', sa.String(length=10), nullable=True),
+    sa.Column('community', sa.String(length=150), nullable=True),
     sa.Column('province_code', sa.String(length=10), nullable=True),
     sa.Column('country', sa.String(length=100), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
@@ -81,6 +82,7 @@ def upgrade():
     sa.Column('origin_zip', sa.String(length=10), nullable=False),
     sa.Column('origin_country', sa.String(length=100), nullable=False),
     sa.Column('origin_community_code', sa.String(length=50), nullable=True),
+    sa.Column('origin_community', sa.String(length=50), nullable=True),
     sa.Column('origin_province_code', sa.String(length=50), nullable=True),
     sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
     sa.Column('rejection_reason', sa.Text(), nullable=True),

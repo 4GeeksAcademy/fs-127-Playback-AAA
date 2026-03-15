@@ -78,13 +78,9 @@ const ProfileAddresses = () => {
 
               <p className="font-semibold text-main">{addr.full_name}</p>
               <p className="text-muted">{addr.address}</p>
-              <p className="text-muted">
-                {addr.municipality}
-                {addr.province ? `, ${addr.province}` : ""}
-              </p>
-              <p className="text-muted">
-                {addr.postal_code} {addr.city}
-              </p>
+             <p className="text-muted">{addr.municipality}{addr.province ? `, ${addr.province}` : ""}</p>
+<p className="text-muted">{addr.postal_code}</p>
+<p className="text-muted">{addr.community}</p>
               <p className="text-muted">{addr.country}</p>
               <p className="text-muted">{addr.phone}</p>
 
