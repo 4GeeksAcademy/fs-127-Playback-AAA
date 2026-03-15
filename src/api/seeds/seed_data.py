@@ -30,6 +30,9 @@ from api.models.order import Order, Payment, Status
 from api.models.orderdetail import OrderDetail
 from api.models.review import Review
 from api.models.favorite import Favorite
+from api.models.address import Address
+from api.models.shipment import Shipment
+from api.models.incident import Incident
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1973,8 +1976,11 @@ def reset_data():
     print("\n🗑️  Reseteando datos...")
     Review.query.delete()
     Favorite.query.delete()
+    Incident.query.delete()
+    Shipment.query.delete()
     OrderDetail.query.delete()
     Order.query.delete()
+    Address.query.delete()
     Product.query.delete()
     Seller.query.delete()
     User.query.delete()
@@ -2056,6 +2062,45 @@ def seed_sellers():
     return sellers
 
 
+def seed_addresses(users):
+    """Crea una dirección por cada usuario."""
+    print("\n📍 Seeding direcciones...")
+    addresses = {}
+
+    address_data = [
+        {"full_name": "Lucía Sánchez",   "phone": "+34 611 111 111", "address": "Calle Mayor 1",        "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
+        {"full_name": "Pablo Fernández", "phone": "+34 622 222 222", "address": "Calle Sierpes 10",     "city": "Sevilla",   "province": "Sevilla",   "postal_code": "41001", "country": "España"},
+        {"full_name": "Elena Ruiz",      "phone": "+34 633 333 333", "address": "Passeig de Gràcia 20", "city": "Barcelona", "province": "Barcelona", "postal_code": "08007", "country": "España"},
+        {"full_name": "Javier Moreno",   "phone": "+34 644 444 444", "address": "Gran Vía 5",           "city": "Valencia",  "province": "Valencia",  "postal_code": "46002", "country": "España"},
+        {"full_name": "Ana Jiménez",     "phone": "+34 655 555 555", "address": "Calle Larios 3",       "city": "Málaga",    "province": "Málaga",    "postal_code": "29005", "country": "España"},
+        {"full_name": "PlayBack Admin",  "phone": "+34 666 000 000", "address": "Calle Sin Nombre 0",   "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
+        {"full_name": "Carlos García",   "phone": "+34 612 345 678", "address": "Calle Mayor 12",       "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
+        {"full_name": "María López",     "phone": "+34 623 456 789", "address": "Passeig de Gràcia 55", "city": "Barcelona", "province": "Barcelona", "postal_code": "08007", "country": "España"},
+        {"full_name": "Alejandro Martínez", "phone": "+34 634 567 890", "address": "Gran Vía 10",       "city": "Valencia",  "province": "Valencia",  "postal_code": "46002", "country": "España"},
+        {"full_name": "Arantxa Ordoyo",  "phone": "+34 600 000 000", "address": "Calle Test 1",         "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
+        {"full_name": "PlayBack Seller", "phone": "+34 666 000 666", "address": "Calle Sin Nombre 1",   "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
+    ]
+
+    for i, user in enumerate(users):
+        data = address_data[i % len(address_data)]
+        addr = Address(
+            user_id=user.id,
+            full_name=data["full_name"],
+            phone=data["phone"],
+            address=data["address"],
+            city=data["city"],
+            province=data["province"],
+            postal_code=data["postal_code"],
+            country=data["country"],
+        )
+        db.session.add(addr)
+        db.session.flush()
+        addresses[user.id] = addr
+        print(f"  [OK]   {user.email} → {addr.city}")
+
+    return addresses
+
+
 def seed_products(sellers):
     print("\n📦 Seeding productos...")
     products = []
@@ -2109,7 +2154,7 @@ def seed_products(sellers):
     return products
 
 
-def seed_orders(users, products):
+def seed_orders(users, products, addresses):
     """
     Crea pedidos con TODOS los estados garantizados.
     Solo los buyers y admins hacen pedidos.
@@ -2126,16 +2171,18 @@ def seed_orders(users, products):
     status_queue = all_statuses * 3
     random.shuffle(status_queue)
 
+    
+
     for user in buyers:
+        addr = addresses.get(user.id)
         n_orders = random.randint(3, 6)
         for _ in range(n_orders):
-            n_prods = random.randint(1, 4)
-            order_products = random.sample(products, min(n_prods, len(products)))
+            order_items = [(p, random.randint(1, 2)) for p in random.sample(products, min(random.randint(1, 4), len(products)))]
 
-            subtotal    = round(sum(p.price * (1 - p.discount / 100) for p in order_products), 2)
-            tax         = round(subtotal * 0.21, 2)
+            subtotal    = round(sum(p.price * (1 - p.discount / 100) * qty for p, qty in order_items), 2)
+            tax         = round(subtotal - (subtotal / 1.21), 2)
             shipping    = round(random.uniform(3.5, 9.99), 2)
-            total_price = round(subtotal + tax + shipping, 2)
+            total_price = round(subtotal + shipping, 2)
 
             status = status_queue.pop(0) if status_queue else random.choice(all_statuses)
 
@@ -2154,16 +2201,14 @@ def seed_orders(users, products):
                 payment_method=random.choice(all_payments),
                 status=status,
                 created_at=datetime.now(timezone.utc) - timedelta(days=days_ago),
+                shipping_address_id=addr.id if addr else None,
+                billing_address_id=addr.id if addr else None,
             )
             db.session.add(order)
             db.session.flush()
 
-            for product in order_products:
-                db.session.add(OrderDetail(
-                    order_id=order.id,
-                    product_id=product.id,
-                    quantity=random.randint(1, 2),
-                ))
+            for p, qty in order_items:
+                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=qty))
 
             print(f"  [OK]   {user.email} | {status.value:12} | {total_price:.2f}€")
             orders.append(order)
@@ -2248,10 +2293,7 @@ def seed_favorites(users, products):
     print(f"  Total favoritos: {count}")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# MAIN
-# ══════════════════════════════════════════════════════════════════════════════
-def seed_playback_seller_orders(users, products):
+def seed_playback_seller_orders(users, products, addresses):
     """Crea pedidos específicos para el seller seller@playback.com."""
     print("\n🛒 Seeding pedidos para PlayBack Seller...")
 
@@ -2275,18 +2317,18 @@ def seed_playback_seller_orders(users, products):
     # Compradores que harán los pedidos
     buyers = [u for u in users if u.role == RoleName.buyer]
 
-    all_statuses = [Status.confirmed, Status.processing, Status.shipped, Status.delivered, Status.cancelled]
+    all_statuses = [Status.confirmed, Status.paid, Status.shipped, Status.delivered, Status.cancelled]
     orders = []
 
-    for i, buyer in enumerate(buyers):
-        n_orders = random.randint(1, 3)
-        for _ in range(n_orders):
-            order_products = random.sample(my_products, min(random.randint(1, 3), len(my_products)))
+    for buyer in buyers:
+        addr = addresses.get(buyer.id)
+        for _ in range(random.randint(1, 3)):
+            order_items = [(p, random.randint(1, 2)) for p in random.sample(my_products, min(random.randint(1, 3), len(my_products)))]
 
-            subtotal    = round(sum(p.price for p in order_products), 2)
-            tax         = round(subtotal * 0.21, 2)
+            subtotal    = round(sum(p.price * (1 - p.discount / 100) * qty for p, qty in order_items), 2)
+            tax         = round(subtotal - (subtotal / 1.21), 2)
             shipping    = round(random.uniform(3.5, 9.99), 2)
-            total_price = round(subtotal + tax + shipping, 2)
+            total_price = round(subtotal + shipping, 2)
             status      = random.choice(all_statuses)
 
             order = Order(
@@ -2298,16 +2340,14 @@ def seed_playback_seller_orders(users, products):
                 payment_method=random.choice(list(Payment)),
                 status=status,
                 created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 120)),
+                shipping_address_id=addr.id if addr else None,
+                billing_address_id=addr.id if addr else None,
             )
             db.session.add(order)
             db.session.flush()
 
-            for product in order_products:
-                db.session.add(OrderDetail(
-                    order_id=order.id,
-                    product_id=product.id,
-                    quantity=random.randint(1, 2),
-                ))
+            for p, qty in order_items:
+                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=qty))
 
             orders.append(order)
             print(f"  [OK]   {buyer.email} → {status.value:12} | {total_price:.2f}€")
@@ -2315,7 +2355,9 @@ def seed_playback_seller_orders(users, products):
     db.session.flush()
     print(f"\n  Total pedidos PlayBack: {len(orders)}")
     return orders
-def seed_arantxa_orders(users, products):
+
+
+def seed_arantxa_orders(users, products, addresses):
     print("\n🛒 Seeding pedidos para Arantxa...")
 
     arantxa_user = User.query.filter_by(email="pro.arantxa.ordoyo@gmail.com").first()
@@ -2334,31 +2376,37 @@ def seed_arantxa_orders(users, products):
         return []
 
     buyers = [u for u in users if u.role == RoleName.buyer]
-    all_statuses = [Status.confirmed, Status.processing, Status.shipped, Status.delivered, Status.cancelled]
+    all_statuses = [Status.confirmed, Status.shipped, Status.delivered, Status.cancelled]
     orders = []
 
     for buyer in buyers:
+        addr = addresses.get(buyer.id)
         for _ in range(random.randint(1, 3)):
-            order_products = random.sample(my_products, min(random.randint(1, 3), len(my_products)))
-            subtotal    = round(sum(p.price for p in order_products), 2)
-            tax         = round(subtotal * 0.21, 2)
+            order_items = [(p, random.randint(1, 2)) for p in random.sample(my_products, min(random.randint(1, 3), len(my_products)))]
+
+            subtotal    = round(sum(p.price * (1 - p.discount / 100) * qty for p, qty in order_items), 2)
+            tax         = round(subtotal - (subtotal / 1.21), 2)
             shipping    = round(random.uniform(3.5, 9.99), 2)
-            total_price = round(subtotal + tax + shipping, 2)
+            total_price = round(subtotal + shipping, 2)
             status      = random.choice(all_statuses)
 
             order = Order(
                 user_id=buyer.id,
-                subtotal=subtotal, tax=tax,
-                shipping_cost=shipping, total_price=total_price,
+                subtotal=subtotal,
+                tax=tax,
+                shipping_cost=shipping,
+                total_price=total_price,
                 payment_method=random.choice(list(Payment)),
                 status=status,
                 created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 120)),
+                shipping_address_id=addr.id if addr else None,
+                billing_address_id=addr.id if addr else None,
             )
             db.session.add(order)
             db.session.flush()
 
-            for p in order_products:
-                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=random.randint(1, 2)))
+            for p, qty in order_items:
+                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=qty))
 
             orders.append(order)
             print(f"  [OK]   {buyer.email} → {status.value} | {total_price:.2f}€")
@@ -2366,7 +2414,9 @@ def seed_arantxa_orders(users, products):
     db.session.flush()
     print(f"  Total: {len(orders)} pedidos")
     return orders
-
+# ══════════════════════════════════════════════════════════════════════════════
+# MAIN
+# ══════════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seed de datos de prueba")
     parser.add_argument("--reset", action="store_true", help="Borrar datos existentes antes de insertar")
@@ -2380,15 +2430,16 @@ if __name__ == "__main__":
 
             users    = seed_users()
             sellers  = seed_sellers()
+            addresses = seed_addresses(users)
             products = seed_products(sellers)
 
             if not products:
                 print("\n⚠️  Sin productos — ejecuta seed_categories.py primero.")
                 sys.exit(1)
 
-            orders = seed_orders(users, products)
-            seed_playback_seller_orders(users, products) 
-            seed_arantxa_orders(users, products)
+            orders = seed_orders(users, products, addresses)
+            seed_playback_seller_orders(users, products, addresses) 
+            seed_arantxa_orders(users, products, addresses)
             seed_reviews(users, products, orders)
             seed_favorites(users, products)
 
