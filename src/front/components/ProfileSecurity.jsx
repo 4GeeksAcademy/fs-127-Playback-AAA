@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AlertCircle, Check } from "lucide-react";
+import userService from "../services/userService";
 
 const ProfileSecurity = () => {
   const token = localStorage.getItem("token");
@@ -21,22 +22,15 @@ const ProfileSecurity = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/password`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify(form)
-    });
+    const [data, error] = await userService.updatePassword(token, form);
 
-    if (res.ok) {
-      showToast("Contraseña actualizada correctamente");
-      setForm({ current_password: "", new_password: "", confirm_password: "" });
-    } else {
-      const data = await res.json();
-      showToast(data.description || "Error al actualizar la contraseña", "error");
+    if (error) {
+      showToast(error.description || "Error al actualizar la contraseña", "error");
+      return;
     }
+
+    showToast("Contraseña actualizada correctamente");
+    setForm({ current_password: "", new_password: "", confirm_password: "" });
   };
 
   return (

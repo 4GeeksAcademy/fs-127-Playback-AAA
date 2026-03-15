@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
+import orderService from "../../../../services/orderService";
+
 
 const EarningTab = () => {
   const { store } = useGlobalReducer();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    //Hacemos el fetch para obtener los pedidos del vendedor
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/seller-orders`, {
-      headers: { Authorization: `Bearer ${store.token}` },
-    })
-      .then((r) => r.json())
-      .then(setOrders)
-      .finally(() => setLoading(false));
-  }, []);
 
+  useEffect(() => {
+    orderService.getSellerOrders(store.token).then(([data]) => {
+      if (data) setOrders(data);
+      setLoading(false);
+    });
+  }, []);
+  
   if (loading)
     return (
       <p className="text-center text-sm text-gray-400 mt-10 animate-pulse">
