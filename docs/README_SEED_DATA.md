@@ -10,15 +10,16 @@ Este script puebla la base de datos con datos de prueba para poder desarrollar y
 
 | Dato | Cantidad | Detalle |
 |---|---|---|
-| 👤 Usuarios | 5 | Con contraseña hasheada |
-| 📦 Productos | 12 | De distintas categorías |
-| 🛒 Pedidos | 10–20 | Con todos los estados posibles |
+| 👤 Usuarios | 10 | Con contraseña hasheada |
+| 📦 Productos | 176 | De distintas categorías |
+| 🛒 Pedidos | 36 | Con todos los estados posibles |
 | 📋 OrderDetails | Variable | 1–3 productos por pedido |
 | ⭐ Reviews | Variable | Solo en pedidos entregados |
 | ❤️ Favoritos | Variable | 2–5 por usuario |
 
 ### Estados de pedido generados
-- `pending` — pendiente
+
+- `paid` — pagado
 - `confirmed` — confirmado
 - `processing` — en proceso
 - `shipped` — enviado
@@ -45,22 +46,34 @@ pipenv run python src/api/seeds/seed_categories.py
 
 ## ▶️ Ejecución
 ```bash
-pipenv run python src/api/seeds/seed_test_data.py
+pipenv run python src/api/seeds/seed_data.py
 ```
 
 ---
 
 ## 👤 Credenciales de prueba
 
+### Administración
+| Email | Contraseña | Rol |
+|---|---|---|
+| admin@playback.com | Admin! | admin |
+| seller@playback.com | Seller! | seller |
+
+### Vendedores de prueba
 | Email | Contraseña |
 |---|---|
 | carlos@test.com | Test1234! |
 | maria@test.com | Test1234! |
 | alex@test.com | Test1234! |
+
+### Compradores de prueba
+| Email | Contraseña |
+|---|---|
 | lucia@test.com | Test1234! |
 | pablo@test.com | Test1234! |
-
----
+| elena@test.com | Test1234! |
+| javier@test.com | Test1234! |
+| ana@test.com | Test1234! |
 
 ## 🔁 ¿Puedo ejecutarlo varias veces?
 
