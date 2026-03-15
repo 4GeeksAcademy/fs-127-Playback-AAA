@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import orderServices from "../services/orderService";
 import { Star } from "lucide-react";
 
-export const ReviewForm = ({ productId, orderId }) => {
+export const ReviewForm = ({ productId, orderId, onDone }) => {
   const { t } = useTranslation();
   const [comment, setComment] = useState("");
   const [title, setTitle] = useState("");
@@ -12,12 +12,11 @@ export const ReviewForm = ({ productId, orderId }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    //Evita que recargue la pagina al enviar el formulario
+const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (rating === 0) return setError(t("review.ratingRequired"));
-    //Lo usamos para que el usuario no pueda pulsar 2 veces el boton de enviar y entonces lo desabilitamos hasta que se envia
+
     setLoading(true);
     const token = localStorage.getItem("token");
 
@@ -32,8 +31,18 @@ export const ReviewForm = ({ productId, orderId }) => {
       token,
     );
     setLoading(false);
-    if (err) return setError(err);
+
+    if (err) {
+      if (err.includes("Ya has valorado")) {
+        setError("Ya has valorado este producto en este pedido");
+      } else {
+        setError(err);
+      }
+      return;
+    }
+
     setSuccess(true);
+    if (onDone) setTimeout(onDone, 3000);
   };
 
   if (success)

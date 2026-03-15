@@ -71,6 +71,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
   const handleCommunityChange = async (e) => {
     const val = e.target.value;
+      const selected = communities.find((c) => c.CCOM === val); 
     setSelectedCommunity(val);
     setSelectedProvince("");
     setSelectedMunicipality("");
@@ -79,6 +80,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     setLocalForm((prev) => ({
       ...prev,
       origin_community_code: val,
+       origin_community: selected?.COM || "",
       origin_province_code: "",
       origin_city: "",
       origin_zip: "",
@@ -91,12 +93,14 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
   const handleProvinceChange = async (e) => {
     const val = e.target.value;
+      const selected = provinces.find((p) => p.CPRO === val);
     setSelectedProvince(val);
     setSelectedMunicipality("");
     setMunicipalities([]);
     setLocalForm((prev) => ({
       ...prev,
       origin_province_code: val,
+      origin_province: selected?.ALTERNATIVO_PRO || selected?.PRO || "",
       origin_city: "",
       origin_zip: "",
     }));

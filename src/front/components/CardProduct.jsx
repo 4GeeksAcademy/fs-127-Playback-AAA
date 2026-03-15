@@ -12,17 +12,32 @@ import orderService from "../services/orderService";
 export const CardProduct = ({ product }) => {
   const { store, dispatch } = useGlobalReducer();
   const { t } = useTranslation();
-  const { id, name, price, image_url, discount, low_stock, condition, rating, Review, stock } = product;
+  const {
+    id,
+    name,
+    price,
+    image_url,
+    discount,
+    low_stock,
+    condition,
+    rating,
+    Review,
+    stock,
+  } = product;
   const [toast, setToast] = useState(false);
   const [clicked, setClicked] = useState(false);
 
-  const enCarrito = store.cart?.find(item => item.id === id)?.quantity || 0;
+  const enCarrito = store.cart?.find((item) => item.id === id)?.quantity || 0;
   const inStock = stock == null ? true : stock > 0;
   const stockAgotado = stock != null && enCarrito >= stock;
+
+  const [loadingCart, setLoadingCart] = useState(false); // ← añade esto
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (loadingCart) return; // ← cortocircuito si ya está procesando
 
     setClicked(true);
     setTimeout(() => setClicked(false), 300);
@@ -35,7 +50,10 @@ export const CardProduct = ({ product }) => {
       return;
     }
 
+    setLoadingCart(true); // ← bloquea antes de la llamada
     const [data, err] = await orderService.addProductToCart(token, id);
+    setLoadingCart(false); // ← desbloquea al terminar
+
     if (err) return;
 
     dispatch({ type: "cart_add", payload: { id, quantity: 1 } });
@@ -54,7 +72,9 @@ export const CardProduct = ({ product }) => {
           }`}
         >
           {toast === "sin_stock" ? <X size={15} /> : <ShoppingCart size={15} />}
-          {toast === "sin_stock" ? t("product.noStock") : t("product.addedToCart")}
+          {toast === "sin_stock"
+            ? t("product.noStock")
+            : t("product.addedToCart")}
         </div>
       )}
 
@@ -69,13 +89,25 @@ export const CardProduct = ({ product }) => {
                 (e.target.src = "https://placehold.co/300x300?text=Sin+imagen")
               }
             />
-            <ProductBadges discount={discount} lowStock={low_stock} condition={condition} className="absolute top-2 left-2" />
-            <FavoriteButton product={product} className="absolute top-3 right-3" />
+            <ProductBadges
+              discount={discount}
+              lowStock={low_stock}
+              condition={condition}
+              className="absolute top-2 left-2"
+            />
+            <FavoriteButton
+              product={product}
+              className="absolute top-3 right-3"
+            />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm pt-3 text-main">{name}</p>
-              <ProductPrice price={price} discount={discount} className="pb-3" />
+              <ProductPrice
+                price={price}
+                discount={discount}
+                className="pb-3"
+              />
               {Review > 0 && (
                 <div className="flex items-center gap-1">
                   <StarRating rating={rating} />
@@ -92,9 +124,12 @@ export const CardProduct = ({ product }) => {
             ) : (
               <button
                 onClick={handleAddToCart}
+                disabled={loadingCart}
                 className={`bg-stone-800 hover:bg-stone-600 dark:bg-stone-200 dark:hover:bg-stone-400 dark:text-stone-900 text-white transition-all flex items-center justify-center p-2 ${
-                  clicked ? "scale-75 bg-violet-600 dark:bg-violet-600 dark:text-white" : "scale-100"
-                }`}
+                  clicked
+                    ? "scale-75 bg-violet-600 dark:bg-violet-600 dark:text-white"
+                    : "scale-100"
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 <ShoppingCart size={16} />
               </button>
