@@ -18,11 +18,13 @@
     "shipping": "Envío gratuito en pedidos superiores a 50 €. Devoluciones aceptadas durante 30 días.",
     "inStock": "En stock",
     "outOfStock": "Sin stock",
+    "noStock": "No hay más stock disponible",
     "available": "disponibles",
     "addToCart": "Añadir a la cesta",
-    "reviews": "Opiniones de clientes",
     "addedToCart": "Producto añadido a tu cesta",
-    "loginRequired": "Debes iniciar sesión para añadir productos al carrito"
+    "reviews": "Opiniones de clientes",
+    "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
+    "cartError": "Error al añadir al carrito"
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
@@ -181,6 +183,8 @@
     "subtotal": "Subtotal",
     "tax": "IVA incluido (21%)",
     "shipping": "Envío",
+    "freeShipping": "Gratis",
+    "discount": "Descuento",
     "total": "Total",
     "goToPayment": "Ir al pago",
     "continueToPayment": "Continuar al pago",
@@ -189,6 +193,16 @@
     "newAddress": "Nueva dirección",
     "save": "Guardar",
     "saving": "Guardando...",
+    "selectAddress": "Selecciona dirección de envío y facturación",
+    "shippingAddress": "Dirección de envío",
+    "billingAddress": "Dirección de facturación",
+    "sameAsBilling": "Usar la misma dirección para facturación",
+    "enterPayment": "Introduce tu método de pago",
+    "couponQuestion": "¿Tienes un código de descuento?",
+    "couponPlaceholder": "Introduce tu código",
+    "couponApply": "Aplicar",
+    "couponApplied": "Cupón aplicado",
+    "couponInvalid": "Código inválido o expirado",
     "addr": {
       "fullName": "Nombre completo",
       "address": "Dirección",
@@ -197,17 +211,76 @@
       "province": "Provincia (opcional)",
       "postalCode": "Código postal",
       "country": "País"
-    },
-    "selectAddress": "Selecciona dirección de envío y facturación",
-    "shippingAddress": "Dirección de envío",
-    "billingAddress": "Dirección de facturación",
-    "sameAsBilling": "Usar la misma dirección para facturación",
-    "enterPayment": "Introduce tu método de pago"
+    }
   },
   "cart": {
     "title": "Carrito",
     "empty": "Tu carrito está vacío",
     "remove": "Eliminar"
+  },
+  "orders": {
+    "title": "Historial de pedidos",
+    "empty": "No tienes pedidos todavía",
+    "order": "Pedido",
+    "date": "Fecha",
+    "status": "Estado",
+    "units": "Unidades",
+    "shippingCost": "Gastos de envío",
+    "shippingAddress": "Dirección de envío",
+    "billingAddress": "Dirección de facturación"
+  },
+  "favorites": {
+    "title": "Tus favoritos",
+    "empty": "No tienes favoritos todavía"
+  },
+  "profile": {
+    "myAccount": "Mi Cuenta",
+    "tabs": {
+      "dashboard": "Panel de control",
+      "info": "Información",
+      "addresses": "Direcciones",
+      "security": "Seguridad"
+    },
+    "manage": "Gestionar",
+    "userPanel": "Panel de Usuario",
+    "info": {
+      "currentInfo": "Información Actual",
+      "editInfo": "Editar Información",
+      "nameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "El apellido es obligatorio",
+      "imageFormat": "Formato no permitido. Usa JPG, PNG o WEBP.",
+      "imageSize": "La imagen no puede superar los 2MB.",
+      "imageUploadError": "Error al subir imagen",
+      "imageUpdated": "Imagen actualizada correctamente",
+      "connectionError": "Error de conexión",
+      "uploading": "Subiendo...",
+      "changeImage": "Cambiar Imagen",
+      "saving": "Guardando...",
+      "saveChanges": "Guardar Cambios",
+      "confirmChanges": "¿Estás seguro de guardar los cambios?",
+      "confirm": "Confirmar",
+      "close": "Cerrar",
+      "profileUpdated": "Perfil actualizado correctamente"
+    },
+    "addresses": {
+      "title": "Mis Direcciones",
+      "main": "Dirección Principal",
+      "setMain": "Usar como principal",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "empty": "No tienes direcciones guardadas.",
+      "addNew": "Añadir Nueva Dirección",
+      "save": "Guardar Dirección",
+      "saved": "Dirección guardada correctamente",
+      "municipality": "Municipio"
+    },
+    "security": {
+      "title": "Cambiar Contraseña",
+      "currentPassword": "Contraseña actual",
+      "update": "Actualizar contraseña",
+      "updated": "Contraseña actualizada correctamente",
+      "error": "Error al actualizar la contraseña"
+    }
   },
   "admin": {
     "rejectTitle": "Rechazar solicitud",
@@ -340,6 +413,9 @@
       "confirmDelete": "¿Eliminar este producto?",
       "edit": "Editar",
       "delete": "Eliminar",
+      "deleted": "Producto eliminado",
+      "stockError": "Error al actualizar stock",
+      "saved": "Producto guardado",
       "table": {
         "product": "Producto",
         "price": "Precio",
@@ -351,6 +427,8 @@
         "newTitle": "Nuevo producto",
         "changeImage": "Cambiar imagen",
         "uploadImage": "Subir imagen",
+        "noImage": "Sin imagen",
+        "imageRequired": "La imagen es obligatoria.",
         "formatError": "Usa JPG, PNG o WEBP.",
         "sizeError": "Máximo 2MB.",
         "name": "Nombre",
@@ -392,71 +470,11 @@
       "zip": "Código postal",
       "country": "País",
       "description": "Descripción breve",
+      "originAddress": "Dirección de origen",
       "saving": "Guardando…",
       "save": "Guardar cambios",
-      "success": "✅ Guardado correctamente.",
-      "error": "❌ Error al guardar."
-    }
-  },
-  "orders": {
-    "title": "Historial de pedidos",
-    "empty": "No tienes pedidos todavía",
-    "order": "Pedido",
-    "date": "Fecha",
-    "status": "Estado",
-    "units": "Unidades",
-    "shippingCost": "Gastos de envío",
-    "shippingAddress": "Dirección de envío",
-    "billingAddress": "Dirección de facturación"
-  },
-  "favorites": {
-    "title": "Tus favoritos",
-    "empty": "No tienes favoritos todavía"
-  },
-  "profile": {
-    "myAccount": "Mi Cuenta",
-    "tabs": {
-      "dashboard": "Panel de control",
-      "info": "Información",
-      "addresses": "Direcciones",
-      "security": "Seguridad"
-    },
-    "manage": "Gestionar",
-    "userPanel": "Panel de Usuario",
-    "info": {
-      "currentInfo": "Información Actual",
-      "editInfo": "Editar Información",
-      "nameRequired": "El nombre es obligatorio",
-      "lastNameRequired": "El apellido es obligatorio",
-      "imageFormat": "Formato no permitido. Usa JPG, PNG o WEBP.",
-      "imageSize": "La imagen no puede superar los 2MB.",
-      "imageUploadError": "Error al subir imagen",
-      "imageUpdated": "Imagen actualizada correctamente",
-      "connectionError": "Error de conexión",
-      "uploading": "Subiendo...",
-      "changeImage": "Cambiar Imagen",
-      "saving": "Guardando...",
-      "saveChanges": "Guardar Cambios",
-      "confirmChanges": "¿Estás seguro de guardar los cambios?",
-      "confirm": "Confirmar",
-      "close": "Cerrar",
-      "profileUpdated": "Perfil actualizado correctamente"
-    },
-    "addresses": {
-      "title": "Mis Direcciones",
-      "main": "Dirección Principal",
-      "setMain": "Usar como principal",
-      "delete": "Eliminar",
-      "addNew": "Añadir Nueva Dirección",
-      "save": "Guardar Dirección",
-      "saved": "Dirección guardada correctamente",
-      "municipality": "Municipio"
-    },
-    "security": {
-      "title": "Cambiar Contraseña",
-      "currentPassword": "Contraseña actual",
-      "update": "Actualizar contraseña",
-      "updated": "Contraseña actualizada"
+      "success": "Guardado correctamente.",
+      "error": "Error al guardar."
     }
   },
   "review": {
