@@ -11,28 +11,41 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 export const TopSales = () => {
   const { store, dispatch } = useGlobalReducer();
 
-  const [toast, setToast] = useState(null);
+const [toast, setToast] = useState(null); 
 
-  const handleAddToCart = async (e, productId) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const token = store.token || localStorage.getItem("token");
+const handleAddToCart = async (e, productId) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const token = store.token || localStorage.getItem("token");
+
+  // Sin token → aviso de login, sin llamar a la API
+  if (!token) {
+    setToast({ type: "auth" });
+    setTimeout(() => setToast(null), 2500);
+    return;
+  }
 
  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + token
-  },
-  body: JSON.stringify({ product_id: productId, quantity: 1 })
-});
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ product_id: productId, quantity: 1 })
+  });
 
-if (!res.ok) return; // si falla, no muestra el toast ni actualiza
+  if (!res.ok) { // si falla, no muestra el toast ni actualiza
+    if (res.status === 401 || res.status === 403) {
+      setToast({ type: "auth" });
+      setTimeout(() => setToast(null), 2500);
+    }
+    return;
+  }
 
-dispatch({ type: "cart_add", payload: { id: productId, quantity: 1 } });
-setToast(productId);
-setTimeout(() => setToast(null), 2000);
-  };
+  dispatch({ type: "cart_add", payload: { id: productId, quantity: 1 } });
+  setToast({ type: "success" });
+  setTimeout(() => setToast(null), 2000);
+};
   const { t } = useTranslation();
   useFavorites();
   const carouselRef = useRef(null);
@@ -86,12 +99,16 @@ setTimeout(() => setToast(null), 2000);
 
   return (
     <section className="mt-8">
-      {toast && (
-        <div className="fixed bottom-6 right-6 bg-stone-900 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in">
-          <ShoppingCart size={15} />
-          Producto añadido a tu cesta
-        </div>
-      )}
+     {toast && (
+  <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
+    toast.type === "auth" ? "bg-red-600" : "bg-stone-900"
+  }`}>
+    <ShoppingCart size={15} />
+    {toast.type === "auth"
+      ? "Debes iniciar sesión para añadir al carrito"
+      : "Producto añadido a tu cesta"}
+  </div>
+)}
       <div className="flex items-center justify-between my-4">
         <h2 className="text-lg font-semibold tracking-tight text-theme-text">
           {t("home.topSales")}

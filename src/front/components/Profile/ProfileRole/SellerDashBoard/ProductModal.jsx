@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import productServices from "../../../../services/productService";
 
-const CONDITIONS = ["new", "used", "refurbished", "broken"];
+const CONDITIONS = [
+  { value: "new",         label: "Nuevo" },
+  { value: "used",        label: "Usado" },
+  { value: "refurbished", label: "Reacondicionado" },
+  { value: "broken",      label: "Para piezas" },
+];
 const inputClass = "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400";
 
 const EMPTY_FORM = {
@@ -73,16 +78,15 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
     setPreview(URL.createObjectURL(file));
   };
 
-  // ── Construye el FormData con los campos comunes
   const buildFormData = () => {
     const fd = new FormData();
-    fd.append("name",      form.name);
+    fd.append("name",        form.name);
     fd.append("description", form.description);
-    fd.append("price",     form.price);
-    fd.append("stock",     form.stock);
-    fd.append("item_id",   form.item_id);
-    fd.append("condition", form.condition);
-    fd.append("discount",  form.discount || 0);
+    fd.append("price",       form.price);
+    fd.append("stock",       form.stock);
+    fd.append("item_id",     form.item_id);
+    fd.append("condition",   form.condition);
+    fd.append("discount",    form.discount || 0);
     if (form.size)   fd.append("size",   form.size);
     if (form.weight) fd.append("weight", form.weight);
     if (imageFile)   fd.append("imagen", imageFile);
@@ -122,7 +126,6 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
         err = error;
       }
     } else {
-      // Crear
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -216,7 +219,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             <div>
               <label className="block text-xs text-gray-500 mb-1">Condición</label>
               <select name="condition" value={form.condition} onChange={handleChange} className={inputClass}>
-                {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                {CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
             </div>
 
@@ -226,7 +229,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-500">❌ {error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-200 text-gray-500 rounded-lg text-sm hover:text-gray-800 transition">
