@@ -4,7 +4,7 @@
     "topSales": "Top Sales",
     "featuredCategories": "Featured Categories",
     "heroBannerSpan1": "Special offer!",
-    "heroBannerSpan2": "See Offers",
+    "heroBannerSpan2": "View Offers",
     "featuredProducts": "Featured Products",
     "viewSubcategory": "View subcategory"
   },
@@ -18,17 +18,19 @@
     "shipping": "Free shipping on orders over €50. Returns accepted within 30 days.",
     "inStock": "In stock",
     "outOfStock": "Out of stock",
+    "noStock": "No more stock available",
     "available": "available",
     "addToCart": "Add to cart",
-    "reviews": "Customer reviews",
     "addedToCart": "Product added to your cart",
-    "loginRequired": "You must be logged in to add products to the cart"
+    "reviews": "Customer reviews",
+    "loginRequired": "You must be logged in to add products to your cart",
+    "cartError": "Error adding to cart"
   },
   "navbar": {
     "loginTitle": "Welcome back",
     "signupTitle": "Create your account",
-    "nameLabel": "Name",
-    "namePlaceholder": "Your name",
+    "nameLabel": "First name",
+    "namePlaceholder": "Your first name",
     "lastNameLabel": "Last name",
     "lastNamePlaceholder": "Your last name",
     "passwordPlaceholder": "Your password",
@@ -58,20 +60,20 @@
     "forgotButton": "Send instructions",
     "forgotSuccess": "If the email exists you will receive instructions shortly",
     "missingToken": "Token not found. Use the link from the email.",
-    "goHome": "Go home",
+    "goHome": "Go to home",
     "backToLogin": "Back to login",
     "resetTitle": "Reset your password",
     "newPasswordPlaceholder": "Your new password",
     "confirmPasswordPlaceholder": "Confirm your new password",
     "resetButton": "Reset password",
-    "resetSuccess": "Your password has been reset successfully. You can now log in with your new password."
+    "resetSuccess": "Your password has been successfully reset. You can now log in with your new password."
   },
   "enums": {
     "productCondition": {
       "new": "New",
       "used": "Used",
       "refurbished": "Refurbished",
-      "broken": "Broken"
+      "broken": "For parts"
     }
   },
   "search": {
@@ -81,7 +83,7 @@
     "clearAll": "Clear all filters",
     "noResults": "No results",
     "noResultsHint": "Try changing the filters or search term.",
-    "clearFilters": "Clear all filters",
+    "clearFilters": "Remove all filters",
     "searching": "Searching...",
     "productCount_one": "{{count}} product",
     "productCount_other": "{{count}} products",
@@ -93,7 +95,7 @@
     "conditionSection": "Condition",
     "onSale": "On sale",
     "inStockOnly": "In stock only",
-    "lowStock": "Low stock",
+    "lowStock": "Few units left",
     "lowStockBadge": "Last",
     "seeAll": "See all results for \"{{query}}\" →",
     "sort_relevance": "Relevance",
@@ -102,12 +104,12 @@
     "sort_rating": "Best rated",
     "sort_newest": "Newest",
     "sort_discount": "Biggest discount",
-    "sort_stock_asc": "Low stock first",
+    "sort_stock_asc": "Few units first",
     "filterChip_min_price": "From {{value}}€",
     "filterChip_max_price": "Up to {{value}}€",
     "filterChip_in_stock": "In stock",
     "filterChip_on_sale": "On sale",
-    "filterChip_low_stock": "Low stock"
+    "filterChip_low_stock": "Few units"
   },
   "seller": {
     "registerTitle": "Become a seller",
@@ -115,13 +117,13 @@
     "stepStore": "Store",
     "stepShipping": "Shipping & Banking",
     "stepConfirm": "Confirmation",
-    "name": "Name",
+    "name": "First name",
     "lastName": "Last name",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm password",
     "storeName": "Store name",
-    "nifCif": "VAT number",
+    "nifCif": "Tax ID",
     "storeDescription": "Store description",
     "storeDescriptionPlaceholder": "Tell us what you sell...",
     "phone": "Contact phone",
@@ -143,7 +145,7 @@
     "errorPasswordMatch": "Passwords do not match",
     "errorPasswordLength": "Password must be at least 8 characters",
     "errorRequired": "This field is required",
-    "errorRequiredFields": "Fill in all required fields",
+    "errorRequiredFields": "Please fill in all required fields",
     "becomeSeller": "Sell on Playback",
     "myStore": "My store",
     "adminPanel": "Admin panel",
@@ -153,16 +155,16 @@
     "registerSubtitle": "Join our seller community and reach thousands of buyers.",
     "pendingTitle": "Application under review",
     "pendingDesc": "We are reviewing your application. We will notify you once it is approved.",
-    "verifiedTitle": "Your store is active!",
-    "verifiedDesc": "You can now manage your products and orders from your seller panel.",
+    "verifiedTitle": "Your store is live!",
+    "verifiedDesc": "You can now manage your products and orders from your seller dashboard.",
     "rejectedTitle": "Application rejected",
-    "rejectedDesc": "Your application has not been approved. Contact support for more information.",
+    "rejectedDesc": "Your application was not approved. Contact support for more information.",
     "editTitle": "Correct application",
     "editSubtitle": "Correct the indicated data and resubmit your application.",
     "resubmitNotice": "Your corrected application will return to pending status for review.",
     "resubmit": "Resubmit application",
     "rejectionReason": "Rejection reason",
-    "cancelApplicationDesc": "If you do not wish to correct the application, you can cancel it and start again.",
+    "cancelApplicationDesc": "If you do not wish to correct the application, you can cancel it and start over.",
     "cancelApplication": "Cancel application",
     "stripe": {
       "title": "Connect your payment account",
@@ -181,6 +183,8 @@
     "subtotal": "Subtotal",
     "tax": "VAT included (21%)",
     "shipping": "Shipping",
+    "freeShipping": "Free",
+    "discount": "Discount",
     "total": "Total",
     "goToPayment": "Go to payment",
     "continueToPayment": "Continue to payment",
@@ -189,6 +193,16 @@
     "newAddress": "New address",
     "save": "Save",
     "saving": "Saving...",
+    "selectAddress": "Please select a shipping and billing address",
+    "shippingAddress": "Shipping address",
+    "billingAddress": "Billing address",
+    "sameAsBilling": "Use the same address for billing",
+    "enterPayment": "Enter your payment method",
+    "couponQuestion": "Do you have a discount code?",
+    "couponPlaceholder": "Enter your code",
+    "couponApply": "Apply",
+    "couponApplied": "Coupon applied",
+    "couponInvalid": "Invalid or expired code",
     "addr": {
       "fullName": "Full name",
       "address": "Address",
@@ -197,23 +211,82 @@
       "province": "Province (optional)",
       "postalCode": "Postcode",
       "country": "Country"
-    },
-    "selectAddress": "Select shipping and billing address",
-    "shippingAddress": "Shipping address",
-    "billingAddress": "Billing address",
-    "sameAsBilling": "Use the same address for billing",
-    "enterPayment": "Enter your payment method"
+    }
   },
   "cart": {
     "title": "Cart",
     "empty": "Your cart is empty",
     "remove": "Remove"
   },
+  "orders": {
+    "title": "Order history",
+    "empty": "You have no orders yet",
+    "order": "Order",
+    "date": "Date",
+    "status": "Status",
+    "units": "Units",
+    "shippingCost": "Shipping cost",
+    "shippingAddress": "Shipping address",
+    "billingAddress": "Billing address"
+  },
+  "favorites": {
+    "title": "Your favourites",
+    "empty": "You have no favourites yet"
+  },
+  "profile": {
+    "myAccount": "My Account",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "info": "Information",
+      "addresses": "Addresses",
+      "security": "Security"
+    },
+    "manage": "Manage",
+    "userPanel": "User Panel",
+    "info": {
+      "currentInfo": "Current Information",
+      "editInfo": "Edit Information",
+      "nameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "imageFormat": "Format not allowed. Use JPG, PNG or WEBP.",
+      "imageSize": "Image cannot exceed 2MB.",
+      "imageUploadError": "Error uploading image",
+      "imageUpdated": "Image updated successfully",
+      "connectionError": "Connection error",
+      "uploading": "Uploading...",
+      "changeImage": "Change Image",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "confirmChanges": "Are you sure you want to save the changes?",
+      "confirm": "Confirm",
+      "close": "Close",
+      "profileUpdated": "Profile updated successfully"
+    },
+    "addresses": {
+      "title": "My Addresses",
+      "main": "Main Address",
+      "setMain": "Set as main",
+      "edit": "Edit",
+      "delete": "Delete",
+      "empty": "You have no saved addresses.",
+      "addNew": "Add New Address",
+      "save": "Save Address",
+      "saved": "Address saved successfully",
+      "municipality": "Municipality"
+    },
+    "security": {
+      "title": "Change Password",
+      "currentPassword": "Current password",
+      "update": "Update password",
+      "updated": "Password updated successfully",
+      "error": "Error updating password"
+    }
+  },
   "admin": {
     "rejectTitle": "Reject application",
     "rejectDesc1": "Indicate the reason for rejecting",
     "rejectDesc2": ". The seller will be able to read it and correct their application.",
-    "rejectPlaceholder": "E.g.: The VAT number entered is not valid. Please check it and resubmit.",
+    "rejectPlaceholder": "E.g.: The Tax ID entered is not valid. Please review it and resubmit your application.",
     "confirmReject": "Confirm rejection",
     "verify": "Verify",
     "reject": "Reject",
@@ -238,7 +311,7 @@
       "inactive": "Inactive",
       "storeData": "Store data",
       "store": "Store",
-      "nifCif": "VAT number",
+      "nifCif": "Tax ID",
       "phone": "Phone",
       "description": "Description",
       "shippingAddress": "Shipping address",
@@ -283,16 +356,16 @@
       "loading": "Loading earnings…",
       "totalRevenue": "Total revenue",
       "completedOrders": "Completed orders",
-      "avgTicket": "Average ticket",
+      "avgTicket": "Average order value",
       "revenueByMonth": "Revenue by month",
-      "lastMovements": "Latest movements",
+      "lastMovements": "Recent transactions",
       "order": "Order",
-      "noMovements": "No movements yet."
+      "noMovements": "No transactions yet."
     },
     "orders": {
       "loading": "Loading orders…",
       "found": "orders found",
-      "noOrders": "No orders yet.",
+      "noOrders": "You have no orders yet.",
       "noAddress": "Not available",
       "table": {
         "order": "Order",
@@ -318,7 +391,7 @@
         "pending": "Pending",
         "paid": "Paid",
         "confirmed": "Confirmed",
-        "processing": "In preparation",
+        "processing": "Processing",
         "shipped": "Shipped",
         "delivered": "Delivered",
         "cancelled": "Cancelled"
@@ -335,11 +408,14 @@
       "loading": "Loading products…",
       "count": "products",
       "newProduct": "+ New product",
-      "noProducts": "No products yet.",
+      "noProducts": "You have no products yet.",
       "noStock": "Out of stock",
       "confirmDelete": "Delete this product?",
       "edit": "Edit",
       "delete": "Delete",
+      "deleted": "Product deleted",
+      "stockError": "Error updating stock",
+      "saved": "Product saved",
       "table": {
         "product": "Product",
         "price": "Price",
@@ -351,6 +427,8 @@
         "newTitle": "New product",
         "changeImage": "Change image",
         "uploadImage": "Upload image",
+        "noImage": "No image",
+        "imageRequired": "Image is required.",
         "formatError": "Use JPG, PNG or WEBP.",
         "sizeError": "Maximum 2MB.",
         "name": "Name",
@@ -392,71 +470,11 @@
       "zip": "Postcode",
       "country": "Country",
       "description": "Brief description",
+      "originAddress": "Origin address",
       "saving": "Saving…",
       "save": "Save changes",
-      "success": "✅ Saved successfully.",
-      "error": "❌ Error saving."
-    }
-  },
-  "orders": {
-    "title": "Order history",
-    "empty": "You have no orders yet",
-    "order": "Order",
-    "date": "Date",
-    "status": "Status",
-    "units": "Units",
-    "shippingCost": "Shipping costs",
-    "shippingAddress": "Shipping address",
-    "billingAddress": "Billing address"
-  },
-  "favorites": {
-    "title": "Your favourites",
-    "empty": "You have no favourites yet"
-  },
-  "profile": {
-    "myAccount": "My Account",
-    "tabs": {
-      "dashboard": "Dashboard",
-      "info": "Information",
-      "addresses": "Addresses",
-      "security": "Security"
-    },
-    "manage": "Manage",
-    "userPanel": "User Panel",
-    "info": {
-      "currentInfo": "Current Information",
-      "editInfo": "Edit Information",
-      "nameRequired": "Name is required",
-      "lastNameRequired": "Last name is required",
-      "imageFormat": "Format not allowed. Use JPG, PNG or WEBP.",
-      "imageSize": "Image cannot exceed 2MB.",
-      "imageUploadError": "Error uploading image",
-      "imageUpdated": "Image updated successfully",
-      "connectionError": "Connection error",
-      "uploading": "Uploading...",
-      "changeImage": "Change Image",
-      "saving": "Saving...",
-      "saveChanges": "Save Changes",
-      "confirmChanges": "Are you sure you want to save changes?",
-      "confirm": "Confirm",
-      "close": "Close",
-      "profileUpdated": "Profile updated successfully"
-    },
-    "addresses": {
-      "title": "My Addresses",
-      "main": "Main Address",
-      "setMain": "Set as main",
-      "delete": "Delete",
-      "addNew": "Add New Address",
-      "save": "Save Address",
-      "saved": "Address saved successfully",
-      "municipality": "Municipality"
-    },
-    "security": {
-      "title": "Change Password",
-      "currentPassword": "Current password",
-      "update": "Update password",
-      "updated": "Password updated"
+      "success": "Saved successfully.",
+      "error": "Error saving."
     }
   },
   "review": {

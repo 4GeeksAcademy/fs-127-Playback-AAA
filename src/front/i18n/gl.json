@@ -1,4 +1,3 @@
-
 {
   "home": {
     "loading": "Cargando...",
@@ -19,11 +18,13 @@
     "shipping": "Envío gratuíto en pedidos superiores a 50 €. Devolucións aceptadas durante 30 días.",
     "inStock": "En stock",
     "outOfStock": "Sen stock",
+    "noStock": "Non hai máis stock dispoñible",
     "available": "dispoñibles",
     "addToCart": "Engadir á cesta",
-    "reviews": "Opinións de clientes",
     "addedToCart": "Produto engadido á túa cesta",
-    "loginRequired": "Debes iniciar sesión para engadir produtos ao carriño"
+    "reviews": "Opinións de clientes",
+    "loginRequired": "Debes iniciar sesión para engadir produtos á cesta",
+    "cartError": "Erro ao engadir á cesta"
   },
   "navbar": {
     "loginTitle": "Benvido de novo",
@@ -60,7 +61,7 @@
     "forgotSuccess": "Se o correo existe recibirás instrucións en breve",
     "missingToken": "Token non atopado. Usa a ligazón do correo.",
     "goHome": "Ir ao inicio",
-    "backToLogin": "Volver ao Inicio de sesión",
+    "backToLogin": "Volver ao inicio de sesión",
     "resetTitle": "Restablece o teu contrasinal",
     "newPasswordPlaceholder": "O teu novo contrasinal",
     "confirmPasswordPlaceholder": "Confirma o teu novo contrasinal",
@@ -72,7 +73,7 @@
       "new": "Novo",
       "used": "Usado",
       "refurbished": "Reacondicionado",
-      "broken": "Estragado"
+      "broken": "Para pezas"
     }
   },
   "search": {
@@ -104,8 +105,8 @@
     "sort_newest": "Máis recentes",
     "sort_discount": "Maior desconto",
     "sort_stock_asc": "Poucas unidades primeiro",
-    "filterChip_min_price": "Desde {{value}}€",
-    "filterChip_max_price": "Ata {{value}}€",
+    "filterChip_min_price": "Dende {{value}}€",
+    "filterChip_max_price": "Até {{value}}€",
     "filterChip_in_stock": "En stock",
     "filterChip_on_sale": "En oferta",
     "filterChip_low_stock": "Poucas unidades"
@@ -118,7 +119,7 @@
     "stepConfirm": "Confirmación",
     "name": "Nome",
     "lastName": "Apelido",
-    "email": "Correo",
+    "email": "Correo electrónico",
     "password": "Contrasinal",
     "confirmPassword": "Confirmar contrasinal",
     "storeName": "Nome da tenda",
@@ -133,14 +134,14 @@
     "iban": "IBAN",
     "accountHolder": "Titular da conta",
     "reviewTitle": "Revisa a túa solicitude",
-    "pendingNotice": "A túa solicitude quedará pendente ata que un administrador a aprobe.",
+    "pendingNotice": "A túa solicitude quedará pendente até que un administrador a aprobe.",
     "submit": "Enviar solicitude",
     "submitting": "Enviando...",
     "next": "Seguinte",
     "back": "Atrás",
     "cancel": "Cancelar",
     "successTitle": "Solicitude enviada!",
-    "successMsg": "Revisaremos a túa solicitude e recibirás unha resposta en breve.",
+    "successMsg": "Revisaremos a túa solicitude e recibirás unha resposta pronto.",
     "errorPasswordMatch": "Os contrasinais non coinciden",
     "errorPasswordLength": "O contrasinal debe ter polo menos 8 caracteres",
     "errorRequired": "Este campo é obrigatorio",
@@ -155,12 +156,12 @@
     "pendingTitle": "Solicitude en revisión",
     "pendingDesc": "Estamos revisando a túa solicitude. Avisarémoste cando estea aprobada.",
     "verifiedTitle": "A túa tenda está activa!",
-    "verifiedDesc": "Xa podes xestionar os teus produtos e pedidos desde o teu panel de vendedor.",
+    "verifiedDesc": "Xa podes xestionar os teus produtos e pedidos dende o teu panel de vendedor.",
     "rejectedTitle": "Solicitude rexeitada",
     "rejectedDesc": "A túa solicitude non foi aprobada. Contacta co soporte para máis información.",
     "editTitle": "Corrixir solicitude",
     "editSubtitle": "Corrixe os datos indicados e volve enviar a túa solicitude.",
-    "resubmitNotice": "A túa solicitude corrixida volverá a estado pendente para a súa revisión.",
+    "resubmitNotice": "A túa solicitude corrixida voltará a estado pendente para a súa revisión.",
     "resubmit": "Reenviar solicitude",
     "rejectionReason": "Motivo do rexeitamento",
     "cancelApplicationDesc": "Se non desexas corrixir a solicitude, podes cancelala e comezar de novo.",
@@ -182,6 +183,8 @@
     "subtotal": "Subtotal",
     "tax": "IVE incluído (21%)",
     "shipping": "Envío",
+    "freeShipping": "Gratis",
+    "discount": "Desconto",
     "total": "Total",
     "goToPayment": "Ir ao pagamento",
     "continueToPayment": "Continuar ao pagamento",
@@ -190,6 +193,16 @@
     "newAddress": "Novo enderezo",
     "save": "Gardar",
     "saving": "Gardando...",
+    "selectAddress": "Selecciona enderezo de envío e facturación",
+    "shippingAddress": "Enderezo de envío",
+    "billingAddress": "Enderezo de facturación",
+    "sameAsBilling": "Usar o mesmo enderezo para facturación",
+    "enterPayment": "Introduce o teu método de pagamento",
+    "couponQuestion": "Tes un código de desconto?",
+    "couponPlaceholder": "Introduce o teu código",
+    "couponApply": "Aplicar",
+    "couponApplied": "Cupón aplicado",
+    "couponInvalid": "Código inválido ou caducado",
     "addr": {
       "fullName": "Nome completo",
       "address": "Enderezo",
@@ -198,17 +211,76 @@
       "province": "Provincia (opcional)",
       "postalCode": "Código postal",
       "country": "País"
-    },
-    "selectAddress": "Selecciona enderezo de envío e facturación",
-    "shippingAddress": "Enderezo de envío",
-    "billingAddress": "Enderezo de facturación",
-    "sameAsBilling": "Usar o mesmo enderezo para facturación",
-    "enterPayment": "Introduce o teu método de pagamento"
+    }
   },
   "cart": {
     "title": "Cesta",
     "empty": "A túa cesta está baleira",
     "remove": "Eliminar"
+  },
+  "orders": {
+    "title": "Historial de pedidos",
+    "empty": "Aínda non tes pedidos",
+    "order": "Pedido",
+    "date": "Data",
+    "status": "Estado",
+    "units": "Unidades",
+    "shippingCost": "Gastos de envío",
+    "shippingAddress": "Enderezo de envío",
+    "billingAddress": "Enderezo de facturación"
+  },
+  "favorites": {
+    "title": "Os teus favoritos",
+    "empty": "Aínda non tes favoritos"
+  },
+  "profile": {
+    "myAccount": "A miña Conta",
+    "tabs": {
+      "dashboard": "Panel de control",
+      "info": "Información",
+      "addresses": "Enderezos",
+      "security": "Seguridade"
+    },
+    "manage": "Xestionar",
+    "userPanel": "Panel de Usuario",
+    "info": {
+      "currentInfo": "Información Actual",
+      "editInfo": "Editar Información",
+      "nameRequired": "O nome é obrigatorio",
+      "lastNameRequired": "O apelido é obrigatorio",
+      "imageFormat": "Formato non permitido. Usa JPG, PNG ou WEBP.",
+      "imageSize": "A imaxe non pode superar os 2MB.",
+      "imageUploadError": "Erro ao subir a imaxe",
+      "imageUpdated": "Imaxe actualizada correctamente",
+      "connectionError": "Erro de conexión",
+      "uploading": "Subindo...",
+      "changeImage": "Cambiar Imaxe",
+      "saving": "Gardando...",
+      "saveChanges": "Gardar Cambios",
+      "confirmChanges": "Estás seguro de gardar os cambios?",
+      "confirm": "Confirmar",
+      "close": "Pechar",
+      "profileUpdated": "Perfil actualizado correctamente"
+    },
+    "addresses": {
+      "title": "Os meus Enderezos",
+      "main": "Enderezo Principal",
+      "setMain": "Usar como principal",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "empty": "Non tes enderezos gardados.",
+      "addNew": "Engadir Novo Enderezo",
+      "save": "Gardar Enderezo",
+      "saved": "Enderezo gardado correctamente",
+      "municipality": "Municipio"
+    },
+    "security": {
+      "title": "Cambiar Contrasinal",
+      "currentPassword": "Contrasinal actual",
+      "update": "Actualizar contrasinal",
+      "updated": "Contrasinal actualizado correctamente",
+      "error": "Erro ao actualizar o contrasinal"
+    }
   },
   "admin": {
     "rejectTitle": "Rexeitar solicitude",
@@ -232,7 +304,7 @@
     "detail": {
       "userData": "Datos do usuario",
       "name": "Nome",
-      "email": "Correo",
+      "email": "Correo electrónico",
       "role": "Rol",
       "account": "Conta",
       "active": "Activa",
@@ -247,7 +319,7 @@
       "city": "Cidade",
       "zip": "CP",
       "country": "País",
-      "accountId": "ID de conta",
+      "accountId": "ID da conta",
       "accountCreated": "Conta creada",
       "yes": "Si",
       "no": "Non",
@@ -271,7 +343,7 @@
   "dashboard": {
     "seller": {
       "title": "A miña Tenda",
-      "desc": "Xestiona os teus pedidos, produtos e ganancias desde aquí.",
+      "desc": "Xestiona os teus pedidos, produtos e ganancias dende aquí.",
       "tabs": {
         "overview": "Resumo",
         "orders": "Pedidos",
@@ -288,7 +360,7 @@
       "revenueByMonth": "Ingresos por mes",
       "lastMovements": "Últimos movementos",
       "order": "Pedido",
-      "noMovements": "Non hai movementos aínda."
+      "noMovements": "Aínda non hai movementos."
     },
     "orders": {
       "loading": "Cargando pedidos…",
@@ -341,6 +413,9 @@
       "confirmDelete": "Eliminar este produto?",
       "edit": "Editar",
       "delete": "Eliminar",
+      "deleted": "Produto eliminado",
+      "stockError": "Erro ao actualizar o stock",
+      "saved": "Produto gardado",
       "table": {
         "product": "Produto",
         "price": "Prezo",
@@ -352,6 +427,8 @@
         "newTitle": "Novo produto",
         "changeImage": "Cambiar imaxe",
         "uploadImage": "Subir imaxe",
+        "noImage": "Sen imaxe",
+        "imageRequired": "A imaxe é obrigatoria.",
         "formatError": "Usa JPG, PNG ou WEBP.",
         "sizeError": "Máximo 2MB.",
         "name": "Nome",
@@ -380,7 +457,7 @@
       "noStock": "sen stock",
       "attention": "ATENCIÓN",
       "recentActivity": "Actividade recente",
-      "noActivity": "Non hai actividade aínda.",
+      "noActivity": "Aínda non hai actividade.",
       "customer": "Cliente"
     },
     "settings": {
@@ -393,71 +470,11 @@
       "zip": "Código postal",
       "country": "País",
       "description": "Descrición breve",
+      "originAddress": "Enderezo de orixe",
       "saving": "Gardando…",
       "save": "Gardar cambios",
-      "success": "✅ Gardado correctamente.",
-      "error": "❌ Erro ao gardar."
-    }
-  },
-  "orders": {
-    "title": "Historial de pedidos",
-    "empty": "Aínda non tes pedidos",
-    "order": "Pedido",
-    "date": "Data",
-    "status": "Estado",
-    "units": "Unidades",
-    "shippingCost": "Gastos de envío",
-    "shippingAddress": "Enderezo de envío",
-    "billingAddress": "Enderezo de facturación"
-  },
-  "favorites": {
-    "title": "Os teus favoritos",
-    "empty": "Aínda non tes favoritos"
-  },
-  "profile": {
-    "myAccount": "A miña Conta",
-    "tabs": {
-      "dashboard": "Panel de control",
-      "info": "Información",
-      "addresses": "Enderezos",
-      "security": "Seguridade"
-    },
-    "manage": "Xestionar",
-    "userPanel": "Panel de Usuario",
-    "info": {
-      "currentInfo": "Información Actual",
-      "editInfo": "Editar Información",
-      "nameRequired": "O nome é obrigatorio",
-      "lastNameRequired": "O apelido é obrigatorio",
-      "imageFormat": "Formato non permitido. Usa JPG, PNG ou WEBP.",
-      "imageSize": "A imaxe non pode superar os 2MB.",
-      "imageUploadError": "Erro ao subir a imaxe",
-      "imageUpdated": "Imaxe actualizada correctamente",
-      "connectionError": "Erro de conexión",
-      "uploading": "Subindo...",
-      "changeImage": "Cambiar Imaxe",
-      "saving": "Gardando...",
-      "saveChanges": "Gardar Cambios",
-      "confirmChanges": "Estás seguro de que queres gardar os cambios?",
-      "confirm": "Confirmar",
-      "close": "Pechar",
-      "profileUpdated": "Perfil actualizado correctamente"
-    },
-    "addresses": {
-      "title": "Os meus Enderezos",
-      "main": "Enderezo Principal",
-      "setMain": "Usar como principal",
-      "delete": "Eliminar",
-      "addNew": "Engadir Novo Enderezo",
-      "save": "Gardar Enderezo",
-      "saved": "Enderezo gardado correctamente",
-      "municipality": "Municipio"
-    },
-    "security": {
-      "title": "Cambiar Contrasinal",
-      "currentPassword": "Contrasinal actual",
-      "update": "Actualizar contrasinal",
-      "updated": "Contrasinal actualizado"
+      "success": "Gardado correctamente.",
+      "error": "Erro ao gardar."
     }
   },
   "review": {
