@@ -209,7 +209,6 @@ def my_orders():
 def checkout():
 
     user_id = int(get_jwt_identity())
-
     data = request.get_json()
 
     shipping_address_id = data.get("shipping_address_id")
@@ -217,29 +216,61 @@ def checkout():
     payment_method = data.get("payment_method", "credit_card")
 
     order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
-
     if not order:
         return jsonify({"msg": "Carrito vacío"}), 400
-
 
     # -----------------------------
     # Calcular precios
     # -----------------------------
 
     subtotal = 0
-
     for detail in order.order_details:
-
         product = detail.product
         # Aplica descuento si existe — el precio ya incluye IVA
         price_with_discount = product.price * (1 - product.discount / 100)
         subtotal += price_with_discount * detail.quantity
 
     # IVA ya incluido en el precio — extraemos cuánto es
-    tax = subtotal - (subtotal / 1.21)
-    shipping_cost = 5.00
-    total_price = subtotal + shipping_cost
+    tax = round(subtotal - (subtotal / 1.21), 2)
 
+    # -----------------------------
+    # Calcular envío por peso y país
+    # -----------------------------
+
+    from api.models.address import Address
+
+    shipping_address = Address.query.get(shipping_address_id)
+    if not shipping_address:
+        return jsonify({"msg": "Dirección de envío no encontrada"}), 400
+
+    ENVIO_GRATIS_DESDE = 100.00
+
+    def calcular_envio(pais, peso_kg, subtotal):
+        if subtotal >= ENVIO_GRATIS_DESDE:
+            return 0.00
+
+        ESPAÑA = {"españa", "espana", "spain", "es", "esp"}
+        if pais.strip().lower() not in ESPAÑA:
+            return 15.00
+
+        tramos = [
+            (1,   3.99),
+            (5,   5.99),
+            (10,  9.99),
+            (float("inf"), 14.99),
+        ]
+        for limite, coste in tramos:
+            if peso_kg <= limite:
+                return coste
+
+    peso_total = sum(
+        (d.product.weight or 0) * d.quantity
+        for d in order.order_details
+    )
+
+    shipping_cost = calcular_envio(shipping_address.country, peso_total, subtotal)
+
+    total_price = subtotal + shipping_cost
 
     # -----------------------------
     # Guardar datos
@@ -249,19 +280,17 @@ def checkout():
     order.tax = tax
     order.shipping_cost = shipping_cost
     order.total_price = total_price
-
     order.shipping_address_id = shipping_address_id
     order.billing_address_id = billing_address_id
-
     order.payment_method = payment_method
 
     db.session.commit()
-
 
     return jsonify({
         "msg": "Compra realizada correctamente",
         "order_id": order.id
     }), 200
+
 
 
 @order_bp.route('/seller-orders', methods=['GET'])

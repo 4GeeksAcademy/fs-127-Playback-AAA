@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { AlertCircle, Check } from "lucide-react";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
 import productServices from "../../../../services/productService";
 import { getMyProductsService } from "../../../../services/sellerService";
@@ -9,9 +10,16 @@ const ProductsTab = () => {
   const token = store.token;
 
   const [products, setProducts] = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [modal, setModal]       = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const [updatingStock, setUpdatingStock] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const loadProducts = async () => {
     try {
@@ -32,12 +40,43 @@ const ProductsTab = () => {
     await productServices.deleteProduct(id);
     setDeleting(null);
     loadProducts();
+    showToast("Producto eliminado");
+  };
+
+  const handleStockChange = async (product, delta) => {
+    const newStock = Math.max(0, product.stock + delta);
+    if (newStock === product.stock) return;
+
+    setUpdatingStock(product.id);
+
+    const [, error] = await productServices.updateProduct(product.id, {
+      stock: newStock
+    }, token);
+
+    if (error) {
+      showToast("Error al actualizar stock", "error");
+    } else {
+      setProducts(products.map(p =>
+        p.id === product.id ? { ...p, stock: newStock } : p
+      ));
+    }
+
+    setUpdatingStock(null);
   };
 
   if (loading) return <p className="text-center text-sm text-gray-400 mt-10 animate-pulse">Cargando productos…</p>;
 
   return (
     <div className="pt-6 space-y-4">
+
+      {toast && (
+        <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${toast.type === "error" ? "bg-red-600" : "bg-green-600"
+          }`}>
+          {toast.type === "error" ? <AlertCircle size={15} /> : <Check size={15} />}
+          {toast.msg}
+        </div>
+      )}
+
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-500">{products.length} productos</p>
         <button onClick={() => setModal("new")}
@@ -52,7 +91,7 @@ const ProductsTab = () => {
             <tr>
               <th className="text-left px-4 py-3">Producto</th>
               <th className="text-right px-4 py-3">Precio</th>
-              <th className="text-right px-4 py-3">Stock</th>
+              <th className="text-center px-4 py-3">Stock</th>
               <th className="text-right px-4 py-3">Condición</th>
               <th className="text-right px-4 py-3"></th>
             </tr>
@@ -67,10 +106,26 @@ const ProductsTab = () => {
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right font-semibold">€{p.price}</td>
-                <td className="px-4 py-3 text-right">
-                  <span className={p.stock === 0 ? "text-red-500 font-semibold" : "text-gray-700"}>
-                    {p.stock === 0 ? "Sin stock" : p.stock}
-                  </span>
+                <td className="px-4 py-3 text-center">
+                  <div className="flex items-center justify-center gap-1">
+                    <button
+                      onClick={() => handleStockChange(p, -1)}
+                      disabled={updatingStock === p.id || p.stock === 0}
+                      className="w-6 h-6 border rounded flex items-center justify-center text-gray-500 hover:bg-gray-100 disabled:opacity-30 text-xs"
+                    >
+                      −
+                    </button>
+                    <span className={`w-8 text-center font-medium ${p.stock === 0 ? "text-red-500" : "text-gray-700"}`}>
+                      {updatingStock === p.id ? "…" : p.stock}
+                    </span>
+                    <button
+                      onClick={() => handleStockChange(p, 1)}
+                      disabled={updatingStock === p.id}
+                      className="w-6 h-6 border rounded flex items-center justify-center text-gray-500 hover:bg-gray-100 disabled:opacity-30 text-xs"
+                    >
+                      +
+                    </button>
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-right">
                   <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
@@ -100,7 +155,7 @@ const ProductsTab = () => {
           product={modal === "new" ? null : modal}
           token={token}
           onClose={() => setModal(null)}
-          onSaved={() => { setModal(null); loadProducts(); }}
+          onSaved={() => { setModal(null); loadProducts(); showToast("Producto guardado"); }}
         />
       )}
     </div>

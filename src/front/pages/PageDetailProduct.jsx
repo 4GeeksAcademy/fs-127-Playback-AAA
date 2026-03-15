@@ -18,10 +18,9 @@ export const PageDetailProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [orderId, setOrderId] = useState(null);
-  const [toast, setToast] = useState(false);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
-
     productServices.getProduct(id).then(([data, error]) => {
       if (error) return console.error(error);
       setProduct(data);
@@ -38,46 +37,21 @@ export const PageDetailProduct = () => {
     }
   }, [id, i18n.language]);
 
-  if (!product)
-    return (
-      <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
-        {t("product.noFound")}
-      </div>
-    );
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 2000);
+  };
 
-  // Comprobamos si el producto tiene stock disponible
-  const inStock = product.stock == null ? true : product.stock > 0;
-
-  const accordionItems = [
-    {
-      label: t("product.descriptionLabel"),
-      content: product.description || t("product.description"),
-    },
-    {
-      label: t("product.featuresLabel"),
-      content: product.features || t("product.features"),
-    },
-    {
-      label: t("product.shippingLabel"),
-      content: product.shipping || t("product.shipping"),
-    },
-  ];
-
-  // Función que se ejecuta al pulsar "Añadir al carrito"
   const handleAddToCart = async () => {
-
-    // Obtenemos el token del usuario logueado
     const token = store.token || localStorage.getItem("token");
+    console.log("token:", token);
 
-    // Si el usuario no está logueado no puede añadir al carrito
     if (!token) {
-      alert("Debes iniciar sesión para añadir productos al carrito");
+      showToast("Debes iniciar sesión para añadir productos al carrito", "error");
       return;
     }
 
     try {
-
-      // Llamada al backend para añadir el producto al carrito
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
         method: "POST",
         headers: {
@@ -86,53 +60,65 @@ export const PageDetailProduct = () => {
         },
         body: JSON.stringify({ product_id: product.id, quantity: 1 })
       });
-      if (!res.ok) return;
-
       // Actualizamos el carrito en el store para que el contador del navbar se refresque
+
+      if (!res.ok) {
+        showToast("Error al añadir al carrito", "error");
+        return;
+      }
+
       dispatch({ type: "cart_add", payload: { id: product.id, quantity: 1 } });
-      setToast(true);
-      setTimeout(() => setToast(false), 2000);
-
-      // Mensaje en consola para confirmar que el producto se añadió
-
-
+      showToast("Producto añadido a tu cesta");
+// Mensaje en consola para confirmar que el producto se añadió
     } catch (error) {
 
       // Si ocurre un error lo mostramos en consola
       console.error("Error añadiendo al carrito:", error);
-
+      showToast("Error al añadir al carrito", "error");
     }
   };
 
+  if (!product)
+    return (
+      <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
+        {t("product.noFound")}
+      </div>
+    );
+
+  const inStock = product.stock == null ? true : product.stock > 0;
+
+  const accordionItems = [
+    { label: t("product.descriptionLabel"), content: product.description || t("product.description") },
+    { label: t("product.featuresLabel"),    content: product.features    || t("product.features") },
+    { label: t("product.shippingLabel"),    content: product.shipping    || t("product.shipping") },
+  ];
+
   return (
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
+
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-stone-900 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
-          <ShoppingCart size={15} />
-          Producto añadido a tu cesta
+        <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+          toast.type === "error" ? "bg-red-600" : "bg-stone-900"
+        }`}>
+          {toast.type === "error" ? <X size={15} /> : <ShoppingCart size={15} />}
+          {toast.msg}
         </div>
       )}
+
       <div className="flex flex-col lg:flex-row gap-10">
 
-        {/* div Imagen  */}
         <div className="flex flex-col gap-3 lg:w-1/2">
           <div className="relative overflow-hidden bg-stone-100">
             <img
               src={product.image_url}
               alt={product.name}
               className="w-full h-[420px] md:h-[560px] object-cover transition-all duration-500"
-              onError={(e) =>
-                (e.target.src = "https://placehold.co/600x700?text=Sin+imagen")
-              }
+              onError={(e) => (e.target.src = "https://placehold.co/600x700?text=Sin+imagen")}
             />
-            <FavoriteButton
-              product={product}
-              className="absolute top-2 right-2"
-            />
+            <FavoriteButton product={product} className="absolute top-2 right-2" />
           </div>
         </div>
 
-        {/*Div informacion derecha */}
         <div className="lg:w-1/2 flex flex-col gap-4 pt-2">
           <p className="text-xs text-stone-400 uppercase tracking-widest">
             {product.category || ""}
@@ -160,21 +146,15 @@ export const PageDetailProduct = () => {
             {inStock ? (
               <>
                 <Check size={15} className="text-emerald-600" />
-                <span className="text-emerald-700 font-medium">
-                  {t("product.inStock")}
-                </span>
+                <span className="text-emerald-700 font-medium">{t("product.inStock")}</span>
                 {product.stock != null && (
-                  <span className="text-stone-400">
-                    ({product.stock} {t("product.available")})
-                  </span>
+                  <span className="text-stone-400">({product.stock} {t("product.available")})</span>
                 )}
               </>
             ) : (
               <>
                 <X size={15} className="text-red-500" />
-                <span className="text-red-500 font-medium">
-                  {t("product.outOfStock")}
-                </span>
+                <span className="text-red-500 font-medium">{t("product.outOfStock")}</span>
               </>
             )}
           </div>
@@ -183,10 +163,11 @@ export const PageDetailProduct = () => {
           <button
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${inStock
+            className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
+              inStock
                 ? "bg-stone-900 hover:bg-stone-700 text-white"
                 : "bg-stone-200 text-stone-400 cursor-not-allowed"
-              }`}
+            }`}
           >
             <ShoppingCart size={16} />
             {t("product.addToCart")}
@@ -195,11 +176,8 @@ export const PageDetailProduct = () => {
       </div>
 
       <Accordion items={accordionItems} />
-
       <ReviewRating product={product} />
-
       {hasBought && <ReviewForm productId={id} orderId={orderId} />}
-
 
     </div>
   );

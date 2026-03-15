@@ -36,6 +36,8 @@ def create_address():
         municipality=body.get("municipality"),
         postal_code=body["postal_code"].strip(),
         country=body["country"].strip(),
+        community_code=body.get("community_code"),
+        province_code=body.get("province_code"),
     )
 
     db.session.add(new_address)
@@ -75,6 +77,8 @@ def update_address(address_id):
         "municipality",
         "postal_code",
         "country",
+        "community_code",
+         "province_code",
     ]
 
     for field in editable_fields:

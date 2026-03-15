@@ -3,11 +3,32 @@
 import { useTranslation } from "react-i18next";
 import { ProductPrice } from "../Common/ProductPrice";
 
-const OrderSummary = ({ step, loading, onContinue, cart }) => {
+// Misma lógica que el backend — país por defecto España (en el carrito aún no sabemos la dirección)
+const calcularEnvio = (subtotal, cart, pais = "españa") => {
+    const ENVIO_GRATIS_DESDE = 100;
+    if (subtotal >= ENVIO_GRATIS_DESDE) return 0;
+
+    const ESPAÑA = ["españa", "espana", "spain", "es", "esp"];
+    if (!ESPAÑA.includes(pais.trim().toLowerCase())) return 15.00;
+
+    const pesoTotal = cart.reduce((acc, item) => acc + (item.weight || 0) * item.quantity, 0);
+
+    const tramos = [
+        [1,        3.99],
+        [5,        5.99],
+        [10,       9.99],
+        [Infinity, 14.99],
+    ];
+
+    for (const [limite, coste] of tramos) {
+        if (pesoTotal <= limite) return coste;
+    }
+};
+
+const OrderSummary = ({ step, loading, onContinue, cart, shippingCost, country }) => {
 
     const { i18n } = useTranslation();
 
-    // Precio con descuento aplicado por producto — el price ya incluye IVA
     const subtotal = cart.reduce((acc, item) => {
         const priceWithDiscount = item.price * (1 - (item.discount || 0) / 100);
         return acc + priceWithDiscount * item.quantity;
@@ -15,7 +36,12 @@ const OrderSummary = ({ step, loading, onContinue, cart }) => {
 
     // IVA ya incluido — extraemos cuánto del subtotal es IVA
     const tax = subtotal - (subtotal / 1.21);
-    const shipping = 5;
+
+    // Si el padre ya conoce el coste real (post-checkout), lo usa; si no, lo estima
+    const shipping = shippingCost !== undefined
+        ? shippingCost
+        : calcularEnvio(subtotal, cart, country);
+
     const total = subtotal + shipping;
 
     return (
@@ -70,7 +96,12 @@ const OrderSummary = ({ step, loading, onContinue, cart }) => {
 
                 <div className="flex justify-between text-stone-500">
                     <span>Envío</span>
-                    <span>{shipping.toFixed(2)} €</span>
+                    <span>
+                        {shipping === 0
+                            ? <span className="text-green-600 font-medium">Gratis</span>
+                            : `${shipping.toFixed(2)} €`
+                        }
+                    </span>
                 </div>
 
                 <div className="flex justify-between font-semibold text-stone-900 text-base border-t pt-3 mt-2">
@@ -80,34 +111,34 @@ const OrderSummary = ({ step, loading, onContinue, cart }) => {
 
             </div>
 
-			{/* BOTÓN / MENSAJE */}
-			<div className="mt-6">
-				{step === "cart" && (
-					<button
-						onClick={onContinue}
-						disabled={cart.length === 0}
-						className="bg-stone-900 hover:bg-stone-700 text-white w-full py-3 text-sm uppercase tracking-widest transition disabled:opacity-50"
-					>
-						Ir al pago
-					</button>
-				)}
+            {/* BOTÓN / MENSAJE */}
+            <div className="mt-6">
+                {step === "cart" && (
+                    <button
+                        onClick={onContinue}
+                        disabled={cart.length === 0}
+                        className="bg-stone-900 hover:bg-stone-700 text-white w-full py-3 text-sm uppercase tracking-widest transition disabled:opacity-50"
+                    >
+                        Ir al pago
+                    </button>
+                )}
 
-				{step === "addresses" && (
-					<button
-						onClick={onContinue}
-						disabled={loading || cart.length === 0}
-						className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition disabled:opacity-50"
-					>
-						{loading ? "Procesando..." : "Continuar al pago"}
-					</button>
-				)}
+                {step === "addresses" && (
+                    <button
+                        onClick={onContinue}
+                        disabled={loading || cart.length === 0}
+                        className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition disabled:opacity-50"
+                    >
+                        {loading ? "Procesando..." : "Continuar al pago"}
+                    </button>
+                )}
 
-				{step === "payment" && (
-					<p className="text-sm text-stone-500 text-center">
-						Completa el pago en el formulario de la izquierda.
-					</p>
-				)}
-			</div>
+                {step === "payment" && (
+                    <p className="text-sm text-stone-500 text-center">
+                        Completa el pago en el formulario de la izquierda.
+                    </p>
+                )}
+            </div>
 
         </div>
     );

@@ -27,7 +27,7 @@ export const PageCart = () => {
       setCart(data.products || []);
     });
 
-  }, []);
+  }, [store.cart]);
 
   const handleRemove = async (productId) => {
     const token = store.token || localStorage.getItem("token");

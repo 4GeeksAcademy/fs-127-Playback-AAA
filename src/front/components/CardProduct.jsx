@@ -5,10 +5,12 @@ import { FavoriteButton } from "./FavoriteButton";
 import { ProductBadges } from "./Common/ProductBadges";
 import { ProductPrice } from "./Common/ProductPrice";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { StarRating } from "./StarRating";
+
 
 export const CardProduct = ({ product }) => {
   const { store, dispatch } = useGlobalReducer();
-  const { id, name, price, image_url, discount, low_stock, condition } = product;
+  const { id, name, price, image_url, discount, low_stock, condition, rating, Review } = product;
   const [toast, setToast] = useState(false);
 
   const handleAddToCart = async (e) => {
@@ -58,6 +60,8 @@ export const CardProduct = ({ product }) => {
             <div>
               <p className="text-sm pt-3">{name}</p>
               <ProductPrice price={price} discount={discount} className="pb-3" />
+              <StarRating rating={rating} />
+              <span className="text-xs text-stone-400">({Review})</span>
             </div>
             <button
               onClick={handleAddToCart}
