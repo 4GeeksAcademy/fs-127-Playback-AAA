@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useTranslation } from "react-i18next";
+import { Clock, CreditCard, CheckCircle, Package, Truck, PackageCheck, XCircle } from "lucide-react";
 
 export const MyOrders = () => {
 
@@ -23,6 +24,16 @@ export const MyOrders = () => {
       .then(data => setOrders(data));
 
   }, []);
+
+  const STATUS_CONFIG = {
+    pending:    { label: "Pendiente",    color: "bg-gray-100 text-gray-600",       icon: "Clock" },
+    paid:       { label: "Pagado",       color: "bg-blue-100 text-blue-700",       icon: "CreditCard" },
+    confirmed:  { label: "Confirmado",   color: "bg-indigo-100 text-indigo-700",   icon: "CheckCircle" },
+    processing: { label: "Preparando",   color: "bg-yellow-100 text-yellow-700",   icon: "Package" },
+    shipped:    { label: "Enviado",      color: "bg-purple-100 text-purple-700",   icon: "Truck" },
+    delivered:  { label: "Entregado",    color: "bg-green-100 text-green-700",     icon: "PackageCheck" },
+    cancelled:  { label: "Cancelado",    color: "bg-red-100 text-red-600",         icon: "XCircle" },
+};
 
   return (
 
@@ -73,9 +84,17 @@ export const MyOrders = () => {
                 <p className="text-sm text-gray-500">
                   Estado
                 </p>
-                <p className="font-semibold capitalize">
-                  {order.status}
-                </p>
+                {(() => {
+                  const icons = { Clock, CreditCard, CheckCircle, Package, Truck, PackageCheck, XCircle };
+                  const cfg = STATUS_CONFIG[order.status] || { label: order.status, color: "bg-gray-100 text-gray-600", icon: "Clock" };
+                  const Icon = icons[cfg.icon];
+                  return (
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.color}`}>
+                      <Icon size={12} />
+                      {cfg.label}
+                    </span>
+                  );
+                })()}
               </div>
 
               <div>

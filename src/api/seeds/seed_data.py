@@ -119,7 +119,7 @@ SELLERS_DATA = [
         "origin_city": "Valencia",
         "origin_zip": "46002",
         "origin_country": "España",
-        "status": "pending",
+        "status": "verified",
         "stripe_account_id": "acct_1T9rsRC9ziS9X0PW",
 				"stripe_onboarding_completed": True,
     },
@@ -127,6 +127,7 @@ SELLERS_DATA = [
         "email": "pro.arantxa.ordoyo@gmail.com",
         "store_name": "ArantxaTienda",
         "description": "Tienda oficial de PlayBack.",
+        "logo_url": "https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Arantxa+Tienda",
         "phone": "+34 600 000 000",
         "nif_cif": "99999999Z",
         "origin_address": "Calle Test 1",
@@ -2156,12 +2157,12 @@ def seed_products(sellers):
 
 def seed_orders(users, products, addresses):
     """
-    Crea pedidos con TODOS los estados garantizados.
+    Crea pedidos con diferentes estados.
     Solo los buyers y admins hacen pedidos.
     """
     print("\n🛒 Seeding pedidos...")
     orders = []
-    all_statuses = list(Status)
+    all_statuses = [Status.confirmed, Status.paid, Status.shipped, Status.delivered, Status.cancelled]
     all_payments = list(Payment)
 
     # Solo usuarios no vendedores hacen pedidos
@@ -2376,7 +2377,7 @@ def seed_arantxa_orders(users, products, addresses):
         return []
 
     buyers = [u for u in users if u.role == RoleName.buyer]
-    all_statuses = [Status.confirmed, Status.shipped, Status.delivered, Status.cancelled]
+    all_statuses = [Status.confirmed, Status.paid, Status.shipped, Status.delivered, Status.cancelled]
     orders = []
 
     for buyer in buyers:
