@@ -34,7 +34,7 @@ async function getCart(token) {
     return [data, null];
 }
 
-async function checkout(token, shippingAddressId, billingAddressId) {
+async function checkout(token, shippingAddressId, billingAddressId, couponCode = null) {
     const response = await fetch(`${backendUrl}/api/order/checkout`, {
         method: "POST",
         headers: {
@@ -44,7 +44,8 @@ async function checkout(token, shippingAddressId, billingAddressId) {
         body: JSON.stringify({
             shipping_address_id: shippingAddressId,
             billing_address_id: billingAddressId,
-            payment_method: "credit_card"
+            payment_method: "credit_card",
+            coupon_code: couponCode
         })
     });
     const data = await response.json();
@@ -107,6 +108,32 @@ async function removeProductFromCart(token, productId) {
     if (!response.ok) return [null, data.description || "Error al eliminar producto"];
     return [data, null];
 }
-const orderService = { hasBought, createReview, checkout, getCart, addProductToCart, getSellerOrders, updateOrderStatus,getMyOrders,removeProductFromCart  };
+
+async function applyCoupon(token, code) {
+    const response = await fetch(`${backendUrl}/api/order/apply-coupon`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ code })
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.msg || "Código inválido"];
+    return [data, null];
+}
+
+const orderService = {
+    hasBought,
+    createReview,
+    checkout,
+    getCart,
+    addProductToCart,
+    getSellerOrders,
+    updateOrderStatus,
+    getMyOrders,
+    removeProductFromCart,
+    applyCoupon
+};
 
 export default orderService;

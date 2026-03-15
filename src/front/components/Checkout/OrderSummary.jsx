@@ -25,7 +25,7 @@ const calcularEnvio = (subtotal, cart, pais = "españa") => {
     }
 };
 
-const OrderSummary = ({ step, loading, onContinue, cart, shippingCost, country }) => {
+const OrderSummary = ({ step, loading, onContinue, cart, shippingCost, country, coupon }) => {
 
     const { i18n } = useTranslation();
 
@@ -42,7 +42,21 @@ const OrderSummary = ({ step, loading, onContinue, cart, shippingCost, country }
         ? shippingCost
         : calcularEnvio(subtotal, cart, country);
 
-    const total = subtotal + shipping;
+    // Aplicar cupón
+    let discountAmount = 0;
+    let shippingFinal = shipping;
+
+    if (coupon) {
+        if (coupon.type === "percentage") {
+            discountAmount = subtotal * coupon.value / 100;
+        } else if (coupon.type === "fixed") {
+            discountAmount = Math.min(coupon.value, subtotal);
+        } else if (coupon.type === "free_shipping") {
+            shippingFinal = 0;
+        }
+    }
+
+    const total = subtotal + shippingFinal - discountAmount;
 
     return (
         <div className="bg-white border rounded-xl p-6 h-fit sticky top-6">
@@ -97,12 +111,19 @@ const OrderSummary = ({ step, loading, onContinue, cart, shippingCost, country }
                 <div className="flex justify-between text-stone-500">
                     <span>Envío</span>
                     <span>
-                        {shipping === 0
+                        {shippingFinal === 0
                             ? <span className="text-green-600 font-medium">Gratis</span>
-                            : `${shipping.toFixed(2)} €`
+                            : `${shippingFinal.toFixed(2)} €`
                         }
                     </span>
                 </div>
+
+                {coupon && discountAmount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                        <span>Descuento</span>
+                        <span>-{discountAmount.toFixed(2)} €</span>
+                    </div>
+                )}
 
                 <div className="flex justify-between font-semibold text-stone-900 text-base border-t pt-3 mt-2">
                     <span>Total</span>
