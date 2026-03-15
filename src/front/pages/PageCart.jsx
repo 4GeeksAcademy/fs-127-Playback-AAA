@@ -29,17 +29,13 @@ export const PageCart = () => {
 
   }, [store.cart]);
 
-  const handleRemove = async (productId) => {
+const handleRemove = async (productId) => {
     const token = store.token || localStorage.getItem("token");
-
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/product/${productId}`, {
-      method: "DELETE",
-      headers: { Authorization: "Bearer " + token }
-    });
-
+    await orderServices.removeProductFromCart(token, productId);
     setCart(cart.filter(p => p.id !== productId));
     dispatch({ type: "cart_remove", payload: { id: productId } });
   };
+
 
   const handleQuantity = async (productId, delta) => {
     const item = cart.find(p => p.id === productId);
@@ -51,16 +47,7 @@ export const PageCart = () => {
     }
 
     const token = store.token || localStorage.getItem("token");
-
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify({ product_id: productId, quantity: delta })
-    });
-
+    await orderServices.addProductToCart(token, productId, delta);
     setCart(cart.map(p => p.id === productId ? { ...p, quantity: p.quantity + delta } : p));
     dispatch({ type: "cart_add", payload: { id: productId, quantity: delta } });
   };

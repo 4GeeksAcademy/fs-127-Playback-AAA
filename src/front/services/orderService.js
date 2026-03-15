@@ -1,7 +1,4 @@
-
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-
 
 async function hasBought(productId, token) {
     const response = await fetch(`${backendUrl}/api/order/has-bought/${productId}`, {
@@ -15,9 +12,9 @@ async function hasBought(productId, token) {
 async function createReview(body, token) {
     const response = await fetch(`${backendUrl}/api/review`, {
         method: "POST",
-        headers: { 
+        headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}` 
+            Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(body)
     });
@@ -55,8 +52,61 @@ async function checkout(token, shippingAddressId, billingAddressId) {
     return [data, null];
 }
 
-const orderServices = { hasBought, createReview, checkout, getCart };
+async function addProductToCart(token, productId, quantity = 1) {
+    const response = await fetch(`${backendUrl}/api/order/add-product`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ product_id: productId, quantity })
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al añadir producto"];
+    return [data, null];
+}
 
-export default orderServices;
+async function getSellerOrders(token) {
+    const response = await fetch(`${backendUrl}/api/order/seller-orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al cargar pedidos"];
+    return [data, null];
+}
 
+async function updateOrderStatus(token, orderId, status) {
+    const response = await fetch(`${backendUrl}/api/order/seller-orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al actualizar estado"];
+    return [data, null];
+}
 
+async function getMyOrders(token) {
+    const response = await fetch(`${backendUrl}/api/order/my-orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al cargar pedidos"];
+    return [data, null];
+}
+
+async function removeProductFromCart(token, productId) {
+    const response = await fetch(`${backendUrl}/api/order/product/${productId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al eliminar producto"];
+    return [data, null];
+}
+const orderService = { hasBought, createReview, checkout, getCart, addProductToCart, getSellerOrders, updateOrderStatus,getMyOrders,removeProductFromCart  };
+
+export default orderService;

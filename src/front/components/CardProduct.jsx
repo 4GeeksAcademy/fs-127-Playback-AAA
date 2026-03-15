@@ -6,35 +6,27 @@ import { ProductBadges } from "./Common/ProductBadges";
 import { ProductPrice } from "./Common/ProductPrice";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { StarRating } from "./StarRating";
+import orderService from "../services/orderService";
+
 
 
 export const CardProduct = ({ product }) => {
   const { store, dispatch } = useGlobalReducer();
   const { id, name, price, image_url, discount, low_stock, condition, rating, Review } = product;
   const [toast, setToast] = useState(false);
-
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     const token = store.token || localStorage.getItem("token");
 
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify({ product_id: id, quantity: 1 })
-    });
-
-    if (!res.ok) return;
+    const [data, err] = await orderService.addProductToCart(token, id);
+    if (err) return;
 
     dispatch({ type: "cart_add", payload: { id, quantity: 1 } });
     setToast(true);
     setTimeout(() => setToast(false), 2000);
   };
-
   return (
     <>
       {toast && (

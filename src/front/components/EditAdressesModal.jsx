@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import addressService from "../services/addressService";
-
-const API_KEY = "73cbc448c840ab7c4e8ab0de047dd1b07dd322303dc6c96693f82e335e78d53d";
+import geoService from "../services/geoService";
 
 const EditAddressModal = ({ address, onClose, onSaved }) => {
   const { store } = useGlobalReducer();
@@ -29,7 +28,7 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
     setProvinces([]);
     setMunicipalities([]);
     initStep.current = 0;
-    fetchCommunities();
+    geoService.getCommunities().then(setCommunities);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paso 1 — preseleccionar comunidad
@@ -38,7 +37,11 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
     if (!address.community_code || !communities.length) return;
     initStep.current = 1;
     setSelectedCommunity(address.community_code);
-    fetchProvinces(address.community_code);
+    setLoadingProvinces(true);
+    geoService.getProvinces(address.community_code).then((data) => {
+      setProvinces(data);
+      setLoadingProvinces(false);
+    });
   }, [communities]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paso 2 — preseleccionar provincia
@@ -47,7 +50,11 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
     if (!address.province_code || !provinces.length) return;
     initStep.current = 2;
     setSelectedProvince(address.province_code);
-    fetchMunicipalities(address.province_code);
+    setLoadingMunicipalities(true);
+    geoService.getMunicipalities(address.province_code).then((data) => {
+      setMunicipalities(data);
+      setLoadingMunicipalities(false);
+    });
   }, [provinces]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paso 3 — preseleccionar municipio
@@ -61,45 +68,7 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
     if (found) setSelectedMunicipality(found.CMUN);
   }, [municipalities]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchCommunities = async () => {
-    try {
-      const res = await fetch(`https://apiv1.geoapi.es/comunidades?type=JSON&version=2024.01&key=${API_KEY}`);
-      const data = await res.json();
-      setCommunities(data.data || []);
-    } catch { setCommunities([]); }
-  };
-
-  const fetchProvinces = async (ccom) => {
-    setLoadingProvinces(true);
-    try {
-      const res = await fetch(`https://apiv1.geoapi.es/provincias?CCOM=${ccom}&tipo=JSON&key=${API_KEY}`);
-      const data = await res.json();
-      setProvinces(data.data || []);
-    } catch { setProvinces([]); }
-    finally { setLoadingProvinces(false); }
-  };
-
-  const fetchMunicipalities = async (cpro) => {
-    setLoadingMunicipalities(true);
-    try {
-      const res = await fetch(`https://apiv1.geoapi.es/municipios?CPRO=${cpro}&tipo=JSON&key=${API_KEY}`);
-      const data = await res.json();
-      setMunicipalities(data.data || []);
-    } catch { setMunicipalities([]); }
-    finally { setLoadingMunicipalities(false); }
-  };
-
-  const fetchPostalCode = async (cmun, cpro) => {
-    try {
-      const cmum = cmun.slice(0, -2);
-      const res = await fetch(`https://apiv1.geoapi.es/codigos_postales?CPRO=${cpro}&CMUM=${cmum}&type=JSON&version=2024.01&key=${API_KEY}`);
-      const data = await res.json();
-      const cp = data.data?.[0]?.CPOS;
-      if (cp) setForm((prev) => ({ ...prev, postal_code: cp }));
-    } catch {}
-  };
-
-  const handleCommunityChange = (e) => {
+  const handleCommunityChange = async (e) => {
     const val = e.target.value;
     setSelectedCommunity(val);
     setSelectedProvince("");
@@ -115,10 +84,13 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
       city: "",
       postal_code: "",
     }));
-    if (val) fetchProvinces(val);
+    setLoadingProvinces(true);
+    const data = await geoService.getProvinces(val);
+    setProvinces(data);
+    setLoadingProvinces(false);
   };
 
-  const handleProvinceChange = (e) => {
+  const handleProvinceChange = async (e) => {
     const val = e.target.value;
     const selected = provinces.find((p) => p.CPRO === val);
     setSelectedProvince(val);
@@ -132,16 +104,20 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
       city: "",
       postal_code: "",
     }));
-    if (val) fetchMunicipalities(val);
+    setLoadingMunicipalities(true);
+    const data = await geoService.getMunicipalities(val);
+    setMunicipalities(data);
+    setLoadingMunicipalities(false);
   };
 
-  const handleMunicipalityChange = (e) => {
+  const handleMunicipalityChange = async (e) => {
     const val = e.target.value;
     const selected = municipalities.find((m) => m.CMUN === val);
     setSelectedMunicipality(val);
     const name = selected?.ALTERNATIVO_DMUN50 || selected?.DMUN50 || "";
     setForm((prev) => ({ ...prev, municipality: name, city: name }));
-    if (val) fetchPostalCode(val, selectedProvince);
+    const cp = await geoService.getPostalCode(val, selectedProvince);
+    if (cp) setForm((prev) => ({ ...prev, postal_code: cp }));
   };
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

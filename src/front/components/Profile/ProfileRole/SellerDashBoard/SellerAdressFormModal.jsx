@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-const API_KEY = "73cbc448c840ab7c4e8ab0de047dd1b07dd322303dc6c96693f82e335e78d53d";
+import geoService from "../../../../services/geoService";
 
 const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
   const [localForm, setLocalForm] = useState({});
@@ -26,7 +25,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     setProvinces([]);
     setMunicipalities([]);
     initStep.current = 0;
-    fetchCommunities();
+    geoService.getCommunities().then(setCommunities);
   }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paso 1 — preseleccionar comunidad
@@ -35,7 +34,11 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     if (!localForm.origin_community_code || !communities.length) return;
     initStep.current = 1;
     setSelectedCommunity(localForm.origin_community_code);
-    fetchProvinces(localForm.origin_community_code);
+    setLoadingProvinces(true);
+    geoService.getProvinces(localForm.origin_community_code).then((data) => {
+      setProvinces(data);
+      setLoadingProvinces(false);
+    });
   }, [communities, localForm.origin_community_code, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paso 2 — preseleccionar provincia
@@ -44,7 +47,11 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     if (!localForm.origin_province_code || !provinces.length) return;
     initStep.current = 2;
     setSelectedProvince(localForm.origin_province_code);
-    fetchMunicipalities(localForm.origin_province_code);
+    setLoadingMunicipalities(true);
+    geoService.getMunicipalities(localForm.origin_province_code).then((data) => {
+      setMunicipalities(data);
+      setLoadingMunicipalities(false);
+    });
   }, [provinces, localForm.origin_province_code, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paso 3 — preseleccionar municipio
@@ -60,65 +67,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     }
   }, [municipalities, localForm.origin_city, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── API helpers ───────────────────────────────────────────────────────────
-
-  const fetchCommunities = async () => {
-    try {
-      const res = await fetch(
-        `https://apiv1.geoapi.es/comunidades?type=JSON&version=2024.01&key=${API_KEY}`
-      );
-      const data = await res.json();
-      setCommunities(data.data || []);
-    } catch {
-      setCommunities([]);
-    }
-  };
-
-  const fetchProvinces = async (ccom) => {
-    setLoadingProvinces(true);
-    try {
-      const res = await fetch(
-        `https://apiv1.geoapi.es/provincias?CCOM=${ccom}&tipo=JSON&key=${API_KEY}`
-      );
-      const data = await res.json();
-      setProvinces(data.data || []);
-    } catch {
-      setProvinces([]);
-    } finally {
-      setLoadingProvinces(false);
-    }
-  };
-
-  const fetchMunicipalities = async (cpro) => {
-    setLoadingMunicipalities(true);
-    try {
-      const res = await fetch(
-        `https://apiv1.geoapi.es/municipios?CPRO=${cpro}&tipo=JSON&key=${API_KEY}`
-      );
-      const data = await res.json();
-      setMunicipalities(data.data || []);
-    } catch {
-      setMunicipalities([]);
-    } finally {
-      setLoadingMunicipalities(false);
-    }
-  };
-
-  const fetchPostalCode = async (cmun, cpro) => {
-    try {
-      const cmum = cmun.slice(0, -2);
-      const res = await fetch(
-        `https://apiv1.geoapi.es/codigos_postales?CPRO=${cpro}&CMUM=${cmum}&type=JSON&version=2024.01&key=${API_KEY}`
-      );
-      const data = await res.json();
-      const cp = data.data?.[0]?.CPOS;
-      if (cp) setLocalForm((prev) => ({ ...prev, origin_zip: cp }));
-    } catch {}
-  };
-
   // ── Handlers de selects ───────────────────────────────────────────────────
 
-  const handleCommunityChange = (e) => {
+  const handleCommunityChange = async (e) => {
     const val = e.target.value;
     setSelectedCommunity(val);
     setSelectedProvince("");
@@ -132,10 +83,13 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
       origin_city: "",
       origin_zip: "",
     }));
-    fetchProvinces(val);
+    setLoadingProvinces(true);
+    const data = await geoService.getProvinces(val);
+    setProvinces(data);
+    setLoadingProvinces(false);
   };
 
-  const handleProvinceChange = (e) => {
+  const handleProvinceChange = async (e) => {
     const val = e.target.value;
     setSelectedProvince(val);
     setSelectedMunicipality("");
@@ -146,16 +100,20 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
       origin_city: "",
       origin_zip: "",
     }));
-    fetchMunicipalities(val);
+    setLoadingMunicipalities(true);
+    const data = await geoService.getMunicipalities(val);
+    setMunicipalities(data);
+    setLoadingMunicipalities(false);
   };
 
-  const handleMunicipalityChange = (e) => {
+  const handleMunicipalityChange = async (e) => {
     const val = e.target.value;
     const selected = municipalities.find((m) => m.CMUN === val);
     setSelectedMunicipality(val);
     const city = selected?.ALTERNATIVO_DMUN50 || selected?.DMUN50 || "";
     setLocalForm((prev) => ({ ...prev, origin_city: city }));
-    fetchPostalCode(val, selectedProvince);
+    const cp = await geoService.getPostalCode(val, selectedProvince);
+    if (cp) setLocalForm((prev) => ({ ...prev, origin_zip: cp }));
   };
 
   const handleInputChange = (e) => {
@@ -183,7 +141,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="text-base font-semibold text-gray-800">
-            📍 Modificar dirección
+            Modificar dirección
           </h2>
           <button
             onClick={onClose}
@@ -207,7 +165,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
               className={selectClass}
             >
               <option value="" disabled>
-                Selecciona comunidad
+                {communities.length === 0 ? "Cargando..." : "Selecciona comunidad"}
               </option>
               {communities.map((c) => (
                 <option key={c.CCOM} value={c.CCOM}>

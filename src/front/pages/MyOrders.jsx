@@ -1,25 +1,20 @@
 import { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import orderService from "../services/orderService";
+
 
 export const MyOrders = () => {
 
   const { store } = useGlobalReducer();
   const [orders, setOrders] = useState([]);
 
-  useEffect(() => {
-
+useEffect(() => {
     const token = store.token || localStorage.getItem("token");
-
     if (!token) return;
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/my-orders`, {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    })
-      .then(res => res.json())
-      .then(data => setOrders(data));
-
+    orderService.getMyOrders(token).then(([data]) => {
+      if (data) setOrders(data);
+    });
   }, []);
 
   return (

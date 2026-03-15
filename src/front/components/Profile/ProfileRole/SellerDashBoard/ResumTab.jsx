@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
 import { getMyProductsService } from "../../../../services/sellerService";
+import orderService from "../../../../services/orderService";
+
 
 const STATUS_STYLE = {
   pending:    "bg-yellow-100 text-yellow-700",
@@ -17,14 +19,12 @@ const ResumTab = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading]   = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
     Promise.all([
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/seller-orders`, {
-        headers: { Authorization: `Bearer ${store.token}` },
-      }).then((r) => r.json()),
+      orderService.getSellerOrders(store.token),
       getMyProductsService(store.token),
     ])
-      .then(([ordersData, productsData]) => {
+      .then(([[ordersData], productsData]) => {
         setOrders(ordersData || []);
         setProducts(productsData || []);
       })

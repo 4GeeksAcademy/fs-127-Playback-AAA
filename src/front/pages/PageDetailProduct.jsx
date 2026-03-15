@@ -42,41 +42,24 @@ export const PageDetailProduct = () => {
     setTimeout(() => setToast(null), 2000);
   };
 
-  const handleAddToCart = async () => {
-    const token = store.token || localStorage.getItem("token");
-    console.log("token:", token);
+const handleAddToCart = async () => {
+  const token = store.token || localStorage.getItem("token");
 
-    if (!token) {
-      showToast("Debes iniciar sesión para añadir productos al carrito", "error");
-      return;
-    }
+  if (!token) {
+    showToast("Debes iniciar sesión para añadir productos al carrito", "error");
+    return;
+  }
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token
-        },
-        body: JSON.stringify({ product_id: product.id, quantity: 1 })
-      });
-      // Actualizamos el carrito en el store para que el contador del navbar se refresque
+  const [, error] = await orderServices.addProductToCart(token, product.id, 1);
 
-      if (!res.ok) {
-        showToast("Error al añadir al carrito", "error");
-        return;
-      }
+  if (error) {
+    showToast("Error al añadir al carrito", "error");
+    return;
+  }
 
-      dispatch({ type: "cart_add", payload: { id: product.id, quantity: 1 } });
-      showToast("Producto añadido a tu cesta");
-// Mensaje en consola para confirmar que el producto se añadió
-    } catch (error) {
-
-      // Si ocurre un error lo mostramos en consola
-      console.error("Error añadiendo al carrito:", error);
-      showToast("Error al añadir al carrito", "error");
-    }
-  };
+  dispatch({ type: "cart_add", payload: { id: product.id, quantity: 1 } });
+  showToast("Producto añadido a tu cesta");
+};
 
   if (!product)
     return (

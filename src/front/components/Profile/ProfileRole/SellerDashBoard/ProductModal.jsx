@@ -37,13 +37,14 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
   const [selectedCat, setSelectedCat] = useState("");
   const [selectedSub, setSelectedSub] = useState("");
 
+  // Carga categorías al abrir
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/categories`)
-      .then(r => r.json())
-      .then(setCategories)
-      .catch(console.error);
+    productServices.getCategories().then(([data, err]) => {
+      if (!err) setCategories(data);
+    });
   }, []);
 
+  // Pre-selecciona categoría/subcategoría al editar
   useEffect(() => {
     if (!product || !categories.length) return;
     for (const cat of categories) {
@@ -95,45 +96,19 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Imagen obligatoria siempre: al crear no hay preview; al editar debe haber una subida o existente
+    if (!imageFile && !preview) {
+      setImageError("La imagen es obligatoria.");
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
-    let err;
-
-    if (product) {
-      // Editar — si hay imagen nueva usamos FormData, si no JSON
-      if (imageFile) {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/${product.id}`, {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}` },
-          body: buildFormData(),
-        });
-        const data = await res.json();
-        err = res.ok ? null : (data.description || "Error al actualizar");
-      } else {
-        const [, error] = await productServices.updateProduct(product.id, {
-          name:        form.name,
-          description: form.description,
-          price:       parseFloat(form.price),
-          stock:       parseInt(form.stock),
-          size:        form.size,
-          weight:      parseFloat(form.weight) || null,
-          discount:    parseFloat(form.discount) || 0,
-          condition:   form.condition,
-          item_id:     parseInt(form.item_id),
-          image_url:   form.image_url,
-        }, token);
-        err = error;
-      }
-    } else {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: buildFormData(),
-      });
-      const data = await res.json();
-      err = res.ok ? null : (data.description || "Error al crear producto");
-    }
+    const [, err] = product
+      ? await productServices.updateProduct(product.id, buildFormData(), token)
+      : await productServices.createProduct(buildFormData(), token);
 
     setSaving(false);
     if (err) return setError(err);
@@ -153,9 +128,12 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
         <form onSubmit={handleSubmit} className="space-y-3">
 
           <div className="flex flex-col items-center space-y-2">
-            {preview && <img src={preview} className="w-24 h-24 rounded-xl object-cover border border-gray-200" />}
+            {preview
+              ? <img src={preview} className="w-24 h-24 rounded-xl object-cover border border-gray-200" />
+              : <div className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400">Sin imagen</div>
+            }
             <label className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
-              {preview ? "Cambiar imagen" : "Subir imagen"}
+              {preview ? "Cambiar imagen" : "Subir imagen *"}
               <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
             </label>
             {imageError && <p className="text-xs text-red-500">{imageError}</p>}

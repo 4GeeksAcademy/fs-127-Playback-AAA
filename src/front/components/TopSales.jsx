@@ -7,6 +7,8 @@ import { FavoriteButton } from "../components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import { useFavorites } from "../hooks/useFavorites";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import orderService from "../services/orderService";
+
 
 export const TopSales = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -25,17 +27,10 @@ const handleAddToCart = async (e, productId) => {
     return;
   }
 
- const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({ product_id: productId, quantity: 1 })
-  });
+  const [data, error] = await orderService.addProductToCart(token, productId, 1);
 
-  if (!res.ok) { // si falla, no muestra el toast ni actualiza
-    if (res.status === 401 || res.status === 403) {
+  if (error) {
+    if (error.status === 401 || error.status === 403) {
       setToast({ type: "auth" });
       setTimeout(() => setToast(null), 2500);
     }

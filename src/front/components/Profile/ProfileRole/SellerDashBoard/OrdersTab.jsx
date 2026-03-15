@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
 import { AlertCircle } from "lucide-react";
+import orderService from "../../../../services/orderService";
 
 const STATUS_STYLE = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -88,16 +89,13 @@ const OrdersTab = () => {
 
 
   // Función para cargar los pedidos
-  const loadOrders = () => {
-    setLoading(true);
-    fetch(`${API}/api/order/seller-orders`, {
-      headers: { Authorization: `Bearer ${store.token}` },
-    })
-      .then((response) => response.json())
-      .then((data) => setOrders(data))
-      .catch((error) => console.log("Error cargando pedidos:", error))
-      .finally(() => setLoading(false));
-  };
+const loadOrders = async () => {
+  setLoading(true);
+  const [data, error] = await orderService.getSellerOrders(store.token);
+  if (error) console.log("Error cargando pedidos:", error);
+  else setOrders(data);
+  setLoading(false);
+};
 
   useEffect(() => {
     loadOrders();
@@ -114,38 +112,24 @@ const OrdersTab = () => {
     setNewStatus("");
   };
 
-  const handleSaveStatus = async () => {
-    if (!selected || newStatus === selected.status) {
-      closeModal();
-      return;
-    }
+const handleSaveStatus = async () => {
+  if (!selected || newStatus === selected.status) {
+    closeModal();
+    return;
+  }
 
-    setSaving(true);
+  setSaving(true);
+  const [, error] = await orderService.updateOrderStatus(store.token, selected.id, newStatus);
+  setSaving(false);
 
-    try {
-      const response = await fetch(`${API}/api/order/seller-orders/${selected.id}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${store.token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
+  if (error) {
+    showToast(error);
+    return;
+  }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        showToast(errorData.description || "Error al actualizar estado");
-        return;
-      }
-
-      loadOrders(); // Recargamos para ver los cambios
-      closeModal();
-    } catch (error) {
-      console.log("Error al guardar estado:", error);
-    } finally {
-      setSaving(false);
-    }
-  };
+  loadOrders();
+  closeModal();
+};
 
   if (loading) {
     return <p className="text-center text-sm text-gray-400 mt-10 animate-pulse">Cargando pedidos…</p>;

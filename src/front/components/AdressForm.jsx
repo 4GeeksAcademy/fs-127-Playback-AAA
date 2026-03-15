@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import addressService from "../services/addressService";
-
-const API_KEY = "73cbc448c840ab7c4e8ab0de047dd1b07dd322303dc6c96693f82e335e78d53d";
+import geoService from "../services/geoService";
 
 const EMPTY_FORM = {
   full_name: "",
@@ -19,7 +18,6 @@ const EMPTY_FORM = {
   country: "España",
 };
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
 const Toast = ({ visible, message, type = "success" }) => (
   <div
     className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 text-white text-sm rounded-xl shadow-lg transition-all duration-300 ${
@@ -31,17 +29,6 @@ const Toast = ({ visible, message, type = "success" }) => (
   </div>
 );
 
-// ── Field ─────────────────────────────────────────────────────────────────────
-const Field = ({ label, required, children }) => (
-  <div className="space-y-1">
-    <label className="block text-xs font-medium text-gray-500">
-      {label}{required && <span className="text-violet-500 ml-0.5">*</span>}
-    </label>
-    {children}
-  </div>
-);
-
-// ── Section title sin emojis ──────────────────────────────────────────────────
 const SectionTitle = ({ title }) => (
   <div className="flex items-center gap-3 pt-2">
     <p className="text-xs font-semibold tracking-widest uppercase text-gray-400">{title}</p>
@@ -49,7 +36,6 @@ const SectionTitle = ({ title }) => (
   </div>
 );
 
-// ── Main component ────────────────────────────────────────────────────────────
 export const AddressForm = ({ onSaved }) => {
   const { store } = useGlobalReducer();
   const [form, setForm] = useState(EMPTY_FORM);
@@ -73,49 +59,13 @@ export const AddressForm = ({ onSaved }) => {
     toastTimer.current = setTimeout(() => setToast(t => ({ ...t, visible: false })), 2500);
   };
 
-  useEffect(() => { fetchCommunities(); }, []);
-
-  const fetchCommunities = async () => {
-    try {
-      const res = await fetch(`https://apiv1.geoapi.es/comunidades?type=JSON&version=2024.01&key=${API_KEY}`);
-      const data = await res.json();
-      setCommunities(data.data || []);
-    } catch { setCommunities([]); }
-  };
-
-  const fetchProvinces = async (ccom) => {
-    setLoadingProvinces(true);
-    try {
-      const res = await fetch(`https://apiv1.geoapi.es/provincias?CCOM=${ccom}&tipo=JSON&key=${API_KEY}`);
-      const data = await res.json();
-      setProvinces(data.data || []);
-    } catch { setProvinces([]); }
-    finally { setLoadingProvinces(false); }
-  };
-
-  const fetchMunicipalities = async (cpro) => {
-    setLoadingMunicipalities(true);
-    try {
-      const res = await fetch(`https://apiv1.geoapi.es/municipios?CPRO=${cpro}&tipo=JSON&key=${API_KEY}`);
-      const data = await res.json();
-      setMunicipalities(data.data || []);
-    } catch { setMunicipalities([]); }
-    finally { setLoadingMunicipalities(false); }
-  };
-
-  const fetchPostalCode = async (cmun, cpro) => {
-    try {
-      const cmum = cmun.slice(0, -2);
-      const res = await fetch(`https://apiv1.geoapi.es/codigos_postales?CPRO=${cpro}&CMUM=${cmum}&type=JSON&version=2024.01&key=${API_KEY}`);
-      const data = await res.json();
-      const cp = data.data?.[0]?.CPOS;
-      if (cp) setForm(prev => ({ ...prev, postal_code: cp }));
-    } catch {}
-  };
+  useEffect(() => {
+    geoService.getCommunities().then(setCommunities);
+  }, []);
 
   const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleCommunityChange = (e) => {
+  const handleCommunityChange = async (e) => {
     const val = e.target.value;
     setSelectedCommunity(val);
     setSelectedProvince("");
@@ -123,26 +73,33 @@ export const AddressForm = ({ onSaved }) => {
     setProvinces([]);
     setMunicipalities([]);
     setForm(prev => ({ ...prev, community_code: val, province_code: "", province: "", municipality: "", city: "", postal_code: "" }));
-    fetchProvinces(val);
+    setLoadingProvinces(true);
+    const data = await geoService.getProvinces(val);
+    setProvinces(data);
+    setLoadingProvinces(false);
   };
 
-  const handleProvinceChange = (e) => {
+  const handleProvinceChange = async (e) => {
     const val = e.target.value;
     const selected = provinces.find(p => p.CPRO === val);
     setSelectedProvince(val);
     setSelectedMunicipality("");
     setMunicipalities([]);
     setForm(prev => ({ ...prev, province_code: val, province: selected?.ALTERNATIVO_PRO || selected?.PRO || "", municipality: "", city: "", postal_code: "" }));
-    fetchMunicipalities(val);
+    setLoadingMunicipalities(true);
+    const data = await geoService.getMunicipalities(val);
+    setMunicipalities(data);
+    setLoadingMunicipalities(false);
   };
 
-  const handleMunicipalityChange = (e) => {
+  const handleMunicipalityChange = async (e) => {
     const val = e.target.value;
     const selected = municipalities.find(m => m.CMUN === val);
     setSelectedMunicipality(val);
     const name = selected?.ALTERNATIVO_DMUN50 || selected?.DMUN50 || "";
     setForm(prev => ({ ...prev, municipality: name, city: name }));
-    fetchPostalCode(val, selectedProvince);
+    const cp = await geoService.getPostalCode(val, selectedProvince);
+    if (cp) setForm(prev => ({ ...prev, postal_code: cp }));
   };
 
   const handleSubmit = async (e) => {
@@ -175,88 +132,103 @@ export const AddressForm = ({ onSaved }) => {
 
       <form onSubmit={handleSubmit} className="space-y-5">
 
-        {/* ── Datos de contacto ── */}
         <SectionTitle title="Datos de contacto" />
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Nombre completo" required>
-            <input name="full_name" value={form.full_name} onChange={handleChange} placeholder="Ej: María García López" required className={`col-span-2 ${inputClass}`} />
-          </Field>
-          <Field label="Teléfono" required>
+          <div className="space-y-1 col-span-2">
+            <label className="block text-xs font-medium text-gray-500">
+              Nombre completo<span className="text-violet-500 ml-0.5">*</span>
+            </label>
+            <input name="full_name" value={form.full_name} onChange={handleChange} placeholder="Ej: María García López" required className={inputClass} />
+          </div>
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-gray-500">
+              Teléfono<span className="text-violet-500 ml-0.5">*</span>
+            </label>
             <input name="phone" value={form.phone} onChange={handleChange} placeholder="Ej: 612 345 678" required className={inputClass} />
-          </Field>
+          </div>
         </div>
 
-        {/* ── Dirección (ubicación + calle fusionadas) ── */}
         <SectionTitle title="Dirección" />
         <div className="space-y-3">
 
-          <Field label="Comunidad autónoma" required>
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-gray-500">
+              Comunidad autónoma<span className="text-violet-500 ml-0.5">*</span>
+            </label>
             <select value={selectedCommunity} onChange={handleCommunityChange} required className={selectClass}>
               <option value="" disabled>Selecciona comunidad</option>
               {communities.map(c => <option key={c.CCOM} value={c.CCOM}>{c.COM}</option>)}
             </select>
-          </Field>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Provincia" required>
-              <select
-                value={selectedProvince}
-                onChange={handleProvinceChange}
-                disabled={!provinces.length}
-                required
-                className={provinces.length ? selectClass : disabledSelect}
-              >
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">
+                Provincia<span className="text-violet-500 ml-0.5">*</span>
+              </label>
+              <select value={selectedProvince} onChange={handleProvinceChange} disabled={!provinces.length} required className={provinces.length ? selectClass : disabledSelect}>
                 <option value="" disabled>{loadingProvinces ? "Cargando..." : "Selecciona provincia"}</option>
                 {provinces.map(p => <option key={p.CPRO} value={p.CPRO}>{p.ALTERNATIVO_PRO || p.PRO}</option>)}
               </select>
-            </Field>
+            </div>
 
-            <Field label="Municipio" required>
-              <select
-                value={selectedMunicipality}
-                onChange={handleMunicipalityChange}
-                disabled={!municipalities.length}
-                required
-                className={municipalities.length ? selectClass : disabledSelect}
-              >
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">
+                Municipio<span className="text-violet-500 ml-0.5">*</span>
+              </label>
+              <select value={selectedMunicipality} onChange={handleMunicipalityChange} disabled={!municipalities.length} required className={municipalities.length ? selectClass : disabledSelect}>
                 <option value="" disabled>{loadingMunicipalities ? "Cargando..." : "Selecciona municipio"}</option>
                 {municipalities.map(m => <option key={m.CMUN} value={m.CMUN}>{m.ALTERNATIVO_DMUN50 || m.DMUN50}</option>)}
               </select>
-            </Field>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Código postal" required>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">
+                Código postal<span className="text-violet-500 ml-0.5">*</span>
+              </label>
               <input name="postal_code" value={form.postal_code} onChange={handleChange} placeholder="Ej: 28001" required className={inputClass} />
-            </Field>
-            <Field label="País" required>
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">
+                País<span className="text-violet-500 ml-0.5">*</span>
+              </label>
               <input name="country" value={form.country} onChange={handleChange} placeholder="País" required className={inputClass} />
-            </Field>
+            </div>
           </div>
 
-          <Field label="Calle" required>
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-gray-500">
+              Calle<span className="text-violet-500 ml-0.5">*</span>
+            </label>
             <input name="street" value={form.street} onChange={handleChange} placeholder="Ej: Calle Mayor" required className={inputClass} />
-          </Field>
+          </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <Field label="Número" required>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">
+                Número<span className="text-violet-500 ml-0.5">*</span>
+              </label>
               <input name="number" value={form.number} onChange={handleChange} placeholder="Ej: 12" required className={inputClass} />
-            </Field>
-            <Field label="Piso">
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">Piso</label>
               <input name="floor" value={form.floor} onChange={handleChange} placeholder="Ej: 3º" className={inputClass} />
-            </Field>
-            <Field label="Puerta">
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-500">Puerta</label>
               <input name="door" value={form.door} onChange={handleChange} placeholder="Ej: B" className={inputClass} />
-            </Field>
+            </div>
           </div>
 
-          <Field label="Información adicional">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-gray-500">Información adicional</label>
             <input name="extra" value={form.extra} onChange={handleChange} placeholder="Escalera, bloque, referencias..." className={inputClass} />
-          </Field>
+          </div>
 
         </div>
 
-        {/* ── Submit ── */}
         <button
           type="submit"
           disabled={loading}
