@@ -296,7 +296,8 @@ def get_top_sales():
 
     return jsonify([{
         **p.to_dict(locale=locale),  
-        "total_sold": int(total_sold)
+        "total_sold": int(total_sold),
+        "stock": p.stock  
     } for p, total_sold in result]), 200
 
 

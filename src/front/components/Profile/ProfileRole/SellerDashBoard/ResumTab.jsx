@@ -1,19 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import useGlobalReducer from '../../../../hooks/useGlobalReducer';
-import { getMyProductsService } from '../../../../services/sellerService';
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import useGlobalReducer from "../../../../hooks/useGlobalReducer";
+import { getMyProductsService } from "../../../../services/sellerService";
+import orderService from "../../../../services/orderService";
 
 const STATUS_STYLE = {
-  pending:
-    'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400',
-  confirmed: 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400',
-  processing:
-    'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400',
-  shipped:
-    'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400',
-  delivered:
-    'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400',
-  cancelled: 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400',
+  pending:    "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400",
+  confirmed:  "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400",
+  processing: "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400",
+  shipped:    "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400",
+  delivered:  "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400",
+  cancelled:  "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
 const ResumTab = () => {
@@ -25,12 +22,10 @@ const ResumTab = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/seller-orders`, {
-        headers: { Authorization: `Bearer ${store.token}` },
-      }).then((r) => r.json()),
+      orderService.getSellerOrders(store.token),
       getMyProductsService(store.token),
     ])
-      .then(([ordersData, productsData]) => {
+      .then(([[ordersData], productsData]) => {
         setOrders(ordersData || []);
         setProducts(productsData || []);
       })
@@ -40,25 +35,22 @@ const ResumTab = () => {
   if (loading)
     return (
       <p className="text-center text-sm text-faint mt-10 animate-pulse">
-        {t('dashboard.overview.loading')}
+        {t("dashboard.overview.loading")}
       </p>
     );
 
   // ── Stats calculadas ──────────────────────────────
   const pedidosPendientes = orders.filter(
-    (o) => o.status === 'pending' || o.status === 'processing',
+    (o) => o.status === "pending" || o.status === "processing",
   );
   const sinStock = products.filter((p) => p.stock === 0);
 
   const ahora = new Date();
   const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
   const ventasMes = orders
-    .filter(
-      (o) => o.status !== 'cancelled' && new Date(o.created_at) >= inicioMes,
-    )
+    .filter((o) => o.status !== "cancelled" && new Date(o.created_at) >= inicioMes)
     .reduce(
-      (sum, o) =>
-        sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0),
+      (sum, o) => sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0),
       0,
     );
 
@@ -72,18 +64,22 @@ const ResumTab = () => {
             €{ventasMes.toFixed(2)}
           </p>
           <p className="text-xs text-muted mt-0.5">
-            {t('dashboard.overview.salesThisMonth')}
+            {t("dashboard.overview.salesThisMonth")}
           </p>
         </div>
 
         <div
-          className={`rounded-xl p-5 border ${pedidosPendientes.length > 0 ? 'border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950' : 'border-main'}`}
+          className={`rounded-xl p-5 border ${
+            pedidosPendientes.length > 0
+              ? "border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950"
+              : "border-main"
+          }`}
         >
           <div className="flex justify-between items-start">
             <span className="text-xl">⏳</span>
             {pedidosPendientes.length > 0 && (
               <span className="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full">
-                {t('dashboard.overview.attention')}
+                {t("dashboard.overview.attention")}
               </span>
             )}
           </div>
@@ -91,7 +87,7 @@ const ResumTab = () => {
             {pedidosPendientes.length}
           </p>
           <p className="text-xs text-muted mt-0.5">
-            {t('dashboard.overview.pendingOrders')}
+            {t("dashboard.overview.pendingOrders")}
           </p>
         </div>
 
@@ -99,10 +95,10 @@ const ResumTab = () => {
           <span className="text-xl">🛍️</span>
           <p className="text-2xl font-bold text-main mt-2">{products.length}</p>
           <p className="text-xs text-muted mt-0.5">
-            {t('dashboard.overview.activeProducts')}{' '}
+            {t("dashboard.overview.activeProducts")}{" "}
             {sinStock.length > 0 && (
               <span className="text-red-500">
-                · {sinStock.length} {t('dashboard.overview.noStock')}
+                · {sinStock.length} {t("dashboard.overview.noStock")}
               </span>
             )}
           </p>
@@ -112,7 +108,7 @@ const ResumTab = () => {
       {/* Actividad reciente */}
       <div>
         <h3 className="text-sm font-semibold text-main mb-3">
-          {t('dashboard.overview.recentActivity')}
+          {t("dashboard.overview.recentActivity")}
         </h3>
         <div className="divide-y divide-[rgb(var(--color-border))] border border-main rounded-xl overflow-hidden">
           {orders.slice(0, 5).map((o) => (
@@ -123,21 +119,18 @@ const ResumTab = () => {
               <div className="flex items-center gap-3">
                 <span className="text-faint font-mono text-xs">#{o.id}</span>
                 <span className="text-main">
-                  {o.customer || t('dashboard.overview.customer')}
+                  {o.customer || t("dashboard.overview.customer")}
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-faint text-xs hidden sm:block">
-                  {new Date(o.created_at).toLocaleDateString('es-ES')}
+                  {new Date(o.created_at).toLocaleDateString("es-ES")}
                 </span>
                 <span className="font-semibold text-main">
-                  €
-                  {o.products
-                    .reduce((s, p) => s + p.price * p.quantity, 0)
-                    .toFixed(2)}
+                  €{o.products.reduce((s, p) => s + p.price * p.quantity, 0).toFixed(2)}
                 </span>
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[o.status] || 'bg-muted text-muted'}`}
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[o.status] || "bg-muted text-muted"}`}
                 >
                   {t(`dashboard.orders.status.${o.status}`, {
                     defaultValue: o.status,
@@ -148,7 +141,7 @@ const ResumTab = () => {
           ))}
           {orders.length === 0 && (
             <p className="text-center text-faint text-sm py-10">
-              {t('dashboard.overview.noActivity')}
+              {t("dashboard.overview.noActivity")}
             </p>
           )}
         </div>

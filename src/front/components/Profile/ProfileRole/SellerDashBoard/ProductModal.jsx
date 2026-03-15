@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import productServices from '../../../../services/productService';
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import productServices from "../../../../services/productService";
 
-const CONDITIONS = ['new', 'used', 'refurbished', 'broken'];
+const CONDITIONS = ["new", "used", "refurbished", "broken"];
 
 const EMPTY_FORM = {
-  name: '',
-  description: '',
-  price: '',
-  stock: '',
-  size: '',
-  weight: '',
-  discount: '',
-  condition: 'new',
-  item_id: '',
+  name: "",
+  description: "",
+  price: "",
+  stock: "",
+  size: "",
+  weight: "",
+  discount: "",
+  condition: "new",
+  item_id: "",
 };
 
 const ProductModal = ({ product, token, onClose, onSaved }) => {
@@ -24,38 +24,39 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
       ? {
           ...product,
           name:
-            typeof product.name === 'object'
-              ? product.name?.es || ''
-              : product.name || '',
+            typeof product.name === "object"
+              ? product.name?.es || ""
+              : product.name || "",
           description:
-            typeof product.description === 'object'
-              ? product.description?.es || ''
-              : product.description || '',
-          size: product.size || '',
-          weight: product.weight || '',
+            typeof product.description === "object"
+              ? product.description?.es || ""
+              : product.description || "",
+          size: product.size || "",
+          weight: product.weight || "",
           discount: product.discount ?? 0,
-          image_url: product.image_url || '',
-          item_id: product.item_id ? String(product.item_id) : '',
+          image_url: product.image_url || "",
+          item_id: product.item_id ? String(product.item_id) : "",
         }
       : EMPTY_FORM,
   );
 
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(product?.image_url || null);
-  const [imageError, setImageError] = useState('');
+  const [imageError, setImageError] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [selectedCat, setSelectedCat] = useState('');
-  const [selectedSub, setSelectedSub] = useState('');
+  const [selectedCat, setSelectedCat] = useState("");
+  const [selectedSub, setSelectedSub] = useState("");
 
+  // Carga categorías al abrir
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/categories`)
-      .then((r) => r.json())
-      .then(setCategories)
-      .catch(console.error);
+    productServices.getCategories().then(([data, err]) => {
+      if (!err) setCategories(data);
+    });
   }, []);
 
+  // Pre-selecciona categoría/subcategoría al editar
   useEffect(() => {
     if (!product || !categories.length) return;
     for (const cat of categories) {
@@ -71,13 +72,9 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
     }
   }, [categories]);
 
-  const catSeleccionada = categories.find(
-    (c) => c.id === parseInt(selectedCat),
-  );
+  const catSeleccionada = categories.find((c) => c.id === parseInt(selectedCat));
   const subcategories = catSeleccionada?.subcategories || [];
-  const subSeleccionada = subcategories.find(
-    (s) => s.id === parseInt(selectedSub),
-  );
+  const subSeleccionada = subcategories.find((s) => s.id === parseInt(selectedSub));
   const items = subSeleccionada?.items || [];
 
   const handleChange = (e) =>
@@ -86,83 +83,44 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setImageError('');
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type))
-      return setImageError(t('dashboard.products.modal.formatError'));
+    setImageError("");
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
+      return setImageError(t("dashboard.products.modal.formatError"));
     if (file.size > 2 * 1024 * 1024)
-      return setImageError(t('dashboard.products.modal.sizeError'));
+      return setImageError(t("dashboard.products.modal.sizeError"));
     setImageFile(file);
     setPreview(URL.createObjectURL(file));
   };
 
-  // ── Construye el FormData con los campos comunes
   const buildFormData = () => {
     const fd = new FormData();
-    fd.append('name', form.name);
-    fd.append('description', form.description);
-    fd.append('price', form.price);
-    fd.append('stock', form.stock);
-    fd.append('item_id', form.item_id);
-    fd.append('condition', form.condition);
-    fd.append('discount', form.discount || 0);
-    if (form.size) fd.append('size', form.size);
-    if (form.weight) fd.append('weight', form.weight);
-    if (imageFile) fd.append('imagen', imageFile);
+    fd.append("name",        form.name);
+    fd.append("description", form.description);
+    fd.append("price",       form.price);
+    fd.append("stock",       form.stock);
+    fd.append("item_id",     form.item_id);
+    fd.append("condition",   form.condition);
+    fd.append("discount",    form.discount || 0);
+    if (form.size)   fd.append("size",   form.size);
+    if (form.weight) fd.append("weight", form.weight);
+    if (imageFile)   fd.append("imagen", imageFile);
     return fd;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!imageFile && !preview) {
+      setImageError(t("dashboard.products.modal.imageRequired"));
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
-    let err;
-
-    if (product) {
-      // Editar — si hay imagen nueva usamos FormData, si no JSON
-      if (imageFile) {
-        const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/product/${product.id}`,
-          {
-            method: 'PUT',
-            headers: { Authorization: `Bearer ${token}` },
-            body: buildFormData(),
-          },
-        );
-        const data = await res.json();
-        err = res.ok ? null : data.description || 'Error al actualizar';
-      } else {
-        const [, error] = await productServices.updateProduct(
-          product.id,
-          {
-            name: form.name,
-            description: form.description,
-            price: parseFloat(form.price),
-            stock: parseInt(form.stock),
-            size: form.size,
-            weight: parseFloat(form.weight) || null,
-            discount: parseFloat(form.discount) || 0,
-            condition: form.condition,
-            item_id: parseInt(form.item_id),
-            image_url: form.image_url,
-          },
-          token,
-        );
-        err = error;
-      }
-    } else {
-      // Crear
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/product`,
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: buildFormData(),
-        },
-      );
-      const data = await res.json();
-      err = res.ok ? null : data.description || 'Error al crear producto';
-    }
+    const [, err] = product
+      ? await productServices.updateProduct(product.id, buildFormData(), token)
+      : await productServices.createProduct(buildFormData(), token);
 
     setSaving(false);
     if (err) return setError(err);
@@ -171,7 +129,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
 
   // Respeta el idioma activo con fallback
   const nameOf = (val) =>
-    typeof val === 'object' ? val?.[i18n.language] || val?.es || val?.en : val;
+    typeof val === "object" ? val?.[i18n.language] || val?.es || val?.en : val;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -179,35 +137,31 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-main">
             {product
-              ? t('dashboard.products.modal.editTitle')
-              : t('dashboard.products.modal.newTitle')}
+              ? t("dashboard.products.modal.editTitle")
+              : t("dashboard.products.modal.newTitle")}
           </h2>
-          <button
-            onClick={onClose}
-            className="text-faint hover:text-main text-xl"
-          >
+          <button onClick={onClose} className="text-faint hover:text-main text-xl">
             ✕
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="flex flex-col items-center space-y-2">
-            {preview && (
+            {preview ? (
               <img
                 src={preview}
                 className="w-24 h-24 rounded-xl object-cover border border-main"
               />
+            ) : (
+              <div className="w-24 h-24 rounded-xl border-2 border-dashed border-main flex items-center justify-center text-xs text-faint">
+                {t("dashboard.products.modal.noImage")}
+              </div>
             )}
             <label className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
               {preview
-                ? t('dashboard.products.modal.changeImage')
-                : t('dashboard.products.modal.uploadImage')}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
+                ? t("dashboard.products.modal.changeImage")
+                : t("dashboard.products.modal.uploadImage")}
+              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
             </label>
             {imageError && <p className="text-xs text-red-500">{imageError}</p>}
           </div>
@@ -215,7 +169,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.name')}
+                {t("dashboard.products.modal.name")}
               </label>
               <input
                 name="name"
@@ -228,20 +182,18 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
 
             <div className="col-span-2">
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.category')}
+                {t("dashboard.products.modal.category")}
               </label>
               <select
                 value={selectedCat}
                 onChange={(e) => {
                   setSelectedCat(e.target.value);
-                  setSelectedSub('');
-                  setForm({ ...form, item_id: '' });
+                  setSelectedSub("");
+                  setForm({ ...form, item_id: "" });
                 }}
                 className="input"
               >
-                <option value="">
-                  {t('dashboard.products.modal.selectCategory')}
-                </option>
+                <option value="">{t("dashboard.products.modal.selectCategory")}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={String(c.id)}>
                     {nameOf(c.name)}
@@ -253,19 +205,17 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             {selectedCat && (
               <div className="col-span-2">
                 <label className="block text-xs text-faint mb-1">
-                  {t('dashboard.products.modal.subcategory')}
+                  {t("dashboard.products.modal.subcategory")}
                 </label>
                 <select
                   value={selectedSub}
                   onChange={(e) => {
                     setSelectedSub(e.target.value);
-                    setForm({ ...form, item_id: '' });
+                    setForm({ ...form, item_id: "" });
                   }}
                   className="input"
                 >
-                  <option value="">
-                    {t('dashboard.products.modal.selectSubcategory')}
-                  </option>
+                  <option value="">{t("dashboard.products.modal.selectSubcategory")}</option>
                   {subcategories.map((s) => (
                     <option key={s.id} value={String(s.id)}>
                       {nameOf(s.name)}
@@ -278,7 +228,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             {selectedSub && (
               <div className="col-span-2">
                 <label className="block text-xs text-faint mb-1">
-                  {t('dashboard.products.modal.item')}
+                  {t("dashboard.products.modal.item")}
                 </label>
                 <select
                   name="item_id"
@@ -287,9 +237,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
                   required
                   className="input"
                 >
-                  <option value="">
-                    {t('dashboard.products.modal.selectItem')}
-                  </option>
+                  <option value="">{t("dashboard.products.modal.selectItem")}</option>
                   {items.map((i) => (
                     <option key={i.id} value={String(i.id)}>
                       {nameOf(i.name)}
@@ -301,78 +249,39 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
 
             <div>
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.price')}
+                {t("dashboard.products.modal.price")}
               </label>
-              <input
-                name="price"
-                type="number"
-                step="0.01"
-                value={form.price}
-                onChange={handleChange}
-                required
-                className="input"
-              />
+              <input name="price" type="number" step="0.01" value={form.price} onChange={handleChange} required className="input" />
             </div>
             <div>
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.stock')}
+                {t("dashboard.products.modal.stock")}
               </label>
-              <input
-                name="stock"
-                type="number"
-                value={form.stock}
-                onChange={handleChange}
-                required
-                className="input"
-              />
+              <input name="stock" type="number" value={form.stock} onChange={handleChange} required className="input" />
             </div>
             <div>
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.discount')}
+                {t("dashboard.products.modal.discount")}
               </label>
-              <input
-                name="discount"
-                type="number"
-                step="0.01"
-                value={form.discount}
-                onChange={handleChange}
-                className="input"
-              />
+              <input name="discount" type="number" step="0.01" value={form.discount} onChange={handleChange} className="input" />
             </div>
             <div>
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.size')}
+                {t("dashboard.products.modal.size")}
               </label>
-              <input
-                name="size"
-                value={form.size}
-                onChange={handleChange}
-                className="input"
-              />
+              <input name="size" value={form.size} onChange={handleChange} className="input" />
             </div>
             <div>
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.weight')}
+                {t("dashboard.products.modal.weight")}
               </label>
-              <input
-                name="weight"
-                type="number"
-                step="0.01"
-                value={form.weight}
-                onChange={handleChange}
-                className="input"
-              />
+              <input name="weight" type="number" step="0.01" value={form.weight} onChange={handleChange} className="input" />
             </div>
             <div>
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.condition')}
+                {t("dashboard.products.modal.condition")}
               </label>
-              <select
-                name="condition"
-                value={form.condition}
-                onChange={handleChange}
-                className="input"
-              >
+              <select name="condition" value={form.condition} onChange={handleChange} className="input">
                 {CONDITIONS.map((c) => (
                   <option key={c} value={c}>
                     {t(`enums.productCondition.${c}`)}
@@ -383,7 +292,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
 
             <div className="col-span-2">
               <label className="block text-xs text-faint mb-1">
-                {t('dashboard.products.modal.description')}
+                {t("dashboard.products.modal.description")}
               </label>
               <textarea
                 name="description"
@@ -395,24 +304,16 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-500">❌ {error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-secondary py-2 px-4 text-sm"
-            >
-              {t('seller.cancel')}
+            <button type="button" onClick={onClose} className="btn-secondary py-2 px-4 text-sm">
+              {t("seller.cancel")}
             </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="btn-primary py-2 px-5 text-sm"
-            >
+            <button type="submit" disabled={saving} className="btn-primary py-2 px-5 text-sm">
               {saving
-                ? t('dashboard.products.modal.saving')
-                : t('dashboard.products.modal.save')}
+                ? t("dashboard.products.modal.saving")
+                : t("dashboard.products.modal.save")}
             </button>
           </div>
         </form>

@@ -195,6 +195,10 @@ def _handle_payment_succeeded(intent):
             # Log del error pero no abortamos — el pedido se marca como pagado igualmente
             print(f"[Webhook] Error al transferir a vendedores: {str(e)}")
 
+   # Resta el stock de cada producto
+    for detail in order.order_details:
+        detail.product.stock = max(0, detail.product.stock - detail.quantity)
+
     # Actualiza el estado del pedido
     order.status = Status.paid
     db.session.commit()

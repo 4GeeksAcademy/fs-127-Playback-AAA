@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import useGlobalReducer from '../../../../hooks/useGlobalReducer';
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import useGlobalReducer from "../../../../hooks/useGlobalReducer";
+import orderService from "../../../../services/orderService";
 
 const EarningTab = () => {
   const { store } = useGlobalReducer();
@@ -9,24 +10,21 @@ const EarningTab = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    //Hacemos el fetch para obtener los pedidos del vendedor
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/seller-orders`, {
-      headers: { Authorization: `Bearer ${store.token}` },
-    })
-      .then((r) => r.json())
-      .then(setOrders)
-      .finally(() => setLoading(false));
+    orderService.getSellerOrders(store.token).then(([data]) => {
+      if (data) setOrders(data);
+      setLoading(false);
+    });
   }, []);
 
   if (loading)
     return (
       <p className="text-center text-sm text-faint mt-10 animate-pulse">
-        {t('dashboard.earnings.loading')}
+        {t("dashboard.earnings.loading")}
       </p>
     );
 
   // ── Calcular stats desde los pedidos ──────────────
-  const pedidosConfirmados = orders.filter((o) => o.status !== 'cancelled');
+  const pedidosConfirmados = orders.filter((o) => o.status !== "cancelled");
 
   const totalGanado = pedidosConfirmados.reduce((sum, o) => {
     return sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0);
@@ -38,9 +36,9 @@ const EarningTab = () => {
   // ── Ganancias por mes (últimos 6) ─────────────────
   const porMes = {};
   pedidosConfirmados.forEach((o) => {
-    const mes = new Date(o.created_at).toLocaleDateString('es-ES', {
-      month: 'short',
-      year: '2-digit',
+    const mes = new Date(o.created_at).toLocaleDateString("es-ES", {
+      month: "short",
+      year: "2-digit",
     });
     const ganancia = o.products.reduce((s, p) => s + p.price * p.quantity, 0);
     porMes[mes] = (porMes[mes] || 0) + ganancia;
@@ -58,13 +56,13 @@ const EarningTab = () => {
             €{totalGanado.toFixed(2)}
           </p>
           <p className="text-xs text-muted mt-0.5">
-            {t('dashboard.earnings.totalRevenue')}
+            {t("dashboard.earnings.totalRevenue")}
           </p>
         </div>
         <div className="rounded-xl p-5 border border-main">
           <p className="text-2xl font-bold text-main">{totalPedidos}</p>
           <p className="text-xs text-muted mt-0.5">
-            {t('dashboard.earnings.completedOrders')}
+            {t("dashboard.earnings.completedOrders")}
           </p>
         </div>
         <div className="rounded-xl p-5 border border-main">
@@ -72,7 +70,7 @@ const EarningTab = () => {
             €{ticketMedio.toFixed(2)}
           </p>
           <p className="text-xs text-muted mt-0.5">
-            {t('dashboard.earnings.avgTicket')}
+            {t("dashboard.earnings.avgTicket")}
           </p>
         </div>
       </div>
@@ -81,19 +79,16 @@ const EarningTab = () => {
       {meses.length > 0 && (
         <div className="border border-main rounded-xl p-5">
           <h3 className="text-sm font-semibold text-main mb-4">
-            {t('dashboard.earnings.revenueByMonth')}
+            {t("dashboard.earnings.revenueByMonth")}
           </h3>
-          <div className="flex items-end gap-3" style={{ height: '144px' }}>
+          <div className="flex items-end gap-3" style={{ height: "144px" }}>
             {meses.map(([mes, valor]) => {
               const barHeight = Math.max(
                 Math.round((valor / maxGanancia) * 120),
                 4,
               );
               return (
-                <div
-                  key={mes}
-                  className="flex-1 flex flex-col items-center gap-1"
-                >
+                <div key={mes} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-[10px] text-faint">
                     €{valor.toFixed(0)}
                   </span>
@@ -112,7 +107,7 @@ const EarningTab = () => {
       {/* Últimos pedidos con ganancia */}
       <div>
         <h3 className="text-sm font-semibold text-main mb-3">
-          {t('dashboard.earnings.lastMovements')}
+          {t("dashboard.earnings.lastMovements")}
         </h3>
         <div className="divide-y divide-[rgb(var(--color-border))] border border-main rounded-xl overflow-hidden">
           {orders.slice(0, 10).map((o) => {
@@ -120,7 +115,7 @@ const EarningTab = () => {
               (s, p) => s + p.price * p.quantity,
               0,
             );
-            const cancelado = o.status === 'cancelled';
+            const cancelado = o.status === "cancelled";
             return (
               <div
                 key={o.id}
@@ -128,20 +123,20 @@ const EarningTab = () => {
               >
                 <div>
                   <p className="font-medium text-main">
-                    {t('dashboard.earnings.order')} #{o.id} —{' '}
-                    {o.customer || t('dashboard.overview.customer')}
+                    {t("dashboard.earnings.order")} #{o.id} —{" "}
+                    {o.customer || t("dashboard.overview.customer")}
                   </p>
                   <p className="text-xs text-faint mt-0.5">
-                    {new Date(o.created_at).toLocaleDateString('es-ES')} ·{' '}
+                    {new Date(o.created_at).toLocaleDateString("es-ES")} ·{" "}
                     {o.products.length} producto
-                    {o.products.length > 1 ? 's' : ''}
+                    {o.products.length > 1 ? "s" : ""}
                   </p>
                 </div>
                 <span
-                  className={`font-semibold ${cancelado ? 'text-red-500' : 'text-emerald-600'}`}
+                  className={`font-semibold ${cancelado ? "text-red-500" : "text-emerald-600"}`}
                 >
                   {cancelado
-                    ? t('dashboard.orders.status.cancelled')
+                    ? t("dashboard.orders.status.cancelled")
                     : `+€${ganancia.toFixed(2)}`}
                 </span>
               </div>
@@ -149,7 +144,7 @@ const EarningTab = () => {
           })}
           {orders.length === 0 && (
             <p className="text-center text-faint text-sm py-10">
-              {t('dashboard.earnings.noMovements')}
+              {t("dashboard.earnings.noMovements")}
             </p>
           )}
         </div>

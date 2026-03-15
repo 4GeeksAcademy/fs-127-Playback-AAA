@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import userService from "../services/userService";
 
 const ProfileInfo = () => {
   const { t } = useTranslation();
@@ -22,11 +23,10 @@ const ProfileInfo = () => {
   const [imageSuccess, setImageSuccess] = useState(false);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, {
-      headers: { Authorization: "Bearer " + token }
-    })
-      .then(res => res.json())
-      .then(data => setUser(data));
+    userService.getProfile(token).then(([data, error]) => {
+      if (error) return console.error(error);
+      setUser(data);
+    });
   }, []);
 
   const validate = () => {
@@ -50,21 +50,12 @@ const ProfileInfo = () => {
   const confirmUpdate = async () => {
     setShowConfirm(false);
     setLoading(true);
-
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/user/profile`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token
-        },
-        body: JSON.stringify({ name: user.name, last_name: user.last_name })
-      }
-    );
-
+    const [, error] = await userService.updateProfile(token, {
+      name: user.name,
+      last_name: user.last_name
+    });
     setLoading(false);
-    if (response.ok) setShowSuccess(true);
+    if (!error) setShowSuccess(true);
   };
 
   const handleImageChange = async (e) => {
@@ -74,14 +65,11 @@ const ProfileInfo = () => {
     setImageError("");
     setImageSuccess(false);
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    const maxSize = 2 * 1024 * 1024;
-
-    if (!allowedTypes.includes(file.type)) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
       setImageError(t("profile.info.imageFormat"));
       return;
     }
-    if (file.size > maxSize) {
+    if (file.size > 2 * 1024 * 1024) {
       setImageError(t("profile.info.imageSize"));
       return;
     }
@@ -92,31 +80,16 @@ const ProfileInfo = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/image`,
-        {
-          method: "PUT",
-          headers: { Authorization: "Bearer " + token },
-          body: formData
-        }
-      );
+    const [data, error] = await userService.updateProfileImage(token, formData);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setImageError(data.description || t("profile.info.imageUploadError"));
-        setImageLoading(false);
-        return;
-      }
-
-      setUser(prev => ({ ...prev, image_url: data.image_url }));
-      setImageSuccess(true);
-
-    } catch {
-      setImageError(t("profile.info.connectionError"));
+    if (error) {
+      setImageError(error);
+      setImageLoading(false);
+      return;
     }
 
+    setUser(prev => ({ ...prev, image_url: data.image_url }));
+    setImageSuccess(true);
     setImageLoading(false);
   };
 
@@ -138,9 +111,7 @@ const ProfileInfo = () => {
             }}
           />
           <div>
-            <p className="text-xl font-medium text-main">
-              {user.name} {user.last_name}
-            </p>
+            <p className="text-xl font-medium text-main">{user.name} {user.last_name}</p>
             <p className="text-muted text-sm">{user.email}</p>
           </div>
         </div>
@@ -153,14 +124,8 @@ const ProfileInfo = () => {
         <div className="flex flex-col items-center mb-6 space-y-3">
           <label className="bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-purple-700 transition text-sm">
             {imageLoading ? t("profile.info.uploading") : t("profile.info.changeImage")}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
+            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           </label>
-
           {imageError   && <p className="text-sm text-red-500">{imageError}</p>}
           {imageSuccess && <p className="text-sm text-emerald-600">{t("profile.info.imageUpdated")}</p>}
         </div>
@@ -176,7 +141,6 @@ const ProfileInfo = () => {
             />
             {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
           </div>
-
           <div>
             <input
               name="last_name"
@@ -187,7 +151,6 @@ const ProfileInfo = () => {
             />
             {errors.last_name && <p className="text-sm text-red-500 mt-1">{errors.last_name}</p>}
           </div>
-
           <button
             type="submit"
             disabled={loading}

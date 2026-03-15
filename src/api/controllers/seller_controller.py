@@ -51,6 +51,8 @@ def create_seller_profile():
             origin_city=body["origin_city"],
             origin_zip=body["origin_zip"],
             origin_country=body["origin_country"],
+            origin_community_code=body.get("origin_community_code"),  
+            origin_province_code=body.get("origin_province_code"),
             status=SellerStatus.pending,
             logo_url=logo_url
         )
@@ -117,7 +119,8 @@ def update_seller_profile():
 
     # Campos actualizables — el NIF no se pueden cambiar una vez creados
     updatable = ["store_name", "description", "phone", "logo_url",
-                 "origin_address", "origin_city", "origin_zip", "origin_country"]
+                 "origin_address", "origin_city", "origin_zip", "origin_country",
+                 "origin_community_code", "origin_province_code"]
 
     updated = False
     for field in updatable:
