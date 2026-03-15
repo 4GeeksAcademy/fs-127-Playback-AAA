@@ -7,8 +7,7 @@ import { AuthPanel } from "./AuthPanel";
 
 export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userMenuOpen, setUserMenuOpen, userRef, loginOpen, setLoginOpen, loginRef, authView, setAuthView, langRefDesktop, langOpen, setLangOpen, handleSelectLanguage, currentLang, t, }) => {
 
-  // Links del dropdown — excluimos el carrito que va fuera
-  const dropdownLinks = userLinks.filter(({ to }) => to !== "/cart");
+  // Links del dropdown — vienen de Navbar
   const cartTotal = store.cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -51,7 +50,7 @@ export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userM
 
             {userMenuOpen && (
               <div className="absolute right-0 mt-2 w-52 bg-main border border-main rounded-2xl shadow-xl py-1.5 z-50">
-                {dropdownLinks.map(({ to, icon, label }) => (
+                {userLinks.map(({ to, icon, label }) => (
                   <Link
                     key={to} to={to}
                     onClick={() => setUserMenuOpen(false)}
