@@ -5,6 +5,8 @@ from api.models.orderdetail import OrderDetail
 from api.models.order import Order, Status
 from api.models.seller import Seller
 from api.models.product import Product
+from api.models.address import Address
+
 
 
 order_bp = Blueprint('order', __name__, url_prefix='/order')
@@ -13,7 +15,24 @@ order_bp = Blueprint('order', __name__, url_prefix='/order')
 #     if not text:
 #         return None
 #     return GoogleTranslator(source='auto', target=target_lang).translate(text)
+COUPONS = {
+    "VERANO10":    {"type": "percentage",    "value": 10},
+    "5EUROS":      {"type": "fixed",         "value": 5},
+    "ENVIOGRATIS": {"type": "free_shipping", "value": 0},
+}
 
+
+@order_bp.route('/apply-coupon', methods=['POST'])
+@jwt_required()
+def apply_coupon():
+    data = request.get_json()
+    code = data.get("code", "").strip().upper()
+
+    coupon = COUPONS.get(code)
+    if not coupon:
+        return jsonify({"msg": "Código inválido"}), 404
+
+    return jsonify({"code": code, "type": coupon["type"], "value": coupon["value"]}), 200
 
 @order_bp.route('', methods=['GET'])
 def get_orders():
@@ -123,7 +142,8 @@ def get_cart():
             "price": product.price,
             "discount": product.discount,
             "quantity": detail.quantity,
-            "image_url": product.image_url
+            "image_url": product.image_url,
+            "stock": product.stock 
         })
 
     return jsonify({
@@ -188,7 +208,8 @@ def my_orders():
                 "price": product.price,
                 "discount": product.discount,
                 "quantity": detail.quantity,
-                "image_url": product.image_url
+                "image_url": product.image_url,
+                "stock": product.stock 
             })
 
         result.append({
@@ -203,7 +224,6 @@ def my_orders():
 
     return jsonify(result), 200
 
-
 @order_bp.route('/checkout', methods=['POST'])
 @jwt_required()
 def checkout():
@@ -214,6 +234,7 @@ def checkout():
     shipping_address_id = data.get("shipping_address_id")
     billing_address_id = data.get("billing_address_id")
     payment_method = data.get("payment_method", "credit_card")
+    coupon_code = data.get("coupon_code")
 
     order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
     if not order:
@@ -237,7 +258,6 @@ def checkout():
     # Calcular envío por peso y país
     # -----------------------------
 
-    from api.models.address import Address
 
     shipping_address = Address.query.get(shipping_address_id)
     if not shipping_address:
@@ -270,7 +290,22 @@ def checkout():
 
     shipping_cost = calcular_envio(shipping_address.country, peso_total, subtotal)
 
-    total_price = subtotal + shipping_cost
+    # -----------------------------
+    # Aplicar cupón
+    # -----------------------------
+
+    discount_amount = 0
+    coupon = COUPONS.get(coupon_code.strip().upper()) if coupon_code else None
+
+    if coupon:
+        if coupon["type"] == "percentage":
+            discount_amount = round(subtotal * coupon["value"] / 100, 2)
+        elif coupon["type"] == "fixed":
+            discount_amount = round(min(float(coupon["value"]), subtotal), 2)
+        elif coupon["type"] == "free_shipping":
+            shipping_cost = 0.00
+
+    total_price = subtotal + shipping_cost - discount_amount
 
     # -----------------------------
     # Guardar datos
@@ -288,10 +323,9 @@ def checkout():
 
     return jsonify({
         "msg": "Compra realizada correctamente",
-        "order_id": order.id
+        "order_id": order.id,
+        "discount_amount": discount_amount
     }), 200
-
-
 
 @order_bp.route('/seller-orders', methods=['GET'])
 @jwt_required()

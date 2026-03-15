@@ -50,6 +50,11 @@ const handleAddToCart = async () => {
     return;
   }
 
+  if (stockAgotado) {
+    showToast("No hay más stock disponible", "error");
+    return;
+  }
+
   const [, error] = await orderServices.addProductToCart(token, product.id, 1);
 
   if (error) {
@@ -61,28 +66,28 @@ const handleAddToCart = async () => {
   showToast("Producto añadido a tu cesta");
 };
 
-  if (!product)
-    return (
-      <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
-        {t("product.noFound")}
-      </div>
-    );
+if (!product)
+  return (
+    <div className="flex items-center justify-center h-96 text-stone-400 text-sm tracking-widest uppercase">
+      {t("product.noFound")}
+    </div>
+  );
 
-  const inStock = product.stock == null ? true : product.stock > 0;
-
+    const enCarrito = store.cart?.find(item => item.id === product?.id)?.quantity || 0;
+    const inStock = product.stock == null ? true : product.stock > 0;
+    const stockAgotado = product.stock != null && enCarrito >= product.stock;
   const accordionItems = [
     { label: t("product.descriptionLabel"), content: product.description || t("product.description") },
-    { label: t("product.featuresLabel"),    content: product.features    || t("product.features") },
-    { label: t("product.shippingLabel"),    content: product.shipping    || t("product.shipping") },
+    { label: t("product.featuresLabel"), content: product.features || t("product.features") },
+    { label: t("product.shippingLabel"), content: product.shipping || t("product.shipping") },
   ];
 
   return (
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
 
       {toast && (
-        <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
-          toast.type === "error" ? "bg-red-600" : "bg-stone-900"
-        }`}>
+        <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${toast.type === "error" ? "bg-red-600" : "bg-stone-900"
+          }`}>
           {toast.type === "error" ? <X size={15} /> : <ShoppingCart size={15} />}
           {toast.msg}
         </div>
@@ -125,32 +130,33 @@ const handleAddToCart = async () => {
           )}
 
           {/* Comprobamos si hay stock para mostrarlo de una manera o otra */}
-          <div className="flex items-center gap-2 text-sm">
-            {inStock ? (
-              <>
-                <Check size={15} className="text-emerald-600" />
-                <span className="text-emerald-700 font-medium">{t("product.inStock")}</span>
-                {product.stock != null && (
-                  <span className="text-stone-400">({product.stock} {t("product.available")})</span>
-                )}
-              </>
-            ) : (
-              <>
-                <X size={15} className="text-red-500" />
-                <span className="text-red-500 font-medium">{t("product.outOfStock")}</span>
-              </>
-            )}
-          </div>
+     <div className="flex items-center gap-2 text-sm">
+  {inStock && !stockAgotado ? (
+    <>
+      <Check size={15} className="text-emerald-600" />
+      <span className="text-emerald-700 font-medium">{t("product.inStock")}</span>
+      {product.stock != null && (
+        <span className="text-stone-400">({product.stock} {t("product.available")})</span>
+      )}
+    </>
+  ) : (
+    <>
+      <X size={15} className="text-red-500" />
+      <span className="text-red-500 font-medium">
+        {!inStock ? t("product.outOfStock") : "Sin stock"}
+      </span>
+    </>
+  )}
+</div>
 
           {/* Botón añadir al carrito */}
           <button
             onClick={handleAddToCart}
-            disabled={!inStock}
-            className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
-              inStock
+            disabled={!inStock || stockAgotado}
+            className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${inStock && !stockAgotado
                 ? "bg-stone-900 hover:bg-stone-700 text-white"
                 : "bg-stone-200 text-stone-400 cursor-not-allowed"
-            }`}
+              }`}
           >
             <ShoppingCart size={16} />
             {t("product.addToCart")}
