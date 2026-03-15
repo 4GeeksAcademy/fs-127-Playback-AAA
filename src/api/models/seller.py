@@ -28,6 +28,7 @@ class Seller(db.Model):
     origin_zip: Mapped[str] = mapped_column(String(10), nullable=False)
     origin_country: Mapped[str] = mapped_column(String(100), nullable=False)
     origin_community_code: Mapped[str] = mapped_column(String(50), nullable=True)
+    origin_community: Mapped[str] = mapped_column(String(50), nullable=True)
     origin_province_code: Mapped[str] = mapped_column(String(50), nullable=True)
     status: Mapped[SellerStatus] = mapped_column(Enum(SellerStatus), nullable=False, default=SellerStatus.pending)
     rejection_reason: Mapped[str] = mapped_column(Text(), nullable=True)
@@ -63,6 +64,7 @@ class Seller(db.Model):
             "origin_country": self.origin_country,
             "origin_community_code": self.origin_community_code,
             "origin_province_code": self.origin_province_code,
+            "origin_community": self.origin_community,
             "status": self.status.value,
             "rejection_reason": self.rejection_reason,
             "created_at": self.created_at.isoformat() if self.created_at else None,

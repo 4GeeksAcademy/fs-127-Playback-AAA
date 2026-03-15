@@ -33,8 +33,6 @@ const formFromProfile = (data) => ({
   origin_country: data.origin_country || 'España',
 });
 
-const steps = ['Tienda', 'Dirección de Envío', 'Revisión'];
-
 const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
   const { t } = useTranslation();
   const { store } = useGlobalReducer();
@@ -51,6 +49,8 @@ const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
   const [globalError, setGlobalError] = useState(null);
   // Estado de carga mientras se envía
   const [loading, setLoading] = useState(false);
+
+  const steps = [t('seller.stepStore'), t('seller.stepShipping'), t('seller.stepConfirm')];
 
   // Actualiza un campo del formulario y limpia su error
   const handleChange = (e) => {
@@ -114,33 +114,25 @@ const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
             {/* círculo */}
             <div className="flex flex-col items-center flex-shrink-0">
               <div
-                className={`
-                  w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold
-                  ${
-                    i <= step
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-theme-muted text-theme-secondary'
-                  }
-                `}
+                className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold
+                  ${i <= step ? 'bg-purple-600 text-white' : 'bg-muted text-sub'}`}
               >
                 {i + 1}
               </div>
-
-              <span className="text-xs mt-1 text-theme-secondary">{label}</span>
+              <span className="text-xs mt-1 text-sub">{label}</span>
             </div>
 
             {/* línea */}
             {i < steps.length - 1 && (
               <div
-                className={`
-                  flex-1 h-[2px] mx-2
-                  ${i < step ? 'bg-purple-600' : 'bg-theme-border'}
-                `}
+                className={`flex-1 h-[2px] mx-2
+                  ${i < step ? 'bg-purple-600' : 'bg-[rgb(var(--color-border))]'}`}
               />
             )}
           </div>
         ))}
       </div>
+
       {/* Contenido del paso activo */}
       {step === 0 && (
         <StepStoreInfo form={form} errors={errors} onChange={handleChange} />
@@ -152,19 +144,16 @@ const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
 
       {/* Error global de la petición */}
       {globalError && (
-        <div className="mt-4 rounded-xl bg-theme-error-bg px-4 py-2.5 text-sm text-theme-error">
+        <div className="mt-4 rounded-xl bg-[rgb(var(--color-error-bg))] px-4 py-2.5 text-sm text-[rgb(var(--color-error))]">
           {globalError}
         </div>
       )}
 
       {/* Navegación entre pasos */}
-      <div className="flex justify-between mt-6 pt-4 border-t border-theme-border-sm">
+      <div className="flex justify-between mt-6 pt-4 border-t border-main">
         {/* Botón atrás — solo visible desde el paso 1 en adelante */}
         {step > 0 ? (
-          <button
-            onClick={handleBack}
-            className="px-4 py-2 rounded-lg border border-theme-border text-sm text-theme-secondary hover:bg-theme-muted transition"
-          >
+          <button onClick={handleBack} className="btn-secondary py-2 px-4 text-sm">
             ← {t('seller.back')}
           </button>
         ) : (
@@ -172,17 +161,14 @@ const SellerRegister = ({ onSuccess, initialData = null, isEdit = false }) => {
         )}
         {/* Botón siguiente o enviar según el paso */}
         {step < 2 ? (
-          <button
-            onClick={handleNext}
-            className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition"
-          >
+          <button onClick={handleNext} className="btn-primary py-2 px-5 text-sm">
             {t('seller.next')} →
           </button>
         ) : (
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-primary py-2 px-5 text-sm"
           >
             {loading
               ? t('seller.submitting')

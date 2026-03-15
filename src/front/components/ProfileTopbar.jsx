@@ -1,8 +1,11 @@
+import { useTranslation } from "react-i18next";
+
 const ProfileTopbar = () => {
+  const { t } = useTranslation();
   return (
-    <div className="bg-white border-b border-gray-200 px-8 py-5">
-      <h1 className="text-xl font-semibold text-gray-700">
-        Panel de Usuario
+    <div className="bg-main border-b border-main px-8 py-5">
+      <h1 className="text-xl font-semibold text-main">
+        {t("profile.userPanel")}
       </h1>
     </div>
   );

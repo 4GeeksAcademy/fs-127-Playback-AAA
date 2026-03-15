@@ -110,3 +110,46 @@
   *::-webkit-scrollbar-track { background: rgb(var(--color-scrollbar)); }
   *::-webkit-scrollbar-thumb { background: rgb(var(--color-scrollbar-thumb)); border-radius: 9999px; }
 }
+
+/* ── BOTONES ESTÁNDAR ───────────────────────────────────────── */
+@layer components {
+
+  .btn-primary {
+    @apply bg-violet-600 hover:bg-violet-700 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent hover:bg-[rgb(var(--color-bg-muted))] text-[rgb(var(--color-text-secondary))] border border-[rgb(var(--color-border))] font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply text-violet-600 hover:underline text-sm transition disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger { @apply bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* ── TARJETAS ── */
+  .card {
+    @apply bg-[rgb(var(--color-bg))] border border-[rgb(var(--color-border))] rounded-xl shadow-sm;
+  }
+
+  /* ── INPUTS ── */
+  .input {
+    @apply w-full bg-[rgb(var(--color-bg-input))] border border-[rgb(var(--color-border))] text-[rgb(var(--color-text))] placeholder:text-[rgb(var(--color-text-faint))] rounded-lg p-2 text-sm transition focus:outline-none focus:border-[rgb(var(--color-border-focus))];
+  }
+
+  /* ── TEXTOS SEMÁNTICOS ── */
+  .text-main    { @apply text-[rgb(var(--color-text))]; }
+  .text-sub     { @apply text-[rgb(var(--color-text-secondary))]; }
+  .text-muted   { @apply text-[rgb(var(--color-text-muted))]; }
+  .text-faint   { @apply text-[rgb(var(--color-text-faint))]; }
+
+  /* ── FONDOS SEMÁNTICOS ── */
+  .bg-main      { @apply bg-[rgb(var(--color-bg))]; }
+  .bg-subtle    { @apply bg-[rgb(var(--color-bg-subtle))]; }
+  .bg-muted     { @apply bg-[rgb(var(--color-bg-muted))]; }
+
+  /* ── BORDES SEMÁNTICOS ── */
+  .border-main  { @apply border-[rgb(var(--color-border))]; }
+}

@@ -7,17 +7,20 @@ import { FavoriteButton } from "../components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import { useFavorites } from "../hooks/useFavorites";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { ProductPrice } from "../components/Common/ProductPrice";
 import orderService from "../services/orderService";
-
 
 export const TopSales = () => {
   const { store, dispatch } = useGlobalReducer();
   const { t } = useTranslation();
   useFavorites();
+
   const carouselRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isRandom, setIsRandom] = useState(false);
   const [toast, setToast] = useState(null);
+  const [clicked, setClicked] = useState(null);
 
   const handleAddToCart = async (e, product) => {
     e.preventDefault();
@@ -37,7 +40,10 @@ export const TopSales = () => {
       return;
     }
 
-    const [data, error] = await orderService.addProductToCart(token, product.id, 1);
+    setClicked(product.id);
+    setTimeout(() => setClicked(null), 300);
+
+    const [, error] = await orderService.addProductToCart(token, product.id, 1);
 
     if (error) {
       if (error.status === 401 || error.status === 403) {
@@ -52,10 +58,24 @@ export const TopSales = () => {
     setTimeout(() => setToast(null), 2000);
   };
 
+  // Carga los productos más vendidos al montar el componente
+  // Si no hay, carga productos aleatorios como fallback
   useEffect(() => {
     productServices.getTopSales().then(([data, error]) => {
-      if (data) setProducts(data);
-      setLoading(false);
+      if (data && data.length > 5) {
+        setProducts(data);
+        setLoading(false);
+      } else {
+        // Fallback — productos aleatorios
+        productServices.getAllProducts().then(([randomData]) => {
+          if (randomData?.length) {
+            const shuffled = [...randomData].sort(() => Math.random() - 0.5).slice(0, 10);
+            setProducts(shuffled);
+            setIsRandom(true);
+          }
+          setLoading(false);
+        });
+      }
     });
   }, []);
 
@@ -70,17 +90,17 @@ export const TopSales = () => {
     return (
       <section className="mt-8">
         <div className="flex items-center justify-between my-4">
-          <h2 className="text-lg font-semibold tracking-tight text-theme-text">
-            {t("product.outOfStock")}{" "}
+          <h2 className="text-lg font-semibold tracking-tight text-main">
+            {t("home.topSales")}
           </h2>
         </div>
         <div className="flex gap-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 flex-none animate-pulse">
-              <div className="h-[200px] w-full bg-theme-muted" />
+              <div className="h-[200px] w-full bg-muted" />
               <div className="p-3 flex flex-col gap-2">
-                <div className="h-3 bg-theme-muted rounded" />
-                <div className="h-3 bg-theme-muted rounded w-1/2" />
+                <div className="h-3 bg-muted rounded" />
+                <div className="h-3 bg-muted rounded w-1/2" />
               </div>
             </div>
           ))}
@@ -94,24 +114,29 @@ export const TopSales = () => {
     <section className="mt-8">
 
       {toast && (
-        <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
-          toast.type === "auth" || toast.type === "sin_stock" ? "bg-red-600" : "bg-stone-900"
-        }`}>
+        <div
+          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
+            toast.type === "auth" || toast.type === "sin_stock"
+              ? "bg-red-600 dark:bg-red-500"
+              : "bg-stone-900 dark:bg-stone-100"
+          }`}
+        >
           {toast.type === "auth" || toast.type === "sin_stock"
             ? <X size={15} />
             : <ShoppingCart size={15} />
           }
           {toast.type === "auth"
-            ? "Debes iniciar sesión para añadir al carrito"
+            ? t("product.loginRequired")
             : toast.type === "sin_stock"
-            ? "No hay más stock disponible"
-            : "Producto añadido a tu cesta"}
+            ? t("product.noStock")
+            : t("product.addedToCart")
+          }
         </div>
       )}
 
       <div className="flex items-center justify-between my-4">
-        <h2 className="text-lg font-semibold tracking-tight text-theme-text">
-          {t("home.topSales")}
+        <h2 className="text-lg font-semibold tracking-tight text-main">
+          {isRandom ? t("home.featuredProducts") : t("home.topSales")}
         </h2>
         <div>
           <button onClick={() => scroll("left")} className="text-amber-600 hover:text-amber-700">
@@ -134,10 +159,11 @@ export const TopSales = () => {
               <Link
                 to={`/product/${p.id}`}
                 key={p.id}
-                className="w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-4rem)/5)] flex-none border border-theme-border bg-theme-bg overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200"
+                className="w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-3rem)/4)] lg:w-[calc((100%-4rem)/5)] flex-none border border-main bg-main overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-200"
               >
                 <div className="w-full">
-                  <div className="h-[200px] w-full bg-theme-subtle overflow-hidden relative">
+                  {/* Imagen del producto con botón de favorito */}
+                  <div className="h-[200px] w-full bg-subtle overflow-hidden relative">
                     <img
                       src={p.image_url || "https://placehold.co/300x300?text=Sin+imagen"}
                       alt={p.name}
@@ -147,15 +173,16 @@ export const TopSales = () => {
                     <FavoriteButton product={p} className="absolute top-3 right-3" />
                   </div>
 
+                  {/* Info del producto — rating y carrito aparecen al hacer hover */}
                   <div className="p-3 flex flex-col gap-1">
-                    <p className="text-sm text-theme-text">{p.name}</p>
-                    <p className="text-sm font-medium text-theme-text">{p.price}€</p>
+                    <p className="text-sm text-main">{p.name}</p>
+                    <ProductPrice price={parseFloat(p.price)} discount={p.discount || 0} />
                     <div className="flex items-center justify-between transition-all duration-200 opacity-0 group-hover:opacity-100">
                       <div className="flex items-center gap-1">
                         {p.Review > 0 && (
                           <>
                             <StarRating rating={p.rating} />
-                            <span className="text-xs text-theme-muted">({p.Review})</span>
+                            <span className="text-xs text-muted">({p.Review})</span>
                           </>
                         )}
                       </div>
@@ -163,12 +190,16 @@ export const TopSales = () => {
                       {!inStock || stockAgotado ? (
                         <span className="text-xs text-red-500 font-medium flex items-center gap-1">
                           <X size={13} />
-                          Sin stock
+                          {t("product.noStock")}
                         </span>
                       ) : (
                         <button
                           onClick={(e) => handleAddToCart(e, p)}
-                          className="bg-stone-800 hover:bg-stone-500 text-white transition-all flex items-center justify-center p-2"
+                          className={`text-white transition-all flex items-center justify-center p-2 ${
+                            clicked === p.id
+                              ? "bg-violet-600 scale-75"
+                              : "bg-stone-800 hover:bg-stone-600 dark:bg-stone-200 dark:hover:bg-stone-400 dark:text-stone-900 scale-100"
+                          }`}
                         >
                           <ShoppingCart size={16} />
                         </button>

@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import orderServices from "../services/orderService";
 import { Star } from "lucide-react";
 
 export const ReviewForm = ({ productId, orderId }) => {
+  const { t } = useTranslation();
   const [comment, setComment] = useState("");
   const [title, setTitle] = useState("");
   const [rating, setRating] = useState(0);
@@ -14,7 +16,7 @@ export const ReviewForm = ({ productId, orderId }) => {
     //Evita que recargue la pagina al enviar el formulario
     e.preventDefault();
 
-    if (rating === 0) return setError("Por favor selecciona una puntuación.");
+    if (rating === 0) return setError(t("review.ratingRequired"));
     //Lo usamos para que el usuario no pueda pulsar 2 veces el boton de enviar y entonces lo desabilitamos hasta que se envia
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -36,32 +38,32 @@ export const ReviewForm = ({ productId, orderId }) => {
 
   if (success)
     return (
-      <div className="mt-10 border border-emerald-200 bg-emerald-50 p-6 text-center">
-        <p className="text-emerald-700 font-medium tracking-wide">
-          Reseña enviada con éxito
+      <div className="mt-10 border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950 p-6 text-center">
+        <p className="text-emerald-700 dark:text-emerald-400 font-medium tracking-wide">
+          {t("review.successTitle")}
         </p>
-        <p className="text-sm text-emerald-600 mt-1">
-          Gracias por compartir tu opinión.
+        <p className="text-sm text-emerald-600 dark:text-emerald-500 mt-1">
+          {t("review.successMsg")}
         </p>
       </div>
     );
 
   return (
-    <div className="mt-10 border-t border-stone-200 pt-10">
-      <h3 className="text-lg font-semibold text-stone-900 tracking-tight mb-6">
-        Escribe tu reseña
+    <div className="mt-10 border-t border-main pt-10">
+      <h3 className="text-lg font-semibold text-main tracking-tight mb-6">
+        {t("review.title")}
       </h3>
 
       {error && (
-        <p className="text-red-500 text-sm mb-4 bg-red-50 border border-red-200 px-4 py-2">
+        <p className="text-red-500 text-sm mb-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 px-4 py-2">
           {error}
         </p>
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-w-xl">
         <div>
-          <label className="text-xs uppercase tracking-widest text-stone-400 mb-2 block">
-            Puntuación
+          <label className="text-xs uppercase tracking-widest text-faint mb-2 block">
+            {t("review.rating")}
           </label>
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -71,7 +73,7 @@ export const ReviewForm = ({ productId, orderId }) => {
                   className={
                     star <= rating
                       ? "fill-amber-400 text-amber-400"
-                      : "text-stone-300"
+                      : "text-faint"
                   }
                 />
               </button>
@@ -80,37 +82,37 @@ export const ReviewForm = ({ productId, orderId }) => {
         </div>
 
         <div>
-          <label className="text-xs uppercase tracking-widest text-stone-400 mb-2 block">
-            Título
+          <label className="text-xs uppercase tracking-widest text-faint mb-2 block">
+            {t("review.titleLabel")}
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Resume tu experiencia"
-            className="w-full border border-stone-200 px-4 py-3 text-sm text-stone-800 bg-stone-50 focus:outline-none focus:border-stone-400 transition-colors"
+            placeholder={t("review.titlePlaceholder")}
+            className="input focus:border-[rgb(var(--color-border-focus))]"
           />
         </div>
 
         <div>
-          <label className="text-xs uppercase tracking-widest text-stone-400 mb-2 block">
-            Comentario
+          <label className="text-xs uppercase tracking-widest text-faint mb-2 block">
+            {t("review.commentLabel")}
           </label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Cuéntanos tu experiencia con el producto..."
+            placeholder={t("review.commentPlaceholder")}
             rows={4}
-            className="w-full border border-stone-200 px-4 py-3 text-sm text-stone-800 bg-stone-50 focus:outline-none focus:border-stone-400 transition-colors resize-none"
+            className="input resize-none focus:border-[rgb(var(--color-border-focus))]"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-stone-900 hover:bg-stone-700 text-white py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300 disabled:bg-stone-300 disabled:cursor-not-allowed"
+          className="w-full bg-stone-900 hover:bg-stone-700 dark:bg-stone-100 dark:hover:bg-stone-300 dark:text-stone-900 text-white py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Enviando..." : "Enviar reseña"}
+          {loading ? t("review.sending") : t("review.submit")}
         </button>
       </form>
     </div>

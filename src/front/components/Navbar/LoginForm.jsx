@@ -26,7 +26,6 @@ export const LoginForm = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     const [data, error] = await loginService(form);
 
     if (error) {
@@ -35,16 +34,11 @@ export const LoginForm = ({ onSuccess }) => {
       return;
     }
 
-    dispatch({
-      type: "login",
-      payload: { token: data.token, user: data.user },
-    });
+    dispatch({ type: "login", payload: { token: data.token, user: data.user } });
     setLoading(false);
 
     const [favorites] = await favoriteServices.getFavorites(data.token);
-    if (favorites) {
-      dispatch({ type: "set_favorites", payload: favorites });
-    }
+    if (favorites) dispatch({ type: "set_favorites", payload: favorites });
     if (onSuccess) onSuccess();
     navigate("/");
   };
@@ -52,7 +46,7 @@ export const LoginForm = ({ onSuccess }) => {
   return (
     <>
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-red-600 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
+        <div className="fixed bottom-6 right-6 bg-red-600 dark:bg-red-500 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
           <AlertCircle size={15} />
           {toast.msg}
         </div>
@@ -66,9 +60,8 @@ export const LoginForm = ({ onSuccess }) => {
           value={form.email}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+          className="input focus:ring-2 focus:ring-violet-500 focus:border-transparent rounded-xl px-4 py-2.5"
         />
-
         <input
           type="password"
           name="password"
@@ -76,9 +69,8 @@ export const LoginForm = ({ onSuccess }) => {
           value={form.password}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+          className="input focus:ring-2 focus:ring-violet-500 focus:border-transparent rounded-xl px-4 py-2.5"
         />
-
         <button
           type="submit"
           disabled={loading}

@@ -4,6 +4,9 @@ from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.models import db
 from api.models.order import Order, Status
+from extensions import mail
+from api.emails import build_new_order_seller_email, build_order_confirmation_buyer_email
+from collections import defaultdict
 
 payment_bp = Blueprint('payment', __name__, url_prefix='/payment')
 
@@ -199,3 +202,21 @@ def _handle_payment_succeeded(intent):
     # Actualiza el estado del pedido
     order.status = Status.paid
     db.session.commit()
+
+    # Email a cada vendedor con solo sus productos
+    details_by_seller = defaultdict(list)
+    for detail in order.order_details:
+        details_by_seller[detail.product.seller.id].append(detail)
+
+    for details in details_by_seller.values():
+        seller = details[0].product.seller
+        try:
+            mail.send(build_new_order_seller_email(seller, order, details))
+        except Exception as e:
+            print(f"[Webhook] Error al enviar email al vendedor {seller.id}: {str(e)}")
+            
+    #Email a Comprador
+    try:
+        mail.send(build_order_confirmation_buyer_email(order.user, order))
+    except Exception as e:
+        print(f"[Webhook] Error al enviar email al comprador: {str(e)}")

@@ -1,22 +1,24 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SellersTab from './SellersTab/SellersTab';
 import StatsTab from './StatsTab';
 import UsersTab from './UsersTab';
 import IncidentsTab from './IncidentsTab';
-
-// Definición de tabs
-const TABS = [
-  { id: 'stats', label: '📊 Estadísticas' },
-  { id: 'sellers', label: '🏪 Vendedores' },
-  { id: 'users', label: '👥 Usuarios' },
-  { id: 'incidents', label: '🚨 Incidencias' },
-];
 
 const AdminDashboard = () => {
   // Tab activo
   const [activeTab, setActiveTab] = useState('stats');
   // Número de solicitudes de vendedor pendientes — alimenta la badge del tab
   const [pendingSellers, setPendingSellers] = useState(0);
+  const { t } = useTranslation();
+
+  // Definición de tabs — movido dentro del componente para acceder a t()
+  const TABS = [
+    { id: 'stats', label: `📊 ${t('admin.tabs.stats')}` },
+    { id: 'sellers', label: `🏪 ${t('admin.tabs.sellers')}` },
+    { id: 'users', label: `👥 ${t('admin.tabs.users')}` },
+    { id: 'incidents', label: `🚨 ${t('admin.tabs.incidents')}` },
+  ];
 
   // Renderiza el contenido del tab activo
   const renderTab = () => {
@@ -36,18 +38,16 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="bg-theme-bg border border-theme-border rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-main border border-main rounded-2xl shadow-sm overflow-hidden">
         {/* Cabecera del panel */}
         <div className="px-8 pt-8 pb-0">
-          <h2 className="text-lg font-semibold text-theme-text mb-1">
-            🛡️ Panel de administración
+          <h2 className="text-lg font-semibold text-main mb-1">
+            🛡️ {t('admin.panelTitle')}
           </h2>
-          <p className="text-theme-muted text-sm mb-4">
-            Gestiona vendedores, usuarios e incidencias de la plataforma.
-          </p>
+          <p className="text-muted text-sm mb-4">{t('admin.panelDesc')}</p>
 
           {/* Navegación por tabs pegada al borde inferior de la cabecera */}
-          <div className="flex gap-1 border-b border-theme-border">
+          <div className="flex gap-1 border-b border-main">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
                   ${
                     activeTab === tab.id
                       ? 'border-purple-500 text-purple-500'
-                      : 'border-transparent text-theme-muted hover:text-theme-text'
+                      : 'border-transparent text-muted hover:text-main'
                   }`}
               >
                 {tab.label}

@@ -24,7 +24,7 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="bg-theme-bg ">
+    <div className="bg-main ">
       <HeroBanner />
       <div className="w-full px-4  max-w-screen-2xl mx-auto">
         <TopRatedSubcategories />

@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 9da0699599c7
+Revision ID: 5ea5431c8a96
 Revises: 
-Create Date: 2026-03-13 16:51:09.333822
+Create Date: 2026-03-15 18:36:20.856806
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9da0699599c7'
+revision = '5ea5431c8a96'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -60,6 +60,9 @@ def upgrade():
     sa.Column('province', sa.String(length=100), nullable=True),
     sa.Column('municipality', sa.String(length=100), nullable=True),
     sa.Column('postal_code', sa.String(length=20), nullable=False),
+    sa.Column('community_code', sa.String(length=10), nullable=True),
+    sa.Column('community', sa.String(length=150), nullable=True),
+    sa.Column('province_code', sa.String(length=10), nullable=True),
     sa.Column('country', sa.String(length=100), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
@@ -78,6 +81,9 @@ def upgrade():
     sa.Column('origin_city', sa.String(length=100), nullable=False),
     sa.Column('origin_zip', sa.String(length=10), nullable=False),
     sa.Column('origin_country', sa.String(length=100), nullable=False),
+    sa.Column('origin_community_code', sa.String(length=50), nullable=True),
+    sa.Column('origin_community', sa.String(length=50), nullable=True),
+    sa.Column('origin_province_code', sa.String(length=50), nullable=True),
     sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
     sa.Column('rejection_reason', sa.Text(), nullable=True),
     sa.Column('stripe_account_id', sa.String(length=120), nullable=True),
@@ -118,7 +124,7 @@ def upgrade():
     sa.Column('subtotal', sa.Float(), nullable=False),
     sa.Column('payment_method', sa.Enum('credit_card', 'bizum', name='payment'), nullable=False),
     sa.Column('shipping_cost', sa.Float(), nullable=False),
-    sa.Column('status', sa.Enum('pending', 'processing', 'paid', 'confirmed', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'paid', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
     sa.Column('stripe_payment_intent_id', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),

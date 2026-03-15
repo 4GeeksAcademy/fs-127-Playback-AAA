@@ -1,129 +1,297 @@
+<p align="center">
+  <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853455/logo_navbar_playback_v1.png#gh-light-mode-only" alt="Playback" height="52">
+  <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vdark.png#gh-dark-mode-only" alt="Playback" height="52">
+</p>
+
 # 🚀 Guía de instalación y arranque
 
-## 📋 Requisitos previos
-- Python 3.13+
-- Node.js y npm
-- pipenv (`pip install pipenv`)
-- PostgreSQL
+Esta guía cubre dos entornos de desarrollo:
+
+- [☁️ GitHub Codespaces](#️-github-codespaces) — entorno estándar del equipo
+- [🪟 Local Windows + VS Code](#-local-windows--vs-code) — configuración alternativa
 
 ---
 
-## ⚙️ Instalación
+## ☁️ GitHub Codespaces
 
-**1. Instala las dependencias de Python:**
+### Requisitos previos
+
+No necesitas instalar nada. Codespaces ya incluye Python, Node.js y PostgreSQL.
+
+---
+
+### 1. Instalar dependencias
 ```bash
+# Backend
 pipenv install
-```
 
-**2. Instala las dependencias de Node:**
-```bash
+# Frontend
 npm install
 ```
 
 ---
 
-## 🔧 Configuración del entorno
+### 2. Configurar el entorno
 
-**3. Copia el archivo de variables de entorno:**
+Copia el archivo de ejemplo:
 ```bash
 cp .env.example .env
 ```
 
-**4. Configura la URL del backend en el `.env`:**
+Edita `.env` con tus credenciales. Consulta la sección [Variables de entorno](#-variables-de-entorno) más abajo.
 
-Abre el archivo `.env`, localiza la línea 14 y descoméntala pegando la URL pública de tu backend:
-```dotenv
-VITE_BACKEND_URL="https://tu-url-del-backend"
+En Codespaces, la `DATABASE_URL` por defecto es:
+```env
+DATABASE_URL=postgres://gitpod:postgres@localhost:5432/example
 ```
-
-> ⚠️ Asegúrate de exponer como **públicos** los puertos del frontend y del backend en tu entorno de desarrollo (por ejemplo en Codespaces, haz clic derecho sobre el puerto → "Make Public").
 
 ---
 
-## 🗄️ Base de datos y migraciones
-
-**5. Genera las migraciones** *(omite este paso si no has hecho cambios en los modelos en `../src/api/models/`)*:
+### 3. Migraciones y seeds
 ```bash
-pipenv run migrate
-```
-
-**6. Ejecuta las migraciones:**
-```bash
+# Aplicar migraciones
 pipenv run upgrade
-```
 
-**7. Pobla la base de datos con datos iniciales:**
-```bash
-pipenv run python src/api/seeds/seed_categories.py;
-pipenv run python src/api/seeds/seed_test_data.py;
-pipenv run flask shell < translate_existing.py
-```
-> 📖 Consulta la [documentación completa del seed_categories.py](../docs/README_SEED_CATEGORIES.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
+# Poblar categorías (obligatorio antes que el resto)
+pipenv run python src/api/seeds/seed_categories.py
 
-> 📖 Consulta la [documentación completa del seed_test_data.py](../docs/README_SEED_TEST_DATA.md) para más detalles sobre qué datos se insertan y cómo evitar duplicados.
+# Poblar datos de prueba (opcional)
+pipenv run python src/api/seeds/seed_data.py
+```
 
 ---
 
-## ▶️ Arrancar el proyecto
-
-**8. Arranca el backend:**
+### 4. Arrancar el proyecto
 ```bash
+# Terminal 1 — backend (puerto 3001)
 pipenv run start
+
+# Terminal 2 — frontend (puerto 3000)
+npm run start
 ```
 
-**9. Arranca el frontend:**
+---
+
+### 5. Abrir los puertos
+
+En Codespaces los puertos deben ser públicos para que el frontend se comunique con el backend:
+
+1. Abre la pestaña **Ports**
+2. Localiza los puertos `3000` y `3001`
+3. Clic derecho → **Make Public**
+
+---
+
+## 🪟 Local Windows + VS Code
+
+### Requisitos previos
+
+| Herramienta | Cómo instalar |
+|---|---|
+| [pyenv-win](https://github.com/pyenv-win/pyenv-win) | `winget install pyenv-win` o sigue la guía oficial |
+| Python 3.13 | `pyenv install 3.13.0` → `pyenv global 3.13.0` |
+| pipenv | `pip install pipenv` |
+| Node.js 20+ | [nodejs.org](https://nodejs.org) |
+| PostgreSQL | [postgresql.org/download/windows](https://www.postgresql.org/download/windows/) |
+
+---
+
+### 1. Configurar Python con pyenv-win
+```powershell
+# Instalar Python 3.13
+pyenv install 3.13.0
+pyenv global 3.13.0
+
+# Verificar
+python --version
+```
+
+---
+
+### 2. Instalar dependencias
+```powershell
+# Backend
+pipenv install
+
+# Frontend
+npm install
+```
+
+---
+
+### 3. Crear la base de datos en PostgreSQL
+
+Abre **psql** (o pgAdmin) y ejecuta:
+```sql
+CREATE USER gitpod WITH PASSWORD 'postgres';
+CREATE DATABASE example OWNER gitpod;
+GRANT ALL PRIVILEGES ON DATABASE example TO gitpod;
+```
+
+> Esto replica las credenciales del entorno Codespaces para mantener consistencia entre entornos.
+
+---
+
+### 4. Configurar el entorno
+```powershell
+copy .env.example .env
+```
+
+Edita `.env`. La `DATABASE_URL` para local es la misma:
+```env
+DATABASE_URL=postgres://gitpod:postgres@localhost:5432/example
+```
+
+---
+
+### 5. Migraciones y seeds
+```powershell
+pipenv run upgrade
+pipenv run python src/api/seeds/seed_categories.py
+pipenv run python src/api/seeds/seed_data.py
+```
+
+---
+
+### 6. Arrancar el proyecto
+```powershell
+# Terminal 1 — backend
+pipenv run start
+
+# Terminal 2 — frontend
+npm run start
+```
+
+El frontend estará en `http://localhost:3000` y el backend en `http://localhost:3001`.
+
+---
+
+## 🔧 Variables de entorno
+
+Referencia completa del archivo `.env`:
+
+### General
+```env
+FLASK_APP=src/app.py
+FLASK_APP_KEY="any key works"
+FLASK_DEBUG=1
+DEBUG=TRUE
+```
+
+### Base de datos
+```env
+DATABASE_URL=postgres://gitpod:postgres@localhost:5432/example
+```
+
+### Cloudinary
+```env
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+```
+
+→ [Guía de configuración de Cloudinary](./README_CLOUDINARY.md)
+
+### Email (Brevo SMTP)
+```env
+MAIL_SERVER=smtp-relay.brevo.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=tu_usuario_smtp
+MAIL_DEFAULT_SENDER="tu_email_remitente"
+MAIL_PASSWORD=tu_smtp_key
+```
+
+→ [Guía de configuración de Email](./README_EMAIL.md)
+
+### Stripe
+```env
+STRIPE_SECRET_KEY=sk_test_XXXXXXXXXXXXXXXXXXXX
+STRIPE_WEBHOOK_SECRET=whsec_XXXXXXXXXXXXXXXXXXXX
+PLATFORM_COMMISSION_RATE=0.05
+PLATFORM_MINIMUM_COMMISSION=1.00
+```
+
+→ [Guía de configuración de Stripe](./README_STRIPE.md)
+
+### Frontend
+```env
+VITE_BASENAME=/
+VITE_BACKEND_URL=""
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
+```
+
+> `VITE_BACKEND_URL` se deja vacío en desarrollo local. En Codespaces debe apuntar a la URL pública del backend.
+
+---
+
+## 🗄️ Comandos útiles
+
+### Migraciones
+```bash
+pipenv run migrate      # Crear nueva migración
+pipenv run upgrade      # Aplicar migraciones
+```
+
+### Seeds
+```bash
+pipenv run python src/api/seeds/seed_categories.py   # Categorías (ejecutar primero)
+pipenv run python src/api/seeds/seed_data.py         # Datos iniciales
+```
+
+---
+
+## 🛠️ Solución de problemas
+
+### Problemas con migraciones
+
+Si las migraciones están en un estado inconsistente:
+```bash
+# 1. Eliminar migraciones
+rm -rf migrations
+
+# 2. Entrar a PostgreSQL y resetear el schema
+psql -h localhost -U gitpod -d example
+# password: postgres
+```
+```sql
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+\q
+```
+```bash
+# 3. Recrear migraciones desde cero
+pipenv run flask db init
+pipenv run flask db migrate -m "initial"
+pipenv run flask db upgrade
+
+# 4. Ejecutar seeds
+pipenv run python src/api/seeds/seed_categories.py
+pipenv run python src/api/seeds/seed_data.py
+```
+
+---
+
+### El frontend no conecta con el backend
+
+- Verifica que `VITE_BACKEND_URL` apunte a la URL correcta del backend
+- Confirma que el backend está corriendo (`pipenv run start`)
+- En Codespaces, verifica que el puerto `3001` sea público
+- Reinicia el frontend tras cualquier cambio en variables `VITE_*`:
 ```bash
 npm run start
 ```
 
 ---
 
-## 📚 Documentación adicional
+### Los pagos no funcionan o los pedidos no se actualizan
 
-| Doc | Descripción |
-|---|---|
-| [🌱 Seed de categorías](../docs/README_SEED_CATEGORIES.md) | Cómo poblar la base de datos con categorías, subcategorías e ítems iniciales. Incluye solución a errores comunes de migración. |
-| [🌗 Sistema de temas (Dark Mode)](../docs/README_DARK_MODE.md) | Sistema de colores semánticos para modo claro/oscuro. Explica cómo usar las clases `theme-*` en lugar de duplicar clases `dark:` en cada componente. |
-| [📸 Cloudinary](../docs/README_CLOUDINARY.md) | Configuración de Cloudinary para subida de imágenes. Variables de entorno necesarias e integración con Flask. |
+El webhook de Stripe no está configurado o tiene la URL incorrecta. Consulta la [guía de Stripe](./README_STRIPE.md#-webhooks).
 
 ---
 
-## 🛠️ Solución de problemas
+## ⚠️ Notas de seguridad
 
-## Errores con las migraciones(solo para desarrollo)
-
-### 1. Elimina todas las migraciones existentes
-```bash
-rm -rf migrations
-```
-
-### 2. Entra a psql:
-```bash
-psql -h localhost -U gitpod -d example
-```
-Password: ```postgres```
-
-Dentro ejecuta:
-```sql
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-\q
-```
-
-### 4. Inicializa la bd, hace la migración inicial y la upgradea.
-```bash
-pipenv run flask db init
-pipenv run flask db migrate -m "initial"
-pipenv run flask db upgrade
-
-
-pipenv run python src/api/seeds/seed_categories.py;
-pipenv run flask shell < translate_existing.py;
-pipenv run python src/api/seeds/seed_data.py
-```
-
-
-## El frontend no conecta con el backend
-- Verifica que ambos puertos están en **público** en Codespaces.
-- Comprueba que `VITE_BACKEND_URL` en el `.env` tiene la URL correcta y está descomentada.
-- Reinicia el frontend tras cualquier cambio en el `.env`.
+- **Nunca subas `.env` al repositorio**
+- Usa `.env.example` para compartir la estructura (sin valores reales)
+- Reinicia siempre el frontend tras modificar variables `VITE_*`

@@ -20,7 +20,7 @@ export const HeroBanner = () => {
   if (loading)
     return (
       <div className="w-full px-4 max-w-screen-2xl mx-auto my-6">
-        <div className="min-h-48 sm:min-h-60 md:min-h-72 bg-gray-100 animate-pulse" />
+        <div className="min-h-48 sm:min-h-60 md:min-h-72 bg-muted animate-pulse" />
       </div>
     );
 
@@ -58,7 +58,7 @@ export const HeroBanner = () => {
             >
               {banner.offer_count > 0
                 ? `${t("home.heroBannerSpan2")} (${banner.offer_count})`
-                : "Ver subcategoría"}
+                : t("home.viewSubcategory")}
             </button>
           </div>
         </div>

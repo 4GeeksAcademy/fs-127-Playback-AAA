@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { AlertCircle, X } from "lucide-react";
@@ -18,6 +19,7 @@ export const Checkout = () => {
 
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [addresses, setAddresses] = useState([]);
     const [cart, setCart] = useState([]);
@@ -32,7 +34,7 @@ export const Checkout = () => {
 
     const [couponInput, setCouponInput] = useState("");
     const [coupon, setCoupon] = useState(null);
-    const [couponCode, setCouponCode] = useState(null); // el código validado para enviar al backend
+    const [couponCode, setCouponCode] = useState(null);
     const [couponError, setCouponError] = useState("");
     const [couponLoading, setCouponLoading] = useState(false);
 
@@ -85,7 +87,7 @@ export const Checkout = () => {
         const [data, error] = await orderServices.applyCoupon(token, couponInput);
         setCouponLoading(false);
         if (error) {
-            setCouponError("Código inválido o expirado");
+            setCouponError(t("checkout.couponInvalid"));
             setCoupon(null);
             setCouponCode(null);
             return;
@@ -96,7 +98,7 @@ export const Checkout = () => {
 
     const handleCheckout = async () => {
         if (!shippingAddress || !billingAddress) {
-            showToast("Selecciona dirección de envío y facturación");
+            showToast(t("checkout.selectAddress"));
             return;
         }
 
@@ -134,7 +136,11 @@ export const Checkout = () => {
         <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-10">
 
             {toast && (
-                <div className={`fixed bottom-6 right-6 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${toast.type === "error" ? "bg-red-600" : "bg-stone-900"}`}>
+                <div className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+                    toast.type === "error"
+                        ? "bg-red-600 dark:bg-red-500"
+                        : "bg-stone-900 dark:bg-stone-100"
+                }`}>
                     <AlertCircle size={15} />
                     {toast.msg}
                 </div>
@@ -142,12 +148,12 @@ export const Checkout = () => {
 
             {/* COLUMNA IZQUIERDA */}
             <div>
-                <h1 className="text-2xl font-semibold mb-8">Checkout</h1>
+                <h1 className="text-2xl font-semibold mb-8 text-main">Checkout</h1>
 
                 {step === "addresses" && (
                     <>
                         <AddressSelector
-                            title="Dirección de envío"
+                            title={t("checkout.shippingAddress")}
                             addresses={addresses}
                             selected={shippingAddress}
                             onSelect={handleShippingSelect}
@@ -161,14 +167,14 @@ export const Checkout = () => {
                                 onChange={handleSameAsBilling}
                                 className="accent-violet-600 w-4 h-4"
                             />
-                            <span className="text-sm text-stone-600">
-                                Usar la misma dirección para facturación
+                            <span className="text-sm text-muted">
+                                {t("checkout.sameAsBilling")}
                             </span>
                         </label>
 
                         {!sameAsBilling && (
                             <AddressSelector
-                                title="Dirección de facturación"
+                                title={t("checkout.billingAddress")}
                                 addresses={addresses}
                                 selected={billingAddress}
                                 onSelect={setBillingAddress}
@@ -178,7 +184,9 @@ export const Checkout = () => {
 
                         {/* CUPÓN */}
                         <div className="mb-6">
-                            <p className="text-sm font-medium text-stone-700 mb-2">¿Tienes un código de descuento?</p>
+                            <p className="text-sm font-medium text-main mb-2">
+                                {t("checkout.couponQuestion")}
+                            </p>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
@@ -189,15 +197,15 @@ export const Checkout = () => {
                                         setCoupon(null);
                                         setCouponCode(null);
                                     }}
-                                    placeholder="Introduce tu código"
-                                    className="flex-1 border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-stone-400"
+                                    placeholder={t("checkout.couponPlaceholder")}
+                                    className="input flex-1"
                                 />
                                 <button
                                     onClick={handleApplyCoupon}
                                     disabled={couponLoading}
-                                    className="bg-stone-900 text-white text-sm px-4 py-2 rounded hover:bg-stone-700 transition disabled:opacity-50"
+                                    className="btn-primary px-4 text-sm disabled:opacity-50"
                                 >
-                                    {couponLoading ? "..." : "Aplicar"}
+                                    {couponLoading ? "..." : t("checkout.couponApply")}
                                 </button>
                             </div>
                             {couponError && (
@@ -207,8 +215,13 @@ export const Checkout = () => {
                                 </p>
                             )}
                             {coupon && (
-                                <p className="text-xs text-green-600 mt-1">
-                                    Cupón aplicado: {coupon.type === "percentage" ? `-${coupon.value}%` : coupon.type === "fixed" ? `-${coupon.value} €` : "Envío gratis"}
+                                <p className="text-xs text-emerald-600 mt-1">
+                                    {t("checkout.couponApplied")}:{" "}
+                                    {coupon.type === "percentage"
+                                        ? `-${coupon.value}%`
+                                        : coupon.type === "fixed"
+                                        ? `-${coupon.value} €`
+                                        : t("checkout.freeShipping")}
                                 </p>
                             )}
                         </div>
@@ -217,7 +230,9 @@ export const Checkout = () => {
 
                 {step === "payment" && clientSecret && (
                     <div>
-                        <h2 className="text-lg font-medium mb-6">Introduce tu método de pago</h2>
+                        <h2 className="text-lg font-medium mb-6 text-main">
+                            {t("checkout.enterPayment")}
+                        </h2>
                         <Elements stripe={stripePromise} options={{ clientSecret }}>
                             <PaymentForm onSuccess={handleSuccess} />
                         </Elements>
@@ -231,6 +246,7 @@ export const Checkout = () => {
                 loading={loading}
                 onContinue={handleCheckout}
                 cart={cart}
+                disabled={!shippingAddress || (!sameAsBilling && !billingAddress)}
                 coupon={coupon}
             />
 
