@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { SearchBar } from "./SearchBar";
 import { NavbarDesktop } from "./NavbarDesktop";
 import { NavbarMobileActions, NavbarMobilePanel } from "./NavbarMobile";
+import { Categorybar } from "./Categorybar";
 import logo from "../../assets/img/logo_navbar_playback_v1.png";
 import logo_dark from "../../assets/img/logo_navbar_playback_vdark.png";
 import logo_mini from "../../assets/img/logo_navbar_playback_vmini.png";
@@ -13,6 +14,10 @@ export const Navbar = () => {
   const { store, dispatch } = useGlobalReducer();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const { pathname } = useLocation();
+
+  // Muestra la categorybar solo en home, detalle de producto y listado
+  const showCategorybar = pathname === "/" || pathname.startsWith("/product");
 
   // Estado de los menús desplegables
   const [authView, setAuthView]         = useState("login");
@@ -79,7 +84,7 @@ export const Navbar = () => {
   // ── Render ────────────────────────────────
 
   return (
-    <nav className="sticky top-0 z-50 bg-theme-bg border-b border-theme-border shadow-sm">
+    <nav className="sticky top-0 z-50 bg-main border-b border-main shadow-sm">
 
       {/* ── BARRA PRINCIPAL ── */}
       <div className="h-[70px] flex items-center gap-3 px-4 md:px-6">
@@ -108,6 +113,7 @@ export const Navbar = () => {
 
         {/* Acciones móvil — icono usuario + selector de idioma */}
         <NavbarMobileActions
+          store={store}
           mobileOpen={mobileOpen}       setMobileOpen={setMobileOpen}
           langRefMobile={langRefMobile} langOpen={langOpen} setLangOpen={setLangOpen}
           handleSelectLanguage={handleSelectLanguage}
@@ -120,6 +126,9 @@ export const Navbar = () => {
         {...sharedProps}
         mobileOpen={mobileOpen} setMobileOpen={setMobileOpen}
       />
+
+      {/* Categorybar — solo en rutas relevantes */}
+      {showCategorybar && <Categorybar />}
 
     </nav>
   );

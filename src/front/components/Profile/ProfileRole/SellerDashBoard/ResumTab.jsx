@@ -1,21 +1,27 @@
-import { useState, useEffect } from "react";
-import useGlobalReducer from "../../../../hooks/useGlobalReducer";
-import { getMyProductsService } from "../../../../services/sellerService";
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import useGlobalReducer from '../../../../hooks/useGlobalReducer';
+import { getMyProductsService } from '../../../../services/sellerService';
 
 const STATUS_STYLE = {
-  pending:    "bg-yellow-100 text-yellow-700",
-  confirmed:  "bg-blue-100 text-blue-700",
-  processing: "bg-purple-100 text-purple-700",
-  shipped:    "bg-indigo-100 text-indigo-700",
-  delivered:  "bg-green-100 text-green-700",
-  cancelled:  "bg-red-100 text-red-700",
+  pending:
+    'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400',
+  confirmed: 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400',
+  processing:
+    'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400',
+  shipped:
+    'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400',
+  delivered:
+    'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400',
+  cancelled: 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400',
 };
 
 const ResumTab = () => {
   const { store } = useGlobalReducer();
-  const [orders, setOrders]     = useState([]);
+  const { t } = useTranslation();
+  const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading]   = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -31,78 +37,122 @@ const ResumTab = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="text-center text-sm text-gray-400 mt-10 animate-pulse">Cargando resumen…</p>;
+  if (loading)
+    return (
+      <p className="text-center text-sm text-faint mt-10 animate-pulse">
+        {t('dashboard.overview.loading')}
+      </p>
+    );
 
   // ── Stats calculadas ──────────────────────────────
-  const pedidosPendientes = orders.filter((o) => o.status === "pending" || o.status === "processing");
-  const sinStock          = products.filter((p) => p.stock === 0);
+  const pedidosPendientes = orders.filter(
+    (o) => o.status === 'pending' || o.status === 'processing',
+  );
+  const sinStock = products.filter((p) => p.stock === 0);
 
-  const ahora      = new Date();
-  const inicioMes  = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
-  const ventasMes  = orders
-    .filter((o) => o.status !== "cancelled" && new Date(o.created_at) >= inicioMes)
-    .reduce((sum, o) => sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0), 0);
+  const ahora = new Date();
+  const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+  const ventasMes = orders
+    .filter(
+      (o) => o.status !== 'cancelled' && new Date(o.created_at) >= inicioMes,
+    )
+    .reduce(
+      (sum, o) =>
+        sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0),
+      0,
+    );
 
   return (
     <div className="pt-6 space-y-6">
-
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl p-5 border border-purple-200 bg-purple-50">
+        <div className="rounded-xl p-5 border border-purple-200 dark:border-purple-900 bg-purple-50 dark:bg-purple-950">
           <span className="text-xl">📈</span>
-          <p className="text-2xl font-bold text-purple-600 mt-2">€{ventasMes.toFixed(2)}</p>
-          <p className="text-xs text-gray-500 mt-0.5">Ventas este mes</p>
+          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-2">
+            €{ventasMes.toFixed(2)}
+          </p>
+          <p className="text-xs text-muted mt-0.5">
+            {t('dashboard.overview.salesThisMonth')}
+          </p>
         </div>
 
-        <div className={`rounded-xl p-5 border ${pedidosPendientes.length > 0 ? "border-amber-300 bg-amber-50" : "border-gray-200"}`}>
+        <div
+          className={`rounded-xl p-5 border ${pedidosPendientes.length > 0 ? 'border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950' : 'border-main'}`}
+        >
           <div className="flex justify-between items-start">
             <span className="text-xl">⏳</span>
             {pedidosPendientes.length > 0 && (
-              <span className="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full">ATENCIÓN</span>
+              <span className="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full">
+                {t('dashboard.overview.attention')}
+              </span>
             )}
           </div>
-          <p className="text-2xl font-bold text-gray-800 mt-2">{pedidosPendientes.length}</p>
-          <p className="text-xs text-gray-500 mt-0.5">Pedidos pendientes</p>
+          <p className="text-2xl font-bold text-main mt-2">
+            {pedidosPendientes.length}
+          </p>
+          <p className="text-xs text-muted mt-0.5">
+            {t('dashboard.overview.pendingOrders')}
+          </p>
         </div>
 
-        <div className="rounded-xl p-5 border border-gray-200">
+        <div className="rounded-xl p-5 border border-main">
           <span className="text-xl">🛍️</span>
-          <p className="text-2xl font-bold text-gray-800 mt-2">{products.length}</p>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Productos activos {sinStock.length > 0 && <span className="text-red-500">· {sinStock.length} sin stock</span>}
+          <p className="text-2xl font-bold text-main mt-2">{products.length}</p>
+          <p className="text-xs text-muted mt-0.5">
+            {t('dashboard.overview.activeProducts')}{' '}
+            {sinStock.length > 0 && (
+              <span className="text-red-500">
+                · {sinStock.length} {t('dashboard.overview.noStock')}
+              </span>
+            )}
           </p>
         </div>
       </div>
 
       {/* Actividad reciente */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">Actividad reciente</h3>
-        <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+        <h3 className="text-sm font-semibold text-main mb-3">
+          {t('dashboard.overview.recentActivity')}
+        </h3>
+        <div className="divide-y divide-[rgb(var(--color-border))] border border-main rounded-xl overflow-hidden">
           {orders.slice(0, 5).map((o) => (
-            <div key={o.id} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-50">
+            <div
+              key={o.id}
+              className="flex items-center justify-between px-4 py-3 text-sm hover:bg-subtle"
+            >
               <div className="flex items-center gap-3">
-                <span className="text-gray-400 font-mono text-xs">#{o.id}</span>
-                <span className="text-gray-800">{o.customer || "Cliente"}</span>
+                <span className="text-faint font-mono text-xs">#{o.id}</span>
+                <span className="text-main">
+                  {o.customer || t('dashboard.overview.customer')}
+                </span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-gray-400 text-xs hidden sm:block">
-                  {new Date(o.created_at).toLocaleDateString("es-ES")}
+                <span className="text-faint text-xs hidden sm:block">
+                  {new Date(o.created_at).toLocaleDateString('es-ES')}
                 </span>
-                <span className="font-semibold text-gray-800">
-                  €{o.products.reduce((s, p) => s + p.price * p.quantity, 0).toFixed(2)}
+                <span className="font-semibold text-main">
+                  €
+                  {o.products
+                    .reduce((s, p) => s + p.price * p.quantity, 0)
+                    .toFixed(2)}
                 </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[o.status] || "bg-gray-100 text-gray-500"}`}>
-                  {o.status}
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[o.status] || 'bg-muted text-muted'}`}
+                >
+                  {t(`dashboard.orders.status.${o.status}`, {
+                    defaultValue: o.status,
+                  })}
                 </span>
               </div>
             </div>
           ))}
           {orders.length === 0 && (
-            <p className="text-center text-gray-400 text-sm py-10">No hay actividad aún.</p>
+            <p className="text-center text-faint text-sm py-10">
+              {t('dashboard.overview.noActivity')}
+            </p>
           )}
         </div>
       </div>
-
     </div>
   );
 };

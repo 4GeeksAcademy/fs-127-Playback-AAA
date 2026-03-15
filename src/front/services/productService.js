@@ -50,7 +50,7 @@ async function updateProduct(id, body, token) {
     method: "PUT",
     headers: { 
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`  // ← añade esto
+      Authorization: `Bearer ${token}`
     },
     body: JSON.stringify(body),
   });

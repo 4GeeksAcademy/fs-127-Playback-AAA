@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
 const ProfileDashboard = () => {
 
   const { store } = useGlobalReducer();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [ordersCount, setOrdersCount] = useState(0);
@@ -35,30 +37,29 @@ const ProfileDashboard = () => {
 
       <div
         onClick={() => navigate("/orders")}
-        className="bg-white p-6 rounded-xl shadow border cursor-pointer hover:shadow-md transition"
+        className="bg-main p-6 rounded-xl shadow border border-main cursor-pointer hover:shadow-md transition"
       >
-        <h3 className="text-gray-500 text-sm">
-          Pedidos
+        <h3 className="text-muted text-sm">
+          {t("orders.title")}
         </h3>
 
-        <p className="text-2xl font-bold mt-2">
+        <p className="text-2xl font-bold mt-2 text-main">
           {ordersCount}
         </p>
       </div>
 
 
       {/* DIRECCIONES */}
-
+      
       <div
         onClick={() => navigate("/profile?tab=addresses")}
-        className="bg-white p-6 rounded-xl shadow border cursor-pointer hover:shadow-md transition"
+        className="bg-main p-6 rounded-xl shadow border border-main cursor-pointer hover:shadow-md transition"
       >
-        <h3 className="text-gray-500 text-sm">
-          Direcciones
+        <h3 className="text-muted text-sm">
+          {t("profile.tabs.addresses")}
         </h3>
-
-        <p className="text-2xl font-bold mt-2">
-          Gestionar
+        <p className="text-2xl font-bold mt-2 text-main">
+          {t("profile.manage")}
         </p>
       </div>
 

@@ -8,25 +8,25 @@ const StepReview = ({ form, isEdit }) => {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-theme-secondary">{t('seller.reviewTitle')}</h3>
+      <h3 className="text-sm font-semibold text-sub">{t('seller.reviewTitle')}</h3>
 
       {/* Tabla resumen con los datos introducidos */}
-      <div className="rounded-xl border border-theme-border bg-theme-subtle p-4 text-sm space-y-2">
+      <div className="rounded-xl border border-main bg-subtle p-4 text-sm space-y-2">
         {[
-          [t('seller.storeName'),     form.store_name],
-          [t('seller.nifCif'),        form.nif_cif],
-          [t('seller.city'),          `${form.origin_city} (${form.origin_zip})`],
-          [t('seller.country'),       form.origin_country],
+          [t('seller.storeName'),  form.store_name],
+          [t('seller.nifCif'),     form.nif_cif],
+          [t('seller.city'),       `${form.origin_city} (${form.origin_zip})`],
+          [t('seller.country'),    form.origin_country],
         ].map(([label, value]) => (
           <div key={label} className="flex gap-2">
-            <span className="text-theme-muted w-40 shrink-0">{label}</span>
-            <span className="text-theme-text font-medium truncate">{value}</span>
+            <span className="text-muted w-40 shrink-0">{label}</span>
+            <span className="text-main font-medium truncate">{value}</span>
           </div>
         ))}
       </div>
 
       {/* Aviso — diferente texto según si es primera solicitud o reenvío */}
-      <div className="flex items-start gap-2 rounded-xl bg-theme-info-bg p-3 text-xs text-theme-info">
+      <div className="flex items-start gap-2 rounded-xl bg-[rgb(var(--color-info-bg))] p-3 text-xs text-[rgb(var(--color-info))]">
         <span className="mt-0.5">ℹ</span>
         <span>{isEdit ? t('seller.resubmitNotice') : t('seller.pendingNotice')}</span>
       </div>

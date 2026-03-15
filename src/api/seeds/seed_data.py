@@ -153,8 +153,10 @@ PRODUCTS_DATA = [
 
     # ── PRODUCTOS DE ARANTXA ──────────────────────────────────────────────────
     {
-        "name": "NES Arantxa Classic",
-        "name_en": "Arantxa Classic NES",
+        "name": "NES Classic",
+        "name_en": "Classic NES",
+        "name_ca": "NES Classic",
+        "name_gl": "NES Classic",
         "description": "NES en perfecto estado con mando.",
         "description_en": "NES in perfect condition with controller.",
         "price": 79.99,
@@ -165,8 +167,8 @@ PRODUCTS_DATA = [
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
         "seller_email": "pro.arantxa.ordoyo@gmail.com"},
     {
-        "name": "Vinilo Arantxa Led Zeppelin IV",
-        "name_en": "Arantxa Led Zeppelin IV Vinyl",
+        "name": "Vinilo Led Zeppelin IV",
+        "name_en": " Led Zeppelin IV Vinyl",
         "description": "Led Zeppelin IV edición original.",
         "description_en": "Led Zeppelin IV original edition.",
         "price": 42.00,
@@ -177,13 +179,13 @@ PRODUCTS_DATA = [
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
         "seller_email": "pro.arantxa.ordoyo@gmail.com"},
     {
-        "name": "Game Boy Arantxa DMG", "name_en": "Arantxa Game Boy DMG", "description": "Game Boy original DMG funcionando.", "description_en": "Working original DMG Game Boy.", "price": 52.00, "stock": 4, "discount": 0.0,
+        "name": "Game Boy DMG", "name_en": "Game Boy DMG", "description": "Game Boy original DMG funcionando.", "description_en": "Working original DMG Game Boy.", "price": 52.00, "stock": 4, "discount": 0.0,
         "condition": "used", "item_slug": "game-boy", "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
     {
-        "name": "Nokia 3310 Arantxa", "name_en": "Arantxa Nokia 3310", "description": "Nokia 3310 azul con batería nueva.", "description_en": "Blue Nokia 3310 with new battery.", "price": 32.00, "stock": 5,
+        "name": "Nokia 3310", "name_en": "Nokia 3310", "description": "Nokia 3310 azul con batería nueva.", "description_en": "Blue Nokia 3310 with new battery.", "price": 32.00, "stock": 5,
         "discount": 0.0, "condition": "used", "item_slug": "moviles-antiguos", "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg", "seller_email": "pro.arantxa.ordoyo@gmail.com"},
     {
-        "name": "Walkman Sony Arantxa", "name_en": "Arantxa Sony Walkman", "description": "Walkman Sony con radio FM.", "description_en": "Sony Walkman with FM radio.", "price": 38.00, "stock": 3, "discount": 5.0,
+        "name": "Walkman Sony", "name_en": "Sony Walkman", "description": "Walkman Sony con radio FM.", "description_en": "Sony Walkman with FM radio.", "price": 38.00, "stock": 3, "discount": 5.0,
         "condition": "used", "item_slug": "walkman", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s", "seller_email": "pro.arantxa.ordoyo@gmail.com"
     },
     
@@ -213,8 +215,12 @@ PRODUCTS_DATA = [
     {
         "name": "SNES con Super Mario World",
         "name_en": "SNES with Super Mario World",
+        "name_ca": "SNES amb Super Mario World",
+        "name_gl": "SNES con Super Mario World",
         "description": "Super Nintendo con cartucho de Super Mario World incluido.",
         "description_en": "Super Nintendo with Super Mario World cartridge included.",
+        "description_ca": "Super Nintendo amb cartutx de Super Mario World inclòs.",
+        "description_gl": "Super Nintendo con cartucho de Super Mario World incluído.",
         "price": 120.00, "stock": 3, "discount": 10.0, "condition": "used",
         "item_slug": "snes",
         "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
@@ -223,8 +229,12 @@ PRODUCTS_DATA = [
     {
         "name": "SNES Reacondicionada",
         "name_en": "SNES Refurbished",
+        "name_ca": "SNES Recondicionada",
+        "name_gl": "SNES Reacondicionada",
         "description": "SNES revisada y limpiada, funciona como nueva.",
         "description_en": "SNES serviced and cleaned, works like new.",
+        "description_ca": "SNES revisada i netejada, funciona com a nova.",
+        "description_gl": "SNES revisada e limpa, funciona como nova.",
         "price": 95.00, "stock": 4, "discount": 0.0, "condition": "refurbished",
         "item_slug": "snes",
         "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
@@ -235,30 +245,42 @@ PRODUCTS_DATA = [
     {
         "name": "Nintendo 64 Gris",
         "name_en": "Nintendo 64 Grey",
+        "name_ca": "Nintendo 64 Gris",
+        "name_gl": "Nintendo 64 Gris",
         "description": "N64 con mando y cables originales.",
         "description_en": "N64 with original controller and cables.",
+        "description_ca": "N64 amb comandament i cables originals.",
+        "description_gl": "N64 con mando e cables orixinais.",
         "price": 110.00, "stock": 3, "discount": 0.0, "condition": "used",
         "item_slug": "nintendo-64",
-        "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
+        "image_url": "https://i.ebayimg.com/images/g/ACIAAOSwZ6lnOcXq/s-l1600.webp",
         "seller_email": "carlos@test.com",
     },
     {
         "name": "Nintendo 64 con Expansion Pak",
         "name_en": "Nintendo 64 with Expansion Pak",
+        "name_ca": "Nintendo 64 amb Expansion Pak",
+        "name_gl": "Nintendo 64 con Expansion Pak",
         "description": "N64 con Expansion Pak y mando, lista para Majora's Mask.",
         "description_en": "N64 with Expansion Pak and controller, ready for Majora's Mask.",
+        "description_ca": "N64 amb Expansion Pak i comandament, llesta per a Majora's Mask.",
+        "description_gl": "N64 con Expansion Pak e mando, lista para Majora's Mask.",
         "price": 135.00, "stock": 2, "discount": 5.0, "condition": "used",
         "item_slug": "nintendo-64",
-        "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
+        "image_url": "https://i.ebayimg.com/images/g/ACIAAOSwZ6lnOcXq/s-l1600.webp",
         "seller_email": "carlos@test.com",
     },
 
-    # ── gamecube ───────────────────────────────────────────────────────────────
+    # ── gamecube ──────────────────────────────────────────────────────────────
     {
         "name": "GameCube Plateada",
         "name_en": "Silver GameCube",
+        "name_ca": "GameCube Plateada",
+        "name_gl": "GameCube Prateada",
         "description": "GameCube en color plateado con mando morado.",
         "description_en": "Silver GameCube with purple controller.",
+        "description_ca": "GameCube en color platejat amb comandament morat.",
+        "description_gl": "GameCube en cor prateado con mando morado.",
         "price": 130.00, "stock": 2, "discount": 0.0, "condition": "used",
         "item_slug": "gamecube",
         "image_url": "https://media2.gameplaystores.es/74876-large_default/gamecube-plateada-mando-sin-caja-gc.jpg",
@@ -267,8 +289,12 @@ PRODUCTS_DATA = [
     {
         "name": "GameCube Negra con Lector Roto",
         "name_en": "Black GameCube Broken Reader",
+        "name_ca": "GameCube Negra amb Lector Trencat",
+        "name_gl": "GameCube Negra con Lector Roto",
         "description": "GameCube negra, el lector no lee discos. Ideal para piezas.",
         "description_en": "Black GameCube, disc reader not working. For parts.",
+        "description_ca": "GameCube negra, el lector no llegeix discos. Ideal per a peces.",
+        "description_gl": "GameCube negra, o lector non le discos. Ideal para pezas.",
         "price": 25.00, "stock": 1, "discount": 0.0, "condition": "broken",
         "item_slug": "gamecube",
         "image_url": "https://media2.gameplaystores.es/74876-large_default/gamecube-plateada-mando-sin-caja-gc.jpg",
@@ -279,8 +305,12 @@ PRODUCTS_DATA = [
     {
         "name": "Game Boy Original DMG",
         "name_en": "Original Game Boy DMG",
+        "name_ca": "Game Boy Original DMG",
+        "name_gl": "Game Boy Orixinal DMG",
         "description": "Game Boy original modelo DMG con carcasa gris.",
         "description_en": "Original Game Boy DMG model with grey shell.",
+        "description_ca": "Game Boy original model DMG amb carcassa grisa.",
+        "description_gl": "Game Boy orixinal modelo DMG con carcasa gris.",
         "price": 55.00, "stock": 8, "discount": 0.0, "condition": "used",
         "item_slug": "game-boy",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png",

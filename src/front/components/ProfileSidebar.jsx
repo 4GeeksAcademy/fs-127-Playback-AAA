@@ -10,39 +10,39 @@ const ProfileSidebar = ({ activeTab, setActiveTab }) => {
     `block px-4 py-3 rounded-lg cursor-pointer transition ${
       activeTab === tab
         ? "bg-purple-600 text-white"
-        : "text-gray-600 hover:bg-gray-100"
+        : "text-muted hover:bg-muted"
     }`;
 
   // Label e icono del item seller según el rol
   const sellerLabel = () => {
-    if (role === "admin")                    return `🛡️ ${t("seller.adminPanel")}`;
-    if (role === "seller")                   return `🏪 ${t("seller.myStore")}`;
+    if (role === "admin")  return `🛡️ ${t("seller.adminPanel")}`;
+    if (role === "seller") return `🏪 ${t("seller.myStore")}`;
     return `✨ ${t("seller.becomeSeller")}`;
   };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 p-6">
-      <h2 className="text-lg font-semibold mb-8">Mi Cuenta</h2>
+    <div className="w-64 bg-main border-r border-main p-6">
+      <h2 className="text-lg font-semibold mb-8 text-main">{t("profile.myAccount")}</h2>
 
       <div className="space-y-2">
         <div onClick={() => setActiveTab("dashboard")} className={linkClass("dashboard")}>
-          Panel de control
+          {t("profile.tabs.dashboard")}
         </div>
 
         <div onClick={() => setActiveTab("info")} className={linkClass("info")}>
-          Información
+          {t("profile.tabs.info")}
         </div>
 
         <div onClick={() => setActiveTab("addresses")} className={linkClass("addresses")}>
-          Direcciones
+          {t("profile.tabs.addresses")}
         </div>
 
         <div onClick={() => setActiveTab("security")} className={linkClass("security")}>
-          Seguridad
+          {t("profile.tabs.security")}
         </div>
 
         {/* ── Seller / Admin ────────────────────────── */}
-        <div className="pt-2 mt-2 border-t border-gray-100">
+        <div className="pt-2 mt-2 border-t border-main">
           <div onClick={() => setActiveTab("seller")} className={linkClass("seller")}>
             {sellerLabel()}
           </div>

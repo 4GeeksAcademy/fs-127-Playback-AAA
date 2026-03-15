@@ -1,51 +1,55 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import OrderTab from './OrdersTab';
 import ProductsTab from './ProductsTab';
 import EarningTab from './EarningTab';
 import SettingsTab from './SettingsTab';
 import ResumTab from './ResumTab';
 
-
-// Definición de tabs
-
-const TABS = [
-  { id: "overview",  label: "📊 Resumen"    },
-  { id: "orders",    label: "📦 Pedidos"    },
-  { id: "products",  label: "🛍️ Productos"  },
-  { id: "earnings",  label: "💰 Ganancias"  },
-  { id: "settings",  label: "⚙️ Tienda"     },
-];
-
 export default function StoreDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState('overview');
+  const { t } = useTranslation();
 
-//  const pendingOrders = ORDERS.filter((o) => o.status === "pendiente").length;
+  // Definición de tabs — dentro del componente para acceder a t()
+  const TABS = [
+    { id: 'overview', label: `📊 ${t('dashboard.seller.tabs.overview')}` },
+    { id: 'orders', label: `📦 ${t('dashboard.seller.tabs.orders')}` },
+    { id: 'products', label: `🛍️ ${t('dashboard.seller.tabs.products')}` },
+    { id: 'earnings', label: `💰 ${t('dashboard.seller.tabs.earnings')}` },
+    { id: 'settings', label: `⚙️ ${t('dashboard.seller.tabs.settings')}` },
+  ];
 
   const renderTab = () => {
     switch (activeTab) {
-      case "overview":  return <ResumTab />;
-      case "orders":    return <OrderTab />;
-      case "products":  return <ProductsTab />;
-      case "earnings":  return <EarningTab />;
-      case "settings":  return <SettingsTab />;
-      default:          return null;
+      case 'overview':
+        return <ResumTab />;
+      case 'orders':
+        return <OrderTab />;
+      case 'products':
+        return <ProductsTab />;
+      case 'earnings':
+        return <EarningTab />;
+      case 'settings':
+        return <SettingsTab />;
+      default:
+        return null;
     }
   };
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="bg-theme-bg border border-theme-border rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-main border border-main rounded-2xl shadow-sm overflow-hidden">
         {/* Cabecera */}
         <div className="px-8 pt-8 pb-0">
-          <h2 className="text-lg font-semibold text-theme-text mb-1">
-            🏪 Mi Tienda
+          <h2 className="text-lg font-semibold text-main mb-1">
+            🏪 {t('dashboard.seller.title')}
           </h2>
-          <p className="text-theme-muted text-sm mb-4">
-            Gestiona tus pedidos, productos y ganancias desde aquí.
+          <p className="text-muted text-sm mb-4">
+            {t('dashboard.seller.desc')}
           </p>
 
           {/* Tabs */}
-          <div className="flex gap-1 border-b border-theme-border">
+          <div className="flex gap-1 border-b border-main">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -53,8 +57,8 @@ export default function StoreDashboard() {
                 className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition border-b-2 -mb-px
                   ${
                     activeTab === tab.id
-                      ? "border-purple-500 text-purple-500"
-                      : "border-transparent text-theme-muted hover:text-theme-text"
+                      ? 'border-purple-500 text-purple-500'
+                      : 'border-transparent text-muted hover:text-main'
                   }`}
               >
                 {tab.label}

@@ -1,10 +1,11 @@
 // Formulario de pago con Stripe PaymentElement
-
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const PaymentForm = ({ onSuccess }) => {
 
+    const { t } = useTranslation();
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
@@ -44,13 +45,13 @@ const PaymentForm = ({ onSuccess }) => {
             <button
                 onClick={handlePay}
                 disabled={loading || !stripe}
-                className="bg-violet-600 hover:bg-violet-700 text-white w-full py-3 rounded-lg font-medium transition disabled:opacity-50"
+                className="btn-primary w-full"
             >
-                {loading ? "Procesando pago..." : "Pagar ahora"}
+                {loading ? t("checkout.processing") : t("checkout.payNow")}
             </button>
 
-            <p className="text-xs text-center text-stone-400">
-                Pago seguro gestionado por Stripe
+            <p className="text-xs text-center text-muted">
+                {t("checkout.securePayment")}
             </p>
 
         </div>

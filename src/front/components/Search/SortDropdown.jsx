@@ -33,7 +33,7 @@ export const SortDropdown = ({
           setSortOpen((v) => !v);
           onOpen?.();
         }}
-        className="flex items-center gap-2 h-9 px-4 rounded-full border border-theme-border bg-theme-input text-sm font-medium text-theme-secondary hover:bg-theme-muted transition"
+        className="flex items-center gap-2 h-9 px-4 rounded-full border border-main bg-[rgb(var(--color-bg-input))] text-sm font-medium text-sub hover:bg-muted transition"
       >
         <ArrowUpDown className="w-4 h-4" />
         {sortLabel}
@@ -43,7 +43,7 @@ export const SortDropdown = ({
       </button>
 
       {sortOpen && (
-        <div className="absolute left-0 top-full mt-2 w-56 bg-theme-bg border border-theme-border rounded-2xl shadow-xl py-1.5 z-50">
+        <div className="absolute left-0 top-full mt-2 w-56 bg-main border border-main rounded-2xl shadow-xl py-1.5 z-50">
           {SORT_VALUES.map((val) => (
             <button
               key={val}
@@ -51,11 +51,11 @@ export const SortDropdown = ({
                 onSelect(val);
                 setSortOpen(false);
               }}
-              className={`w-full text-left px-4 py-2 text-sm transition hover:bg-theme-muted
+              className={`w-full text-left px-4 py-2 text-sm transition hover:bg-muted
                 ${
                   currentSort === val
                     ? "text-violet-600 dark:text-violet-400 font-semibold"
-                    : "text-theme-text"
+                    : "text-main"
                 }`}
             >
               {t(`search.sort_${val}`)}

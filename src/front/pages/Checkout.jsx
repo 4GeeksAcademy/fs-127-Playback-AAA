@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import useGlobalReducer from "../hooks/useGlobalReducer";
@@ -18,6 +19,7 @@ export const Checkout = () => {
 
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [addresses, setAddresses] = useState([]);
     const [cart, setCart] = useState([]);
@@ -71,7 +73,7 @@ export const Checkout = () => {
     const handleCheckout = async () => {
 
         if (!shippingAddress || !billingAddress) {
-            alert("Selecciona dirección de envío y facturación");
+            alert(t("checkout.selectAddress"));
             return;
         }
 
@@ -112,12 +114,12 @@ export const Checkout = () => {
 
             {/* COLUMNA IZQUIERDA */}
             <div>
-                <h1 className="text-2xl font-semibold mb-8">Checkout</h1>
+                <h1 className="text-2xl font-semibold mb-8 text-main">Checkout</h1>
 
                 {step === "addresses" && (
                     <>
                         <AddressSelector
-                            title="Dirección de envío"
+                            title={t("checkout.shippingAddress")}
                             addresses={addresses}
                             selected={shippingAddress}
                             onSelect={handleShippingSelect}
@@ -131,14 +133,14 @@ export const Checkout = () => {
                                 onChange={handleSameAsBilling}
                                 className="accent-violet-600 w-4 h-4"
                             />
-                            <span className="text-sm text-stone-600">
-                                Usar la misma dirección para facturación
+                            <span className="text-sm text-muted">
+                                {t("checkout.sameAsBilling")}
                             </span>
                         </label>
 
                         {!sameAsBilling && (
                             <AddressSelector
-                                title="Dirección de facturación"
+                                title={t("checkout.billingAddress")}
                                 addresses={addresses}
                                 selected={billingAddress}
                                 onSelect={setBillingAddress}
@@ -150,7 +152,7 @@ export const Checkout = () => {
 
                 {step === "payment" && clientSecret && (
                     <div>
-                        <h2 className="text-lg font-medium mb-6">Introduce tu método de pago</h2>
+                        <h2 className="text-lg font-medium mb-6 text-main">{t("checkout.enterPayment")}</h2>
                         <Elements stripe={stripePromise} options={{ clientSecret }}>
                             <PaymentForm onSuccess={handleSuccess} />
                         </Elements>

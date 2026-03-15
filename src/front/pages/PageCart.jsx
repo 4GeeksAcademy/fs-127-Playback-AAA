@@ -9,7 +9,7 @@ import OrderSummary from "../components/Checkout/OrderSummary";
 export const PageCart = () => {
 
   const { store, dispatch } = useGlobalReducer();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
 
   const [cart, setCart] = useState([]);
@@ -69,13 +69,13 @@ export const PageCart = () => {
 
     <div className="max-w-7xl mx-auto px-6 py-12">
 
-      <h1 className="text-3xl font-semibold mb-10">
-        Carrito
+      <h1 className="text-3xl font-semibold mb-10 text-main">
+        {t("cart.title")}
       </h1>
 
       {cart.length === 0 && (
-        <p className="text-stone-400">
-          Tu carrito está vacío
+        <p className="text-faint">
+          {t("cart.empty")}
         </p>
       )}
 
@@ -100,7 +100,7 @@ export const PageCart = () => {
 
                 <div
                   key={item.id}
-                  className="flex justify-between items-center border-b pb-6"
+                  className="flex justify-between items-center border-b border-main pb-6"
                 >
 
                   <div className="flex gap-5 items-center">
@@ -113,7 +113,7 @@ export const PageCart = () => {
 
                     <div className="space-y-1">
 
-                      <h2 className="font-medium text-stone-900">
+                      <h2 className="font-medium text-main">
                         {name}
                       </h2>
 
@@ -123,14 +123,14 @@ export const PageCart = () => {
                       <div className="flex items-center gap-2 mt-1">
                         <button
                           onClick={() => handleQuantity(item.id, -1)}
-                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                          className="w-7 h-7 border border-main rounded flex items-center justify-center text-muted hover:bg-muted"
                         >
                           −
                         </button>
-                        <span className="text-sm w-4 text-center">{item.quantity}</span>
+                        <span className="text-sm w-4 text-center text-main">{item.quantity}</span>
                         <button
                           onClick={() => handleQuantity(item.id, 1)}
-                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                          className="w-7 h-7 border border-main rounded flex items-center justify-center text-muted hover:bg-muted"
                         >
                           +
                         </button>
@@ -138,22 +138,21 @@ export const PageCart = () => {
                           onClick={() => handleRemove(item.id)}
                           className="text-sm text-red-500 hover:underline ml-2"
                         >
-                          Eliminar
+                          {t("cart.remove")}
                         </button>
                       </div>
 
-                     
                     </div>
 
                   </div>
 
                   <div className="text-right">
 
-                    <p className="text-sm text-stone-400">
-                      Subtotal
+                    <p className="text-sm text-faint">
+                      {t("checkout.subtotal")}
                     </p>
 
-                    <p className="font-semibold text-stone-900">
+                    <p className="font-semibold text-main">
                       {lineTotal.toFixed(2)} €
                     </p>
 

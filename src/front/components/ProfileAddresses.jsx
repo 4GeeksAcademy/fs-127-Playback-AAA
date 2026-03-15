@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import addressService from "../services/addressService";
 
@@ -15,6 +16,7 @@ const EMPTY_FORM = {
 
 const ProfileAddresses = () => {
   const { store } = useGlobalReducer();
+  const { t } = useTranslation();
   const [addresses, setAddresses] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [message, setMessage] = useState("");
@@ -48,7 +50,7 @@ const ProfileAddresses = () => {
       return;
     }
 
-    setMessage("Dirección guardada correctamente");
+    setMessage(t("profile.addresses.saved"));
     setForm(EMPTY_FORM);
     fetchAddresses();
   };
@@ -73,30 +75,30 @@ const ProfileAddresses = () => {
   return (
     <div className="space-y-10 max-w-4xl mx-auto px-4 py-10">
       {/* DIRECCIONES */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border">
-        <h2 className="text-lg font-semibold mb-6">Mis Direcciones</h2>
+      <div className="bg-main p-8 rounded-2xl shadow-sm border border-main">
+        <h2 className="text-lg font-semibold mb-6 text-main"> {t("profile.addresses.title")} </h2>
 
         <div className="space-y-6">
           {addresses.map((addr, index) => (
             <div
               key={addr.id}
-              className={`border p-4 rounded-xl text-sm ${index === 0 ? "border-violet-500 bg-violet-50" : ""}`}
+              className={`border p-4 rounded-xl text-sm ${ index === 0 ? "border-violet-500 bg-violet-50 dark:bg-violet-950" : "border-main" }`}
             >
               {index === 0 && (
                 <span className="text-xs bg-violet-600 text-white px-2 py-1 rounded mb-2 inline-block">
-                  Dirección Principal
+                  {t("profile.addresses.main")}
                 </span>
               )}
 
-              <p className="font-semibold">{addr.full_name}</p>
-              <p>{addr.address}</p>
-              <p>
+              <p className="font-semibold text-main">{addr.full_name}</p>
+              <p className="text-muted">{addr.address}</p>
+              <p className="text-muted">
                 {addr.city}
                 {addr.province ? `, ${addr.province}` : ""}
               </p>
-              <p>{addr.postal_code}</p>
-              <p>{addr.country}</p>
-              <p>{addr.phone}</p>
+              <p className="text-muted">{addr.postal_code}</p>
+              <p className="text-muted">{addr.country}</p>
+              <p className="text-muted">{addr.phone}</p>
 
               <div className="flex gap-4 mt-3 text-xs">
                 {index !== 0 && (
@@ -104,14 +106,14 @@ const ProfileAddresses = () => {
                     onClick={() => setMainAddress(addr.id)}
                     className="text-violet-600 hover:underline"
                   >
-                    Usar como principal
+                    {t("profile.addresses.setMain")}
                   </button>
                 )}
                 <button
                   onClick={() => handleDelete(addr.id)}
-                  className="text-red-600 hover:underline"
+                  className="text-red-500 hover:underline"
                 >
-                  Eliminar
+                  {t("profile.addresses.delete")}
                 </button>
               </div>
             </div>
@@ -120,19 +122,19 @@ const ProfileAddresses = () => {
       </div>
 
       {/* FORMULARIO */}
-      <div className="bg-white p-8 rounded-2xl shadow-sm border">
-        <h2 className="text-lg font-semibold mb-6">Añadir Nueva Dirección</h2>
+      <div className="bg-main p-8 rounded-2xl shadow-sm border border-main">
+        <h2 className="text-lg font-semibold mb-6 text-main"> {t("profile.addresses.addNew")} </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {[
-            { name: "full_name", placeholder: "Nombre completo" },
-            { name: "address", placeholder: "Dirección" },
-            { name: "phone", placeholder: "Teléfono" },
-            { name: "city", placeholder: "Ciudad" },
-            { name: "province", placeholder: "Provincia" },
-            { name: "municipality", placeholder: "Municipio" },
-            { name: "postal_code", placeholder: "Código Postal" },
-            { name: "country", placeholder: "País" },
+            { name: "full_name", placeholder: t("checkout.addr.fullName") },
+            { name: "address", placeholder: t("checkout.addr.address") },
+            { name: "phone", placeholder: t("checkout.addr.phone") },
+            { name: "city", placeholder: t("checkout.addr.city") },
+            { name: "province", placeholder: t("checkout.addr.province") },
+            { name: "municipality", placeholder: t("profile.addresses.municipality"), },
+            { name: "postal_code", placeholder: t("checkout.addr.postalCode") },
+            { name: "country", placeholder: t("checkout.addr.country") },
           ].map(({ name, placeholder }) => (
             <input
               key={name}
@@ -140,14 +142,15 @@ const ProfileAddresses = () => {
               value={form[name]}
               onChange={handleChange}
               placeholder={placeholder}
-              className="w-full border p-3 rounded-lg"
+              className="input"
             />
           ))}
-          <button className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg transition w-full font-medium">
-            Guardar Dirección
+          
+          <button className="btn-primary w-full">
+            {t("profile.addresses.save")}
           </button>
 
-          {message && <p className="text-green-600 text-sm mt-3">{message}</p>}
+          {message && ( <p className="text-emerald-600 text-sm mt-3">{message}</p> )}
           {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
         </form>
       </div>

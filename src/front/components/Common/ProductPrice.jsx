@@ -8,7 +8,7 @@ export const ProductPrice = ({ price, discount = 0, className = "" }) => {
         {finalPrice.toFixed(2)}€
       </span>
       {discount > 0 && (
-        <span className="text-xs text-theme-muted line-through">
+        <span className="text-xs text-muted line-through">
           {price.toFixed(2)}€
         </span>
       )}

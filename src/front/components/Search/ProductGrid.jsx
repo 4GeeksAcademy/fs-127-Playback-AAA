@@ -20,13 +20,13 @@ export const ProductGrid = ({
         {Array.from({ length: 10 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-theme-border overflow-hidden animate-pulse"
+            className="rounded-2xl border border-main overflow-hidden animate-pulse"
           >
-            <div className="w-full h-48 bg-theme-muted" />
+            <div className="w-full h-48 bg-muted" />
             <div className="p-3 space-y-2">
-              <div className="h-3 bg-theme-muted rounded w-3/4" />
-              <div className="h-3 bg-theme-muted rounded w-1/2" />
-              <div className="h-4 bg-theme-muted rounded w-1/3" />
+              <div className="h-3 bg-muted rounded w-3/4" />
+              <div className="h-3 bg-muted rounded w-1/2" />
+              <div className="h-4 bg-muted rounded w-1/3" />
             </div>
           </div>
         ))}
@@ -39,10 +39,10 @@ export const ProductGrid = ({
     return (
       <div className="text-center py-20">
         <p className="text-5xl mb-4">🔍</p>
-        <p className="text-theme-text font-medium mb-1">
+        <p className="text-main font-medium mb-1">
           {t("search.noResults")}
         </p>
-        <p className="text-sm text-theme-muted mb-4">
+        <p className="text-sm text-muted mb-4">
           {t("search.noResultsHint")}
         </p>
         {activeFiltersCount > 0 && (
