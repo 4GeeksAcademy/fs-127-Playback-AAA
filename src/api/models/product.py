@@ -3,25 +3,27 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from api.models import db
 import enum
-
-
+ 
+ 
 # ─── Enums ────────────────────────────────────────────────────────────────────
-
+ 
 class ProductCondition(enum.Enum):
     new          = "new"
     used         = "used"
     refurbished  = "refurbished"
     broken       = "broken"
-
-
+ 
+ 
 class Product(db.Model):
     __tablename__ = 'product'
-
+ 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[dict] = mapped_column(JSON, nullable=False)
     description: Mapped[dict] = mapped_column(JSON, nullable=True)
+    characteristics: Mapped[dict] = mapped_column(JSON, nullable=True)
     price: Mapped[float] = mapped_column(Float(), nullable=False, default=0.0)
     image_url: Mapped[str] = mapped_column(Text(), nullable=True)
+    other_image_url: Mapped[dict] = mapped_column(JSON, nullable=True)
     size: Mapped[str] = mapped_column(String(), nullable=True)
     weight: Mapped[float] = mapped_column(Float(), nullable=True)
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
@@ -30,11 +32,11 @@ class Product(db.Model):
         Enum(ProductCondition), nullable=False, default=ProductCondition.new
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True)
-
+ 
     # ── ForeignKey ─────────────────────────────────────────────────────────────
     item_id: Mapped[int] = mapped_column(ForeignKey("item.id"), nullable=False)
     seller_id: Mapped[int] = mapped_column(ForeignKey("seller.id"), nullable=False)
-
+ 
     # ── Relationships ──────────────────────────────────────────────────────────
     item: Mapped["Item"] = relationship("Item", back_populates="products")
     seller: Mapped["Seller"] = relationship("Seller", back_populates="products")
@@ -44,19 +46,21 @@ class Product(db.Model):
         "Review", back_populates="product", cascade="all, delete-orphan")
     favorites: Mapped[list["Favorite"]] = relationship(
         "Favorite", back_populates="product", cascade="all, delete-orphan")
-
+ 
     def __repr__(self):
         return f'<Product {self.id}: {self.name}>'
-
+ 
     def serialize(self, locale="es"):
         avg_rating = round(sum(r.rating for r in self.reviews) / len(self.reviews), 1) if self.reviews else 0
-
+ 
         return {
             "id": self.id,
             "name": self.name.get(locale) or self.name.get("es"),
             "description": self.description.get(locale) if self.description else None,
+            "characteristics": self.characteristics.get(locale) if self.characteristics else None,
             "price": self.price,
             "image_url": self.image_url,
+            "other_image_url": self.other_image_url if self.other_image_url else [],
             "size": self.size,
             "weight": self.weight,
             "stock": self.stock,
@@ -81,7 +85,7 @@ class Product(db.Model):
             ],
             "seller": self.seller.serialize_public() if self.seller else None,
         }
-
+ 
     def to_dict(self, locale="es"):
         avg_rating = round(sum(r.rating for r in self.reviews) /
                            len(self.reviews), 1) if self.reviews else 0
@@ -89,8 +93,10 @@ class Product(db.Model):
             "id": self.id,
             "name": self.name.get(locale) or self.name.get("es"),
             "description": self.description.get(locale) if self.description else None,
+            "characteristics": self.characteristics.get(locale) if self.characteristics else None,
             "price": self.price,
             "image_url": self.image_url,
+            "other_image_url": self.other_image_url if self.other_image_url else [],
             "size": self.size,
             "weight": self.weight,
             "stock": self.stock,
