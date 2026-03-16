@@ -6,23 +6,27 @@ import orderService from "../../../../services/orderService";
 import OrderDetailModal from "./OrderTabModal";
 
 const STATUS_STYLE = {
-  pending:    "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400",
-  paid:       "bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-400",
-  confirmed:  "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400",
-  processing: "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400",
-  shipped:    "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400",
-  delivered:  "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400",
-  cancelled:  "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
+  pending:
+    "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400",
+  paid: "bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-400",
+  confirmed: "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400",
+  processing:
+    "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400",
+  shipped:
+    "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400",
+  delivered:
+    "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400",
+  cancelled: "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
 const OrdersTab = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
 
-  const [orders, setOrders]     = useState([]);
-  const [loading, setLoading]   = useState(true);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [toast, setToast]       = useState(null);
+  const [toast, setToast] = useState(null);
 
   const [sortKey, setSortKey] = useState("id");
   const [sortDir, setSortDir] = useState("desc");
@@ -40,19 +44,36 @@ const OrdersTab = () => {
     setLoading(false);
   };
 
-  useEffect(() => { loadOrders(); }, []);
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
   const toggleSort = (key) => {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortKey(key); setSortDir("asc"); }
+    else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
   };
 
   const sorted = [...orders].sort((a, b) => {
     let va, vb;
-    if (sortKey === "id")     { va = a.id;                   vb = b.id; }
-    if (sortKey === "date")   { va = new Date(a.created_at); vb = new Date(b.created_at); }
-    if (sortKey === "total")  { va = Number(a.total_price);  vb = Number(b.total_price); }
-    if (sortKey === "status") { va = a.status;               vb = b.status; }
+    if (sortKey === "id") {
+      va = a.id;
+      vb = b.id;
+    }
+    if (sortKey === "date") {
+      va = new Date(a.created_at);
+      vb = new Date(b.created_at);
+    }
+    if (sortKey === "total") {
+      va = Number(a.total_price);
+      vb = Number(b.total_price);
+    }
+    if (sortKey === "status") {
+      va = a.status;
+      vb = b.status;
+    }
     if (va < vb) return sortDir === "asc" ? -1 : 1;
     if (va > vb) return sortDir === "asc" ? 1 : -1;
     return 0;
@@ -90,18 +111,34 @@ const OrdersTab = () => {
         <table className="w-full text-sm">
           <thead className="bg-subtle text-faint text-xs uppercase tracking-wide">
             <tr>
-              <th className="text-left px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("id")}>
+              <th
+                className="text-left px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("id")}
+              >
                 {t("dashboard.orders.table.order")} <SortIcon col="id" />
               </th>
-              <th className="text-left px-4 py-3">{t("dashboard.orders.table.customer")}</th>
-              <th className="text-left px-4 py-3">{t("dashboard.orders.table.products")}</th>
-              <th className="text-right px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("total")}>
+              <th className="text-left px-4 py-3">
+                {t("dashboard.orders.table.customer")}
+              </th>
+              <th className="text-left px-4 py-3">
+                {t("dashboard.orders.table.products")}
+              </th>
+              <th
+                className="text-right px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("total")}
+              >
                 {t("dashboard.orders.table.total")} <SortIcon col="total" />
               </th>
-              <th className="text-right px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("date")}>
+              <th
+                className="text-right px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("date")}
+              >
                 {t("dashboard.orders.table.date")} <SortIcon col="date" />
               </th>
-              <th className="text-right px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("status")}>
+              <th
+                className="text-right px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("status")}
+              >
                 {t("dashboard.orders.table.status")} <SortIcon col="status" />
               </th>
             </tr>
@@ -120,21 +157,38 @@ const OrdersTab = () => {
                   onClick={() => setSelected(pedido)}
                   className="hover:bg-subtle transition cursor-pointer"
                 >
-                  <td className="px-4 py-3 text-faint font-mono text-xs">#{pedido.id}</td>
+                  <td className="px-4 py-3 text-faint font-mono text-xs">
+                    #{pedido.id}
+                  </td>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-main">{pedido.customer || "—"}</p>
-                    {pedido.customer_email && <p className="text-xs text-faint">{pedido.customer_email}</p>}
+                    <p className="font-medium text-main">
+                      {pedido.customer || "—"}
+                    </p>
+                    {pedido.customer_email && (
+                      <p className="text-xs text-faint">
+                        {pedido.customer_email}
+                      </p>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      {pedido.products.slice(0, 3).map((prod) =>
-                        prod.image_url && (
-                          <img key={prod.id} src={prod.image_url} alt="prod"
-                            className="w-7 h-7 rounded object-cover border border-main" />
-                        )
-                      )}
+                      {pedido.products
+                        .slice(0, 3)
+                        .map(
+                          (prod, i) =>
+                            prod.image_url && (
+                              <img
+                                key={`${prod.id}-${i}`}
+                                src={prod.image_url}
+                                alt="prod"
+                                className="w-7 h-7 rounded object-cover border border-main"
+                              />
+                            ),
+                        )}
                       {pedido.products.length > 3 && (
-                        <span className="text-xs text-faint ml-1">+{pedido.products.length - 3}</span>
+                        <span className="text-xs text-faint ml-1">
+                          +{pedido.products.length - 3}
+                        </span>
                       )}
                     </div>
                   </td>
@@ -145,8 +199,12 @@ const OrdersTab = () => {
                     {new Date(pedido.created_at).toLocaleDateString("es-ES")}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[pedido.status] || "bg-muted text-muted"}`}>
-                      {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[pedido.status] || "bg-muted text-muted"}`}
+                    >
+                      {t(`dashboard.orders.status.${pedido.status}`, {
+                        defaultValue: pedido.status,
+                      })}
                     </span>
                   </td>
                 </tr>
