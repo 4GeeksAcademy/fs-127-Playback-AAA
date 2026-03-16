@@ -28,6 +28,7 @@
     "characteristicsLabel":"Caracteristicas",
     "reviewsCount":"Total reseñas",
     "noReviews":"Sin reseñas"
+ 
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
@@ -389,6 +390,7 @@
         "current": "(actual)",
         "saving": "Guardando…",
         "saveStatus": "Guardar cambio de estado"
+
       },
       "status": {
         "pending": "Pendiente",
@@ -442,7 +444,6 @@
         "price": "Precio (€)",
         "stock": "Stock",
         "discount": "Descuento (%)",
-        "size": "Tamaño",
         "weight": "Peso (kg)",
         "condition": "Condición",
         "description": "Descripción",
@@ -455,7 +456,11 @@
         "addImages":"Otras imagenes",
         "noOtherImages":"No hay imágenes adicionales",
         "otherImages": "Imágenes adicionales",
-        "optional": "Opcional"
+        "optional": "Opcional",
+                    "dimensions": "Dimensiones",
+"height": "Alto",
+"width": "Ancho",
+"length": "Largo"
       }
     },
     "overview": {
@@ -499,7 +504,7 @@
     "sending": "Enviando...",
     "submit": "Enviar reseña",
     "rate":"Valorar producto",
-    "alreadyReviewed": "Ya valorado ✓"
+    "alreadyReviewed": " Ya valorado "
 
   }
 }
