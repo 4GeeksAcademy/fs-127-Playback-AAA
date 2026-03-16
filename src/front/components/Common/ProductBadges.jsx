@@ -2,11 +2,10 @@ import { Flame, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const CONDITION_BADGE_CLASS = {
-  new: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300",
-  used: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-  refurbished:
-    "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300",
-  broken: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300",
+  new:         "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300",
+  used:        "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300",
+  refurbished: "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300",
+  broken:      "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300",
 };
 
 export const ProductBadges = ({

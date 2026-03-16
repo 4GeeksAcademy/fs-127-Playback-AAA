@@ -6,11 +6,10 @@ import { StarRating } from "../StarRating";
 
 // Clases del badge de condición (los productos "new" no muestran badge)
 const CONDITION_BADGE_CLS = {
-  new: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300",
-  used: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-  refurbished:
-    "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300",
-  broken: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300",
+  new:         "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300",
+  used:        "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300",
+  refurbished: "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300",
+  broken:      "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300",
 };
 
 export const ProductCard = ({ product }) => {
@@ -28,7 +27,7 @@ export const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group rounded-2xl border border-theme-border bg-theme-bg hover:shadow-lg transition overflow-hidden flex flex-col"
+      className="group rounded-2xl border border-main bg-main hover:shadow-lg transition overflow-hidden flex flex-col"
     >
       {/* Imagen con badges superpuestos */}
       <div className="relative overflow-hidden">
@@ -42,7 +41,7 @@ export const ProductCard = ({ product }) => {
             }
           />
         ) : (
-          <div className="w-full h-48 bg-theme-muted flex items-center justify-center text-theme-faint text-xs" />
+          <div className="w-full h-48 bg-muted flex items-center justify-center text-faint text-xs" />
         )}
 
         {/* Badges: descuento y pocas unidades */}
@@ -76,12 +75,12 @@ export const ProductCard = ({ product }) => {
         )}
 
         {/* Nombre */}
-        <p className="text-sm font-medium text-theme-text truncate">
+        <p className="text-sm font-medium text-main truncate">
           {product.name}
         </p>
 
         {/* Ruta de categoría: categoría › subcategoría › item */}
-        <p className="text-xs text-theme-muted truncate capitalize">
+        <p className="text-xs text-muted truncate capitalize">
           {[product.category_name, product.subcategory_name, product.item_name]
             .filter(Boolean)
             .join(" › ")}
@@ -91,7 +90,7 @@ export const ProductCard = ({ product }) => {
         {product.rating > 0 && (
           <div className="flex items-center gap-1.5">
             <StarRating rating={product.rating} />
-            <span className="text-xs text-theme-muted">{product.rating}</span>
+            <span className="text-xs text-muted">{product.rating}</span>
           </div>
         )}
 
@@ -101,7 +100,7 @@ export const ProductCard = ({ product }) => {
             {finalPrice.toFixed(2)}€
           </span>
           {product.discount > 0 && (
-            <span className="text-xs text-theme-muted line-through">
+            <span className="text-xs text-muted line-through">
               {product.price.toFixed(2)}€
             </span>
           )}

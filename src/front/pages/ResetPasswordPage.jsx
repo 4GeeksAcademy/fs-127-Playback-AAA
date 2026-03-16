@@ -68,7 +68,7 @@ export const ResetPasswordPage = () => {
   return (
     <div className="flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm space-y-4">
-        <p className="text-2xl font-semibold text-theme-text">
+        <p className="text-2xl font-semibold text-main">
           {t("navbar.resetTitle")}
         </p>
 
@@ -85,7 +85,7 @@ export const ResetPasswordPage = () => {
             value={form.new_password}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+            className="input focus:ring-2 focus:ring-violet-500 focus:border-transparent"
           />
 
           <input
@@ -95,7 +95,7 @@ export const ResetPasswordPage = () => {
             value={form.confirm_password}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+            className="input focus:ring-2 focus:ring-violet-500 focus:border-transparent"
           />
 
           {/* Error inline */}

@@ -37,11 +37,11 @@ export const FilterPanel = ({
   const { t } = useTranslation();
 
   return (
-    <div className="absolute left-0 top-full mt-2 w-72 bg-theme-bg border border-theme-border rounded-2xl shadow-2xl z-50 overflow-hidden">
+    <div className="absolute left-0 top-full mt-2 w-72 bg-main border border-main rounded-2xl shadow-2xl z-50 overflow-hidden">
       <div className="p-5 space-y-5 max-h-[80vh] overflow-y-auto">
         {/* Sección precio */}
         <div>
-          <p className="text-xs font-semibold tracking-widest uppercase text-theme-muted mb-3">
+          <p className="text-xs font-semibold tracking-widest uppercase text-muted mb-3">
             {t("search.priceSection")}
           </p>
           <div className="flex items-center gap-2">
@@ -50,15 +50,15 @@ export const FilterPanel = ({
               placeholder={t("search.priceMin")}
               value={localMin}
               onChange={(e) => setLocalMin(e.target.value)}
-              className="w-full h-9 px-3 rounded-xl border border-theme-border bg-theme-input text-sm text-theme-text focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="input h-9 px-3 focus:ring-2 focus:ring-violet-500"
             />
-            <span className="text-theme-muted">—</span>
+            <span className="text-muted">—</span>
             <input
               type="number"
               placeholder={t("search.priceMax")}
               value={localMax}
               onChange={(e) => setLocalMax(e.target.value)}
-              className="w-full h-9 px-3 rounded-xl border border-theme-border bg-theme-input text-sm text-theme-text focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="input h-9 px-3 focus:ring-2 focus:ring-violet-500"
             />
           </div>
           {/* Aplica el precio solo al pulsar — evita fetch en cada tecla */}
@@ -70,11 +70,11 @@ export const FilterPanel = ({
           </button>
         </div>
 
-        <div className="border-t border-theme-border" />
+        <div className="border-t border-main" />
 
         {/* Sección condición */}
         <div>
-          <p className="text-xs font-semibold tracking-widest uppercase text-theme-muted mb-3">
+          <p className="text-xs font-semibold tracking-widest uppercase text-muted mb-3">
             {t("search.conditionSection")}
           </p>
           <div className="space-y-1.5">
@@ -86,7 +86,7 @@ export const FilterPanel = ({
                   ${
                     conditions.includes(val)
                       ? "bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400"
-                      : "hover:bg-theme-muted text-theme-text"
+                      : "hover:bg-muted text-main"
                   }`}
               >
                 <span
@@ -101,14 +101,14 @@ export const FilterPanel = ({
           </div>
         </div>
 
-        <div className="border-t border-theme-border" />
+        <div className="border-t border-main" />
 
         {/* Toggles: en oferta / en stock / pocas unidades */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Tag className="w-4 h-4 text-red-500" />
-              <span className="text-sm text-theme-text">
+              <span className="text-sm text-main">
                 {t("search.onSale")}
               </span>
             </div>
@@ -116,8 +116,8 @@ export const FilterPanel = ({
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-theme-muted" />
-              <span className="text-sm text-theme-text">
+              <Package className="w-4 h-4 text-muted" />
+              <span className="text-sm text-main">
                 {t("search.inStockOnly")}
               </span>
             </div>
@@ -126,7 +126,7 @@ export const FilterPanel = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Flame className="w-4 h-4 text-orange-500" />
-              <span className="text-sm text-theme-text">
+              <span className="text-sm text-main">
                 {t("search.lowStock")}
               </span>
             </div>
@@ -137,7 +137,7 @@ export const FilterPanel = ({
         {/* Limpiar filtros — solo si hay alguno activo */}
         {activeFiltersCount > 0 && (
           <>
-            <div className="border-t border-theme-border" />
+            <div className="border-t border-main" />
             <button
               onClick={onClearAll}
               className="w-full text-sm text-red-500 hover:text-red-600 transition font-medium"

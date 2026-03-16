@@ -60,17 +60,17 @@ export const SearchHeader = ({
           {category && (
             <button
               onClick={removeCategory}
-              className="text-xs tracking-widest text-theme-muted hover:text-red-500 capitalize transition"
+              className="text-xs tracking-widest text-muted hover:text-red-500 capitalize transition"
             >
               {categoryName}
             </button>
           )}
           {subcategory && (
             <>
-              <span className="text-xs text-theme-faint">›</span>
+              <span className="text-xs text-faint">›</span>
               <button
                 onClick={removeSubcategory}
-                className="text-xs tracking-widest text-theme-muted hover:text-red-500 capitalize transition"
+                className="text-xs tracking-widest text-muted hover:text-red-500 capitalize transition"
               >
                 {subcategoryName}
               </button>
@@ -78,10 +78,10 @@ export const SearchHeader = ({
           )}
           {item && (
             <>
-              <span className="text-xs text-theme-faint">›</span>
+              <span className="text-xs text-faint">›</span>
               <button
                 onClick={removeItem}
-                className="text-xs tracking-widest text-theme-muted hover:text-red-500 capitalize transition"
+                className="text-xs tracking-widest text-muted hover:text-red-500 capitalize transition"
               >
                 {itemName}
               </button>
@@ -90,10 +90,10 @@ export const SearchHeader = ({
         </div>
       )}
 
-      <h1 className="text-2xl font-semibold text-theme-text capitalize">
+      <h1 className="text-2xl font-semibold text-main capitalize">
         {pageTitle}
       </h1>
-      <p className="text-sm text-theme-muted mt-1">
+      <p className="text-sm text-muted mt-1">
         {loading
           ? t("search.searching")
           : t("search.productCount", { count: resultsCount })}

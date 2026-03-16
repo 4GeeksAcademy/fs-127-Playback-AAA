@@ -1,76 +1,105 @@
-# 🎮 Playback
+<p align="center">
+  <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853455/logo_navbar_playback_v1.png#gh-light-mode-only" alt="Playback" height="64">
+  <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vdark.png#gh-dark-mode-only" alt="Playback" height="64">
+</p>
 
-Playback es un **marketplace de productos retro** donde los usuarios pueden comprar y vender videojuegos, consolas y accesorios clásicos. La plataforma cuenta con tres roles: **cliente**, **vendedor** y **administrador**, cada uno con su propio panel de control y funcionalidades específicas.
+<p align="center">Marketplace de segunda mano para videojuegos, consolas y accesorios retro.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.13-blue?logo=python" />
+  <img src="https://img.shields.io/badge/Flask-backend-lightgrey?logo=flask" />
+  <img src="https://img.shields.io/badge/React-18-61dafb?logo=react" />
+  <img src="https://img.shields.io/badge/PostgreSQL-database-336791?logo=postgresql" />
+  <img src="https://img.shields.io/badge/Stripe-payments-635bff?logo=stripe" />
+</p>
 
 ---
 
-## ✨ Funcionalidades principales
+## ✨ Funcionalidades
 
-**Para clientes**
-- Explorar el catálogo organizado por categorías y subcategorías
-- Búsqueda y filtrado de productos por precio y categoría
-- Carrito de compra persistente y gestión de pedidos
+**Clientes**
+- Explorar catálogo por categorías y subcategorías
+- Búsqueda y filtrado por precio y categoría
+- Carrito persistente y gestión de pedidos
 - Seguimiento del estado de envíos
-- Lista de favoritos y reseñas de productos comprados
-- Panel personal con historial de pedidos y perfil
+- Favoritos y reseñas de productos comprados
+- Panel personal con historial y perfil
 
-**Para vendedores**
+**Vendedores**
 - Publicación y gestión de productos con imágenes
 - Control de stock y precios
-- Panel de ventas con estadísticas y productos más vendidos
-- Gestión de pedidos propios y alertas de stock bajo
+- Panel de ventas con estadísticas
+- Gestión de pedidos y alertas de stock bajo
 
-**Para administradores**
+**Administradores**
 - Aprobación y moderación de productos
 - Gestión global de usuarios, pedidos y productos
+- Panel de administración con sistema de roles
 
 **General**
-- Registro y login con email/contraseña y Google (OAuth 2.0)
-- Sistema de atención al cliente mediante tickets
+- Registro y login con email/contraseña y Google OAuth 2.0
+- Pagos seguros con Stripe Connect (comisión de plataforma configurable)
+- Notificaciones por email vía Brevo SMTP
+- Sistema de tickets de atención al cliente
+- Internacionalización ES / EN
 - Modo claro y oscuro
 - Diseño responsive
-- Notificaciones por email
-- Internacionalización (ES / EN)
 
-> El proyecto se encuentra en desarrollo activo. Este README se irá actualizando conforme se añadan nuevas funcionalidades.
+> El proyecto está en desarrollo activo. Este README se actualiza conforme se añaden funcionalidades.
 
 ---
 
-## 🚀 Instalación y puesta en marcha
+## 🚀 Instalación
 
-Consulta la guía completa en:
+Consulta la guía completa:
 
 👉 [README de instalación y arranque](./docs/README_SETUP.md)
 
 ---
 
-## 🛠️ Tecnologías utilizadas
+## 🛠️ Stack tecnológico
 
-**Frontend**
-- React 18
-- React Router DOM 6
-- Tailwind CSS 3
-- Vite 4
-- Lucide React (iconos)
+### Frontend
+| Tecnología | Versión | Uso |
+|---|---|---|
+| React | 18 | UI |
+| React Router DOM | 6 | Navegación |
+| Tailwind CSS | 3 | Estilos |
+| Vite | 4 | Bundler |
+| i18next | – | Internacionalización |
+| Lucide React | – | Iconos |
+| Stripe.js + React Stripe.js | – | Pagos en cliente |
 
-**Backend**
-- Python 3.13
-- Flask
-- Flask-SQLAlchemy
-- Flask-Migrate (via `pipenv run migrate` / `pipenv run upgrade`)
-- Flask-JWT-Extended
-- Flask-CORS
-- Flask-Admin
-- Flask-Swagger
-- bcrypt
-- Gunicorn
+### Backend
+| Tecnología | Versión | Uso |
+|---|---|---|
+| Python | 3.13 | Runtime |
+| Flask | – | Framework web |
+| Flask-SQLAlchemy | – | ORM |
+| Flask-Migrate | – | Migraciones |
+| Flask-JWT-Extended | 4.6 | Autenticación JWT |
+| Flask-Mail | – | Envío de emails |
+| Flask-CORS | – | Control de acceso |
+| Flask-Admin | 2.0 | Panel de administración |
+| bcrypt | – | Hash de contraseñas |
+| deep-translator | – | Traducciones automáticas |
+| Stripe Python SDK | – | Pagos y transferencias |
+| Gunicorn | – | Servidor WSGI |
 
-**Base de datos**
-- PostgreSQL (psycopg2-binary)
-- SQLAlchemy
+### Base de datos
+| Tecnología | Uso |
+|---|---|
+| PostgreSQL | Base de datos principal |
+| SQLAlchemy | ORM y queries |
+| psycopg2-binary | Driver PostgreSQL |
 
-**Servicios externos**
-- Cloudinary (gestión de imágenes)
+### Servicios externos
+| Servicio | Uso |
+|---|---|
+| Cloudinary | Almacenamiento y gestión de imágenes |
+| Stripe Connect | Pagos, transferencias y comisiones |
+| Brevo (SMTP) | Envío de emails transaccionales |
+| Google OAuth 2.0 | Login social |
 
 ---
 
@@ -78,13 +107,18 @@ Consulta la guía completa en:
 
 | Doc | Descripción |
 |---|---|
-| [🚀 Instalación y arranque](./docs/README_SETUP.md) | Guía paso a paso para instalar, configurar y arrancar el proyecto. |
-| [🌱 Seed de categorías](./docs/README_SEED_CATEGORIES.md) | Cómo poblar la base de datos con categorías, subcategorías e ítems iniciales. |
-| [🌗 Sistema de temas (Dark Mode)](./docs/README_DARK_MODE.md) | Sistema de colores semánticos para modo claro/oscuro con clases `theme-*`. |
-| [📸 Cloudinary](./docs/README_CLOUDINARY.md) | Configuración de Cloudinary para la subida de imágenes. |
+| [🚀 Instalación y arranque](./docs/README_SETUP.md) | Guía paso a paso para instalar, configurar y arrancar el proyecto |
+| [🌱 Seed de categorías](./docs/README_SEED_CATEGORIES.md) | Cómo poblar la BD con categorías, subcategorías e ítems |
+| [🧪 Seed de datos de prueba](./docs/README_SEED_DATA.md) | Cómo poblar la BD con usuarios, productos y pedidos de prueba |
+| [🌗 Sistema de temas](./docs/README_DARK_MODE.md) | Sistema de colores semánticos para modo claro/oscuro |
+| [📸 Cloudinary](./docs/README_CLOUDINARY.md) | Configuración de Cloudinary para subida de imágenes |
+| [💳 Stripe](./docs/README_STRIPE.md) | Sistema de pagos con Stripe Connect y webhooks |
+| [📧 Email (Brevo)](./docs/README_EMAIL.md) | Configuración del sistema de email con Brevo SMTP |
 
 ---
 
 ## 🌍 Despliegue
 
-Compatible con despliegue en **Render.com**. Consulta la [documentación oficial](https://4geeks.com/es/docs/start/despliega-con-render-com) para más detalles.
+El proyecto es compatible con despliegue en plataformas como **Render.com**.
+
+> ⚠️ Asegúrate de configurar todas las variables de entorno en el entorno de producción antes de desplegar. Consulta [README_SETUP.md](./docs/README_SETUP.md) para ver la lista completa.

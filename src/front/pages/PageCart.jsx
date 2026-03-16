@@ -1,42 +1,39 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { X, ShoppingCart } from "lucide-react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderServices from "../services/orderService";
-import { useTranslation } from "react-i18next";
 import { ProductPrice } from "../components/Common/ProductPrice";
 import OrderSummary from "../components/Checkout/OrderSummary";
 
 export const PageCart = () => {
 
   const { store, dispatch } = useGlobalReducer();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
 
   const [cart, setCart] = useState([]);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
-
     const token = store.token || localStorage.getItem("token");
     if (!token) return;
 
     orderServices.getCart(token).then(([data, error]) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
+      if (error) { console.error(error); return; }
       setCart(data.products || []);
     });
+  }, [store.cart]);
 
-  }, []);
+  const showToast = (type) => {
+    setToast(type);
+    setTimeout(() => setToast(null), 2000);
+  };
 
   const handleRemove = async (productId) => {
     const token = store.token || localStorage.getItem("token");
-
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/product/${productId}`, {
-      method: "DELETE",
-      headers: { Authorization: "Bearer " + token }
-    });
-
+    await orderServices.removeProductFromCart(token, productId);
     setCart(cart.filter(p => p.id !== productId));
     dispatch({ type: "cart_remove", payload: { id: productId } });
   };
@@ -50,87 +47,71 @@ export const PageCart = () => {
       return;
     }
 
+    if (delta > 0 && item.stock != null && item.quantity >= item.stock) {
+      showToast("sin_stock");
+      return;
+    }
+
     const token = store.token || localStorage.getItem("token");
-
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/add-product`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify({ product_id: productId, quantity: delta })
-    });
-
+    await orderServices.addProductToCart(token, productId, delta);
     setCart(cart.map(p => p.id === productId ? { ...p, quantity: p.quantity + delta } : p));
     dispatch({ type: "cart_add", payload: { id: productId, quantity: delta } });
   };
 
   return (
-
     <div className="max-w-7xl mx-auto px-6 py-12">
 
-      <h1 className="text-3xl font-semibold mb-10">
-        Carrito
+      {toast && (
+        <div className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+          toast === "sin_stock"
+            ? "bg-red-600 dark:bg-red-500"
+            : "bg-stone-900 dark:bg-stone-100"
+        }`}>
+          {toast === "sin_stock" ? <X size={15} /> : <ShoppingCart size={15} />}
+          {toast === "sin_stock" ? t("product.noStock") : t("product.addedToCart")}
+        </div>
+      )}
+
+      <h1 className="text-3xl font-semibold mb-10 text-main">
+        {t("cart.title")}
       </h1>
 
       {cart.length === 0 && (
-        <p className="text-stone-400">
-          Tu carrito está vacío
-        </p>
+        <p className="text-faint">{t("cart.empty")}</p>
       )}
 
       {cart.length > 0 && (
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
           {/* PRODUCTOS */}
           <div className="lg:col-span-2 space-y-6">
-
             {cart.map((item) => {
-
-              const name =
-                item.name?.[i18n.language] ||
-                item.name?.es ||
-                item.name?.en;
-
+              const name = item.name?.[i18n.language] || item.name?.es || item.name?.en;
               const priceWithDiscount = item.price * (1 - (item.discount || 0) / 100);
               const lineTotal = priceWithDiscount * item.quantity;
+              const enLimite = item.stock != null && item.quantity >= item.stock;
 
               return (
-
-                <div
-                  key={item.id}
-                  className="flex justify-between items-center border-b pb-6"
-                >
-
+                <div key={item.id} className="flex justify-between items-center border-b border-main pb-6">
                   <div className="flex gap-5 items-center">
-
-                    <img
-                      src={item.image_url}
-                      alt={name}
-                      className="w-24 h-24 object-cover rounded"
-                    />
-
+                    <img src={item.image_url} alt={name} className="w-24 h-24 object-cover rounded" />
                     <div className="space-y-1">
-
-                      <h2 className="font-medium text-stone-900">
+                      <Link to={`/product/${item.id}`} className="font-medium text-main hover:underline">
                         {name}
-                      </h2>
-
+                      </Link>
                       <ProductPrice price={item.price} discount={item.discount} />
-
-                      {/* CANTIDAD */}
                       <div className="flex items-center gap-2 mt-1">
                         <button
                           onClick={() => handleQuantity(item.id, -1)}
-                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                          className="w-7 h-7 border border-main rounded flex items-center justify-center text-muted hover:bg-subtle"
                         >
                           −
                         </button>
-                        <span className="text-sm w-4 text-center">{item.quantity}</span>
+                        <span className="text-sm w-4 text-center text-main">{item.quantity}</span>
                         <button
                           onClick={() => handleQuantity(item.id, 1)}
-                          className="w-7 h-7 border rounded flex items-center justify-center text-stone-600 hover:bg-stone-100"
+                          disabled={enLimite}
+                          className="w-7 h-7 border border-main rounded flex items-center justify-center text-muted hover:bg-subtle disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           +
                         </button>
@@ -138,43 +119,30 @@ export const PageCart = () => {
                           onClick={() => handleRemove(item.id)}
                           className="text-sm text-red-500 hover:underline ml-2"
                         >
-                          Eliminar
+                          {t("cart.remove")}
                         </button>
                       </div>
-
-                     
+                      {enLimite && (
+                        <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+                          <X size={11} />
+                          {t("product.noStock")}
+                        </p>
+                      )}
                     </div>
-
                   </div>
-
                   <div className="text-right">
-
-                    <p className="text-sm text-stone-400">
-                      Subtotal
-                    </p>
-
-                    <p className="font-semibold text-stone-900">
-                      {lineTotal.toFixed(2)} €
-                    </p>
-
+                    <p className="text-sm text-faint">{t("checkout.subtotal")}</p>
+                    <p className="font-semibold text-main">{lineTotal.toFixed(2)} €</p>
                   </div>
-
                 </div>
-
               );
             })}
-
           </div>
 
           {/* RESUMEN */}
-          <OrderSummary
-            cart={cart}
-            step="cart"
-            onContinue={() => navigate("/checkout")}
-          />
+          <OrderSummary cart={cart} step="cart" onContinue={() => navigate("/checkout")} />
 
         </div>
-
       )}
 
     </div>

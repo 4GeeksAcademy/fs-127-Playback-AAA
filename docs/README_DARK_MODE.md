@@ -1,170 +1,315 @@
+<p align="center">
+  <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853455/logo_navbar_playback_v1.png#gh-light-mode-only" alt="Playback" height="52">
+  <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vdark.png#gh-dark-mode-only" alt="Playback" height="52">
+</p>
+
 # Sistema de Temas
 
-Sistema de colores semánticos para gestionar el modo claro y oscuro sin escribir clases `dark:` en cada componente.
+Sistema de colores semánticos para gestionar el **modo claro y oscuro** sin escribir clases `dark:` en cada componente.
 
 ---
 
-## Cómo funciona
+# Cómo funciona
 
 En lugar de escribir los colores dos veces:
+
 ```jsx
 // ❌ Antes
 <div className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
 ```
 
 Usas una sola clase semántica:
+
 ```jsx
 // ✅ Ahora
-<div className="bg-theme-bg text-theme-text">
+<div className="bg-main text-main">
 ```
 
-El sistema cambia automáticamente entre claro y oscuro cuando el elemento `<html>` tiene la clase `dark`, lo cual se activa con:
+El sistema cambia automáticamente entre **modo claro y oscuro** cuando el elemento `<html>` tiene la clase `dark`.
+
 ```js
 document.documentElement.classList.toggle("dark");
 ```
 
----
-
-## Archivos del sistema
-
-| Archivo | Qué hace |
-|---|---|
-| `src/front/theme.css` | Define los valores de cada variable en claro y en oscuro |
-| `tailwind.config.js` | Registra las clases `theme-*` para usarlas en el JSX |
+Los colores se gestionan mediante **variables CSS (`--color-*`)** definidas en `theme.css`.
 
 ---
 
-## Clases disponibles
+# Archivos del sistema
 
-### Fondos
-
-| Clase | Uso | Claro | Oscuro |
-|---|---|---|---|
-| `bg-theme-bg` | Fondo principal de página y paneles | `white` | `gray-950` |
-| `bg-theme-subtle` | Fondo secundario, paneles expandidos | `gray-50` | `gray-900` |
-| `bg-theme-muted` | Fondo hover, cards | `gray-100` | `gray-800` |
-| `bg-theme-input` | Inputs y textareas | `gray-50` | `gray-800` |
-| `bg-theme-tooltip` | Fondo de tooltips | `gray-900` | `gray-50` |
-
-### Bordes
-
-| Clase | Uso | Claro | Oscuro |
-|---|---|---|---|
-| `border-theme-border` | Borde estándar | `gray-200` | `gray-800` |
-| `border-theme-border-sm` | Borde fino, divisores | `gray-100` | `gray-800` |
-| `divide-theme-border-sm` | Divisor entre elementos de lista | `gray-100` | `gray-800` |
-
-### Textos
-
-| Clase | Uso | Claro | Oscuro |
-|---|---|---|---|
-| `text-theme-text` | Texto principal | `gray-900` | `gray-100` |
-| `text-theme-secondary` | Texto secundario | `gray-700` | `gray-300` |
-| `text-theme-muted` | Texto apagado | `gray-500` | `gray-400` |
-| `text-theme-faint` | Placeholders y hints | `gray-400` | `gray-500` |
-| `text-theme-disabled` | Texto deshabilitado | `gray-300` | `gray-600` |
-| `text-theme-inverse` | Texto sobre fondo de color | `white` | `gray-900` |
-
-### Estados
-
-| Clase | Uso |
-|---|---|
-| `text-theme-success` / `bg-theme-success-bg` | Mensajes de éxito |
-| `text-theme-warning` / `bg-theme-warning-bg` | Avisos |
-| `text-theme-error` / `bg-theme-error-bg` | Errores de formulario |
-| `text-theme-info` / `bg-theme-info-bg` | Mensajes informativos |
+| Archivo               | Qué hace                                                               |
+| --------------------- | ---------------------------------------------------------------------- |
+| `src/front/theme.css` | Define todas las variables de color y sombras para modo claro y oscuro |
+| `tailwind.config.js`  | Permite usar las variables dentro de Tailwind                          |
+| `@layer components`   | Define clases reutilizables (`btn`, `card`, `input`, etc.)             |
 
 ---
 
-## Ejemplo de uso en un componente
+# Clases disponibles
+
+## Fondos
+
+| Clase       | Uso                            |
+| ----------- | ------------------------------ |
+| `bg-main`   | Fondo principal de la página   |
+| `bg-subtle` | Fondo secundario (paneles)     |
+| `bg-muted`  | Fondo hover o tarjetas ligeras |
+
+---
+
+## Textos
+
+| Clase        | Uso                    |
+| ------------ | ---------------------- |
+| `text-main`  | Texto principal        |
+| `text-sub`   | Texto secundario       |
+| `text-muted` | Texto menos importante |
+| `text-faint` | Placeholders o hints   |
+
+---
+
+## Bordes
+
+| Clase         | Uso            |
+| ------------- | -------------- |
+| `border-main` | Borde estándar |
+
+---
+
+# Componentes reutilizables
+
+Estas clases ya están preparadas para reutilizarse en toda la app.
+
+---
+
+## Botones
+
+### Botón principal
 
 ```jsx
-// Card genérica
-<div className="bg-theme-bg border border-theme-border rounded-2xl p-4">
-  <h2 className="text-theme-text font-semibold">Título</h2>
-  <p className="text-theme-muted">Descripción secundaria</p>
-  <input
-    className="bg-theme-input border border-theme-border text-theme-text placeholder-theme-faint rounded-xl px-4 py-2"
-    placeholder="Escribe algo..."
-  />
-</div>
+<button className="btn-primary">
+Guardar
+</button>
+```
 
-// Badge de estado
-<span className="bg-theme-success-bg text-theme-success px-2 py-1 rounded-full text-xs">
-  Completado
-</span>
+### Botón secundario
 
-// Divisor
-<div className="border-t border-theme-border-sm my-4" />
+```jsx
+<button className="btn-secondary">
+Cancelar
+</button>
+```
+
+### Botón ghost
+
+```jsx
+<button className="btn-ghost">
+Ver más
+</button>
+```
+
+### Botón peligro
+
+```jsx
+<button className="btn-danger">
+Eliminar
+</button>
 ```
 
 ---
 
-## Cuándo NO usar clases theme-*
-
-Los colores de acento y marca se siguen escribiendo con las clases normales de Tailwind, porque no cambian con el tema:
+## Tarjetas
 
 ```jsx
-// ✅ Correcto — colores de marca, no cambian con el tema
-<button className="bg-gradient-to-r from-violet-500 to-purple-600 text-white">
+<div className="card p-4">
+  <h2 className="text-main font-semibold">Título</h2>
+  <p className="text-muted">Descripción secundaria</p>
+</div>
+```
+
+La clase `card` ya incluye:
+
+* fondo semántico
+* borde
+* sombra
+* bordes redondeados
+
+---
+
+## Inputs
+
+```jsx
+<input
+  className="input"
+  placeholder="Escribe algo..."
+/>
+```
+
+La clase `input` ya incluye:
+
+* fondo correcto según tema
+* borde
+* placeholder semántico
+* focus accesible
+
+---
+
+# Ejemplo completo
+
+```jsx
+<div className="card p-6 space-y-4">
+
+  <h2 className="text-main text-lg font-semibold">
+    Perfil
+  </h2>
+
+  <p className="text-sub">
+    Actualiza tu información
+  </p>
+
+  <input
+    className="input"
+    placeholder="Nombre"
+  />
+
+  <div className="flex gap-3">
+    <button className="btn-primary">
+      Guardar
+    </button>
+
+    <button className="btn-secondary">
+      Cancelar
+    </button>
+  </div>
+
+</div>
+```
+
+---
+
+# Cuándo NO usar las clases semánticas
+
+Los **colores de marca** no deben depender del tema.
+
+Ejemplo correcto:
+
+```jsx
+<button className="bg-violet-600 hover:bg-violet-700 text-white">
+```
+
+```jsx
 <span className="text-amber-500">
+```
+
+```jsx
 <div className="text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40">
 ```
 
 ---
 
-## Añadir una nueva variable
+# Variables principales del sistema
 
-### Paso 1 — Definir el valor en `theme.css`
+Estas variables están definidas en `theme.css`.
 
-Añade la variable dentro de `:root` (valor claro) y dentro de `.dark` (valor oscuro):
+---
 
-```css
-:root {
-  /* nueva variable */
-  --color-bg-card: 255 255 255;   /* white */
-}
+## Fondos
 
-.dark {
-  /* nueva variable en oscuro */
-  --color-bg-card: 24 24 27;      /* zinc-900 */
-}
 ```
-
-> Los valores van en formato `R G B` sin comas, sin `rgb()`. Esto permite que Tailwind gestione la opacidad con `/`.
-
-### Paso 2 — Registrarla en `tailwind.config.js`
-
-Añade la nueva entrada dentro del bloque `theme.colors`:
-
-```js
-theme: {
-  // fondos
-  bg:      "rgb(var(--color-bg) / <alpha-value>)",
-  "bg-card": "rgb(var(--color-bg-card) / <alpha-value>)",  // ← nueva
-  ...
-}
-```
-
-### Paso 3 — Usarla en el JSX
-
-```jsx
-<div className="bg-theme-bg-card">
+--color-bg
+--color-bg-subtle
+--color-bg-muted
+--color-bg-input
+--color-bg-tooltip
 ```
 
 ---
 
-## Convención de nombres
+## Bordes
+
+```
+--color-border
+--color-border-sm
+--color-border-focus
+```
+
+---
+
+## Textos
+
+```
+--color-text
+--color-text-secondary
+--color-text-muted
+--color-text-faint
+--color-text-disabled
+--color-text-inverse
+--color-text-tooltip
+```
+
+---
+
+## Estados
+
+```
+--color-success
+--color-warning
+--color-error
+--color-info
+```
+
+Fondos de estado:
+
+```
+--color-success-bg
+--color-warning-bg
+--color-error-bg
+--color-info-bg
+```
+
+---
+
+## Sombras
+
+```
+--shadow-sm
+--shadow-md
+--shadow-lg
+--shadow-xl
+```
+
+---
+
+## Scrollbar
+
+```
+--color-scrollbar
+--color-scrollbar-thumb
+```
+
+---
+
+# Convención de nombres
+
+Las variables siguen esta estructura:
 
 ```
 --color-[tipo]-[variante]
 ```
 
-| Tipo | Ejemplos de variante |
-|---|---|
-| `bg` | *(sin variante)*, `subtle`, `muted`, `input`, `card`, `tooltip` |
-| `text` | *(sin variante)*, `secondary`, `muted`, `faint`, `disabled`, `inverse` |
-| `border` | *(sin variante)*, `sm`, `focus` |
-| `color` | `success`, `warning`, `error`, `info` + sus `-bg` |
+Ejemplos:
 
-Mantén los nombres en inglés y en minúsculas con guiones.
+| Tipo     | Ejemplos                                             |
+| -------- | ---------------------------------------------------- |
+| `bg`     | `bg`, `bg-subtle`, `bg-muted`, `bg-input`            |
+| `text`   | `text`, `text-secondary`, `text-muted`, `text-faint` |
+| `border` | `border`, `border-sm`, `border-focus`                |
+| `state`  | `success`, `warning`, `error`, `info`                |
+
+---
+
+💡 **Ventaja del sistema**
+
+1. No necesitas usar `dark:` en cada componente.
+2. Si cambias un color, **toda la app se actualiza**.
+3. Mantiene **consistencia visual automática**.
