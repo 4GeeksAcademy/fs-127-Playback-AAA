@@ -41,11 +41,25 @@ const ProfileSidebar = ({ activeTab, setActiveTab }) => {
           Seguridad
         </div>
 
+        {/* ── Incidencias ────────────────────────── */}
+        <div onClick={() => setActiveTab("incidents")} className={linkClass("incidents")}>
+          ⚠️ Incidencias
+        </div>
+
         {/* ── Seller / Admin ────────────────────────── */}
         <div className="pt-2 mt-2 border-t border-gray-100">
           <div onClick={() => setActiveTab("seller")} className={linkClass("seller")}>
             {sellerLabel()}
           </div>
+
+          {(role === "seller" || role === "admin") && (
+            <div
+              onClick={() => setActiveTab("seller-incidents")}
+              className={linkClass("seller-incidents")}
+            >
+              🛠️ Incidencias tienda
+            </div>
+          )}
         </div>
       </div>
     </div>
