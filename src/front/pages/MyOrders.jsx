@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Clock, CreditCard, CheckCircle, Package, Truck, PackageCheck, XCircle } from "lucide-react";
+import { Clock, CreditCard, CheckCircle, Package, Truck, PackageCheck, XCircle, Star } from "lucide-react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderService from "../services/orderService";
+import { ReviewForm } from "../components/ReviewForm";
 
 export const MyOrders = () => {
 
   const { store } = useGlobalReducer();
   const { t, i18n } = useTranslation();
   const [orders, setOrders] = useState([]);
+  const [reviewing, setReviewing] = useState(null);
+  const [reviewed, setReviewed] = useState({});
 
   useEffect(() => {
     const token = store.token || localStorage.getItem("token");
     if (!token) return;
-
     orderService.getMyOrders(token).then(([data]) => {
       if (data) setOrders(data);
     });
@@ -86,26 +88,61 @@ export const MyOrders = () => {
             {/* PRODUCTOS */}
             <div className="p-6 space-y-6">
               {order.products.map(product => (
-                <div key={product.id} className="flex gap-4 items-center">
-                  <img
-                    src={product.image_url}
-                    alt={product.name?.[i18n.language]}
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium text-main">
-                      {product.name?.[i18n.language]}
-                    </p>
-                    <p className="text-sm text-muted">
-                      <span className="text-faint">
-                        {(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)} € / ud
-                      </span>{" "}
-                      × {product.quantity} {t("orders.units")}
+                <div key={product.id}>
+
+                  {/* Info del producto */}
+                  <div className="flex gap-4 items-center">
+                    <img
+                      src={product.image_url}
+                      alt={product.name?.[i18n.language]}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-main">
+                        {product.name?.[i18n.language]}
+                      </p>
+                      <p className="text-sm text-muted">
+                        <span className="text-faint">
+                          {(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)} € / ud
+                        </span>{" "}
+                        × {product.quantity} {t("orders.units")}
+                      </p>
+                    </div>
+                    <p className="font-semibold text-main">
+                      {(product.price * (1 - (product.discount || 0) / 100) * product.quantity).toFixed(2)} €
                     </p>
                   </div>
-                  <p className="font-semibold text-main">
-                    {(product.price * (1 - (product.discount || 0) / 100) * product.quantity).toFixed(2)} €
-                  </p>
+
+                  {/* Botón valorar — solo si entregado y no valorado */}
+                  {order.status === "delivered" && !reviewed[`${order.id}-${product.id}`] && reviewing?.productId !== product.id && (
+                    <button
+                      onClick={() => setReviewing({ productId: product.id, orderId: order.id })}
+                      className="mt-2 flex items-center gap-1 text-xs text-violet-600 hover:underline"
+                    >
+                      <Star size={13} />
+                      Valorar producto
+                    </button>
+                  )}
+
+                  {/* Formulario de reseña inline */}
+                  {reviewing?.productId === product.id && reviewing?.orderId === order.id && (
+                    <div className="mt-3 border-t border-main pt-3">
+                      <ReviewForm
+                        productId={product.id}
+                        orderId={order.id}
+                        onDone={() => {
+                          setReviewed(prev => ({ ...prev, [`${order.id}-${product.id}`]: true }));
+                          setReviewing(null);
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Confirmación si ya valoró */}
+                  {reviewed[`${order.id}-${product.id}`] && (
+                    <p className="mt-2 text-xs text-emerald-600">✓ {t("review.successTitle")}</p>
+                  )}
+
                 </div>
               ))}
             </div>
@@ -153,7 +190,6 @@ export const MyOrders = () => {
           </div>
         ))}
       </div>
-
     </div>
   );
 };

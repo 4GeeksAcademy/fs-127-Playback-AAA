@@ -11,29 +11,62 @@ const SettingsTab = () => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState(null);
 
+  // ─── Estado de imagen ─────────────────────────────────────────────────────
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [imageError, setImageError] = useState("");
+
+  // ─── Carga datos del seller ───────────────────────────────────────────────
   useEffect(() => {
     getSellerProfileService(store.token)
-      .then((data) => setForm({
-        store_name:             data.store_name || "",
-        description:            data.description || "",
-        phone:                  data.phone || "",
-        origin_address:         data.origin_address || "",
-        origin_city:            data.origin_city || "",
-        origin_zip:             data.origin_zip || "",
-        origin_country:         data.origin_country || "",
-        origin_community_code:  data.origin_community_code || "",
-        origin_province_code:   data.origin_province_code || "",
-      }))
+      .then((data) => {
+        setForm({
+          store_name:            data.store_name || "",
+          description:           data.description || "",
+          phone:                 data.phone || "",
+          origin_address:        data.origin_address || "",
+          origin_city:           data.origin_city || "",
+          origin_zip:            data.origin_zip || "",
+          origin_country:        data.origin_country || "",
+          origin_community_code: data.origin_community_code || "",
+          origin_province_code:  data.origin_province_code || "",
+          origin_community:      data.origin_community || "",
+          origin_province:       data.origin_province || "",
+        });
+        setPreview(data.logo_url || null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
+  // ─── Handler campos de texto ──────────────────────────────────────────────
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // ─── Handler imagen ───────────────────────────────────────────────────────
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageError("");
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setImageError("Formato no válido. Usa JPG, PNG o WEBP");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setImageError("La imagen no puede superar 2MB");
+      return;
+    }
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  // ─── Submit ───────────────────────────────────────────────────────────────
   const handleSave = async (e) => {
     e.preventDefault();
     setStatus("saving");
     try {
-      await updateSellerProfileService(store.token, form);
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      if (imageFile) fd.append("imagen", imageFile);
+      await updateSellerProfileService(store.token, fd);
       setStatus("success");
     } catch {
       setStatus("error");
@@ -54,6 +87,23 @@ const SettingsTab = () => {
           {t("dashboard.settings.storeInfo")}
         </h3>
 
+        {/* Logo de la tienda */}
+        <div className="flex flex-col items-center space-y-2 pb-2">
+          {preview ? (
+            <img src={preview} className="w-24 h-24 rounded-xl object-cover border border-main" />
+          ) : (
+            <div className="w-24 h-24 rounded-xl border-2 border-dashed border-main flex items-center justify-center text-xs text-faint">
+              Sin logo
+            </div>
+          )}
+          <label className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
+            {preview ? "Cambiar logo" : "Subir logo"}
+            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+          </label>
+          {imageError && <p className="text-xs text-red-500">{imageError}</p>}
+        </div>
+
+        {/* Nombre y teléfono */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs text-faint mb-1">
@@ -69,6 +119,7 @@ const SettingsTab = () => {
           </div>
         </div>
 
+        {/* Descripción */}
         <div>
           <label className="block text-xs text-faint mb-1">
             {t("dashboard.settings.description")}
@@ -82,7 +133,7 @@ const SettingsTab = () => {
           />
         </div>
 
-        {/* Dirección con desplegables */}
+        {/* Dirección */}
         <div className="border-t border-main pt-4">
           <h4 className="text-xs text-faint mb-3 font-medium">
             {t("dashboard.settings.originAddress")}
@@ -90,11 +141,12 @@ const SettingsTab = () => {
           <SellerAdressForm
             form={form}
             onChange={handleChange}
-onLocationChange={(fields) => setForm(prev => ({ ...prev, ...fields }))}
+            onLocationChange={(fields) => setForm(prev => ({ ...prev, ...fields }))}
           />
         </div>
       </div>
 
+      {/* Mensajes de estado */}
       {status === "success" && (
         <p className="text-sm text-emerald-600">{t("dashboard.settings.success")}</p>
       )}
@@ -102,6 +154,7 @@ onLocationChange={(fields) => setForm(prev => ({ ...prev, ...fields }))}
         <p className="text-sm text-red-500">{t("dashboard.settings.error")}</p>
       )}
 
+      {/* Botón guardar */}
       <button
         type="submit"
         disabled={status === "saving"}

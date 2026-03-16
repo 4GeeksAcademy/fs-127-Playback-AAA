@@ -25,6 +25,7 @@ export const PageDetailProduct = () => {
   useEffect(() => {
     productServices.getProduct(id).then(([data, error]) => {
       if (error) return console.error(error);
+       console.log("product.reviews:", data.reviews);
       setProduct(data);
     });
 
@@ -44,7 +45,11 @@ export const PageDetailProduct = () => {
     setTimeout(() => setToast(null), 2000);
   };
 
+  const [loadingCart, setLoadingCart] = useState(false); // ← añade esto
+
   const handleAddToCart = async () => {
+    if (loadingCart) return; // ← cortocircuito
+
     const token = store.token || localStorage.getItem("token");
 
     if (!token) {
@@ -60,7 +65,13 @@ export const PageDetailProduct = () => {
     setClicked(true);
     setTimeout(() => setClicked(false), 300);
 
-    const [, error] = await orderServices.addProductToCart(token, product.id, 1);
+    setLoadingCart(true); // ← bloquea
+    const [, error] = await orderServices.addProductToCart(
+      token,
+      product.id,
+      1,
+    );
+    setLoadingCart(false); // ← desbloquea
 
     if (error) {
       showToast(t("product.cartError"), "error");
@@ -78,41 +89,60 @@ export const PageDetailProduct = () => {
       </div>
     );
 
-  const enCarrito = store.cart?.find(item => item.id === product?.id)?.quantity || 0;
+  const enCarrito =
+    store.cart?.find((item) => item.id === product?.id)?.quantity || 0;
   const inStock = product.stock == null ? true : product.stock > 0;
   const stockAgotado = product.stock != null && enCarrito >= product.stock;
 
   const accordionItems = [
-    { label: t("product.descriptionLabel"), content: product.description || t("product.description") },
-    { label: t("product.featuresLabel"),    content: product.features    || t("product.features") },
-    { label: t("product.shippingLabel"),    content: product.shipping    || t("product.shipping") },
+    {
+      label: t("product.descriptionLabel"),
+      content: product.description || t("product.description"),
+    },
+    {
+      label: t("product.featuresLabel"),
+      content: product.features || t("product.features"),
+    },
+    {
+      label: t("product.shippingLabel"),
+      content: product.shipping || t("product.shipping"),
+    },
   ];
 
   return (
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
-
       {toast && (
-        <div className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
-          toast.type === "error"
-            ? "bg-red-600 dark:bg-red-500"
-            : "bg-stone-900 dark:bg-stone-100"
-        }`}>
-          {toast.type === "error" ? <X size={15} /> : <ShoppingCart size={15} />}
+        <div
+          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+            toast.type === "error"
+              ? "bg-red-600 dark:bg-red-500"
+              : "bg-stone-900 dark:bg-stone-100"
+          }`}
+        >
+          {toast.type === "error" ? (
+            <X size={15} />
+          ) : (
+            <ShoppingCart size={15} />
+          )}
           {toast.msg}
         </div>
       )}
 
       <div className="flex flex-col lg:flex-row gap-10">
-
         <div className="flex flex-col gap-3 lg:w-1/2">
           <div className="relative overflow-hidden bg-subtle">
             <img
               src={product.image_url}
               alt={product.name}
               className="w-full h-[420px] md:h-[560px] object-cover transition-all duration-500"
-              onError={(e) => (e.target.src = "https://placehold.co/600x700?text=Sin+imagen")}
+              onError={(e) =>
+                (e.target.src = "https://placehold.co/600x700?text=Sin+imagen")
+              }
             />
-            <FavoriteButton product={product} className="absolute top-2 right-2" />
+            <FavoriteButton
+              product={product}
+              className="absolute top-2 right-2"
+            />
           </div>
         </div>
 
@@ -127,7 +157,11 @@ export const PageDetailProduct = () => {
             {product.description || t("product.description")}
           </p>
           <span className="text-2xl font-semibold text-main">
-            <ProductPrice price={product.price} discount={product.discount} className="[&_span]:text-2xl" />
+            <ProductPrice
+              price={product.price}
+              discount={product.discount}
+              className="[&_span]:text-2xl"
+            />
           </span>
 
           {product.rating > 0 && (
@@ -164,13 +198,13 @@ export const PageDetailProduct = () => {
           {/* Botón añadir al carrito */}
           <button
             onClick={handleAddToCart}
-            disabled={!inStock || stockAgotado}
+            disabled={!inStock || stockAgotado || loadingCart}
             className={`flex items-center justify-center gap-3 w-full py-4 text-sm font-medium tracking-widest uppercase transition-all duration-300 ${
               !inStock || stockAgotado
                 ? "bg-muted text-faint cursor-not-allowed"
                 : clicked
-                ? "bg-violet-600 text-white scale-95"
-                : "bg-stone-900 hover:bg-stone-700 dark:bg-stone-100 dark:hover:bg-stone-300 dark:text-stone-900 text-white"
+                  ? "bg-violet-600 text-white scale-95"
+                  : "bg-stone-900 hover:bg-stone-700 dark:bg-stone-100 dark:hover:bg-stone-300 dark:text-stone-900 text-white"
             }`}
           >
             <ShoppingCart size={16} />
@@ -182,7 +216,6 @@ export const PageDetailProduct = () => {
       <Accordion items={accordionItems} />
       <ReviewRating product={product} />
       {hasBought && <ReviewForm productId={id} orderId={orderId} />}
-
     </div>
   );
 };

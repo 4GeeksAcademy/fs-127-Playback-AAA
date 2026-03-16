@@ -5,31 +5,35 @@ import { AlertCircle } from "lucide-react";
 import orderService from "../../../../services/orderService";
 
 const STATUS_STYLE = {
-  pending:    "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400",
-  paid:       "bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-400",
-  confirmed:  "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400",
-  processing: "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400",
-  shipped:    "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400",
-  delivered:  "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400",
-  cancelled:  "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
+  pending:
+    "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400",
+  paid: "bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-400",
+  confirmed: "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400",
+  processing:
+    "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400",
+  shipped:
+    "bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400",
+  delivered:
+    "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400",
+  cancelled: "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
 const NEXT_STATUSES = {
-  pending:    [],
-  paid:       ["confirmed", "cancelled"],
-  confirmed:  ["processing", "cancelled"],
+  pending: [],
+  paid: ["confirmed", "cancelled"],
+  confirmed: ["processing", "cancelled"],
   processing: ["shipped", "cancelled"],
-  shipped:    ["delivered"],
-  delivered:  [],
-  cancelled:  [],
+  shipped: ["delivered"],
+  delivered: [],
+  cancelled: [],
 };
 
 const PAYMENT_LABEL = {
-  credit_card:      "Tarjeta de crédito",
-  debit_card:       "Tarjeta de débito",
-  paypal:           "PayPal",
-  stripe:           "Stripe",
-  bank_transfer:    "Transferencia bancaria",
+  credit_card: "Tarjeta de crédito",
+  debit_card: "Tarjeta de débito",
+  paypal: "PayPal",
+  stripe: "Stripe",
+  bank_transfer: "Transferencia bancaria",
 };
 
 // ── Componente para pintar la dirección ──────────────────────────────────────
@@ -104,13 +108,19 @@ const OrdersTab = () => {
   };
 
   const handleSaveStatus = async () => {
+       const token = store.token || localStorage.getItem("token"); // ← asegúrate de que lo lee
+    console.log("token en handleSaveStatus:", token);
     if (!selected || newStatus === selected.status) {
       closeModal();
       return;
     }
 
     setSaving(true);
-    const [, error] = await orderService.updateOrderStatus(store.token, selected.id, newStatus);
+    const [, error] = await orderService.updateOrderStatus(
+      store.token,
+      selected.id,
+      newStatus,
+    );
     setSaving(false);
 
     if (error) {
@@ -132,7 +142,6 @@ const OrdersTab = () => {
 
   return (
     <div className="pt-6 space-y-4">
-
       {toast && (
         <div className="fixed bottom-6 right-6 bg-red-600 dark:bg-red-500 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
           <AlertCircle size={15} />
@@ -149,12 +158,24 @@ const OrdersTab = () => {
         <table className="w-full text-sm">
           <thead className="bg-subtle text-faint text-xs uppercase tracking-wide">
             <tr>
-              <th className="text-left px-4 py-3">{t("dashboard.orders.table.order")}</th>
-              <th className="text-left px-4 py-3">{t("dashboard.orders.table.customer")}</th>
-              <th className="text-left px-4 py-3">{t("dashboard.orders.table.products")}</th>
-              <th className="text-right px-4 py-3">{t("dashboard.orders.table.total")}</th>
-              <th className="text-right px-4 py-3">{t("dashboard.orders.table.date")}</th>
-              <th className="text-right px-4 py-3">{t("dashboard.orders.table.status")}</th>
+              <th className="text-left px-4 py-3">
+                {t("dashboard.orders.table.order")}
+              </th>
+              <th className="text-left px-4 py-3">
+                {t("dashboard.orders.table.customer")}
+              </th>
+              <th className="text-left px-4 py-3">
+                {t("dashboard.orders.table.products")}
+              </th>
+              <th className="text-right px-4 py-3">
+                {t("dashboard.orders.table.total")}
+              </th>
+              <th className="text-right px-4 py-3">
+                {t("dashboard.orders.table.date")}
+              </th>
+              <th className="text-right px-4 py-3">
+                {t("dashboard.orders.table.status")}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[rgb(var(--color-border))]">
@@ -171,26 +192,34 @@ const OrdersTab = () => {
                   onClick={() => openModal(pedido)}
                   className="hover:bg-subtle transition cursor-pointer"
                 >
-                  <td className="px-4 py-3 text-faint font-mono text-xs">#{pedido.id}</td>
+                  <td className="px-4 py-3 text-faint font-mono text-xs">
+                    #{pedido.id}
+                  </td>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-main">{pedido.customer || "—"}</p>
+                    <p className="font-medium text-main">
+                      {pedido.customer || "—"}
+                    </p>
                     {pedido.customer_email && (
-                      <p className="text-xs text-faint">{pedido.customer_email}</p>
+                      <p className="text-xs text-faint">
+                        {pedido.customer_email}
+                      </p>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      {pedido.products.slice(0, 3).map(
-                        (prod) =>
-                          prod.image_url && (
-                            <img
-                              key={prod.id}
-                              src={prod.image_url}
-                              alt="prod"
-                              className="w-7 h-7 rounded object-cover border border-main"
-                            />
-                          ),
-                      )}
+                      {pedido.products
+                        .slice(0, 3)
+                        .map(
+                          (prod) =>
+                            prod.image_url && (
+                              <img
+                                key={prod.id}
+                                src={prod.image_url}
+                                alt="prod"
+                                className="w-7 h-7 rounded object-cover border border-main"
+                              />
+                            ),
+                        )}
                       {pedido.products.length > 3 && (
                         <span className="text-xs text-faint ml-1">
                           +{pedido.products.length - 3}
@@ -199,7 +228,7 @@ const OrdersTab = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold text-main">
-                    €{pedido.total_price}
+                    €{Number(pedido.total_price).toFixed(2)}
                   </td>
                   <td className="px-4 py-3 text-right text-faint text-xs">
                     {new Date(pedido.created_at).toLocaleDateString("es-ES")}
@@ -247,7 +276,10 @@ const OrdersTab = () => {
                     ` · ${t(`dashboard.orders.payment.${selected.payment_method}`, { defaultValue: selected.payment_method })}`}
                 </p>
               </div>
-              <button onClick={closeModal} className="text-faint hover:text-main text-xl font-bold">
+              <button
+                onClick={closeModal}
+                className="text-faint hover:text-main text-xl font-bold"
+              >
                 ✕
               </button>
             </div>
@@ -257,7 +289,9 @@ const OrdersTab = () => {
               <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
                 {t("dashboard.orders.modal.customer")}
               </p>
-              <p className="font-semibold text-main">{selected.customer || "—"}</p>
+              <p className="font-semibold text-main">
+                {selected.customer || "—"}
+              </p>
               {selected.customer_email && (
                 <p className="text-sm text-muted">{selected.customer_email}</p>
               )}
@@ -283,7 +317,8 @@ const OrdersTab = () => {
             {/* Bloque: Productos */}
             <div className="px-6 py-4 border-b border-main">
               <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
-                {t("dashboard.orders.modal.productsSection")} ({selected.products.length})
+                {t("dashboard.orders.modal.productsSection")} (
+                {selected.products.length})
               </p>
               <div className="space-y-3">
                 {selected.products.map((producto) => (
@@ -296,8 +331,12 @@ const OrdersTab = () => {
                       />
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-main truncate">{producto.name}</p>
-                      <p className="text-xs text-faint">x{producto.quantity} · €{producto.price} c/u</p>
+                      <p className="text-sm font-medium text-main truncate">
+                        {producto.name}
+                      </p>
+                      <p className="text-xs text-faint">
+                        x{producto.quantity} · €{producto.price} c/u
+                      </p>
                     </div>
                     <p className="text-sm font-semibold text-sub flex-shrink-0">
                       €{(producto.price * producto.quantity).toFixed(2)}

@@ -77,6 +77,8 @@ async function getSellerOrders(token) {
 }
 
 async function updateOrderStatus(token, orderId, status) {
+       console.log("token:", token); // ← verifica que no es null/undefined
+    console.log("orderId:", orderId, "status:", status);
     const response = await fetch(`${backendUrl}/api/order/seller-orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
@@ -86,6 +88,8 @@ async function updateOrderStatus(token, orderId, status) {
         body: JSON.stringify({ status })
     });
     const data = await response.json();
+        console.log("respuesta backend:", response.status, data); // ← añade esto
+
     if (!response.ok) return [null, data.description || "Error al actualizar estado"];
     return [data, null];
 }
