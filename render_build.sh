@@ -11,5 +11,5 @@ pipenv install
 
 pipenv run upgrade
 
-pipenv run python src/api/seeds/seed_categories.py
-pipenv run python src/api/seeds/seed_data.py
+pipenv run seed_categories
+pipenv run seed_data
