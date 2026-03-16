@@ -14,7 +14,7 @@ from api.models.seller import Seller
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
 # Umbral para considerar "pocas unidades"
-LOW_STOCK_THRESHOLD = 5
+LOW_STOCK_THRESHOLD = 1
 
 
 def translate_text(text, target_lang):
@@ -296,7 +296,8 @@ def get_top_sales():
 
     return jsonify([{
         **p.to_dict(locale=locale),  
-        "total_sold": int(total_sold)
+        "total_sold": int(total_sold),
+        "stock": p.stock  
     } for p, total_sold in result]), 200
 
 

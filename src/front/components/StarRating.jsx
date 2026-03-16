@@ -3,7 +3,7 @@ export const StarRating = ({ rating }) => (
     {[1, 2, 3, 4, 5].map((s) => (
       <svg
         key={s}
-        className={`w-3.5 h-3.5 ${s <= Math.round(rating) ? "text-amber-400" : "text-gray-200"}`}
+        className={`w-3.5 h-3.5 ${s <= Math.round(rating) ? "text-amber-400" : "text-gray-200 dark:text-gray-700"}`}
         fill="currentColor"
         viewBox="0 0 20 20"
       >

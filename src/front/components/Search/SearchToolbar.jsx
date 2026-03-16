@@ -128,7 +128,7 @@ export const SearchToolbar = () => {
           className={`flex items-center gap-2 h-9 px-4 rounded-full border text-sm font-medium transition
             ${filtersOpen || activeFilters.length > 0
               ? "border-violet-500 bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400"
-              : "border-theme-border bg-theme-input text-theme-secondary hover:bg-theme-muted"
+              : "border-main bg-[rgb(var(--color-bg-input))] text-sub hover:bg-muted"
             }`}
         >
           <SlidersHorizontal className="w-4 h-4" />
@@ -176,7 +176,7 @@ export const SearchToolbar = () => {
         <button
           key={f.key}
           onClick={f.clear}
-          className="flex items-center gap-1.5 h-9 px-3 rounded-full border border-theme-border bg-theme-input text-xs text-theme-secondary hover:bg-theme-muted transition capitalize"
+          className="flex items-center gap-1.5 h-9 px-3 rounded-full border border-main bg-[rgb(var(--color-bg-input))] text-xs text-sub hover:bg-muted transition capitalize"
         >
           {f.label}
           <X className="w-3 h-3" />

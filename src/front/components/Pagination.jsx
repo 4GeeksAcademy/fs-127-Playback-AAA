@@ -17,7 +17,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 border border-gray-200 bg-theme-bg text-theme-text hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="p-2 border border-main bg-main text-main hover:border-[rgb(var(--color-border-focus))] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
         <ArrowLeft size={16} />
       </button>
@@ -30,7 +30,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           className={`w-9 h-9 text-sm font-medium border transition-all
             ${page === currentPage
               ? "bg-gray-950 text-white border-gray-950 dark:bg-violet-500 dark:text-white dark:border-violet-500"
-              : "border-theme-border hover:border-gray-400 bg-theme-bg text-theme-text"
+              : "border-main hover:border-[rgb(var(--color-border-focus))] bg-main text-main"
             }`}
         >
           {page}
@@ -42,7 +42,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 border border-gray-200 bg-theme-bg text-theme-text hover:border-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="p-2 border border-main bg-main text-main hover:border-[rgb(var(--color-border-focus))] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
         <ArrowRight size={16} />
       </button>

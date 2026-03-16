@@ -4,9 +4,10 @@
     "topSales": "Top Ventas",
     "featuredCategories": "Categorías Destacadas",
     "heroBannerSpan1": "¡Oferta especial!",
-    "heroBannerSpan2": "Ver Ofertas"
+    "heroBannerSpan2": "Ver Ofertas",
+    "featuredProducts": "Productos destacados",
+    "viewSubcategory": "Ver subcategoría"
   },
-
   "product": {
     "noFound": "No se han encontrado productos",
     "descriptionLabel": "Descripción",
@@ -17,11 +18,14 @@
     "shipping": "Envío gratuito en pedidos superiores a 50 €. Devoluciones aceptadas durante 30 días.",
     "inStock": "En stock",
     "outOfStock": "Sin stock",
+    "noStock": "No hay más stock disponible",
     "available": "disponibles",
     "addToCart": "Añadir a la cesta",
-    "reviews": "Opiniones de clientes"
+    "addedToCart": "Producto añadido a tu cesta",
+    "reviews": "Opiniones de clientes",
+    "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
+    "cartError": "Error al añadir al carrito"
   },
-
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
     "signupTitle": "Crea tu cuenta",
@@ -64,7 +68,6 @@
     "resetButton": "Restablecer contraseña",
     "resetSuccess": "Tu contraseña ha sido restablecida correctamente. Ahora puedes iniciar sesión con tu nueva contraseña."
   },
-
   "enums": {
     "productCondition": {
       "new": "Nuevo",
@@ -73,7 +76,6 @@
       "broken": "Estropeado"
     }
   },
-
   "search": {
     "filters": "Filtros",
     "sort": "Ordenar",
@@ -85,6 +87,7 @@
     "searching": "Buscando...",
     "productCount_one": "{{count}} producto",
     "productCount_other": "{{count}} productos",
+    "productCount_many": "{{count}} productos",
     "allProducts": "Todos los productos",
     "priceSection": "Precio",
     "priceMin": "Mín",
@@ -108,7 +111,6 @@
     "filterChip_on_sale": "En oferta",
     "filterChip_low_stock": "Pocas unidades"
   },
-
   "seller": {
     "registerTitle": "Conviértete en vendedor",
     "stepAccount": "Cuenta",
@@ -163,6 +165,329 @@
     "resubmit": "Reenviar solicitud",
     "rejectionReason": "Motivo del rechazo",
     "cancelApplicationDesc": "Si no deseas corregir la solicitud, puedes cancelarla y empezar de nuevo.",
-    "cancelApplication": "Cancelar solicitud"
+    "cancelApplication": "Cancelar solicitud",
+    "stripe": {
+      "title": "Conecta tu cuenta de pagos",
+      "desc": "Para recibir pagos de tus ventas necesitas conectar tu cuenta con Stripe. El proceso tarda menos de 5 minutos.",
+      "opening": "Abriendo...",
+      "cta": "Registrarme en Stripe →"
+    }
+  },
+  "checkout": {
+    "successTitle": "¡Pago realizado!",
+    "successMsg": "Tu pedido está siendo procesado. Te redirigimos a tus pedidos...",
+    "payNow": "Pagar ahora",
+    "processing": "Procesando pago...",
+    "securePayment": "Pago seguro gestionado por Stripe",
+    "summary": "Resumen del pedido",
+    "subtotal": "Subtotal",
+    "tax": "IVA incluido (21%)",
+    "shipping": "Envío",
+    "freeShipping": "Gratis",
+    "discount": "Descuento",
+    "total": "Total",
+    "goToPayment": "Ir al pago",
+    "continueToPayment": "Continuar al pago",
+    "completePaymentLeft": "Completa el pago en el formulario de la izquierda.",
+    "addNewAddress": "Añadir nueva dirección",
+    "newAddress": "Nueva dirección",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "selectAddress": "Selecciona dirección de envío y facturación",
+    "shippingAddress": "Dirección de envío",
+    "billingAddress": "Dirección de facturación",
+    "sameAsBilling": "Usar la misma dirección para facturación",
+    "enterPayment": "Introduce tu método de pago",
+    "couponQuestion": "¿Tienes un código de descuento?",
+    "couponPlaceholder": "Introduce tu código",
+    "couponApply": "Aplicar",
+    "couponApplied": "Cupón aplicado",
+    "couponInvalid": "Código inválido o expirado",
+    "addr": {
+      "fullName": "Nombre completo",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "city": "Ciudad",
+      "province": "Provincia (opcional)",
+      "postalCode": "Código postal",
+      "country": "País"
+    }
+  },
+  "cart": {
+    "title": "Carrito",
+    "empty": "Tu carrito está vacío",
+    "remove": "Eliminar"
+  },
+  "orders": {
+    "title": "Historial de pedidos",
+    "empty": "No tienes pedidos todavía",
+    "order": "Pedido",
+    "date": "Fecha",
+    "status": "Estado",
+    "units": "Unidades",
+    "shippingCost": "Gastos de envío",
+    "shippingAddress": "Dirección de envío",
+    "billingAddress": "Dirección de facturación"
+  },
+  "favorites": {
+    "title": "Tus favoritos",
+    "empty": "No tienes favoritos todavía"
+  },
+  "profile": {
+    "myAccount": "Mi Cuenta",
+    "tabs": {
+      "dashboard": "Panel de control",
+      "info": "Información",
+      "addresses": "Direcciones",
+      "security": "Seguridad"
+    },
+    "manage": "Gestionar",
+    "userPanel": "Panel de Usuario",
+    "info": {
+      "currentInfo": "Información Actual",
+      "editInfo": "Editar Información",
+      "nameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "El apellido es obligatorio",
+      "imageFormat": "Formato no permitido. Usa JPG, PNG o WEBP.",
+      "imageSize": "La imagen no puede superar los 2MB.",
+      "imageUploadError": "Error al subir imagen",
+      "imageUpdated": "Imagen actualizada correctamente",
+      "connectionError": "Error de conexión",
+      "uploading": "Subiendo...",
+      "changeImage": "Cambiar Imagen",
+      "saving": "Guardando...",
+      "saveChanges": "Guardar Cambios",
+      "confirmChanges": "¿Estás seguro de guardar los cambios?",
+      "confirm": "Confirmar",
+      "close": "Cerrar",
+      "profileUpdated": "Perfil actualizado correctamente"
+    },
+    "addresses": {
+      "title": "Mis Direcciones",
+      "main": "Dirección Principal",
+      "setMain": "Usar como principal",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "empty": "No tienes direcciones guardadas.",
+      "addNew": "Añadir Nueva Dirección",
+      "save": "Guardar Dirección",
+      "saved": "Dirección guardada correctamente",
+      "municipality": "Municipio"
+    },
+    "security": {
+      "title": "Cambiar Contraseña",
+      "currentPassword": "Contraseña actual",
+      "update": "Actualizar contraseña",
+      "updated": "Contraseña actualizada correctamente",
+      "error": "Error al actualizar la contraseña"
+    }
+  },
+  "admin": {
+    "rejectTitle": "Rechazar solicitud",
+    "rejectDesc1": "Indica el motivo del rechazo de",
+    "rejectDesc2": ". El vendedor podrá leerlo y corregir su solicitud.",
+    "rejectPlaceholder": "Ej: El NIF introducido no es válido. Por favor revísalo y vuelve a enviar la solicitud.",
+    "confirmReject": "Confirmar rechazo",
+    "verify": "Verificar",
+    "reject": "Rechazar",
+    "filterAll": "Todos",
+    "filterPending": "Pendientes",
+    "filterVerified": "Verificados",
+    "filterRejected": "Rechazados",
+    "results": "resultados",
+    "noSellers": "No hay vendedores con este filtro.",
+    "status": {
+      "pending": "Pendiente",
+      "verified": "Verificado",
+      "rejected": "Rechazado"
+    },
+    "detail": {
+      "userData": "Datos del usuario",
+      "name": "Nombre",
+      "email": "Email",
+      "role": "Rol",
+      "account": "Cuenta",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "storeData": "Datos de la tienda",
+      "store": "Tienda",
+      "nifCif": "NIF / CIF",
+      "phone": "Teléfono",
+      "description": "Descripción",
+      "shippingAddress": "Dirección de envío",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "zip": "CP",
+      "country": "País",
+      "accountId": "Account ID",
+      "accountCreated": "Cuenta creada",
+      "yes": "Sí",
+      "no": "No",
+      "onboarding": "Onboarding",
+      "completed": "Completado",
+      "pending": "Pendiente",
+      "incidents": "Incidencias",
+      "inProducts": "En productos",
+      "inOrders": "En pedidos",
+      "request": "Solicitud"
+    },
+    "panelTitle": "Panel de administración",
+    "panelDesc": "Gestiona vendedores, usuarios e incidencias de la plataforma.",
+    "tabs": {
+      "stats": "Estadísticas",
+      "sellers": "Vendedores",
+      "users": "Usuarios",
+      "incidents": "Incidencias"
+    }
+  },
+  "dashboard": {
+    "seller": {
+      "title": "Mi Tienda",
+      "desc": "Gestiona tus pedidos, productos y ganancias desde aquí.",
+      "tabs": {
+        "overview": "Resumen",
+        "orders": "Pedidos",
+        "products": "Productos",
+        "earnings": "Ganancias",
+        "settings": "Tienda"
+      }
+    },
+    "earnings": {
+      "loading": "Cargando ganancias…",
+      "totalRevenue": "Ingresos totales",
+      "completedOrders": "Pedidos completados",
+      "avgTicket": "Ticket medio",
+      "revenueByMonth": "Ingresos por mes",
+      "lastMovements": "Últimos movimientos",
+      "order": "Pedido",
+      "noMovements": "No hay movimientos aún."
+    },
+    "orders": {
+      "loading": "Cargando pedidos…",
+      "found": "pedidos encontrados",
+      "noOrders": "No tienes pedidos aún.",
+      "noAddress": "No disponible",
+      "table": {
+        "order": "Pedido",
+        "customer": "Cliente",
+        "products": "Productos",
+        "total": "Total",
+        "date": "Fecha",
+        "status": "Estado"
+      },
+      "modal": {
+        "customer": "Cliente",
+        "addresses": "Direcciones",
+        "shipping": "Envío",
+        "billing": "Facturación",
+        "productsSection": "Productos",
+        "summary": "Resumen",
+        "statusSection": "Estado del pedido",
+        "current": "(actual)",
+        "saving": "Guardando…",
+        "saveStatus": "Guardar cambio de estado"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "paid": "Pagado",
+        "confirmed": "Confirmado",
+        "processing": "En preparación",
+        "shipped": "Enviado",
+        "delivered": "Entregado",
+        "cancelled": "Cancelado"
+      },
+      "payment": {
+        "credit_card": "Tarjeta de crédito",
+        "debit_card": "Tarjeta de débito",
+        "paypal": "PayPal",
+        "stripe": "Stripe",
+        "bank_transfer": "Transferencia bancaria"
+      }
+    },
+    "products": {
+      "loading": "Cargando productos…",
+      "count": "productos",
+      "newProduct": "+ Nuevo producto",
+      "noProducts": "No tienes productos aún.",
+      "noStock": "Sin stock",
+      "confirmDelete": "¿Eliminar este producto?",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "deleted": "Producto eliminado",
+      "stockError": "Error al actualizar stock",
+      "saved": "Producto guardado",
+      "table": {
+        "product": "Producto",
+        "price": "Precio",
+        "stock": "Stock",
+        "condition": "Condición"
+      },
+      "modal": {
+        "editTitle": "Editar producto",
+        "newTitle": "Nuevo producto",
+        "changeImage": "Cambiar imagen",
+        "uploadImage": "Subir imagen",
+        "noImage": "Sin imagen",
+        "imageRequired": "La imagen es obligatoria.",
+        "formatError": "Usa JPG, PNG o WEBP.",
+        "sizeError": "Máximo 2MB.",
+        "name": "Nombre",
+        "category": "Categoría",
+        "subcategory": "Subcategoría",
+        "item": "Item",
+        "price": "Precio (€)",
+        "stock": "Stock",
+        "discount": "Descuento (%)",
+        "size": "Talla",
+        "weight": "Peso (kg)",
+        "condition": "Condición",
+        "description": "Descripción",
+        "selectCategory": "Selecciona categoría",
+        "selectSubcategory": "Selecciona subcategoría",
+        "selectItem": "Selecciona item",
+        "saving": "Guardando…",
+        "save": "Guardar"
+      }
+    },
+    "overview": {
+      "loading": "Cargando resumen…",
+      "salesThisMonth": "Ventas este mes",
+      "pendingOrders": "Pedidos pendientes",
+      "activeProducts": "Productos activos",
+      "noStock": "sin stock",
+      "attention": "ATENCIÓN",
+      "recentActivity": "Actividad reciente",
+      "noActivity": "No hay actividad aún.",
+      "customer": "Cliente"
+    },
+    "settings": {
+      "loading": "Cargando…",
+      "storeInfo": "Información de la tienda",
+      "storeName": "Nombre de la tienda",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "zip": "Código postal",
+      "country": "País",
+      "description": "Descripción breve",
+      "originAddress": "Dirección de origen",
+      "saving": "Guardando…",
+      "save": "Guardar cambios",
+      "success": "Guardado correctamente.",
+      "error": "Error al guardar."
+    }
+  },
+  "review": {
+    "title": "Escribe tu reseña",
+    "ratingRequired": "Por favor selecciona una puntuación.",
+    "successTitle": "Reseña enviada con éxito",
+    "successMsg": "Gracias por compartir tu opinión.",
+    "rating": "Puntuación",
+    "titleLabel": "Título",
+    "titlePlaceholder": "Resume tu experiencia",
+    "commentLabel": "Comentario",
+    "commentPlaceholder": "Cuéntanos tu experiencia con el producto...",
+    "sending": "Enviando...",
+    "submit": "Enviar reseña"
   }
 }

@@ -1,7 +1,4 @@
-
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-
 
 async function hasBought(productId, token) {
     const response = await fetch(`${backendUrl}/api/order/has-bought/${productId}`, {
@@ -15,9 +12,9 @@ async function hasBought(productId, token) {
 async function createReview(body, token) {
     const response = await fetch(`${backendUrl}/api/review`, {
         method: "POST",
-        headers: { 
+        headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}` 
+            Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(body)
     });
@@ -37,7 +34,7 @@ async function getCart(token) {
     return [data, null];
 }
 
-async function checkout(token, shippingAddressId, billingAddressId) {
+async function checkout(token, shippingAddressId, billingAddressId, couponCode = null) {
     const response = await fetch(`${backendUrl}/api/order/checkout`, {
         method: "POST",
         headers: {
@@ -47,7 +44,8 @@ async function checkout(token, shippingAddressId, billingAddressId) {
         body: JSON.stringify({
             shipping_address_id: shippingAddressId,
             billing_address_id: billingAddressId,
-            payment_method: "credit_card"
+            payment_method: "credit_card",
+            coupon_code: couponCode
         })
     });
     const data = await response.json();
@@ -55,8 +53,91 @@ async function checkout(token, shippingAddressId, billingAddressId) {
     return [data, null];
 }
 
-const orderServices = { hasBought, createReview, checkout, getCart };
+async function addProductToCart(token, productId, quantity = 1) {
+    const response = await fetch(`${backendUrl}/api/order/add-product`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ product_id: productId, quantity })
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al añadir producto"];
+    return [data, null];
+}
 
-export default orderServices;
+async function getSellerOrders(token) {
+    const response = await fetch(`${backendUrl}/api/order/seller-orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al cargar pedidos"];
+    return [data, null];
+}
 
+async function updateOrderStatus(token, orderId, status) {
+       console.log("token:", token); // ← verifica que no es null/undefined
+    console.log("orderId:", orderId, "status:", status);
+    const response = await fetch(`${backendUrl}/api/order/seller-orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+    });
+    const data = await response.json();
+        console.log("respuesta backend:", response.status, data); // ← añade esto
 
+    if (!response.ok) return [null, data.description || "Error al actualizar estado"];
+    return [data, null];
+}
+
+async function getMyOrders(token) {
+    const response = await fetch(`${backendUrl}/api/order/my-orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al cargar pedidos"];
+    return [data, null];
+}
+
+async function removeProductFromCart(token, productId) {
+    const response = await fetch(`${backendUrl}/api/order/product/${productId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al eliminar producto"];
+    return [data, null];
+}
+
+async function applyCoupon(token, code) {
+    const response = await fetch(`${backendUrl}/api/order/apply-coupon`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ code })
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.msg || "Código inválido"];
+    return [data, null];
+}
+
+const orderService = {
+    hasBought,
+    createReview,
+    checkout,
+    getCart,
+    addProductToCart,
+    getSellerOrders,
+    updateOrderStatus,
+    getMyOrders,
+    removeProductFromCart,
+    applyCoupon
+};
+
+export default orderService;

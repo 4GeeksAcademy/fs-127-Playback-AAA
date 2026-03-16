@@ -3,6 +3,7 @@
 // Gestiona el estado, la carga de datos, los filtros y el modal de rechazo.
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import useGlobalReducer from '../../../../../hooks/useGlobalReducer';
 import { getSellersService, updateSellerStatusService } from '../../../../../services/adminService';
 import SellerRow    from './SellerRow';
@@ -10,6 +11,7 @@ import RejectModal  from './RejectModal';
 
 const SellersTab = ({ onPendingChange }) => {
   const { store } = useGlobalReducer();
+  const { t } = useTranslation();
 
   // Lista de vendedores cargados desde el backend
   const [sellers, setSellers] = useState([]);
@@ -62,6 +64,13 @@ const SellersTab = ({ onPendingChange }) => {
     await handleStatus(rejectTarget.id, 'rejected', reason);
   };
 
+  const FILTERS = [
+    ['', t("admin.filterAll")],
+    ['pending',  t("admin.filterPending")],
+    ['verified', t("admin.filterVerified")],
+    ['rejected', t("admin.filterRejected")],
+  ];
+
   return (
     <div className="space-y-4 pt-4">
 
@@ -76,29 +85,29 @@ const SellersTab = ({ onPendingChange }) => {
 
       {/* Filtros de estado + contador de resultados */}
       <div className="flex gap-2 flex-wrap">
-        {[['', 'Todos'], ['pending', 'Pendientes'], ['verified', 'Verificados'], ['rejected', 'Rechazados']].map(([val, label]) => (
+        {FILTERS.map(([val, label]) => (
           <button key={val} onClick={() => setFilter(val)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition
-              ${filter === val ? 'bg-purple-600 text-white' : 'bg-theme-muted text-theme-secondary hover:bg-theme-subtle border border-theme-border'}`}>
+              ${filter === val ? 'bg-purple-600 text-white' : 'bg-muted text-sub hover:bg-subtle border border-main'}`}>
             {label}
           </button>
         ))}
-        <span className="ml-auto text-sm text-theme-muted self-center">{sellers.length} resultados</span>
+        <span className="ml-auto text-sm text-muted self-center">{sellers.length} {t("admin.results")}</span>
       </div>
 
       {/* Mensaje de error si la petición falla */}
       {error && (
-        <div className="rounded-xl bg-theme-error-bg px-4 py-2.5 text-sm text-theme-error">{error}</div>
+        <div className="rounded-xl bg-[rgb(var(--color-error-bg))] px-4 py-2.5 text-sm text-[rgb(var(--color-error))]">{error}</div>
       )}
 
       {/* Lista de vendedores */}
-      <div className="border border-theme-border rounded-2xl overflow-hidden divide-y divide-theme-border">
+      <div className="border border-main rounded-2xl overflow-hidden divide-y divide-[rgb(var(--color-border))]">
         {loading
           ? <div className="flex justify-center py-12">
               <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
             </div>
           : sellers.length === 0
-            ? <p className="text-theme-muted text-sm text-center py-12">No hay vendedores con este filtro.</p>
+            ? <p className="text-muted text-sm text-center py-12">{t("admin.noSellers")}</p>
             : sellers.map(seller => (
                 <SellerRow
                   key={seller.id}

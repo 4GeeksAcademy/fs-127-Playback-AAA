@@ -48,7 +48,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-subtle flex">
       <ProfileSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}

@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
+import orderService from "../../../../services/orderService";
 
 const EarningTab = () => {
   const { store } = useGlobalReducer();
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    //Hacemos el fetch para obtener los pedidos del vendedor
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/seller-orders`, {
-      headers: { Authorization: `Bearer ${store.token}` },
-    })
-      .then((r) => r.json())
-      .then(setOrders)
-      .finally(() => setLoading(false));
+    orderService.getSellerOrders(store.token).then(([data]) => {
+      if (data) setOrders(data);
+      setLoading(false);
+    });
   }, []);
 
   if (loading)
     return (
-      <p className="text-center text-sm text-gray-400 mt-10 animate-pulse">
-        Cargando ganancias…
+      <p className="text-center text-sm text-faint mt-10 animate-pulse">
+        {t("dashboard.earnings.loading")}
       </p>
     );
 
@@ -51,29 +51,35 @@ const EarningTab = () => {
     <div className="pt-6 space-y-6">
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl p-5 border border-purple-200 bg-purple-50">
-          <p className="text-2xl font-bold text-purple-600">
+        <div className="rounded-xl p-5 border border-purple-200 dark:border-purple-900 bg-purple-50 dark:bg-purple-950">
+          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
             €{totalGanado.toFixed(2)}
           </p>
-          <p className="text-xs text-gray-500 mt-0.5">Ingresos totales</p>
+          <p className="text-xs text-muted mt-0.5">
+            {t("dashboard.earnings.totalRevenue")}
+          </p>
         </div>
-        <div className="rounded-xl p-5 border border-gray-200">
-          <p className="text-2xl font-bold text-gray-800">{totalPedidos}</p>
-          <p className="text-xs text-gray-500 mt-0.5">Pedidos completados</p>
+        <div className="rounded-xl p-5 border border-main">
+          <p className="text-2xl font-bold text-main">{totalPedidos}</p>
+          <p className="text-xs text-muted mt-0.5">
+            {t("dashboard.earnings.completedOrders")}
+          </p>
         </div>
-        <div className="rounded-xl p-5 border border-gray-200">
-          <p className="text-2xl font-bold text-gray-800">
+        <div className="rounded-xl p-5 border border-main">
+          <p className="text-2xl font-bold text-main">
             €{ticketMedio.toFixed(2)}
           </p>
-          <p className="text-xs text-gray-500 mt-0.5">Ticket medio</p>
+          <p className="text-xs text-muted mt-0.5">
+            {t("dashboard.earnings.avgTicket")}
+          </p>
         </div>
       </div>
 
       {/* Gráfico de barras por mes */}
       {meses.length > 0 && (
-        <div className="border border-gray-200 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-4">
-            Ingresos por mes
+        <div className="border border-main rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-main mb-4">
+            {t("dashboard.earnings.revenueByMonth")}
           </h3>
           <div className="flex items-end gap-3" style={{ height: "144px" }}>
             {meses.map(([mes, valor]) => {
@@ -82,18 +88,15 @@ const EarningTab = () => {
                 4,
               );
               return (
-                <div
-                  key={mes}
-                  className="flex-1 flex flex-col items-center gap-1"
-                >
-                  <span className="text-[10px] text-gray-400">
+                <div key={mes} className="flex-1 flex flex-col items-center gap-1">
+                  <span className="text-[10px] text-faint">
                     €{valor.toFixed(0)}
                   </span>
                   <div
                     className="w-full rounded-t-md bg-purple-500 hover:bg-purple-600 transition-all"
                     style={{ height: `${barHeight}px` }}
                   />
-                  <span className="text-[11px] text-gray-400">{mes}</span>
+                  <span className="text-[11px] text-faint">{mes}</span>
                 </div>
               );
             })}
@@ -103,10 +106,10 @@ const EarningTab = () => {
 
       {/* Últimos pedidos con ganancia */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">
-          Últimos movimientos
+        <h3 className="text-sm font-semibold text-main mb-3">
+          {t("dashboard.earnings.lastMovements")}
         </h3>
-        <div className="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+        <div className="divide-y divide-[rgb(var(--color-border))] border border-main rounded-xl overflow-hidden">
           {orders.slice(0, 10).map((o) => {
             const ganancia = o.products.reduce(
               (s, p) => s + p.price * p.quantity,
@@ -116,13 +119,14 @@ const EarningTab = () => {
             return (
               <div
                 key={o.id}
-                className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-50"
+                className="flex items-center justify-between px-4 py-3 text-sm hover:bg-subtle"
               >
                 <div>
-                  <p className="font-medium text-gray-800">
-                    Pedido #{o.id} — {o.customer || "Cliente"}
+                  <p className="font-medium text-main">
+                    {t("dashboard.earnings.order")} #{o.id} —{" "}
+                    {o.customer || t("dashboard.overview.customer")}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-faint mt-0.5">
                     {new Date(o.created_at).toLocaleDateString("es-ES")} ·{" "}
                     {o.products.length} producto
                     {o.products.length > 1 ? "s" : ""}
@@ -131,14 +135,16 @@ const EarningTab = () => {
                 <span
                   className={`font-semibold ${cancelado ? "text-red-500" : "text-emerald-600"}`}
                 >
-                  {cancelado ? "Cancelado" : `+€${ganancia.toFixed(2)}`}
+                  {cancelado
+                    ? t("dashboard.orders.status.cancelled")
+                    : `+€${ganancia.toFixed(2)}`}
                 </span>
               </div>
             );
           })}
           {orders.length === 0 && (
-            <p className="text-center text-gray-400 text-sm py-10">
-              No hay movimientos aún.
+            <p className="text-center text-faint text-sm py-10">
+              {t("dashboard.earnings.noMovements")}
             </p>
           )}
         </div>

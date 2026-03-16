@@ -13,15 +13,8 @@ export const ForgotPasswordForm = ({ onChangeView }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     const [data, err] = await forgotPasswordService(email);
-
-    if (err) {
-      setError(err);
-      setLoading(false);
-      return;
-    }
-
+    if (err) { setError(err); setLoading(false); return; }
     // El backend siempre devuelve 200 aunque el email no exista (seguridad)
     setSuccess(true);
     setLoading(false);
@@ -47,40 +40,23 @@ export const ForgotPasswordForm = ({ onChangeView }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          setError(null);
-        }}
-        required
-        className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-input text-theme-text placeholder-theme-faint focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition text-sm"
+        type="email" placeholder="Email"
+        value={email} onChange={(e) => { setEmail(e.target.value); setError(null); }} required
+        className="input focus:ring-2 focus:ring-violet-500 focus:border-transparent rounded-xl px-4 py-2.5"
       />
-
-      {/* Error inline */}
       {error && <p className="text-xs text-red-500 px-1">{error}</p>}
-
       <button
-        type="submit"
-        disabled={loading}
+        type="submit" disabled={loading}
         className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white text-sm font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
-          <>
-            <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            {t("home.loading")}
-          </>
-        ) : (
-          t("navbar.forgotButton")
-        )}
+          <><div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />{t("home.loading")}</>
+        ) : t("navbar.forgotButton")}
       </button>
-
       {/* Volver al login */}
-      <div className="pt-1 text-center text-sm text-theme-muted">
+      <div className="pt-1 text-center text-sm text-muted">
         <button
-          type="button"
-          onClick={() => onChangeView("login")}
+          type="button" onClick={() => onChangeView("login")}
           className="text-violet-600 dark:text-violet-400 font-semibold hover:underline"
         >
           {t("navbar.backToLogin")}

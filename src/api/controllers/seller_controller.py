@@ -6,6 +6,9 @@ from api.models.user import User, RoleName
 from api.models.seller import Seller, SellerStatus
 from api.utils import generate_initial_avatar
 import stripe
+from extensions import mail
+from api.emails import build_seller_registration_email, build_new_seller_admin_email
+
 
 seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
 
@@ -51,6 +54,10 @@ def create_seller_profile():
             origin_city=body["origin_city"],
             origin_zip=body["origin_zip"],
             origin_country=body["origin_country"],
+            origin_community_code=body.get("origin_community_code"),  
+            origin_community=body.get("origin_community"),
+            origin_province_code=body.get("origin_province_code"),
+              origin_province=body.get("origin_province"),  
             status=SellerStatus.pending,
             logo_url=logo_url
         )
@@ -71,6 +78,11 @@ def create_seller_profile():
             pass 
 
         db.session.commit()
+
+        try:
+            mail.send(build_seller_registration_email(seller))
+        except Exception as e:
+            print(f"[Seller] Error al enviar email al vendedor: {str(e)}")
 
         return jsonify({
             "msg": "Perfil de vendedor creado correctamente",
@@ -117,7 +129,8 @@ def update_seller_profile():
 
     # Campos actualizables — el NIF no se pueden cambiar una vez creados
     updatable = ["store_name", "description", "phone", "logo_url",
-                 "origin_address", "origin_city", "origin_zip", "origin_country"]
+                 "origin_address", "origin_city", "origin_zip", "origin_country",
+                 "origin_community_code", "origin_province_code", "origin_province", "origin_community"]
 
     updated = False
     for field in updatable:
@@ -213,6 +226,12 @@ def get_stripe_account_status():
             try:
                 seller.stripe_onboarding_completed = True
                 db.session.commit()
+
+                try:
+                    mail.send(build_new_seller_admin_email(seller))
+                except Exception as e:
+                    print(f"[Stripe] Error al enviar email al admin: {str(e)}")
+
             except Exception as e:
                 db.session.rollback()
                 abort(500, description=f"Error al guardar estado: {str(e)}")
