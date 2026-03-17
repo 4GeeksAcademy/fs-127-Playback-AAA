@@ -20,10 +20,14 @@ class Product(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[dict] = mapped_column(JSON, nullable=False)
     description: Mapped[dict] = mapped_column(JSON, nullable=True)
+    characteristics: Mapped[dict] = mapped_column(JSON, nullable=True)
     price: Mapped[float] = mapped_column(Float(), nullable=False, default=0.0)
     image_url: Mapped[str] = mapped_column(Text(), nullable=True)
-    size: Mapped[str] = mapped_column(String(), nullable=True)
-    weight: Mapped[float] = mapped_column(Float(), nullable=True)
+    other_image_url: Mapped[dict] = mapped_column(JSON, nullable=True)
+    height: Mapped[float] = mapped_column(Float(), nullable=True)   # cm
+    width: Mapped[float] = mapped_column(Float(), nullable=True)    # cm
+    length: Mapped[float] = mapped_column(Float(), nullable=True)   # cm
+    weight: Mapped[float] = mapped_column(Float(), nullable=True)   # kg
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
     discount: Mapped[float] = mapped_column(Float(), nullable=False, default=0)
     condition: Mapped[ProductCondition] = mapped_column(
@@ -55,9 +59,13 @@ class Product(db.Model):
             "id": self.id,
             "name": self.name.get(locale) or self.name.get("es"),
             "description": self.description.get(locale) if self.description else None,
+            "characteristics": self.characteristics.get(locale) if self.characteristics else None,
             "price": self.price,
             "image_url": self.image_url,
-            "size": self.size,
+            "other_image_url": self.other_image_url if self.other_image_url else [],
+            "height": self.height,
+            "width": self.width,
+            "length": self.length,
             "weight": self.weight,
             "stock": self.stock,
             "discount": self.discount,
@@ -89,9 +97,13 @@ class Product(db.Model):
             "id": self.id,
             "name": self.name.get(locale) or self.name.get("es"),
             "description": self.description.get(locale) if self.description else None,
+            "characteristics": self.characteristics.get(locale) if self.characteristics else None,
             "price": self.price,
             "image_url": self.image_url,
-            "size": self.size,
+            "other_image_url": self.other_image_url if self.other_image_url else [],
+            "height": self.height,
+            "width": self.width,
+            "length": self.length,
             "weight": self.weight,
             "stock": self.stock,
             "discount": self.discount,

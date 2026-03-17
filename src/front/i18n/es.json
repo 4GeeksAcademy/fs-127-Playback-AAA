@@ -24,7 +24,11 @@
     "addedToCart": "Producto añadido a tu cesta",
     "reviews": "Opiniones de clientes",
     "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
-    "cartError": "Error al añadir al carrito"
+    "cartError": "Error al añadir al carrito",
+    "characteristicsLabel":"Caracteristicas",
+    "reviewsCount":"Total reseñas",
+    "noReviews":"Sin reseñas"
+ 
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
@@ -386,6 +390,7 @@
         "current": "(actual)",
         "saving": "Guardando…",
         "saveStatus": "Guardar cambio de estado"
+
       },
       "status": {
         "pending": "Pendiente",
@@ -416,6 +421,7 @@
       "deleted": "Producto eliminado",
       "stockError": "Error al actualizar stock",
       "saved": "Producto guardado",
+      
       "table": {
         "product": "Producto",
         "price": "Precio",
@@ -438,7 +444,6 @@
         "price": "Precio (€)",
         "stock": "Stock",
         "discount": "Descuento (%)",
-        "size": "Talla",
         "weight": "Peso (kg)",
         "condition": "Condición",
         "description": "Descripción",
@@ -446,7 +451,16 @@
         "selectSubcategory": "Selecciona subcategoría",
         "selectItem": "Selecciona item",
         "saving": "Guardando…",
-        "save": "Guardar"
+        "save": "Guardar",
+        "characteristics": "Características",
+        "addImages":"Otras imagenes",
+        "noOtherImages":"No hay imágenes adicionales",
+        "otherImages": "Imágenes adicionales",
+        "optional": "Opcional",
+                    "dimensions": "Dimensiones",
+"height": "Alto",
+"width": "Ancho",
+"length": "Largo"
       }
     },
     "overview": {
@@ -488,6 +502,9 @@
     "commentLabel": "Comentario",
     "commentPlaceholder": "Cuéntanos tu experiencia con el producto...",
     "sending": "Enviando...",
-    "submit": "Enviar reseña"
+    "submit": "Enviar reseña",
+    "rate":"Valorar producto",
+    "alreadyReviewed": " Ya valorado "
+
   }
 }

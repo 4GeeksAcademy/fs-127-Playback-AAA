@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowUpDown } from "lucide-react";
 import orderService from "../../../../services/orderService";
+import OrderDetailModal from "./OrderTabModal";
 
 const STATUS_STYLE = {
   pending:
@@ -18,57 +19,6 @@ const STATUS_STYLE = {
   cancelled: "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
-const NEXT_STATUSES = {
-  pending: [],
-  paid: ["confirmed", "cancelled"],
-  confirmed: ["processing", "cancelled"],
-  processing: ["shipped", "cancelled"],
-  shipped: ["delivered"],
-  delivered: [],
-  cancelled: [],
-};
-
-const PAYMENT_LABEL = {
-  credit_card: "Tarjeta de crédito",
-  debit_card: "Tarjeta de débito",
-  paypal: "PayPal",
-  stripe: "Stripe",
-  bank_transfer: "Transferencia bancaria",
-};
-
-// ── Componente para pintar la dirección ──────────────────────────────────────
-const AddressBlock = ({ label, address }) => {
-  const { t } = useTranslation();
-
-  if (!address) {
-    return (
-      <div>
-        <p className="text-xs text-faint mb-1">{label}</p>
-        <p className="text-sm text-faint italic">
-          {t("dashboard.orders.noAddress")}
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <p className="text-xs text-faint mb-1">{label}</p>
-      <p className="text-sm font-medium text-main">{address.full_name}</p>
-      <p className="text-sm text-sub">{address.address}</p>
-      <p className="text-sm text-sub">
-        {address.postal_code} {address.city}
-        {address.province ? `, ${address.province}` : ""}
-      </p>
-      <p className="text-sm text-sub">{address.country}</p>
-      {address.phone && (
-        <p className="text-sm text-muted mt-1">📞 {address.phone}</p>
-      )}
-    </div>
-  );
-};
-
-// ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────────
 const OrdersTab = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
@@ -76,9 +26,10 @@ const OrdersTab = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [newStatus, setNewStatus] = useState("");
-  const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
+
+  const [sortKey, setSortKey] = useState("id");
+  const [sortDir, setSortDir] = useState("desc");
 
   const showToast = (msg, type = "error") => {
     setToast({ msg, type });
@@ -88,7 +39,7 @@ const OrdersTab = () => {
   const loadOrders = async () => {
     setLoading(true);
     const [data, error] = await orderService.getSellerOrders(store.token);
-    if (error) console.log("Error cargando pedidos:", error);
+    if (error) showToast(error);
     else setOrders(data);
     setLoading(false);
   };
@@ -97,40 +48,43 @@ const OrdersTab = () => {
     loadOrders();
   }, []);
 
-  const openModal = (order) => {
-    setSelected(order);
-    setNewStatus(order.status);
-  };
-
-  const closeModal = () => {
-    setSelected(null);
-    setNewStatus("");
-  };
-
-  const handleSaveStatus = async () => {
-       const token = store.token || localStorage.getItem("token"); // ← asegúrate de que lo lee
-    console.log("token en handleSaveStatus:", token);
-    if (!selected || newStatus === selected.status) {
-      closeModal();
-      return;
+  const toggleSort = (key) => {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
+      setSortKey(key);
+      setSortDir("asc");
     }
-
-    setSaving(true);
-    const [, error] = await orderService.updateOrderStatus(
-      store.token,
-      selected.id,
-      newStatus,
-    );
-    setSaving(false);
-
-    if (error) {
-      showToast(error);
-      return;
-    }
-
-    loadOrders();
-    closeModal();
   };
+
+  const sorted = [...orders].sort((a, b) => {
+    let va, vb;
+    if (sortKey === "id") {
+      va = a.id;
+      vb = b.id;
+    }
+    if (sortKey === "date") {
+      va = new Date(a.created_at);
+      vb = new Date(b.created_at);
+    }
+    if (sortKey === "total") {
+      va = Number(a.total_price);
+      vb = Number(b.total_price);
+    }
+    if (sortKey === "status") {
+      va = a.status;
+      vb = b.status;
+    }
+    if (va < vb) return sortDir === "asc" ? -1 : 1;
+    if (va > vb) return sortDir === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const SortIcon = ({ col }) => (
+    <ArrowUpDown
+      size={12}
+      className={`inline ml-1 transition-opacity ${sortKey === col ? "opacity-100 text-violet-500" : "opacity-30"}`}
+    />
+  );
 
   if (loading) {
     return (
@@ -153,13 +107,15 @@ const OrdersTab = () => {
         {orders.length} {t("dashboard.orders.found")}
       </p>
 
-      {/* ── TABLA DE PEDIDOS ── */}
       <div className="border border-main rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-subtle text-faint text-xs uppercase tracking-wide">
             <tr>
-              <th className="text-left px-4 py-3">
-                {t("dashboard.orders.table.order")}
+              <th
+                className="text-left px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("id")}
+              >
+                {t("dashboard.orders.table.order")} <SortIcon col="id" />
               </th>
               <th className="text-left px-4 py-3">
                 {t("dashboard.orders.table.customer")}
@@ -167,29 +123,38 @@ const OrdersTab = () => {
               <th className="text-left px-4 py-3">
                 {t("dashboard.orders.table.products")}
               </th>
-              <th className="text-right px-4 py-3">
-                {t("dashboard.orders.table.total")}
+              <th
+                className="text-right px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("total")}
+              >
+                {t("dashboard.orders.table.total")} <SortIcon col="total" />
               </th>
-              <th className="text-right px-4 py-3">
-                {t("dashboard.orders.table.date")}
+              <th
+                className="text-right px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("date")}
+              >
+                {t("dashboard.orders.table.date")} <SortIcon col="date" />
               </th>
-              <th className="text-right px-4 py-3">
-                {t("dashboard.orders.table.status")}
+              <th
+                className="text-right px-4 py-3 cursor-pointer select-none"
+                onClick={() => toggleSort("status")}
+              >
+                {t("dashboard.orders.table.status")} <SortIcon col="status" />
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[rgb(var(--color-border))]">
-            {orders.length === 0 ? (
+            {sorted.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center text-faint py-10">
                   {t("dashboard.orders.noOrders")}
                 </td>
               </tr>
             ) : (
-              orders.map((pedido) => (
+              sorted.map((pedido) => (
                 <tr
                   key={pedido.id}
-                  onClick={() => openModal(pedido)}
+                  onClick={() => setSelected(pedido)}
                   className="hover:bg-subtle transition cursor-pointer"
                 >
                   <td className="px-4 py-3 text-faint font-mono text-xs">
@@ -210,10 +175,10 @@ const OrdersTab = () => {
                       {pedido.products
                         .slice(0, 3)
                         .map(
-                          (prod) =>
+                          (prod, i) =>
                             prod.image_url && (
                               <img
-                                key={prod.id}
+                                key={`${prod.id}-${i}`}
                                 src={prod.image_url}
                                 alt="prod"
                                 className="w-7 h-7 rounded object-cover border border-main"
@@ -249,177 +214,12 @@ const OrdersTab = () => {
         </table>
       </div>
 
-      {/* ── MODAL DE DETALLE DEL PEDIDO ── */}
       {selected && (
-        <div
-          className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-main rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header del Modal */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-main">
-              <div>
-                <p className="font-semibold text-main">
-                  {t("dashboard.orders.table.order")}{" "}
-                  <span className="font-mono">#{selected.id}</span>
-                </p>
-                <p className="text-xs text-faint">
-                  {new Date(selected.created_at).toLocaleDateString("es-ES", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                  {selected.payment_method &&
-                    ` · ${t(`dashboard.orders.payment.${selected.payment_method}`, { defaultValue: selected.payment_method })}`}
-                </p>
-              </div>
-              <button
-                onClick={closeModal}
-                className="text-faint hover:text-main text-xl font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Bloque: Cliente */}
-            <div className="px-6 py-4 border-b border-main">
-              <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
-                {t("dashboard.orders.modal.customer")}
-              </p>
-              <p className="font-semibold text-main">
-                {selected.customer || "—"}
-              </p>
-              {selected.customer_email && (
-                <p className="text-sm text-muted">{selected.customer_email}</p>
-              )}
-            </div>
-
-            {/* Bloque: Direcciones */}
-            <div className="px-6 py-4 border-b border-main">
-              <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
-                {t("dashboard.orders.modal.addresses")}
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <AddressBlock
-                  label={t("dashboard.orders.modal.shipping")}
-                  address={selected.shipping_address}
-                />
-                <AddressBlock
-                  label={t("dashboard.orders.modal.billing")}
-                  address={selected.billing_address}
-                />
-              </div>
-            </div>
-
-            {/* Bloque: Productos */}
-            <div className="px-6 py-4 border-b border-main">
-              <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
-                {t("dashboard.orders.modal.productsSection")} (
-                {selected.products.length})
-              </p>
-              <div className="space-y-3">
-                {selected.products.map((producto) => (
-                  <div key={producto.id} className="flex items-center gap-3">
-                    {producto.image_url && (
-                      <img
-                        src={producto.image_url}
-                        className="w-12 h-12 rounded-lg object-cover border border-main flex-shrink-0"
-                        alt="img"
-                      />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-main truncate">
-                        {producto.name}
-                      </p>
-                      <p className="text-xs text-faint">
-                        x{producto.quantity} · €{producto.price} c/u
-                      </p>
-                    </div>
-                    <p className="text-sm font-semibold text-sub flex-shrink-0">
-                      €{(producto.price * producto.quantity).toFixed(2)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bloque: Resumen (Precios) */}
-            <div className="px-6 py-4 border-b border-main">
-              <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
-                {t("dashboard.orders.modal.summary")}
-              </p>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between text-muted">
-                  <span>{t("checkout.subtotal")}</span>
-                  <span>€{Number(selected.subtotal).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-muted">
-                  <span>{t("checkout.tax")}</span>
-                  <span>€{Number(selected.tax).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-muted">
-                  <span>{t("checkout.shipping")}</span>
-                  <span>€{Number(selected.shipping_cost).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between font-bold text-main pt-2 border-t border-main mt-2">
-                  <span>{t("checkout.total")}</span>
-                  <span>€{Number(selected.total_price).toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bloque: Cambiar Estado */}
-            <div className="px-6 py-4">
-              <p className="text-xs text-faint uppercase tracking-wide font-medium mb-3">
-                {t("dashboard.orders.modal.statusSection")}
-              </p>
-
-              {NEXT_STATUSES[selected.status]?.length > 0 ? (
-                <div className="space-y-3">
-                  <select
-                    value={newStatus}
-                    onChange={(e) => setNewStatus(e.target.value)}
-                    className="input"
-                  >
-                    <option value={selected.status}>
-                      {t(`dashboard.orders.status.${selected.status}`, {
-                        defaultValue: selected.status,
-                      })}{" "}
-                      {t("dashboard.orders.modal.current")}
-                    </option>
-                    {NEXT_STATUSES[selected.status].map((statusOpcion) => (
-                      <option key={statusOpcion} value={statusOpcion}>
-                        {t(`dashboard.orders.status.${statusOpcion}`, {
-                          defaultValue: statusOpcion,
-                        })}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleSaveStatus}
-                    disabled={saving || newStatus === selected.status}
-                    className="btn-primary w-full"
-                  >
-                    {saving
-                      ? t("dashboard.orders.modal.saving")
-                      : t("dashboard.orders.modal.saveStatus")}
-                  </button>
-                </div>
-              ) : (
-                <span
-                  className={`inline-block text-sm px-3 py-1.5 rounded-full font-medium ${STATUS_STYLE[selected.status]}`}
-                >
-                  {t(`dashboard.orders.status.${selected.status}`, {
-                    defaultValue: selected.status,
-                  })}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+        <OrderDetailModal
+          order={selected}
+          onClose={() => setSelected(null)}
+          onUpdated={loadOrders}
+        />
       )}
     </div>
   );

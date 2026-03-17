@@ -58,10 +58,8 @@ const handleSubmit = async (e) => {
     );
 
   return (
-    <div className="mt-10 border-t border-main pt-10">
-      <h3 className="text-lg font-semibold text-main tracking-tight mb-6">
-        {t("review.title")}
-      </h3>
+    <div className="">
+
 
       {error && (
         <p className="text-red-500 text-sm mb-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 px-4 py-2">
