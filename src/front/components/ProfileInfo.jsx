@@ -110,7 +110,7 @@ const ProfileInfo = () => {
 
        
         {/* Campos de info */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
           <Field label="Nombre"       value={user.name} />
           <Field label="Apellido"     value={user.last_name} />
           <Field label="Email"        value={user.email} />
@@ -158,7 +158,7 @@ const ProfileInfo = () => {
 
         {/* Formulario */}
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-xs text-muted mb-1">Nombre</label>
               <input name="name" value={user.name} onChange={handleChange}
