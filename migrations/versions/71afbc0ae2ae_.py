@@ -1,14 +1,8 @@
-"""initial
+"""empty message
 
-<<<<<<<< HEAD:migrations/versions/dddf059f9a9b_initial.py
-Revision ID: dddf059f9a9b
+Revision ID: 71afbc0ae2ae
 Revises: 
-Create Date: 2026-03-13 18:37:21.247709
-========
-Revision ID: 5ea5431c8a96
-Revises: 
-Create Date: 2026-03-15 18:36:20.856806
->>>>>>>> 252fb759459697924cddbda9e9709a26303d9ee6:migrations/versions/5ea5431c8a96_initial.py
+Create Date: 2026-03-16 18:35:59.728892
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/dddf059f9a9b_initial.py
-revision = 'dddf059f9a9b'
-========
-revision = '5ea5431c8a96'
->>>>>>>> 252fb759459697924cddbda9e9709a26303d9ee6:migrations/versions/5ea5431c8a96_initial.py
+revision = '71afbc0ae2ae'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -74,6 +64,8 @@ def upgrade():
     sa.Column('community', sa.String(length=150), nullable=True),
     sa.Column('province_code', sa.String(length=10), nullable=True),
     sa.Column('country', sa.String(length=100), nullable=False),
+    sa.Column('is_deleted', sa.Boolean(), nullable=False),
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),

@@ -4,6 +4,7 @@ import { Clock, CreditCard, CheckCircle, Package, Truck, PackageCheck, XCircle, 
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderService from "../services/orderService";
 import { ReviewForm } from "../components/ReviewForm";
+import IncidentForm from "../components/IncidentForm"; // AÑADIDO
 
 export const MyOrders = () => {
 
@@ -12,6 +13,7 @@ export const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [reviewing, setReviewing] = useState(null);
   const [reviewed, setReviewed] = useState({});
+  const [incidentOrder, setIncidentOrder] = useState(null); // AÑADIDO
 
   useEffect(() => {
     const token = store.token || localStorage.getItem("token");
@@ -124,6 +126,16 @@ export const MyOrders = () => {
                     </button>
                   )}
 
+                  {/* Botón abrir incidencia */}
+                  {order.status === "delivered" && (
+                    <button
+                      onClick={() => setIncidentOrder(order.id)}
+                      className="mt-2 ml-3 flex items-center gap-1 text-xs text-red-600 hover:underline"
+                    >
+                      ⚠️ Abrir incidencia
+                    </button>
+                  )}
+
                   {/* Formulario de reseña inline */}
                   {reviewing?.productId === product.id && reviewing?.orderId === order.id && (
                     <div className="mt-3 border-t border-main pt-3">
@@ -190,6 +202,14 @@ export const MyOrders = () => {
           </div>
         ))}
       </div>
+
+      {incidentOrder && (
+        <IncidentForm
+          orderId={incidentOrder}
+          onClose={() => setIncidentOrder(null)}
+        />
+      )}
+
     </div>
   );
 };

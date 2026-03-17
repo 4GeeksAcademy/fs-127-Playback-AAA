@@ -133,22 +133,29 @@ const ProfileDashboard = () => {
 
         )}
 
-    <div className="grid md:grid-cols-2 gap-6">
-
-      <div
-        onClick={() => navigate("/orders")}
-        className="bg-main p-6 rounded-xl shadow border border-main cursor-pointer hover:shadow-md transition"
-      >
-        <h3 className="text-muted text-sm">{t("orders.title")}</h3>
-        <p className="text-2xl font-bold mt-2 text-main">{ordersCount}</p>
       </div>
 
-      <div
-        onClick={() => navigate("/profile?tab=addresses")}
-        className="bg-main p-6 rounded-xl shadow border border-main cursor-pointer hover:shadow-md transition"
-      >
-        <h3 className="text-muted text-sm">{t("profile.tabs.addresses")}</h3>
-        <p className="text-2xl font-bold mt-2 text-main">{t("profile.manage")}</p>
+
+      {/* BLOQUE ORIGINAL DE DEV */}
+
+      <div className="grid md:grid-cols-2 gap-6 mt-10">
+
+        <div
+          onClick={() => navigate("/orders")}
+          className="bg-main p-6 rounded-xl shadow border border-main cursor-pointer hover:shadow-md transition"
+        >
+          <h3 className="text-muted text-sm">{t("orders.title")}</h3>
+          <p className="text-2xl font-bold mt-2 text-main">{ordersCount}</p>
+        </div>
+
+        <div
+          onClick={() => navigate("/profile?tab=addresses")}
+          className="bg-main p-6 rounded-xl shadow border border-main cursor-pointer hover:shadow-md transition"
+        >
+          <h3 className="text-muted text-sm">{t("profile.tabs.addresses")}</h3>
+          <p className="text-2xl font-bold mt-2 text-main">{t("profile.manage")}</p>
+        </div>
+
       </div>
 
     </div>
