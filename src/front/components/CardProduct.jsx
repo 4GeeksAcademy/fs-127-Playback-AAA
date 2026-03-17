@@ -24,57 +24,69 @@ export const CardProduct = ({ product }) => {
     Review,
     stock,
   } = product;
-  const [toast, setToast] = useState(false);
+
+  const [toast, setToast] = useState(null);
   const [clicked, setClicked] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
 
   const enCarrito = store.cart?.find((item) => item.id === id)?.quantity || 0;
   const inStock = stock == null ? true : stock > 0;
   const stockAgotado = stock != null && enCarrito >= stock;
 
-  const [loadingCart, setLoadingCart] = useState(false); // ← añade esto
-
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (loadingCart) return; // ← cortocircuito si ya está procesando
+    if (loadingCart) return;
+
+    const token = store.token || localStorage.getItem("token");
+
+    if (!token) {
+      setToast({ type: "auth" });
+      setTimeout(() => setToast(null), 2500);
+      return;
+    }
+
+    if (stock != null && enCarrito >= stock) {
+      setToast({ type: "sin_stock" });
+      setTimeout(() => setToast(null), 2500);
+      return;
+    }
 
     setClicked(true);
     setTimeout(() => setClicked(false), 300);
 
-    const token = store.token || localStorage.getItem("token");
+    setLoadingCart(true);
+    const [, error] = await orderService.addProductToCart(token, id, 1);
+    setLoadingCart(false);
 
-    if (enCarrito >= stock) {
-      setToast("sin_stock");
-      setTimeout(() => setToast(false), 2000);
-      return;
-    }
-
-    setLoadingCart(true); // ← bloquea antes de la llamada
-    const [data, err] = await orderService.addProductToCart(token, id);
-    setLoadingCart(false); // ← desbloquea al terminar
-
-    if (err) return;
+    if (error) return;
 
     dispatch({ type: "cart_add", payload: { id, quantity: 1 } });
-    setToast("añadido");
-    setTimeout(() => setToast(false), 2000);
+    setToast({ type: "success" });
+    setTimeout(() => setToast(null), 2000);
   };
 
   return (
     <>
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
-            toast === "sin_stock"
+          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
+            toast.type === "auth" || toast.type === "sin_stock"
               ? "bg-red-600 dark:bg-red-500"
               : "bg-stone-900 dark:bg-stone-100"
           }`}
         >
-          {toast === "sin_stock" ? <X size={15} /> : <ShoppingCart size={15} />}
-          {toast === "sin_stock"
-            ? t("product.noStock")
-            : t("product.addedToCart")}
+          {toast.type === "auth" || toast.type === "sin_stock" ? (
+            <X size={15} />
+          ) : (
+            <ShoppingCart size={15} />
+          )}
+          {toast.type === "auth"
+            ? t("product.loginRequired")
+            : toast.type === "sin_stock"
+              ? t("product.noStock")
+              : t("product.addedToCart")}
         </div>
       )}
 
@@ -125,11 +137,11 @@ export const CardProduct = ({ product }) => {
               <button
                 onClick={handleAddToCart}
                 disabled={loadingCart}
-                className={`bg-stone-800 hover:bg-stone-600 dark:bg-stone-200 dark:hover:bg-stone-400 dark:text-stone-900 text-white transition-all flex items-center justify-center p-2 ${
+                className={`text-white transition-all flex items-center justify-center p-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                   clicked
-                    ? "scale-75 bg-violet-600 dark:bg-violet-600 dark:text-white"
-                    : "scale-100"
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    ? "bg-violet-600 scale-75"
+                    : "bg-stone-800 hover:bg-stone-600 dark:bg-stone-200 dark:hover:bg-stone-400 dark:text-stone-900 scale-100"
+                }`}
               >
                 <ShoppingCart size={16} />
               </button>

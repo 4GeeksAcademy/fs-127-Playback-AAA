@@ -16,9 +16,9 @@ const STATUS_STYLE = {
 const ResumTab = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
-  const [orders, setOrders] = useState([]);
+  const [orders,   setOrders]   = useState([]);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading,  setLoading]  = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -39,9 +39,8 @@ const ResumTab = () => {
       </p>
     );
 
-  // ── Stats calculadas ──────────────────────────────
   const pedidosPendientes = orders.filter(
-    (o) => o.status === "pending" || o.status === "processing",
+    (o) => o.status === "pending" || o.status === "processing"
   );
   const sinStock = products.filter((p) => p.stock === 0);
 
@@ -49,63 +48,63 @@ const ResumTab = () => {
   const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
   const ventasMes = orders
     .filter((o) => o.status !== "cancelled" && new Date(o.created_at) >= inicioMes)
-    .reduce(
-      (sum, o) => sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0),
-      0,
-    );
+    .reduce((sum, o) => sum + o.products.reduce((s, p) => s + p.price * p.quantity, 0), 0);
 
   return (
     <div className="pt-6 space-y-6">
-      {/* KPIs */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl p-5 border border-purple-200 dark:border-purple-900 bg-purple-50 dark:bg-purple-950">
-          <span className="text-xl">📈</span>
-          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-2">
-            €{ventasMes.toFixed(2)}
-          </p>
-          <p className="text-xs text-muted mt-0.5">
-            {t("dashboard.overview.salesThisMonth")}
-          </p>
-        </div>
 
-        <div
-          className={`rounded-xl p-5 border ${
-            pedidosPendientes.length > 0
-              ? "border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950"
-              : "border-main"
-          }`}
-        >
-          <div className="flex justify-between items-start">
-            <span className="text-xl">⏳</span>
-            {pedidosPendientes.length > 0 && (
-              <span className="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full">
-                {t("dashboard.overview.attention")}
-              </span>
-            )}
-          </div>
-          <p className="text-2xl font-bold text-main mt-2">
-            {pedidosPendientes.length}
-          </p>
-          <p className="text-xs text-muted mt-0.5">
-            {t("dashboard.overview.pendingOrders")}
-          </p>
-        </div>
+      {/* ── KPIs: 1 col en móvil, 3 en sm+ ── */}
 
-        <div className="rounded-xl p-5 border border-main">
-          <span className="text-xl">🛍️</span>
-          <p className="text-2xl font-bold text-main mt-2">{products.length}</p>
-          <p className="text-xs text-muted mt-0.5">
-            {t("dashboard.overview.activeProducts")}{" "}
-            {sinStock.length > 0 && (
-              <span className="text-red-500">
-                · {sinStock.length} {t("dashboard.overview.noStock")}
-              </span>
-            )}
-          </p>
-        </div>
+       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+  {/* 📈 Ventas */}
+  <div className="rounded-xl p-5 border border-purple-200 dark:border-purple-900 bg-purple-50 dark:bg-purple-950 flex items-center gap-4">
+    <span className="text-3xl">📈</span>
+    <div>
+      <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+        €{ventasMes.toFixed(2)}
+      </p>
+      <p className="text-xs text-muted mt-0.5">{t("dashboard.overview.salesThisMonth")}</p>
+    </div>
+  </div>
+
+  {/* ⏳ Pedidos pendientes */}
+  <div className={`rounded-xl p-5 border flex items-center gap-4 ${
+    pedidosPendientes.length > 0
+      ? "border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950"
+      : "border-main"
+  }`}>
+    <span className="text-3xl">⏳</span>
+    <div className="flex-1">
+      <div className="flex items-center gap-2">
+        <p className="text-2xl font-bold text-main">{pedidosPendientes.length}</p>
+        {pedidosPendientes.length > 0 && (
+          <span className="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full">
+            {t("dashboard.overview.attention")}
+          </span>
+        )}
       </div>
+      <p className="text-xs text-muted mt-0.5">{t("dashboard.overview.pendingOrders")}</p>
+    </div>
+  </div>
 
-      {/* Actividad reciente */}
+  {/* 🛍️ Productos activos */}
+  <div className="rounded-xl p-5 border border-main flex items-center gap-4">
+    <span className="text-3xl">🛍️</span>
+    <div>
+      <p className="text-2xl font-bold text-main">{products.length}</p>
+      <p className="text-xs text-muted mt-0.5">
+        {t("dashboard.overview.activeProducts")}{" "}
+        {sinStock.length > 0 && (
+          <span className="text-red-500">· {sinStock.length} {t("dashboard.overview.noStock")}</span>
+        )}
+      </p>
+    </div>
+  </div>
+
+</div>
+
+      {/* ── Actividad reciente ── */}
       <div>
         <h3 className="text-sm font-semibold text-main mb-3">
           {t("dashboard.overview.recentActivity")}
@@ -116,25 +115,21 @@ const ResumTab = () => {
               key={o.id}
               className="flex items-center justify-between px-4 py-3 text-sm hover:bg-subtle"
             >
-              <div className="flex items-center gap-3">
-                <span className="text-faint font-mono text-xs">#{o.id}</span>
-                <span className="text-main">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-faint font-mono text-xs flex-shrink-0">#{o.id}</span>
+                <span className="text-main truncate">
                   {o.customer || t("dashboard.overview.customer")}
                 </span>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-faint text-xs hidden sm:block">
+              <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 ml-2">
+                <span className="text-faint text-xs hidden sm:block whitespace-nowrap">
                   {new Date(o.created_at).toLocaleDateString("es-ES")}
                 </span>
-                <span className="font-semibold text-main">
+                <span className="font-semibold text-main whitespace-nowrap">
                   €{o.products.reduce((s, p) => s + p.price * p.quantity, 0).toFixed(2)}
                 </span>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[o.status] || "bg-muted text-muted"}`}
-                >
-                  {t(`dashboard.orders.status.${o.status}`, {
-                    defaultValue: o.status,
-                  })}
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATUS_STYLE[o.status] || "bg-muted text-muted"}`}>
+                  {t(`dashboard.orders.status.${o.status}`, { defaultValue: o.status })}
                 </span>
               </div>
             </div>

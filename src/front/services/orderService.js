@@ -54,6 +54,7 @@ async function checkout(token, shippingAddressId, billingAddressId, couponCode =
 }
 
 async function addProductToCart(token, productId, quantity = 1) {
+    
     const response = await fetch(`${backendUrl}/api/order/add-product`, {
         method: "POST",
         headers: {
@@ -77,7 +78,7 @@ async function getSellerOrders(token) {
 }
 
 async function updateOrderStatus(token, orderId, status) {
-       console.log("token:", token); // ← verifica que no es null/undefined
+       console.log("token:", token); 
     console.log("orderId:", orderId, "status:", status);
     const response = await fetch(`${backendUrl}/api/order/seller-orders/${orderId}/status`, {
         method: "PATCH",
@@ -88,7 +89,7 @@ async function updateOrderStatus(token, orderId, status) {
         body: JSON.stringify({ status })
     });
     const data = await response.json();
-        console.log("respuesta backend:", response.status, data); // ← añade esto
+        console.log("respuesta backend:", response.status, data); 
 
     if (!response.ok) return [null, data.description || "Error al actualizar estado"];
     return [data, null];
