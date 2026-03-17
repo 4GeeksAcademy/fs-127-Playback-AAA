@@ -4,12 +4,15 @@ import { Clock, CreditCard, CheckCircle, Package, Truck, PackageCheck, XCircle, 
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderService from "../services/orderService";
 import { ReviewForm } from "../components/ReviewForm";
+import IncidentForm from "../components/IncidentForm"; // AÑADIDO
 
 export const MyOrders = () => {
   const { store } = useGlobalReducer();
   const { t, i18n } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [reviewing, setReviewing] = useState(null);
+  const [reviewed, setReviewed] = useState({});
+  const [incidentOrder, setIncidentOrder] = useState(null); // AÑADIDO
 
   // ─── reviewed persiste en localStorage ──────────────────────────────────────
   const [reviewed, setReviewed] = useState(() => {
@@ -147,6 +150,49 @@ export const MyOrders = () => {
                       {(product.price * (1 - (product.discount || 0) / 100) * product.quantity).toFixed(2)} €
                     </p>
                   </div>
+
+                  {/* Botón valorar — solo si entregado y no valorado */}
+                  {order.status === "delivered" && !reviewed[`${order.id}-${product.id}`] && reviewing?.productId !== product.id && (
+                    <button
+                      onClick={() => setReviewing({ productId: product.id, orderId: order.id })}
+                      className="mt-2 flex items-center gap-1 text-xs text-violet-600 hover:underline"
+                    >
+                      <Star size={13} />
+                      Valorar producto
+                    </button>
+                  )}
+
+                  {/* Botón abrir incidencia */}
+                  {order.status === "delivered" && (
+                    <button
+                      onClick={() => setIncidentOrder(order.id)}
+                      className="mt-2 ml-3 flex items-center gap-1 text-xs text-red-600 hover:underline"
+                    >
+                      ⚠️ Abrir incidencia
+                    </button>
+                  )}
+
+                  {/* Formulario de reseña inline */}
+                  {reviewing?.productId === product.id && reviewing?.orderId === order.id && (
+                    <div className="mt-3 border-t border-main pt-3">
+                      <ReviewForm
+                        productId={product.id}
+                        orderId={order.id}
+                        onDone={() => {
+                          setReviewed(prev => ({ ...prev, [`${order.id}-${product.id}`]: true }));
+                          setReviewing(null);
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Confirmación si ya valoró */}
+                  {reviewed[`${order.id}-${product.id}`] && (
+                    <p className="mt-2 text-xs text-emerald-600">✓ {t("review.successTitle")}</p>
+                  )}
+
+                </div>
+              ))}
                 );
               })}
             </div>
@@ -195,6 +241,11 @@ export const MyOrders = () => {
         ))}
       </div>
 
+      {incidentOrder && (
+        <IncidentForm
+          orderId={incidentOrder}
+          onClose={() => setIncidentOrder(null)}
+        />
       {/* ── Modal de valoración ──────────────────────────────────────────────── */}
       {reviewing && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
