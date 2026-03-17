@@ -4,6 +4,7 @@ import { Star, AlertCircle, ChevronDown, ChevronUp, CheckCircle, X, ChevronLeft,
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import orderService from "../services/orderService";
 import { ReviewForm } from "../components/ReviewForm";
+import IncidentForm from "../components/IncidentForm";
 
 const STATUS_CONFIG = {
   pending:    { label: "Pendiente",      bg: "#F1EFE8", color: "#5F5E5A" },
@@ -23,6 +24,7 @@ const ProfileOrders = () => {
   const [loading,   setLoading]   = useState(true);
   const [expanded,  setExpanded]  = useState({});
   const [reviewing, setReviewing] = useState(null);
+  const [incident,  setIncident]  = useState(null); // ← IncidentForm de tu compañero
 
   const [reviewed, setReviewed] = useState(() => {
     try { return JSON.parse(localStorage.getItem("reviewed_products") || "{}"); }
@@ -58,10 +60,6 @@ const ProfileOrders = () => {
     setReviewing({ order, products: pendingProducts, step: startIdx });
   };
 
-  const handleIncident = (orderId) => {
-    alert(`Abrir incidencia para pedido #${orderId}`);
-  };
-
   if (loading) return (
     <p className="text-center text-sm text-muted mt-10 animate-pulse">Cargando pedidos…</p>
   );
@@ -87,24 +85,19 @@ const ProfileOrders = () => {
         return (
           <div key={order.id} className="bg-main rounded-xl border border-main overflow-hidden">
 
-            {/* ── Fila principal ── */}
             <div className="px-4 py-3">
 
-              {/* Fila superior: ID + miniaturas + total + chevron */}
+              {/* Fila superior */}
               <div className="flex items-center gap-3">
-
-                {/* ID */}
                 <div className="flex-shrink-0" style={{ minWidth: "44px" }}>
                   <p style={{ fontSize: "9px", color: "var(--color-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Nº</p>
                   <p style={{ fontSize: "13px", fontWeight: "600", color: "var(--color-text-primary)", fontFamily: "monospace", lineHeight: 1.2 }}>#{order.id}</p>
                 </div>
 
-                {/* Miniaturas */}
                 <div className="flex -space-x-2 flex-shrink-0">
                   {order.products.slice(0, 3).map((p, i) => (
                     <img key={`${p.id}-${i}`} src={p.image_url} alt=""
-                      style={{ width: "30px", height: "30px", borderRadius: "6px", objectFit: "cover", border: "2px solid white" }}
-                    />
+                      style={{ width: "30px", height: "30px", borderRadius: "6px", objectFit: "cover", border: "2px solid white" }} />
                   ))}
                   {order.products.length > 3 && (
                     <div style={{ width: "30px", height: "30px", borderRadius: "6px", background: "#EEEDFE", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px", color: "#534AB7", fontWeight: "700" }}>
@@ -113,7 +106,6 @@ const ProfileOrders = () => {
                   )}
                 </div>
 
-                {/* Estado + fecha */}
                 <div className="flex-1 min-w-0">
                   <span style={{ background: cfg.bg, color: cfg.color, fontSize: "11px", padding: "2px 7px", borderRadius: "20px", fontWeight: "500", display: "inline-block" }}>
                     {cfg.label}
@@ -123,19 +115,17 @@ const ProfileOrders = () => {
                   </p>
                 </div>
 
-                {/* Total */}
                 <span style={{ fontSize: "14px", fontWeight: "600", flexShrink: 0, color: "var(--color-text-primary)" }}>
                   {parseFloat(order.total_price).toFixed(2)} €
                 </span>
 
-                {/* Chevron */}
                 <button onClick={() => toggleExpand(order.id)}
                   style={{ background: "var(--color-background-secondary)", border: "none", borderRadius: "8px", padding: "5px 7px", cursor: "pointer", color: "var(--color-text-secondary)", display: "flex", alignItems: "center", flexShrink: 0 }}>
                   {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </button>
               </div>
 
-              {/* Fila inferior: botones de acción */}
+              {/* Fila inferior: botones */}
               <div className="flex gap-2 mt-2">
                 {isDelivered && (
                   <button onClick={() => openReview(order)}
@@ -143,14 +133,14 @@ const ProfileOrders = () => {
                     <Star size={11} /> Valorar
                   </button>
                 )}
-                <button onClick={() => handleIncident(order.id)}
+                <button onClick={() => setIncident(order.id)}
                   style={{ background: "#FCEBEB", color: "#A32D2D", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
                   <AlertCircle size={11} /> Incidencia
                 </button>
               </div>
             </div>
 
-            {/* ── Detalle expandible ── */}
+            {/* Detalle expandible */}
             {isOpen && (
               <div className="border-t border-main px-4 py-4 bg-subtle">
                 <div className="space-y-2 mb-3">
@@ -162,8 +152,7 @@ const ProfileOrders = () => {
 
                     return (
                       <div key={`${p.id}-${i}`} className="flex items-center gap-3 bg-main rounded-lg p-3 border border-main">
-                        <img src={p.image_url} alt=""
-                          style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover", flexShrink: 0 }} />
+                        <img src={p.image_url} alt="" style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover", flexShrink: 0 }} />
                         <div className="flex-1 min-w-0">
                           <p style={{ fontSize: "12px", fontWeight: "500", color: "var(--color-text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {p.name?.[i18n.language] || p.name}
@@ -204,7 +193,6 @@ const ProfileOrders = () => {
       {reviewing && currentProduct && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-main rounded-2xl w-full max-w-md shadow-xl border border-main overflow-hidden">
-
             <div className="flex items-center justify-between px-5 py-4 border-b border-main">
               <div>
                 <p style={{ fontSize: "11px", color: "var(--color-muted)", marginBottom: "2px" }}>
@@ -214,19 +202,16 @@ const ProfileOrders = () => {
                   {currentProduct.name?.[i18n.language] || currentProduct.name}
                 </p>
               </div>
-              <button onClick={() => setReviewing(null)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-muted)", display: "flex" }}>
+              <button onClick={() => setReviewing(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-muted)", display: "flex" }}>
                 <X size={18} />
               </button>
             </div>
 
             {reviewing.products.length > 1 && (
               <div className="flex items-center justify-between px-5 py-3 bg-subtle border-b border-main">
-                <button
-                  onClick={() => setReviewing(prev => ({ ...prev, step: prev.step - 1 }))}
+                <button onClick={() => setReviewing(prev => ({ ...prev, step: prev.step - 1 }))}
                   disabled={reviewing.step === 0}
-                  style={{ background: "none", border: "none", cursor: reviewing.step === 0 ? "not-allowed" : "pointer", opacity: reviewing.step === 0 ? 0.3 : 1, display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#534AB7" }}
-                >
+                  style={{ background: "none", border: "none", cursor: reviewing.step === 0 ? "not-allowed" : "pointer", opacity: reviewing.step === 0 ? 0.3 : 1, display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#534AB7" }}>
                   <ChevronLeft size={14} /> Anterior
                 </button>
                 <div className="flex gap-1.5">
@@ -234,19 +219,16 @@ const ProfileOrders = () => {
                     <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", background: i === reviewing.step ? "#534AB7" : "#D1D5DB", transition: "background 0.2s" }} />
                   ))}
                 </div>
-                <button
-                  onClick={() => setReviewing(prev => ({ ...prev, step: prev.step + 1 }))}
+                <button onClick={() => setReviewing(prev => ({ ...prev, step: prev.step + 1 }))}
                   disabled={reviewing.step === reviewing.products.length - 1}
-                  style={{ background: "none", border: "none", cursor: reviewing.step === reviewing.products.length - 1 ? "not-allowed" : "pointer", opacity: reviewing.step === reviewing.products.length - 1 ? 0.3 : 1, display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#534AB7" }}
-                >
+                  style={{ background: "none", border: "none", cursor: reviewing.step === reviewing.products.length - 1 ? "not-allowed" : "pointer", opacity: reviewing.step === reviewing.products.length - 1 ? 0.3 : 1, display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#534AB7" }}>
                   Siguiente <ChevronRight size={14} />
                 </button>
               </div>
             )}
 
             <div className="flex items-center gap-3 px-5 py-3 border-b border-main">
-              <img src={currentProduct.image_url} alt=""
-                style={{ width: "44px", height: "44px", borderRadius: "8px", objectFit: "cover", flexShrink: 0 }} />
+              <img src={currentProduct.image_url} alt="" style={{ width: "44px", height: "44px", borderRadius: "8px", objectFit: "cover", flexShrink: 0 }} />
               <div>
                 <p style={{ fontSize: "13px", fontWeight: "500", color: "var(--color-text-primary)" }}>
                   {currentProduct.name?.[i18n.language] || currentProduct.name}
@@ -275,6 +257,14 @@ const ProfileOrders = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Modal incidencia (componente de tu compañero) ── */}
+      {incident && (
+        <IncidentForm
+          orderId={incident}
+          onClose={() => setIncident(null)}
+        />
       )}
     </div>
   );

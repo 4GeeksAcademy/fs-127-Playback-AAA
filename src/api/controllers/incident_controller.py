@@ -1,48 +1,52 @@
-# api/routes/incident.py
-
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from api.models import db
 from api.models.incident import Incident
 from api.models.order import Order
-from deep_translator import GoogleTranslator
+from api.models.user import User, RoleName
 
 
-incident_bp = Blueprint('incident', __name__)
+incident_bp = Blueprint("incident", __name__)
 
-def translate_text(text, target_lang):
-    if not text:
-        return None
-    return GoogleTranslator(source='auto', target=target_lang).translate(text)
 
-# ─── POST /incidents ───────────────────────────────────────────────────────────
-# El usuario autenticado crea una incidencia
-@incident_bp.route('/incidents', methods=['POST'])
+# Crear incidencia sobre un pedido
+@incident_bp.route("/orders/<int:order_id>/incidences", methods=["POST"])
 @jwt_required()
-def create_incident():
-    current_user_id = get_jwt_identity()
+def create_incidence(order_id):
+
+    user_id = get_jwt_identity()
     body = request.get_json()
 
-    if not body:
-        return jsonify({"error": "No se recibió ningún dato"}), 400
+    # Validar campos obligatorios
+    if not body or "title" not in body or "description" not in body:
+        abort(400, description="title y description son obligatorios")
 
-    title = body.get("title")
-    description = body.get("description")
-    order_id = body.get("order_id")  # opcional
+    # Buscar el pedido
+    order = Order.query.get(order_id)
 
-    if not title or not description:
-        return jsonify({"error": "title y description son obligatorios"}), 400
+    if not order:
+        abort(404, description="Pedido no encontrado")
 
-    # Si mandan order_id, verificar que la orden pertenece al usuario
-    if order_id:
-        order = Order.query.filter_by(id=order_id, user_id=current_user_id).first()
-        if not order:
-            return jsonify({"error": "La orden no existe o no te pertenece"}), 404
+    # Validar que el pedido pertenece al usuario
+    if order.user_id != int(user_id):
+        abort(403, description="No puedes abrir incidencias en pedidos de otros usuarios")
 
+    # Solo permitir incidencias si el pedido está entregado
+    if order.status.value != "delivered":
+        abort(400, description="Solo puedes abrir incidencias en pedidos entregados")
+
+    # Evitar incidencias duplicadas
+    existing = Incident.query.filter_by(order_id=order_id).first()
+
+    if existing:
+        abort(400, description="Este pedido ya tiene una incidencia")
+
+    # Crear la incidencia
     incident = Incident(
-        title=title,
-        description=description,
-        user_id=current_user_id,
+        title=body["title"],
+        description=body["description"],
+        user_id=user_id,
         order_id=order_id,
         status="open"
     )
@@ -52,3 +56,66 @@ def create_incident():
 
     return jsonify(incident.serialize()), 201
 
+
+# Obtener incidencias del usuario autenticado
+@incident_bp.route("/incidences/my", methods=["GET"])
+@jwt_required()
+def get_my_incidences():
+
+    user_id = get_jwt_identity()
+
+    incidents = (
+        Incident.query
+        .filter_by(user_id=user_id)
+        .order_by(Incident.created_at.desc())
+        .all()
+    )
+
+    return jsonify([incident.serialize() for incident in incidents]), 200
+
+
+# Obtener TODAS las incidencias (solo admin o seller)
+@incident_bp.route("/incidences", methods=["GET"])
+@jwt_required()
+def get_all_incidences():
+
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if user.role not in [RoleName.admin, RoleName.seller]:
+        abort(403, description="No autorizado")
+
+    incidents = Incident.query.order_by(Incident.created_at.desc()).all()
+
+    return jsonify([incident.serialize() for incident in incidents]), 200
+
+
+# Actualizar estado de una incidencia (solo seller o admin)
+@incident_bp.route("/incidences/<int:id>", methods=["PATCH"])
+@jwt_required()
+def update_incidence(id):
+
+    user_id = get_jwt_identity()
+    body = request.get_json()
+
+    incident = Incident.query.get(id)
+
+    if not incident:
+        abort(404, description="Incidencia no encontrada")
+
+    user = User.query.get(user_id)
+
+    # Solo admin o seller pueden cambiar el estado
+    if user.role not in [RoleName.admin, RoleName.seller]:
+        abort(403, description="No autorizado")
+
+    valid_status = ["open", "in_progress", "resolved", "rejected"]
+
+    if body.get("status") not in valid_status:
+        abort(400, description="Estado inválido")
+
+    incident.status = body["status"]
+
+    db.session.commit()
+
+    return jsonify(incident.serialize()), 200

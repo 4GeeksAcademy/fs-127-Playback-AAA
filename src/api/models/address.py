@@ -1,4 +1,4 @@
-from sqlalchemy import String, DateTime, ForeignKey
+from sqlalchemy import String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from api.models import db
@@ -23,6 +23,8 @@ class Address(db.Model):
     community = db.Column(db.String(150), nullable=True)
     province_code = db.Column(db.String(10), nullable=True)
     country: Mapped[str] = mapped_column(String(100), nullable=False)
+    is_deleted: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
@@ -52,6 +54,8 @@ class Address(db.Model):
             "community": self.community,
             "province_code": self.province_code,
             "country": self.country,
+            "is_deleted": self.is_deleted,
+            "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

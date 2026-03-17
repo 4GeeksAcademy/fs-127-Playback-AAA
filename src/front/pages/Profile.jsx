@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileTabBar from "../components/ProfileTabBar";
@@ -9,8 +9,6 @@ import ProfileSecurity from "../components/ProfileSecurity";
 import ProfileOrders from "../components/ProfileOrders";
 import ProfileAddresses from "../components/ProfileAddresses";
 import ProfileRole from "../components/Profile/ProfileRole/ProfileRole";
-import { useNavigate } from "react-router-dom";
-
 
 const ACCOUNT_SECTIONS = ["info", "addresses", "security"];
 
@@ -33,7 +31,7 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
 
   return (
     <>
-      {/* ── MÓVIL: tabs horizontales encima del contenido ── */}
+      {/* ── MÓVIL: tabs horizontales ── */}
       <div className="sm:hidden flex border-b border-main mb-5">
         {sections.map((s) => {
           const isActive = activeSection === s.key;
@@ -61,18 +59,9 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
         })}
       </div>
 
-      {/* ── DESKTOP: sidebar izquierda + contenido derecha ── */}
+      {/* ── DESKTOP: sidebar + contenido ── */}
       <div className="hidden sm:flex gap-8 items-start">
-        <aside
-          style={{
-            width: "180px",
-            flexShrink: 0,
-            background: "var(--color-background-primary, #fff)",
-            border: "0.5px solid var(--border-main, #e5e7eb)",
-            borderRadius: "12px",
-            padding: "8px",
-          }}
-        >
+        <aside style={{ width: "180px", flexShrink: 0, background: "var(--color-background-primary, #fff)", border: "0.5px solid var(--border-main, #e5e7eb)", borderRadius: "12px", padding: "8px" }}>
           {sections.map((s) => {
             const isActive = activeSection === s.key;
             return (
@@ -80,18 +69,7 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
                 key={s.key}
                 onClick={() => setActiveSection(s.key)}
                 className="flex items-center gap-3 w-full text-left transition-all"
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: "8px",
-                  fontSize: "13px",
-                  fontWeight: isActive ? "500" : "400",
-                  background: isActive ? "#EEEDFE" : "transparent",
-                  color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)",
-                  border: "none",
-                  cursor: "pointer",
-                  marginBottom: "2px",
-                  display: "flex",
-                }}
+                style={{ padding: "10px 12px", borderRadius: "8px", fontSize: "13px", fontWeight: isActive ? "500" : "400", background: isActive ? "#EEEDFE" : "transparent", color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)", border: "none", cursor: "pointer", marginBottom: "2px", display: "flex" }}
               >
                 <span style={{ fontSize: "14px", lineHeight: 1 }}>{s.icon}</span>
                 {s.label}
@@ -99,24 +77,20 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
             );
           })}
         </aside>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {renderSection()}
-        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>{renderSection()}</div>
       </div>
 
       {/* ── MÓVIL: contenido ── */}
-      <div className="sm:hidden">
-        {renderSection()}
-      </div>
+      <div className="sm:hidden">{renderSection()}</div>
     </>
   );
 };
 
 const Profile = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const rawTab = searchParams.get("tab") || "dashboard";
-const navigate = useNavigate();
+
   const isAccountSection = ACCOUNT_SECTIONS.includes(rawTab);
   const [activeTab,     setActiveTab]     = useState(isAccountSection ? "account" : rawTab);
   const [activeSection, setActiveSection] = useState(isAccountSection ? rawTab : "info");
@@ -128,9 +102,9 @@ const navigate = useNavigate();
 
   const handleTabChange = (tab) => {
     if (tab === "favorites") {
-    navigate("/favorites"); 
-    return;
-  }
+      navigate("/favorites");
+      return;
+    }
     setActiveTab(tab);
     if (tab === "account") setActiveSection("info");
   };

@@ -6,6 +6,9 @@ from api.models.user import User, RoleName
 from api.models.seller import Seller, SellerStatus
 from api.utils import generate_initial_avatar
 import stripe
+from extensions import mail
+from api.emails import build_seller_registration_email, build_new_seller_admin_email
+
 
 seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
 
@@ -75,6 +78,11 @@ def create_seller_profile():
             pass 
 
         db.session.commit()
+
+        try:
+            mail.send(build_seller_registration_email(seller))
+        except Exception as e:
+            print(f"[Seller] Error al enviar email al vendedor: {str(e)}")
 
         return jsonify({
             "msg": "Perfil de vendedor creado correctamente",
@@ -218,6 +226,12 @@ def get_stripe_account_status():
             try:
                 seller.stripe_onboarding_completed = True
                 db.session.commit()
+
+                try:
+                    mail.send(build_new_seller_admin_email(seller))
+                except Exception as e:
+                    print(f"[Stripe] Error al enviar email al admin: {str(e)}")
+
             except Exception as e:
                 db.session.rollback()
                 abort(500, description=f"Error al guardar estado: {str(e)}")

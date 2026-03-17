@@ -1,4 +1,9 @@
 export const initialStore = () => {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id || "guest";
+  const savedCart = localStorage.getItem(`cart_${userId}`);
+
   return {
     message: null,
     todos: [
@@ -14,10 +19,10 @@ export const initialStore = () => {
       }
     ],
     token: localStorage.getItem("token") || null,
-    user: JSON.parse(localStorage.getItem("user")) || null,
+    user: user || null,
     isAuthenticated: !!localStorage.getItem("token"),
     favorites: [],
-    cart: []
+    cart: savedCart ? JSON.parse(savedCart) : []
   }
 }
 
@@ -59,11 +64,16 @@ export default function storeReducer(store, action = {}) {
       const { token, user } = action.payload;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+
+      const userId = user?.id || "guest";
+      const savedCart = localStorage.getItem(`cart_${userId}`);
+
       return {
         ...store,
         token,
         user,
         isAuthenticated: true,
+        cart: savedCart ? JSON.parse(savedCart) : []
       };
     }
 
@@ -81,37 +91,55 @@ export default function storeReducer(store, action = {}) {
         token: null,
         user: null,
         isAuthenticated: false,
+        cart: []
       };
 
-    case 'set_cart':
+    case 'set_cart': {
+      const userId = store.user?.id || "guest";
+      localStorage.setItem(`cart_${userId}`, JSON.stringify(action.payload));
+
       return {
         ...store,
         cart: action.payload
       };
+    }
 
- case 'cart_add': {
-  const exists = store.cart.find(item => item.id === action.payload.id);
-  if (exists) {
-    return {
-      ...store,
-      cart: store.cart.map(item =>
-        item.id === action.payload.id
-          ? { ...item, quantity: item.quantity + action.payload.quantity }
-          : item
-      )
-    };
-  }
-  return {
-    ...store,
-    cart: [...store.cart, action.payload]
-  };
-}
+    case 'cart_add': {
+      const exists = store.cart.find(item => item.id === action.payload.id);
 
-case 'cart_remove':
-  return {
-    ...store,
-    cart: store.cart.filter(item => item.id !== action.payload.id)
-  };
+      let newCart;
+
+      if (exists) {
+        newCart = store.cart.map(item =>
+          item.id === action.payload.id
+            ? { ...item, quantity: item.quantity + action.payload.quantity }
+            : item
+        );
+      } else {
+        newCart = [...store.cart, action.payload];
+      }
+
+      const userId = store.user?.id || "guest";
+      localStorage.setItem(`cart_${userId}`, JSON.stringify(newCart));
+
+      return {
+        ...store,
+        cart: newCart
+      };
+    }
+
+    case 'cart_remove': {
+      const newCart = store.cart.filter(item => item.id !== action.payload.id);
+
+      const userId = store.user?.id || "guest";
+      localStorage.setItem(`cart_${userId}`, JSON.stringify(newCart));
+
+      return {
+        ...store,
+        cart: newCart
+      };
+    }
+
     default:
       throw Error('Unknown action.');
   }

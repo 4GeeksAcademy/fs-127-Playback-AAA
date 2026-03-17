@@ -21,15 +21,11 @@ const OrderRow = ({ order }) => {
     cancelled: { label: "Cancelado", bg: "#FCEBEB", color: "#A32D2D" },
   };
   const s = statusMap[order.status] || statusMap["pending"];
-
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: "0.5px solid var(--border-main, #e5e7eb)", fontSize: "13px" }}>
       <div style={{ minWidth: 0 }}>
         <p style={{ fontWeight: "500", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {order.order_number || `ORD-${order.id}`}
-        </p>
-        <p style={{ fontSize: "11px", color: "var(--color-muted, #6b7280)", marginTop: "1px" }}>
-          {order.items?.[0]?.name || "—"}
         </p>
       </div>
       <span style={{ fontSize: "10px", padding: "3px 8px", borderRadius: "10px", background: s.bg, color: s.color, flexShrink: 0, marginLeft: "10px" }}>
@@ -39,16 +35,10 @@ const OrderRow = ({ order }) => {
   );
 };
 
-const QuickLink = ({ icon, title, desc, href, onClick }) => (
-  <a
-    href={href}
-    onClick={onClick}
-    style={{ textDecoration: "none", display: "block" }}
-  >
-    <div
-      className="bg-main rounded-xl border border-main p-4 flex items-center gap-4 cursor-pointer transition-all hover:border-purple-300"
-      style={{ transition: "border-color 0.15s" }}
-    >
+const QuickLink = ({ icon, title, desc, href }) => (
+  <a href={href} style={{ textDecoration: "none", display: "block" }}>
+    <div className="bg-main rounded-xl border border-main p-4 flex items-center gap-4 cursor-pointer"
+      style={{ transition: "border-color 0.15s" }}>
       <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#EEEDFE", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", flexShrink: 0 }}>
         {icon}
       </div>
@@ -63,7 +53,6 @@ const QuickLink = ({ icon, title, desc, href, onClick }) => (
 const ProfileDashboard = ({ setActiveTab }) => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [orders,  setOrders]  = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,8 +68,8 @@ const ProfileDashboard = ({ setActiveTab }) => {
 
   const user = store.user || {};
   const profileFields = [
-    { label: "Nombre y email",  done: !!(user.first_name && user.email) },
-    { label: "Foto de perfil",  done: !!user.avatar },
+    { label: "Nombre y email",  done: !!(user.name && user.email) },
+    { label: "Foto de perfil",  done: !!user.image_url },
     { label: "Contraseña",      done: true },
     { label: "Dirección",       done: !!user.address },
     { label: "Teléfono",        done: !!user.phone },
@@ -102,14 +91,14 @@ const ProfileDashboard = ({ setActiveTab }) => {
 
       {/* ── Completar perfil ── */}
       <div className="bg-main rounded-xl" style={{ border: "0.5px solid var(--border-main, #e5e7eb)", padding: "16px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "var(--color-muted, #6b7280)", marginBottom: "6px" }}>
-          <span style={{ fontWeight: "500", color: "var(--color-main)" }}>{t("profile.completeProfile")}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", color: "var(--color-muted)", marginBottom: "6px" }}>
+          <span style={{ fontWeight: "500", color: "var(--color-text-primary)" }}>{t("profile.completeProfile")}</span>
           <span>{completionPct}%</span>
         </div>
-        <div style={{ background: "var(--bg-subtle, #f3f4f6)", borderRadius: "4px", height: "6px", overflow: "hidden", marginBottom: "12px" }}>
+        <div style={{ background: "var(--color-background-secondary)", borderRadius: "4px", height: "6px", overflow: "hidden", marginBottom: "12px" }}>
           <div style={{ width: `${completionPct}%`, height: "100%", background: "#534AB7", borderRadius: "4px", transition: "width .4s ease" }} />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px", fontSize: "12px", color: "var(--color-muted, #6b7280)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px", fontSize: "12px", color: "var(--color-muted)" }}>
           {profileFields.map(f => (
             <div key={f.label}>{f.done ? "✅" : "⬜"} {f.label}</div>
           ))}
@@ -118,7 +107,7 @@ const ProfileDashboard = ({ setActiveTab }) => {
 
       {/* ── Pedidos recientes ── */}
       <div className="bg-main rounded-xl" style={{ border: "0.5px solid var(--border-main, #e5e7eb)", padding: "16px" }}>
-        <p style={{ fontSize: "12px", fontWeight: "500", color: "var(--color-muted, #6b7280)", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.4px" }}>
+        <p style={{ fontSize: "12px", fontWeight: "500", color: "var(--color-muted)", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.4px" }}>
           {t("orders.recent")}
         </p>
         {loading ? (
@@ -128,34 +117,22 @@ const ProfileDashboard = ({ setActiveTab }) => {
         ) : (
           <>
             {recentOrders.map(order => <OrderRow key={order.id} order={order} />)}
-            <button
-              onClick={() => setActiveTab("orders")}
-              style={{ display: "block", width: "100%", textAlign: "center", marginTop: "10px", fontSize: "12px", color: "#534AB7", background: "none", border: "none", cursor: "pointer" }}
-            >
+            <button onClick={() => setActiveTab("orders")}
+              style={{ display: "block", width: "100%", textAlign: "center", marginTop: "10px", fontSize: "12px", color: "#534AB7", background: "none", border: "none", cursor: "pointer" }}>
               {t("orders.viewAll")} →
             </button>
           </>
         )}
       </div>
 
-      {/* ── Accesos rápidos ── */}
+      {/* ── Ayuda y soporte ── */}
       <div>
         <p style={{ fontSize: "12px", fontWeight: "500", color: "var(--color-muted)", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "10px" }}>
           Ayuda y soporte
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <QuickLink
-            icon="❓"
-            title="Preguntas frecuentes"
-            desc="Envíos, devoluciones, pagos..."
-            href="/faq"
-          />
-          <QuickLink
-            icon="✉️"
-            title="Contactar con soporte"
-            desc="Te respondemos en 24-48h"
-            href="/contact"
-          />
+          <QuickLink icon="❓" title="Preguntas frecuentes" desc="Envíos, devoluciones, pagos..." href="/faq" />
+          <QuickLink icon="✉️" title="Contactar con soporte" desc="Te respondemos en 24-48h" href="/contact" />
         </div>
       </div>
 
