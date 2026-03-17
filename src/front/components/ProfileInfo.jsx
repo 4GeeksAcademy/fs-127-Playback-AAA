@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import userService from "../services/userService";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 const ROLE_LABELS = {
   buyer:  { label: "Comprador",      color: "#185FA5", bg: "#E6F1FB" },
@@ -32,6 +33,7 @@ const ProfileInfo = () => {
   const [imageError, setImageError] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
   const [imageSuccess, setImageSuccess] = useState(false);
+  const { dispatch } = useGlobalReducer();
 
   useEffect(() => {
     userService.getProfile(token).then(([data, error]) => {
@@ -78,6 +80,8 @@ const ProfileInfo = () => {
     const [data, error] = await userService.updateProfileImage(token, formData);
     if (error) { setImageError(error); setImageLoading(false); return; }
     setUser(prev => ({ ...prev, image_url: data.image_url }));
+    dispatch({ type: "setUser", payload: { ...store.user, image_url: data.image_url } });
+
     setImageSuccess(true);
     setImageLoading(false);
   };

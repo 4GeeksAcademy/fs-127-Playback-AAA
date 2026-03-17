@@ -22,7 +22,7 @@ const IncidentForm = ({ orderId, onClose }) => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/incidences`,
+`${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/incidences`,
         {
           method: "POST",
           headers: {
@@ -101,3 +101,8 @@ const IncidentForm = ({ orderId, onClose }) => {
 };
 
 export default IncidentForm;
+
+
+
+
+

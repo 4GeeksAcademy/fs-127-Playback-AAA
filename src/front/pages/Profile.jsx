@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileTabBar from "../components/ProfileTabBar";
@@ -7,6 +7,8 @@ import ProfileDashboard from "../components/ProfileDashboard";
 import ProfileInfo from "../components/ProfileInfo";
 import ProfileSecurity from "../components/ProfileSecurity";
 import ProfileOrders from "../components/ProfileOrders";
+import ProfileFavorites from "../components/ProfileFavorites";
+import ProfileIncidents from "../components/ProfileIncidents";
 import ProfileAddresses from "../components/ProfileAddresses";
 import ProfileRole from "../components/Profile/ProfileRole/ProfileRole";
 
@@ -88,7 +90,6 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
 
 const Profile = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const rawTab = searchParams.get("tab") || "dashboard";
 
   const isAccountSection = ACCOUNT_SECTIONS.includes(rawTab);
@@ -101,20 +102,18 @@ const Profile = () => {
   }, [activeTab, activeSection]);
 
   const handleTabChange = (tab) => {
-    if (tab === "favorites") {
-      navigate("/favorites");
-      return;
-    }
     setActiveTab(tab);
     if (tab === "account") setActiveSection("info");
   };
 
   const renderContent = () => {
     switch (activeTab) {
-      case "orders":  return <ProfileOrders />;
-      case "seller":  return <ProfileRole />;
-      case "account": return <AccountLayout activeSection={activeSection} setActiveSection={setActiveSection} />;
-      default:        return <ProfileDashboard setActiveTab={handleTabChange} />;
+      case "orders":    return <ProfileOrders />;
+      case "favorites": return <ProfileFavorites />;
+      case "incidents": return <ProfileIncidents />;
+      case "seller":    return <ProfileRole />;
+      case "account":   return <AccountLayout activeSection={activeSection} setActiveSection={setActiveSection} />;
+      default:          return <ProfileDashboard setActiveTab={handleTabChange} />;
     }
   };
 

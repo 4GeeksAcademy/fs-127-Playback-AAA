@@ -126,16 +126,16 @@ const ProfileOrders = () => {
               </div>
 
               {/* Fila inferior: botones */}
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2 justify-end">
                 {isDelivered && (
                   <button onClick={() => openReview(order)}
                     style={{ background: "#EEEDFE", color: "#534AB7", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
-                    <Star size={11} /> Valorar
+                    <Star size={11} />   {t("review.rate")}
                   </button>
                 )}
                 <button onClick={() => setIncident(order.id)}
                   style={{ background: "#FCEBEB", color: "#A32D2D", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
-                  <AlertCircle size={11} /> Incidencia
+                  <AlertCircle size={11} /> {t("orders.openIncident")  }
                 </button>
               </div>
             </div>
