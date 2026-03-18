@@ -38,7 +38,7 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
   return (
     <>
       {/* ── MÓVIL: tabs horizontales ── */}
-      <div className="sm:hidden flex border-b border-main mb-5">
+      <div className="sm:hidden flex border-b border-[rgb(var(--color-border))] mb-5">
         {sections.map((s) => {
           const isActive = activeSection === s.key;
           return (
@@ -55,7 +55,9 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
                 borderBottom: isActive
                   ? "2px solid #534AB7"
                   : "2px solid transparent",
-                color: isActive ? "#534AB7" : "var(--color-muted)",
+                color: isActive
+                  ? "#534AB7"
+                  : "rgb(var(--color-text-secondary))",
                 background: "none",
                 cursor: "pointer",
                 marginBottom: "-1px",
@@ -73,8 +75,8 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
           style={{
             width: "180px",
             flexShrink: 0,
-            background: "var(--color-background-primary, #fff)",
-            border: "0.5px solid var(--border-main, #e5e7eb)",
+            background: "rgb(var(--color-bg))", // fondo dark mode
+            border: "1px solid rgb(var(--color-border))",
             borderRadius: "12px",
             padding: "8px",
           }}
@@ -91,16 +93,22 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
                   borderRadius: "8px",
                   fontSize: "13px",
                   fontWeight: isActive ? "500" : "400",
-                  background: isActive ? "#EEEDFE" : "transparent",
-                  color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)",
+                  background: isActive
+                    ? "rgba(83, 74, 183, 0.15)" // recuadro activo lila suave
+                    : "transparent",
+                  color: isActive
+                    ? "#534AB7"
+                    : "rgb(var(--color-text-secondary))", // texto inactivo
                   border: "none",
                   cursor: "pointer",
                   marginBottom: "2px",
                   display: "flex",
                 }}
               >
-                <s.icon size={16} />
-
+                <s.icon
+                  size={16}
+                  color={isActive ? "#534AB7" : "rgb(var(--color-text-secondary))"} // icono
+                />
                 {s.label}
               </button>
             );
@@ -121,10 +129,10 @@ const Profile = () => {
 
   const isAccountSection = ACCOUNT_SECTIONS.includes(rawTab);
   const [activeTab, setActiveTab] = useState(
-    isAccountSection ? "account" : rawTab,
+    isAccountSection ? "account" : rawTab
   );
   const [activeSection, setActiveSection] = useState(
-    isAccountSection ? rawTab : "info",
+    isAccountSection ? rawTab : "info"
   );
 
   useEffect(() => {
@@ -160,7 +168,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-subtle">
+    <div className="min-h-screen bg-[rgb(var(--color-bg-subtle))] text-[rgb(var(--color-text))]">
       <ProfileHeader />
       <ProfileTabBar activeTab={activeTab} setActiveTab={handleTabChange} />
       <main className="max-w-5xl mx-auto px-4 py-8">{renderContent()}</main>

@@ -47,68 +47,41 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
       className="bg-main sticky top-0 z-20"
       style={{
         marginTop: "-32px",
-        borderBottom: "0.5px solid var(--border-main, #e5e7eb)",
+        borderBottom: "0.5px solid var(--border-main)",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}
     >
       {/* ── MÓVIL ── */}
       <div className="sm:hidden" ref={menuRef}>
         <div className="relative flex items-center justify-center px-4 py-3">
-          {/* label centrado */}
           <span className="text-sm font-medium text-main">{activeLabel}</span>
-          {/* botón anclado a la derecha */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="absolute right-4 flex items-center justify-center w-8 h-8 rounded-lg transition hover:bg-subtle"
-            style={{ border: "0.5px solid var(--border-main, #e5e7eb)" }}
+            className="absolute right-4 flex items-center justify-center w-8 h-8 rounded-lg transition hover:bg-subtle border border-main"
           >
-            {menuOpen ? (
-              <X size={15} style={{ color: "#534AB7" }} />
-            ) : (
-              <Menu
-                size={15}
-                style={{ color: "var(--color-muted, #6b7280)" }}
-              />
-            )}
+            {menuOpen ? <X size={15} className="text-main" /> : <Menu size={15} className="text-muted" />}
           </button>
         </div>
 
         {menuOpen && (
-          <div
-            className="absolute left-0 right-0 bg-main z-30"
-            style={{
-              border: "0.5px solid var(--border-main, #e5e7eb)",
-              borderTop: "none",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-            }}
-          >
+          <div className="absolute left-0 right-0 bg-main z-30 border border-main border-t-0 shadow-lg">
             {tabs.map((tab, i) => {
               const isActive = activeTab === tab.key;
               return (
                 <button
                   key={tab.key}
                   onClick={() => handleSelect(tab.key)}
-                  className="w-full text-left px-5 py-3.5 text-sm transition hover:bg-subtle flex items-center justify-between"
+                  className={`w-full text-left px-5 py-3.5 text-sm flex items-center justify-between transition
+                    hover:bg-subtle
+                    ${isActive ? "bg-[#534AB7] text-white font-medium" : "text-main font-normal"}`}
                   style={{
-                    borderBottom:
-                      i < tabs.length - 1
-                        ? "0.5px solid var(--border-main, #e5e7eb)"
-                        : "none",
-                    color: isActive ? "#534AB7" : "var(--color-text-primary)",
-                    fontWeight: isActive ? "500" : "400",
-                    background: isActive ? "#EEEDFE" : "transparent",
+                    borderBottom: i < tabs.length - 1 ? "0.5px solid var(--border-main)" : "none",
                   }}
                 >
                   {tab.label}
                   {isActive && (
                     <span
-                      style={{
-                        width: "6px",
-                        height: "6px",
-                        borderRadius: "50%",
-                        background: "#534AB7",
-                        flexShrink: 0,
-                      }}
+                      className="w-1.5 h-1.5 rounded-full bg-white flex-shrink-0"
                     />
                   )}
                 </button>
@@ -119,31 +92,15 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
       </div>
 
       {/* ── DESKTOP ── */}
-      <div
-        className="hidden sm:flex justify-center max-w-5xl mx-auto"
-        style={{ scrollbarWidth: "none" }}
-      >
+      <div className="hidden sm:flex justify-center max-w-5xl mx-auto scrollbar-none">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              style={{
-                padding: "13px 22px",
-                fontSize: "13px",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                borderBottom: isActive
-                  ? "2px solid #534AB7"
-                  : "2px solid transparent",
-                color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)",
-                fontWeight: isActive ? "500" : "400",
-                transition: "color .15s, border-color .15s",
-              }}
+              className={`px-5 py-3 text-sm whitespace-nowrap flex-shrink-0 cursor-pointer transition
+                ${isActive ? "border-b-2 border-[#534AB7] font-medium text-[#534AB7]" : "border-b-2 border-transparent font-normal text-muted"}`}
             >
               {tab.label}
             </button>
