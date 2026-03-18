@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import orderService from "../../services/orderService";
-import { ReviewForm } from "../ReviewForm";
+import { ReviewForm } from "../Common/ReviewForm";
 import IncidentForm from "../IncidentForm";
 
 const STATUS_CONFIG = {

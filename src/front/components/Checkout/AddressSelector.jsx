@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
-import { AddressForm } from "../AdressForm";
+import { AddressForm } from "../Profile/AdressForm";
 
-const AddressSelector = ({ title, addresses, selected, onSelect, onAddressCreated }) => {
+const AddressSelector = ({
+  title,
+  addresses,
+  selected,
+  onSelect,
+  onAddressCreated,
+}) => {
   const { t } = useTranslation();
   const [showForm, setShowForm] = useState(false);
 
@@ -29,19 +35,19 @@ const AddressSelector = ({ title, addresses, selected, onSelect, onAddressCreate
           <p className="font-medium text-main">{address.full_name}</p>
           <p className="text-sm text-muted">{address.address}</p>
           <p className="text-sm text-muted">
-            {address.city}{address.province ? `, ${address.province}` : ""}
+            {address.city}
+            {address.province ? `, ${address.province}` : ""}
           </p>
-          <p className="text-sm text-muted">{address.postal_code} · {address.country}</p>
+          <p className="text-sm text-muted">
+            {address.postal_code} · {address.country}
+          </p>
           <p className="text-sm text-muted">{address.phone}</p>
         </div>
       ))}
 
       {/* TOGGLE FORMULARIO */}
       {!showForm && (
-        <button
-          onClick={() => setShowForm(true)}
-          className="btn-ghost mt-1"
-        >
+        <button onClick={() => setShowForm(true)} className="btn-ghost mt-1">
           + {t("checkout.addNewAddress")}
         </button>
       )}

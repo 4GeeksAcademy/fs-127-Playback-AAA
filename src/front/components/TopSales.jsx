@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, ShoppingCart, X } from "lucide-react";
-import { StarRating } from "./StarRating";
+import { StarRating } from "./Common/StarRating";
 import productServices from "../services/productService";
 import { Link } from "react-router-dom";
-import { FavoriteButton } from "../components/FavoriteButton";
+import { FavoriteButton } from "./Common/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import { useFavorites } from "../hooks/useFavorites";
 import useGlobalReducer from "../hooks/useGlobalReducer";

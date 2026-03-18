@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { useFavorites } from "../../hooks/useFavorites";
-import { CardProduct } from "../CardProduct";
+import { CardProduct } from "../Common/CardProduct";
 
 const ProfileFavorites = () => {
   const { store } = useGlobalReducer();

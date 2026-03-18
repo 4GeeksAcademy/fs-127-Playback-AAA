@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import addressService from "../../services/addressService";
-import { AddressForm } from "../AdressForm";
-import EditAddressModal from "../EditAdressesModal";
+import { AddressForm } from "./AdressForm";
+import EditAddressModal from "./EditAdressesModal";
 
 const ProfileAddresses = () => {
   const { store } = useGlobalReducer();

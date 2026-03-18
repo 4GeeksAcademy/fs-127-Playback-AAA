@@ -165,19 +165,16 @@ export default function ChatWidget() {
   const [open,        setOpen]        = useState(false);
   const [winking,     setWinking]     = useState(false);
   const [messages,    setMessages]    = useState([
-    { role:"assistant", content:"¡Hola! 👾 Soy el asistente de Playback. ¿En qué puedo ayudarte hoy?" }
+    { role:"assistant", content:"¡Hola! 👾 ¿Qué necesitas hoy? Elige una opción y te ayudo en segundos 👇" }
   ]);
-  const [input,       setInput]       = useState("");
   const [loading,     setLoading]     = useState(false);
   const [hasUnread,   setHasUnread]   = useState(false);
   const [lastUserMsg, setLastUserMsg] = useState(null);
   const messagesEndRef = useRef(null);
-  const inputRef       = useRef(null);
 
   useEffect(() => {
     if (open) {
       messagesEndRef.current?.scrollIntoView({ behavior:"smooth" });
-      setTimeout(() => inputRef.current?.focus(), 100);
       setHasUnread(false);
     }
   }, [messages, open]);
@@ -189,7 +186,7 @@ export default function ChatWidget() {
   };
 
   const sendMessage = async (text) => {
-    const userText = text || input.trim();
+    const userText = text;
     if (!userText || loading) return;
     setInput("");
     setLastUserMsg(userText);
@@ -339,16 +336,7 @@ export default function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div style={styles.inputArea}>
-            <input ref={inputRef} className="chat-input" value={input}
-              onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown}
-              placeholder="O escribe tu pregunta..." style={styles.input} disabled={loading} />
-            <button className="chat-send-btn" onClick={() => sendMessage()}
-              disabled={!input.trim() || loading}
-              style={{ ...styles.sendBtn, opacity: !input.trim() || loading ? 0.4 : 1 }}>
-              <SendIcon />
-            </button>
-          </div>
+      
         </div>
       )}
 
