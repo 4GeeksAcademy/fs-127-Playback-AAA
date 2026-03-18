@@ -1,4 +1,4 @@
-from sqlalchemy import String, DateTime, Float, Integer, ForeignKey, Text, JSON, Enum
+from sqlalchemy import String, DateTime, Float, Integer, ForeignKey, Text, JSON, Enum, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from api.models import db
@@ -24,16 +24,16 @@ class Product(db.Model):
     price: Mapped[float] = mapped_column(Float(), nullable=False, default=0.0)
     image_url: Mapped[str] = mapped_column(Text(), nullable=True)
     other_image_url: Mapped[dict] = mapped_column(JSON, nullable=True)
-    height: Mapped[float] = mapped_column(Float(), nullable=True)   # cm
-    width: Mapped[float] = mapped_column(Float(), nullable=True)    # cm
-    length: Mapped[float] = mapped_column(Float(), nullable=True)   # cm
-    weight: Mapped[float] = mapped_column(Float(), nullable=True)   # kg
+    height: Mapped[float] = mapped_column(Float(), nullable=False, default=10.0)  # cm
+    width: Mapped[float] = mapped_column(Float(), nullable=False, default=10.0)   # cm
+    length: Mapped[float] = mapped_column(Float(), nullable=False, default=10.0)  # cm
+    weight: Mapped[float] = mapped_column(Float(), nullable=False, default=0.5)   # kg
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
     discount: Mapped[float] = mapped_column(Float(), nullable=False, default=0)
-    condition: Mapped[ProductCondition] = mapped_column(
-        Enum(ProductCondition), nullable=False, default=ProductCondition.new
-    )
+    condition: Mapped[ProductCondition] = mapped_column( Enum(ProductCondition), nullable=False, default=ProductCondition.new )
     created_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True, default=None)
 
     # ── ForeignKey ─────────────────────────────────────────────────────────────
     item_id: Mapped[int] = mapped_column(ForeignKey("item.id"), nullable=False)

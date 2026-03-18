@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0678f0ff9912
+Revision ID: 19f95b1b1cfc
 Revises: 
-Create Date: 2026-03-18 07:34:20.772203
+Create Date: 2026-03-18 19:33:49.869260
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0678f0ff9912'
+revision = '19f95b1b1cfc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -158,14 +158,16 @@ def upgrade():
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('image_url', sa.Text(), nullable=True),
     sa.Column('other_image_url', sa.JSON(), nullable=True),
-    sa.Column('height', sa.Float(), nullable=True),
-    sa.Column('width', sa.Float(), nullable=True),
-    sa.Column('length', sa.Float(), nullable=True),
-    sa.Column('weight', sa.Float(), nullable=True),
+    sa.Column('height', sa.Float(), nullable=False),
+    sa.Column('width', sa.Float(), nullable=False),
+    sa.Column('length', sa.Float(), nullable=False),
+    sa.Column('weight', sa.Float(), nullable=False),
     sa.Column('stock', sa.Integer(), nullable=False),
     sa.Column('discount', sa.Float(), nullable=False),
     sa.Column('condition', sa.Enum('new', 'used', 'refurbished', 'broken', name='productcondition'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('is_deleted', sa.Boolean(), nullable=False),
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['item.id'], ),
