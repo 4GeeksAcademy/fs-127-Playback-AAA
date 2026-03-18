@@ -132,7 +132,7 @@ export const MyOrders = () => {
                           × {product.quantity} {t("orders.units")}
                         </p>
 
-                        {order.status === "delivered" && (
+                        {["paid", "confirmed", "processing", "shipped", "delivered"].includes(order.status) && (
                           <div className="flex items-center gap-3 mt-1.5">
                             {alreadyReviewed ? (
                               <p className="text-xs text-emerald-600 flex items-center gap-1">

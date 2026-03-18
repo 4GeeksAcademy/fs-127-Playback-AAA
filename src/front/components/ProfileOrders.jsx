@@ -78,6 +78,9 @@ const ProfileOrders = () => {
         const cfg         = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
         const isOpen      = expanded[order.id];
         const isDelivered = order.status === "delivered";
+
+        const canOpenIncident = ["delivered", "shipped"].includes(order.status); // añadido
+
         const date        = new Date(order.created_at).toLocaleDateString("es-ES", {
           day: "numeric", month: "short", year: "numeric",
         });
@@ -133,10 +136,13 @@ const ProfileOrders = () => {
                     <Star size={11} />   {t("review.rate")}
                   </button>
                 )}
-                <button onClick={() => setIncident(order.id)}
-                  style={{ background: "#FCEBEB", color: "#A32D2D", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
-                  <AlertCircle size={11} /> {t("orders.openIncident")  }
-                </button>
+
+                {canOpenIncident && (
+                  <button onClick={() => setIncident(order.id)}
+                    style={{ background: "#FCEBEB", color: "#A32D2D", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
+                    <AlertCircle size={11} /> {t("orders.openIncident")  }
+                  </button>
+                )}
               </div>
             </div>
 
