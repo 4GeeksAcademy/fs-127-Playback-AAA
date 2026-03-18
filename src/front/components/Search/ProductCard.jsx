@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { FavoriteButton } from "../FavoriteButton";
-import { StarRating } from "../StarRating";
+import { FavoriteButton } from "../Common/FavoriteButton";
+import { StarRating } from "../Common/StarRating";
 
 // Clases del badge de condición (los productos "new" no muestran badge)
 const CONDITION_BADGE_CLS = {
-  new:         "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300",
-  used:        "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300",
-  refurbished: "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300",
-  broken:      "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300",
+  new: "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300",
+  used: "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300",
+  refurbished:
+    "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300",
+  broken: "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300",
 };
 
 export const ProductCard = ({ product }) => {
@@ -75,9 +76,7 @@ export const ProductCard = ({ product }) => {
         )}
 
         {/* Nombre */}
-        <p className="text-sm font-medium text-main truncate">
-          {product.name}
-        </p>
+        <p className="text-sm font-medium text-main truncate">{product.name}</p>
 
         {/* Ruta de categoría: categoría › subcategoría › item */}
         <p className="text-xs text-muted truncate capitalize">

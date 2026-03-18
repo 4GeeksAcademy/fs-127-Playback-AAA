@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react";
-import { ArrowRight, ArrowLeft, ShoppingCart, X } from "lucide-react";
-import { StarRating } from "./StarRating";
-import productServices from "../services/productService";
-import { Link } from "react-router-dom";
-import { FavoriteButton } from "../components/FavoriteButton";
-import { useTranslation } from "react-i18next";
-import { useFavorites } from "../hooks/useFavorites";
-import useGlobalReducer from "../hooks/useGlobalReducer";
-import { ProductPrice } from "../components/Common/ProductPrice";
-import orderService from "../services/orderService";
+import { useState, useEffect, useRef } from 'react';
+import { ArrowRight, ArrowLeft, ShoppingCart, X } from 'lucide-react';
+import { StarRating } from '../Common/StarRating';
+import productServices from '../../services/productService';
+import { Link } from 'react-router-dom';
+import { FavoriteButton } from '../Common/FavoriteButton';
+import { useTranslation } from 'react-i18next';
+import { useFavorites } from '../../hooks/useFavorites';
+import useGlobalReducer from '../../hooks/useGlobalReducer';
+import { ProductPrice } from '../Common/ProductPrice';
+import orderService from '../../services/orderService';
 
 export const TopSales = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -30,10 +30,10 @@ export const TopSales = () => {
 
     if (loadingCart[product.id]) return; // ← cortocircuito
 
-    const token = store.token || localStorage.getItem("token");
+    const token = store.token || localStorage.getItem('token');
 
     if (!token) {
-      setToast({ type: "auth" });
+      setToast({ type: 'auth' });
       setTimeout(() => setToast(null), 2500);
       return;
     }
@@ -41,7 +41,7 @@ export const TopSales = () => {
     const enCarrito =
       store.cart?.find((item) => item.id === product.id)?.quantity || 0;
     if (enCarrito >= product.stock) {
-      setToast({ type: "sin_stock" });
+      setToast({ type: 'sin_stock' });
       setTimeout(() => setToast(null), 2500);
       return;
     }
@@ -55,14 +55,14 @@ export const TopSales = () => {
 
     if (error) {
       if (error.status === 401 || error.status === 403) {
-        setToast({ type: "auth" });
+        setToast({ type: 'auth' });
         setTimeout(() => setToast(null), 2500);
       }
       return;
     }
 
-    dispatch({ type: "cart_add", payload: { id: product.id, quantity: 1 } });
-    setToast({ type: "success" });
+    dispatch({ type: 'cart_add', payload: { id: product.id, quantity: 1 } });
+    setToast({ type: 'success' });
     setTimeout(() => setToast(null), 2000);
   };
 
@@ -91,8 +91,8 @@ export const TopSales = () => {
 
   const scroll = (dir) => {
     carouselRef.current?.scrollBy({
-      left: dir === "right" ? 400 : -400,
-      behavior: "smooth",
+      left: dir === 'right' ? 400 : -400,
+      behavior: 'smooth',
     });
   };
 
@@ -101,7 +101,7 @@ export const TopSales = () => {
       <section className="mt-8">
         <div className="flex items-center justify-between my-4">
           <h2 className="text-lg font-semibold tracking-tight text-main">
-            {t("home.topSales")}
+            {t('home.topSales')}
           </h2>
         </div>
         <div className="flex gap-3">
@@ -128,37 +128,37 @@ export const TopSales = () => {
       {toast && (
         <div
           className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
-            toast.type === "auth" || toast.type === "sin_stock"
-              ? "bg-red-600 dark:bg-red-500"
-              : "bg-stone-900 dark:bg-stone-100"
+            toast.type === 'auth' || toast.type === 'sin_stock'
+              ? 'bg-red-600 dark:bg-red-500'
+              : 'bg-stone-900 dark:bg-stone-100'
           }`}
         >
-          {toast.type === "auth" || toast.type === "sin_stock" ? (
+          {toast.type === 'auth' || toast.type === 'sin_stock' ? (
             <X size={15} />
           ) : (
             <ShoppingCart size={15} />
           )}
-          {toast.type === "auth"
-            ? t("product.loginRequired")
-            : toast.type === "sin_stock"
-              ? t("product.noStock")
-              : t("product.addedToCart")}
+          {toast.type === 'auth'
+            ? t('product.loginRequired')
+            : toast.type === 'sin_stock'
+              ? t('product.noStock')
+              : t('product.addedToCart')}
         </div>
       )}
 
       <div className="flex items-center justify-between my-4">
         <h2 className="text-lg font-semibold tracking-tight text-main">
-          {isRandom ? t("home.featuredProducts") : t("home.topSales")}
+          {isRandom ? t('home.featuredProducts') : t('home.topSales')}
         </h2>
         <div>
           <button
-            onClick={() => scroll("left")}
+            onClick={() => scroll('left')}
             className="text-amber-600 hover:text-amber-700"
           >
             <ArrowLeft />
           </button>
           <button
-            onClick={() => scroll("right")}
+            onClick={() => scroll('right')}
             className="text-amber-600 hover:text-amber-700"
           >
             <ArrowRight />
@@ -186,13 +186,13 @@ export const TopSales = () => {
                     <img
                       src={
                         p.image_url ||
-                        "https://placehold.co/300x300?text=Sin+imagen"
+                        'https://placehold.co/300x300?text=Sin+imagen'
                       }
                       alt={p.name}
                       className="w-full h-full object-cover"
                       onError={(e) =>
                         (e.target.src =
-                          "https://placehold.co/300x300?text=Sin+imagen")
+                          'https://placehold.co/300x300?text=Sin+imagen')
                       }
                     />
                     <FavoriteButton
@@ -223,7 +223,7 @@ export const TopSales = () => {
                       {!inStock || stockAgotado ? (
                         <span className="text-xs text-red-500 font-medium flex items-center gap-1">
                           <X size={13} />
-                          {t("product.noStock")}
+                          {t('product.noStock')}
                         </span>
                       ) : (
                         <button
@@ -231,8 +231,8 @@ export const TopSales = () => {
                           disabled={loadingCart[p.id]} // ← añade esto
                           className={`text-white transition-all flex items-center justify-center p-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                             clicked === p.id
-                              ? "bg-violet-600 scale-75"
-                              : "bg-stone-800 hover:bg-stone-600 dark:bg-stone-200 dark:hover:bg-stone-400 dark:text-stone-900 scale-100"
+                              ? 'bg-violet-600 scale-75'
+                              : 'bg-stone-800 hover:bg-stone-600 dark:bg-stone-200 dark:hover:bg-stone-400 dark:text-stone-900 scale-100'
                           }`}
                         >
                           <ShoppingCart size={16} />

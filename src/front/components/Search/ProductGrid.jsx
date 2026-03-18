@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { ProductCard } from "./ProductCard";
-import { Pagination } from "../Pagination";
+import { Pagination } from "../Common/Pagination";
 
 export const ProductGrid = ({
   loading,
@@ -39,12 +39,8 @@ export const ProductGrid = ({
     return (
       <div className="text-center py-20">
         <p className="text-5xl mb-4">🔍</p>
-        <p className="text-main font-medium mb-1">
-          {t("search.noResults")}
-        </p>
-        <p className="text-sm text-muted mb-4">
-          {t("search.noResultsHint")}
-        </p>
+        <p className="text-main font-medium mb-1">{t("search.noResults")}</p>
+        <p className="text-sm text-muted mb-4">{t("search.noResultsHint")}</p>
         {activeFiltersCount > 0 && (
           <button
             onClick={onClearAll}

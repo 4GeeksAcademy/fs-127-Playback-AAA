@@ -1,29 +1,25 @@
 // Import necessary components and functions from react-router-dom.
 
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-} from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route, } from "react-router-dom";
 import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { PageProducts } from "./pages/PageProducts";
 import { PageDetailProduct } from "./pages/PageDetailProduct";
-import { PageFavorites } from "./pages/PageFavorites";
 import { SearchPage } from "./pages/SearchPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { PageCart } from "./pages/PageCart";
 import { Checkout } from "./pages/Checkout";
 import { MyOrders } from "./pages/MyOrders";
 import Profile from "./pages/Profile";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./components/Common/PrivateRoute";
 import {StripeReturn} from "./pages/StripeReturn";
 import {StripeRefresh} from "./pages/StripeRefresh";
 import {About} from "./pages/About";
 import FAQPage     from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
+
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,7 +29,6 @@ export const router = createBrowserRouter(
       <Route path="/demo" element={ <PrivateRoute> <Demo /> </PrivateRoute> } />
       <Route path="/products" element={<PageProducts />} />
       <Route path="/product/:id" element={<PageDetailProduct />} />
-      <Route path="/favorites" element={ <PrivateRoute> <PageFavorites /> </PrivateRoute> } />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/profile" element={ <PrivateRoute> <Profile /> </PrivateRoute> }/>
       <Route path="/reset-password" element={<ResetPasswordPage />} />

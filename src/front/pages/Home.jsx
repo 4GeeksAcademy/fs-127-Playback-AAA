@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { HeroBanner } from "../components/HeroBanner";
-import { TopRatedSubcategories } from "../components/TopRatedSubcategories";
-import { TopSales } from "../components/TopSales";
+import { HeroBanner } from "../components/Home/HeroBanner";
+import { TopRatedSubcategories } from "../components/Home/TopRatedSubcategories";
+import { TopSales } from "../components/Home/TopSales";
 
 export const Home = () => {
   const { dispatch } = useGlobalReducer();

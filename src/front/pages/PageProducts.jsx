@@ -1,17 +1,14 @@
 import { useState } from "react";
-import { Pagination } from "../components/Pagination";
-import { CardProduct } from "../components/CardProduct";
+import { Pagination } from "../components/Common/Pagination";
+import { CardProduct } from "../components/Common/CardProduct";
 import { useProductSearch } from "../hooks/useProductSearch";
 import { SearchHeader } from "../components/Search/SearchHeader";
 import { SearchToolbar } from "../components/Search/SearchToolbar";
 
-
-
-
-
 export const PageProducts = () => {
   //Usamos el hook personalizado para obtener los productos y la info de la búsqueda
-  const { loading, results, categoryName, subcategoryName, itemName, } = useProductSearch();
+  const { loading, results, categoryName, subcategoryName, itemName } =
+    useProductSearch();
 
   //Esto es para la paginacion le decimos que empieza en la 1 que queremos que muestre 8 y las paginas que tenemos
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +24,13 @@ export const PageProducts = () => {
   return (
     <div>
       <section className="w-full px-20 max-w-screen-2xl mx-auto ">
-        <SearchHeader loading={loading} resultsCount={results.length} categoryName={categoryName} subcategoryName={subcategoryName} itemName={itemName} />
+        <SearchHeader
+          loading={loading}
+          resultsCount={results.length}
+          categoryName={categoryName}
+          subcategoryName={subcategoryName}
+          itemName={itemName}
+        />
         <SearchToolbar />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
           {productosPaginados

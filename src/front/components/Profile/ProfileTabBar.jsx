@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import useGlobalReducer from "../hooks/useGlobalReducer";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { useTranslation } from "react-i18next";
 import { Menu, X } from "lucide-react";
 
@@ -11,18 +11,18 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
   const menuRef = useRef(null);
 
   const sellerLabel = () => {
-    if (role === "admin")  return t("seller.adminPanel");
+    if (role === "admin") return t("seller.adminPanel");
     if (role === "seller") return t("seller.myStore");
     return t("seller.becomeSeller");
   };
 
   const tabs = [
-    { key: "dashboard",  label: t("profile.tabs.dashboard") },
-    { key: "account",    label: t("profile.myAccount") },
-    { key: "orders",     label: t("orders.title") },
-    { key: "favorites",  label: t("favorites.title") },
-    { key: "incidents",  label: t("incidents.title") },     
-    { key: "seller",     label: sellerLabel() },
+    { key: "dashboard", label: t("profile.tabs.dashboard") },
+    { key: "account", label: t("profile.myAccount") },
+    { key: "orders", label: t("orders.title") },
+    { key: "favorites", label: t("favorites.title") },
+    { key: "incidents", label: t("incidents.title") },
+    { key: "seller", label: sellerLabel() },
   ];
 
   const activeLabel = tabs.find((tab) => tab.key === activeTab)?.label;
@@ -52,22 +52,26 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
       }}
     >
       {/* ── MÓVIL ── */}
-     <div className="sm:hidden" ref={menuRef}>
-  <div className="relative flex items-center justify-center px-4 py-3">
-    {/* label centrado */}
-    <span className="text-sm font-medium text-main">{activeLabel}</span>
-    {/* botón anclado a la derecha */}
-    <button
-      onClick={() => setMenuOpen((v) => !v)}
-      className="absolute right-4 flex items-center justify-center w-8 h-8 rounded-lg transition hover:bg-subtle"
-      style={{ border: "0.5px solid var(--border-main, #e5e7eb)" }}
-    >
-      {menuOpen
-        ? <X size={15} style={{ color: "#534AB7" }} />
-        : <Menu size={15} style={{ color: "var(--color-muted, #6b7280)" }} />
-      }
-    </button>
-  </div>
+      <div className="sm:hidden" ref={menuRef}>
+        <div className="relative flex items-center justify-center px-4 py-3">
+          {/* label centrado */}
+          <span className="text-sm font-medium text-main">{activeLabel}</span>
+          {/* botón anclado a la derecha */}
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="absolute right-4 flex items-center justify-center w-8 h-8 rounded-lg transition hover:bg-subtle"
+            style={{ border: "0.5px solid var(--border-main, #e5e7eb)" }}
+          >
+            {menuOpen ? (
+              <X size={15} style={{ color: "#534AB7" }} />
+            ) : (
+              <Menu
+                size={15}
+                style={{ color: "var(--color-muted, #6b7280)" }}
+              />
+            )}
+          </button>
+        </div>
 
         {menuOpen && (
           <div
@@ -86,7 +90,10 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
                   onClick={() => handleSelect(tab.key)}
                   className="w-full text-left px-5 py-3.5 text-sm transition hover:bg-subtle flex items-center justify-between"
                   style={{
-                    borderBottom: i < tabs.length - 1 ? "0.5px solid var(--border-main, #e5e7eb)" : "none",
+                    borderBottom:
+                      i < tabs.length - 1
+                        ? "0.5px solid var(--border-main, #e5e7eb)"
+                        : "none",
                     color: isActive ? "#534AB7" : "var(--color-text-primary)",
                     fontWeight: isActive ? "500" : "400",
                     background: isActive ? "#EEEDFE" : "transparent",
@@ -94,7 +101,15 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
                 >
                   {tab.label}
                   {isActive && (
-                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#534AB7", flexShrink: 0 }} />
+                    <span
+                      style={{
+                        width: "6px",
+                        height: "6px",
+                        borderRadius: "50%",
+                        background: "#534AB7",
+                        flexShrink: 0,
+                      }}
+                    />
                   )}
                 </button>
               );
@@ -104,7 +119,10 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
       </div>
 
       {/* ── DESKTOP ── */}
-<div className="hidden sm:flex justify-center max-w-5xl mx-auto" style={{ scrollbarWidth: "none" }}>
+      <div
+        className="hidden sm:flex justify-center max-w-5xl mx-auto"
+        style={{ scrollbarWidth: "none" }}
+      >
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
@@ -119,7 +137,9 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
                 border: "none",
                 background: "transparent",
                 cursor: "pointer",
-                borderBottom: isActive ? "2px solid #534AB7" : "2px solid transparent",
+                borderBottom: isActive
+                  ? "2px solid #534AB7"
+                  : "2px solid transparent",
                 color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)",
                 fontWeight: isActive ? "500" : "400",
                 transition: "color .15s, border-color .15s",

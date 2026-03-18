@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
-import orderService from "../services/orderService";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import orderService from "../../services/orderService";
 
 const StatCard = ({ value, label }) => (
   <div

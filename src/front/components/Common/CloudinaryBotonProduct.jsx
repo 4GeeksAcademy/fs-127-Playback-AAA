@@ -1,5 +1,5 @@
-import { useState } from "react";
-import productServices from "../services/productService";
+ import { useState } from "react";
+ import productServices from "../../services/productService";
 
 //Para instalar cloudinari en otra pagina pondremos el import 
 //import { CloudinaryBotonProduct } from "../components/CloudinaryBotonProduct";

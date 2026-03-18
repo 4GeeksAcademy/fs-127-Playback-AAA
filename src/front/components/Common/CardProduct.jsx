@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FavoriteButton } from "./FavoriteButton";
-import { ProductBadges } from "./Common/ProductBadges";
-import { ProductPrice } from "./Common/ProductPrice";
-import useGlobalReducer from "../hooks/useGlobalReducer";
+import { ProductBadges } from "./ProductBadges";
+import { ProductPrice } from "./ProductPrice";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 import { StarRating } from "./StarRating";
-import orderService from "../services/orderService";
+import orderService from "../../services/orderService";
 
 export const CardProduct = ({ product }) => {
   const { store, dispatch } = useGlobalReducer();
