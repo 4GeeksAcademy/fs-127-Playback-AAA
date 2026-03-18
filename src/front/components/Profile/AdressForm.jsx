@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import useGlobalReducer from "../hooks/useGlobalReducer";
-import addressService from "../services/addressService";
-import geoService from "../services/geoService";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import addressService from "../../services/addressService";
+import geoService from "../../services/geoService";
 
 const EMPTY_FORM = {
   full_name: "",

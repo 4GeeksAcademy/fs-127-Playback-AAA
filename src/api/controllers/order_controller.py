@@ -320,7 +320,6 @@ def checkout():
     order.shipping_address_id = shipping_address_id
     order.billing_address_id  = billing_address_id
     order.payment_method     = payment_method
-
     db.session.commit()
 
     return jsonify({

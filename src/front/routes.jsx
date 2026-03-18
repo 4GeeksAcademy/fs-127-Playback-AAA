@@ -11,7 +11,6 @@ import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { PageProducts } from "./pages/PageProducts";
 import { PageDetailProduct } from "./pages/PageDetailProduct";
-import { PageFavorites } from "./pages/PageFavorites";
 import { SearchPage } from "./pages/SearchPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { PageCart } from "./pages/PageCart";
@@ -34,7 +33,6 @@ export const router = createBrowserRouter(
       <Route path="/demo" element={ <PrivateRoute> <Demo /> </PrivateRoute> } />
       <Route path="/products" element={<PageProducts />} />
       <Route path="/product/:id" element={<PageDetailProduct />} />
-      <Route path="/favorites" element={ <PrivateRoute> <PageFavorites /> </PrivateRoute> } />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/profile" element={ <PrivateRoute> <Profile /> </PrivateRoute> }/>
       <Route path="/reset-password" element={<ResetPasswordPage />} />

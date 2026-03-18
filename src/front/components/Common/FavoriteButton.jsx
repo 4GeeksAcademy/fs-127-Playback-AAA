@@ -1,16 +1,16 @@
 import { Heart } from "lucide-react";
-import useGlobalReducer from "../hooks/useGlobalReducer";
-import favoriteServices from "../services/favoriteService";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import favoriteServices from "../../services/favoriteService";
 
 export const FavoriteButton = ({ product, className = "" }) => {
   const { store, dispatch } = useGlobalReducer();
-const isLoggedIn = !!(store.token || localStorage.getItem("token"));
-if (!isLoggedIn) return null;
+  const isLoggedIn = !!(store.token || localStorage.getItem("token"));
+  if (!isLoggedIn) return null;
 
-    const isFavorite = store.favorites?.find(fav => fav.id === product.id);
+  const isFavorite = store.favorites?.find((fav) => fav.id === product.id);
   const toggle = async (e) => {
     e.preventDefault();
-     const token = store.token || localStorage.getItem("token"); 
+    const token = store.token || localStorage.getItem("token");
     const isLoggedIn = !!(store.token || localStorage.getItem("token"));
 
     if (isFavorite) {
