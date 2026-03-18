@@ -35,10 +35,14 @@ export const Layout = () => {
 
   return (
     <ScrollToTop>
-     <ChatWidget />
-      <Navbar />
-      <Outlet />
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <ChatWidget />
+        <Navbar />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
     </ScrollToTop>
   );
 };
