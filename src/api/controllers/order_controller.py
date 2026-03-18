@@ -219,10 +219,9 @@ def my_orders():
             "shipping_cost": order.shipping_cost,
             "created_at": order.created_at.isoformat(),
             "products": products,
-            # "shipping_address": order.shipping_address.serialize() if order.shipping_address else None,
-            # "billing_address": order.billing_address.serialize() if order.billing_address else None
-              "shipping_address": None,   # ← temporalmente sin dirección
-            "billing_address": None,
+             "shipping_address": order.shipping_address.serialize() if order.shipping_address else None,
+             "billing_address": order.billing_address.serialize() if order.billing_address else None
+            
         })
 
     return jsonify(result), 200

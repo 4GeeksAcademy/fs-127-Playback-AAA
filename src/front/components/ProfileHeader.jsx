@@ -29,7 +29,7 @@ const ProfileHeader = () => {
       style={{ background: "linear-gradient(135deg, #534AB7 0%, #7F77DD 100%)", paddingBottom: "48px" }}
       className="px-4 pt-6"
     >
-      <div className="max-w-5xl mx-auto flex items-center gap-5">
+<div className="max-w-5xl mx-auto flex flex-col items-center gap-3 text-center">
 
         {/* Avatar */}
         <div className="flex-shrink-0">

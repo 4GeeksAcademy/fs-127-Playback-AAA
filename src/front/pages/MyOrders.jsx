@@ -36,7 +36,10 @@ export const MyOrders = () => {
     const token = store.token || localStorage.getItem("token");
     if (!token) return;
     orderService.getMyOrders(token).then(([data]) => {
-      if (data) setOrders(data);
+         if (data) {
+      console.log("orders:", JSON.stringify(data, null, 2)); // ← añade esto
+      setOrders(data);
+    }
     });
   }, []);
 
@@ -165,25 +168,9 @@ export const MyOrders = () => {
               })}
             </div>
 
-            {/* ENVÍO */}
-            {/* <div className="px-6 pb-6">
-              <div className="flex gap-4 items-center">
-                <div className="w-20 h-20 rounded-lg flex items-center justify-center shrink-0">
-                  <Truck size={32} className="text-muted" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-main">{t("checkout.shipping")}</p>
-                  <p className="text-sm text-muted">
-                    {order.shipping_address.address} · {order.shipping_address.city} · {order.shipping_address.country}
-                  </p>
-                </div>
-                <p className="font-semibold text-main shrink-0">
-                  {parseFloat(order.shipping_cost ?? 0).toFixed(2)} €
-                </p>
-              </div>
-            </div> */}
-            {order.shipping_address && (
-  <div className="px-6 pb-6">
+        {/* ENVÍO */}
+<div className="px-6 pb-6">
+  {order.shipping_address && (   // ← add this guard
     <div className="flex gap-4 items-center">
       <div className="w-20 h-20 rounded-lg flex items-center justify-center shrink-0">
         <Truck size={32} className="text-muted" />
@@ -198,8 +185,26 @@ export const MyOrders = () => {
         {parseFloat(order.shipping_cost ?? 0).toFixed(2)} €
       </p>
     </div>
-  </div>
-)}
+  )}  {/* ← close the guard */}
+</div>
+  {/*          {order.shipping_address && (
+  // <div className="px-6 pb-6">
+  //   <div className="flex gap-4 items-center">
+  //     <div className="w-20 h-20 rounded-lg flex items-center justify-center shrink-0">
+  //       <Truck size={32} className="text-muted" />
+  //     </div>
+  //     <div className="flex-1">
+  //       <p className="font-medium text-main">{t("checkout.shipping")}</p>
+  //       <p className="text-sm text-muted">
+  //         {order.shipping_address.address} · {order.shipping_address.city} · {order.shipping_address.country}
+  //       </p>
+  //     </div>
+  //     <p className="font-semibold text-main shrink-0">
+  //       {parseFloat(order.shipping_cost ?? 0).toFixed(2)} €
+  //     </p>
+  //   </div>
+  // </div>
+// )}*
 
             {/* DIRECCIONES */}
             <div className="grid md:grid-cols-2 gap-6 p-6 border-t border-main bg-subtle text-sm rounded-b-xl">

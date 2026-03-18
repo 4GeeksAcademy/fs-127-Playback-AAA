@@ -43,16 +43,23 @@ async function createProduct(formData, token) {
 }
 
 async function updateProduct(id, formData, token) {
+  const isFormData = formData instanceof FormData;
+
   const res = await fetch(`${backendUrl}/api/product/${id}`, {
     method: "PUT",
-    headers: { Authorization: `Bearer ${token}` },
-    body: formData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      // Solo añadir Content-Type si NO es FormData
+      // (FormData lo pone solo con el boundary)
+      ...(!isFormData && { "Content-Type": "application/json" }),
+    },
+    body: isFormData ? formData : JSON.stringify(formData),
   });
+
   const data = await res.json();
   if (!res.ok) return [null, data.description || "Error al actualizar el producto"];
   return [data, null];
 }
-
 async function deleteProduct(id) {
   const res = await fetch(`${backendUrl}/api/product/${id}`, {
     method: "DELETE",
