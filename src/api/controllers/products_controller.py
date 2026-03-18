@@ -10,6 +10,7 @@ from sqlalchemy.orm import joinedload
 from deep_translator import GoogleTranslator
 import cloudinary.uploader
 from api.models.seller import Seller
+from datetime import datetime, timezone
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
@@ -25,7 +26,7 @@ def translate_text(text, target_lang):
 @product_bp.route('', methods=['GET'])
 def get_products():
     locale = request.args.get("locale", "es")
-    products = Product.query.all()
+    products = Product.query.filter_by(is_deleted=False).all()
     return jsonify([p.to_dict(locale=locale) for p in products]), 200
 
 
@@ -47,7 +48,7 @@ def search_products():
     conditions = [c.strip() for c in conditions_param.split(",")
                   if c.strip()] if conditions_param else []
 
-    products = Product.query.options(
+    products = Product.query.filter_by(is_deleted=False).options(
         joinedload(Product.item)
         .joinedload(Item.subcategory)
         .joinedload(Subcategory.category)
@@ -128,7 +129,7 @@ def search_products():
 def get_product(id):
     locale = request.args.get("locale", "es")
     product = Product.query.get(id)
-    if product is None:
+    if product is None or product.is_deleted:
         abort(404, description=f"Producto con id {id} no encontrado")
     return jsonify(product.to_dict(locale=locale)), 200
 
@@ -231,7 +232,7 @@ def create_product():
 @jwt_required()
 def update_product(id):
     product = Product.query.get(id)
-    if product is None:
+    if product is None or product.is_deleted:
         abort(404, description=f"Producto con id {id} no encontrado")
 
     if request.content_type and "multipart/form-data" in request.content_type:
@@ -317,6 +318,7 @@ def get_top_sales():
         Product,
         func.sum(OrderDetail.quantity).label("total_sold")
     ).join(Product.order_details)\
+    .filter(Product.is_deleted == False)\
     .group_by(Product.id)\
     .order_by(text("total_sold DESC"))\
     .limit(10)\
@@ -330,13 +332,22 @@ def get_top_sales():
 
 
 @product_bp.route('/<int:id>', methods=['DELETE'])
+@jwt_required()
 def delete_product(id):
+    user_id = get_jwt_identity()
+    seller = Seller.query.filter_by(user_id=user_id).first()
+    if not seller:
+        abort(403, description="No tienes perfil de vendedor")
+
     product = Product.query.get(id)
-    if product is None:
+    if product is None or product.is_deleted:
         abort(404, description=f"Producto con id {id} no encontrado")
+    if product.seller_id != seller.id:
+        abort(403, description="No tienes permiso para eliminar este producto")
 
     try:
-        db.session.delete(product)
+        product.is_deleted = True
+        product.deleted_at = datetime.now(timezone.utc)
         db.session.commit()
     except Exception:
         db.session.rollback()
