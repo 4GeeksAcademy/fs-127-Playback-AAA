@@ -25,6 +25,7 @@ import {About} from "./pages/About";
 import FAQPage     from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
 
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>}>

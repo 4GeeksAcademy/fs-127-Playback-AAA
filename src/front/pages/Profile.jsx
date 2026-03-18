@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import ProfileHeader from "../components/ProfileHeader";
-import ProfileTabBar from "../components/ProfileTabBar";
-import ProfileDashboard from "../components/ProfileDashboard";
-import ProfileInfo from "../components/ProfileInfo";
-import ProfileSecurity from "../components/ProfileSecurity";
-import ProfileOrders from "../components/ProfileOrders";
-import ProfileFavorites from "../components/ProfileFavorites";
-import ProfileIncidents from "../components/ProfileIncidents";
-import ProfileAddresses from "../components/ProfileAddresses";
+import ProfileHeader from "../components/Profile/ProfileHeader";
+import ProfileTabBar from "../components/Profile/ProfileTabBar";
+import ProfileDashboard from "../components/Profile/ProfileDashboard";
+import ProfileInfo from "../components/Profile/ProfileInfo";
+import ProfileSecurity from "../components/Profile/ProfileSecurity";
+import ProfileOrders from "../components/Profile/ProfileOrders";
+import ProfileFavorites from "../components/Profile/ProfileFavorites";
+import ProfileIncidents from "../components/Profile/ProfileIncidents";
+import ProfileAddresses from "../components/Profile/ProfileAddresses";
 import ProfileRole from "../components/Profile/ProfileRole/ProfileRole";
 import { User, MapPin, Shield } from "lucide-react";
-
 
 const ACCOUNT_SECTIONS = ["info", "addresses", "security"];
 
@@ -20,10 +19,10 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
   const { t } = useTranslation();
 
   const sections = [
-  { key: "info",      icon: User,   label: t("profile.tabs.info") },
-  { key: "addresses", icon: MapPin, label: t("profile.tabs.addresses") },
-  { key: "security",  icon: Shield, label: t("profile.tabs.security") },
-];
+    { key: "info", icon: User, label: t("profile.tabs.info") },
+    { key: "addresses", icon: MapPin, label: t("profile.tabs.addresses") },
+    { key: "security", icon: Shield, label: t("profile.tabs.security") },
+  ];
 
   const renderSection = () => {
     switch (activeSection) {
@@ -100,7 +99,7 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
                   display: "flex",
                 }}
               >
-             <s.icon size={16} />
+                <s.icon size={16} />
 
                 {s.label}
               </button>

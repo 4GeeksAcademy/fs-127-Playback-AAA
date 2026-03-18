@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LayoutDashboard, Package, ShoppingBag, TrendingUp, Settings, AlertTriangle } from "lucide-react";
 import OrderTab from "./OrdersTab";
 import ProductsTab from "./ProductsTab";
 import EarningTab from "./EarningTab";
@@ -13,37 +13,23 @@ export default function StoreDashboard() {
   const { t } = useTranslation();
 
   const TABS = [
-    { id: "overview", emoji: "📊", label: t("dashboard.seller.tabs.overview") },
-    { id: "orders", emoji: "📦", label: t("dashboard.seller.tabs.orders") },
-    { id: "products", emoji: "🛍️", label: t("dashboard.seller.tabs.products") },
-    { id: "earnings", emoji: "💰", label: t("dashboard.seller.tabs.earnings") },
-    { id: "settings", emoji: "⚙️", label: t("dashboard.seller.tabs.settings") },
-    {
-      id: "incidents",
-      emoji: "⚠️",
-      label: t("dashboard.seller.tabs.incidents"),
-    },
+    { id: "overview",  icon: LayoutDashboard, label: t("dashboard.seller.tabs.overview") },
+    { id: "orders",    icon: Package,         label: t("dashboard.seller.tabs.orders") },
+    { id: "products",  icon: ShoppingBag,     label: t("dashboard.seller.tabs.products") },
+    { id: "earnings",  icon: TrendingUp,      label: t("dashboard.seller.tabs.earnings") },
+    { id: "settings",  icon: Settings,        label: t("dashboard.seller.tabs.settings") },
+    { id: "incidents", icon: AlertTriangle,   label: t("dashboard.seller.tabs.incidents") },
   ];
-
-  const activeLabel = TABS.find((t) => t.id === activeTab);
 
   const renderTab = () => {
     switch (activeTab) {
-      case "overview":
-        return <ResumTab />;
-      case "orders":
-        return <OrderTab />;
-      case "products":
-        return <ProductsTab />;
-      case "earnings":
-        return <EarningTab />;
-      case "settings":
-        return <SettingsTab />;
-      case "incidents":
-        return <ProfileSellerIncidents />;
-
-      default:
-        return null;
+      case "overview":  return <ResumTab />;
+      case "orders":    return <OrderTab />;
+      case "products":  return <ProductsTab />;
+      case "earnings":  return <EarningTab />;
+      case "settings":  return <SettingsTab />;
+      case "incidents": return <ProfileSellerIncidents />;
+      default:          return null;
     }
   };
 
@@ -53,7 +39,7 @@ export default function StoreDashboard() {
         {/* Cabecera */}
         <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-0">
           <h2 className="text-lg font-semibold text-main mb-1">
-            🏪 {t("dashboard.seller.title")}
+            {t("dashboard.seller.title")}
           </h2>
           <p className="text-muted text-sm mb-4">
             {t("dashboard.seller.desc")}
@@ -69,7 +55,7 @@ export default function StoreDashboard() {
               >
                 {TABS.map((tab) => (
                   <option key={tab.id} value={tab.id}>
-                    {tab.emoji} {tab.label}
+                    {tab.label}
                   </option>
                 ))}
               </select>
@@ -82,20 +68,24 @@ export default function StoreDashboard() {
 
           {/* ── DESKTOP: tabs horizontales ── */}
           <div className="hidden sm:flex border-b border-main">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition border-b-2 -mb-px
-                  ${
-                    activeTab === tab.id
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition border-b-2 -mb-px
+                    ${isActive
                       ? "border-purple-500 text-purple-500"
                       : "border-transparent text-muted hover:text-main"
-                  }`}
-              >
-                {tab.emoji} {tab.label}
-              </button>
-            ))}
+                    }`}
+                >
+                  <Icon size={15} />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

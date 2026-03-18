@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertCircle, Check } from "lucide-react";
-import userService from "../services/userService";
+import userService from "../../services/userService";
 
 const ProfileSecurity = () => {
   const { t } = useTranslation();
@@ -45,7 +45,11 @@ const ProfileSecurity = () => {
               : "bg-stone-900 dark:bg-stone-100"
           }`}
         >
-          {toast.type === "error" ? <AlertCircle size={15} /> : <Check size={15} />}
+          {toast.type === "error" ? (
+            <AlertCircle size={15} />
+          ) : (
+            <Check size={15} />
+          )}
           {toast.msg}
         </div>
       )}

@@ -39,8 +39,8 @@ export const Navbar = () => {
   // Rutas del menú de usuario autenticado
   const userLinks = [
     { to: `/profile`,   icon: "👤", label: t("navbar.profile") },
-    { to: `/favorites`, icon: "❤️", label: t("navbar.favorites") },
-    { to: `/orders`,    icon: "📦", label: t("navbar.orders") },
+    { to: `/profile?tab=favorites`, icon: "❤️", label: t("navbar.favorites") },
+    { to: `/profile?tab=orders`,    icon: "📦", label: t("navbar.orders") },
   ];
 
   // ── Handlers ──────────────────────────────
