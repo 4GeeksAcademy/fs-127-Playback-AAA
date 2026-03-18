@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useGlobalReducer from "../hooks/useGlobalReducer";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const IncidentForm = ({ orderId, onClose }) => {
   const { store } = useGlobalReducer();
@@ -22,25 +22,24 @@ const IncidentForm = ({ orderId, onClose }) => {
 
     try {
       const res = await fetch(
-`${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/incidences`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/incidences`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + token
+            Authorization: "Bearer " + token,
           },
           body: JSON.stringify({
             title,
-            description
-          })
-        }
+            description,
+          }),
+        },
       );
 
       if (!res.ok) throw new Error("Error creando incidencia");
 
       alert("Incidencia creada correctamente");
       onClose();
-
     } catch (error) {
       console.error(error);
       alert("Error al crear incidencia");
@@ -52,13 +51,9 @@ const IncidentForm = ({ orderId, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white p-6 rounded-xl w-96">
-
-        <h2 className="text-lg font-semibold mb-4">
-          Abrir incidencia
-        </h2>
+        <h2 className="text-lg font-semibold mb-4">Abrir incidencia</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-
           <input
             type="text"
             placeholder="Título"
@@ -75,7 +70,6 @@ const IncidentForm = ({ orderId, onClose }) => {
           />
 
           <div className="flex justify-end gap-2">
-
             <button
               type="button"
               onClick={onClose}
@@ -91,9 +85,7 @@ const IncidentForm = ({ orderId, onClose }) => {
             >
               {loading ? "Enviando..." : "Enviar"}
             </button>
-
           </div>
-
         </form>
       </div>
     </div>
@@ -101,8 +93,3 @@ const IncidentForm = ({ orderId, onClose }) => {
 };
 
 export default IncidentForm;
-
-
-
-
-
