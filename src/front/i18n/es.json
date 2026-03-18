@@ -29,8 +29,10 @@
     "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
     "cartError": "Error al añadir al carrito",
     "characteristicsLabel": "Caracteristicas",
+    "characteristics": "Sin caracteristicas",
     "reviewsCount": "Total reseñas",
     "noReviews": "Sin reseñas"
+    
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
