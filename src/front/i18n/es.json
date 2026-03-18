@@ -8,6 +8,9 @@
     "featuredProducts": "Productos destacados",
     "viewSubcategory": "Ver subcategoría"
   },
+  "incidents": {
+  "title": "Incidencias"
+},
   "product": {
     "noFound": "No se han encontrado productos",
     "descriptionLabel": "Descripción",
@@ -231,7 +234,10 @@
     "units": "Unidades",
     "shippingCost": "Gastos de envío",
     "shippingAddress": "Dirección de envío",
-    "billingAddress": "Dirección de facturación"
+    "billingAddress": "Dirección de facturación",
+    "recent": "Pedidos recientes",
+    "viewAll": "Ver todos los pedidos",
+    "openIncident":"Incidencia"
   },
   "favorites": {
     "title": "Tus favoritos",
@@ -243,9 +249,15 @@
       "dashboard": "Panel de control",
       "info": "Información",
       "addresses": "Direcciones",
-      "security": "Seguridad"
+      "security": "Seguridad",
+      "orders": "Pedidos"  
     },
     "manage": "Gestionar",
+    "memberSince": "Cliente desde {{date}}",
+"edit": "Editar",
+"favorites": "Favoritos",
+"completeProfile": "Completa tu perfil",
+"user": "Usuario",
     "userPanel": "Panel de Usuario",
     "info": {
       "currentInfo": "Información Actual",
@@ -353,7 +365,8 @@
         "orders": "Pedidos",
         "products": "Productos",
         "earnings": "Ganancias",
-        "settings": "Tienda"
+        "settings": "Tienda",
+        "incidents": "Incidencias"
       }
     },
     "earnings": {
@@ -503,7 +516,7 @@
     "commentPlaceholder": "Cuéntanos tu experiencia con el producto...",
     "sending": "Enviando...",
     "submit": "Enviar reseña",
-    "rate":"Valorar producto",
+    "rate":"Valorar",
     "alreadyReviewed": " Ya valorado "
 
   }

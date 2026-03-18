@@ -5,6 +5,7 @@ import { Footer } from "../components/Footer";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getMeService } from "../services/authService";
 import { useEffect } from "react";
+import ChatWidget from '../components/ChatWidget';
 
 // Base component that maintains the navbar and footer throughout the page and the scroll to top functionality.
 export const Layout = () => {
@@ -34,6 +35,7 @@ export const Layout = () => {
 
   return (
     <ScrollToTop>
+     <ChatWidget />
       <Navbar />
       <Outlet />
       <Footer />

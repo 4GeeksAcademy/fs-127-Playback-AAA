@@ -7,41 +7,36 @@ import SellerAdressForm from "./SellerAdressForm";
 const SettingsTab = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
-  const [form, setForm] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState(null);
-
-  // ─── Estado de imagen ─────────────────────────────────────────────────────
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [form,       setForm]       = useState(null);
+  const [loading,    setLoading]    = useState(true);
+  const [status,     setStatus]     = useState(null);
+  const [imageFile,  setImageFile]  = useState(null);
+  const [preview,    setPreview]    = useState(null);
   const [imageError, setImageError] = useState("");
 
-  // ─── Carga datos del seller ───────────────────────────────────────────────
   useEffect(() => {
     getSellerProfileService(store.token)
       .then((data) => {
         setForm({
-          store_name:            data.store_name || "",
-          description:           data.description || "",
-          phone:                 data.phone || "",
-          origin_address:        data.origin_address || "",
-          origin_city:           data.origin_city || "",
-          origin_zip:            data.origin_zip || "",
-          origin_country:        data.origin_country || "",
+          store_name:            data.store_name            || "",
+          description:           data.description           || "",
+          phone:                 data.phone                 || "",
+          origin_address:        data.origin_address        || "",
+          origin_city:           data.origin_city           || "",
+          origin_zip:            data.origin_zip            || "",
+          origin_country:        data.origin_country        || "",
           origin_community_code: data.origin_community_code || "",
-          origin_province_code:  data.origin_province_code || "",
-          origin_community:      data.origin_community || "",
-          origin_province:       data.origin_province || "",
+          origin_province_code:  data.origin_province_code  || "",
+          origin_community:      data.origin_community      || "",
+          origin_province:       data.origin_province       || "",
         });
         setPreview(data.logo_url || null);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  // ─── Handler campos de texto ──────────────────────────────────────────────
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  // ─── Handler imagen ───────────────────────────────────────────────────────
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -58,7 +53,6 @@ const SettingsTab = () => {
     setPreview(URL.createObjectURL(file));
   };
 
-  // ─── Submit ───────────────────────────────────────────────────────────────
   const handleSave = async (e) => {
     e.preventDefault();
     setStatus("saving");
@@ -82,15 +76,19 @@ const SettingsTab = () => {
 
   return (
     <form onSubmit={handleSave} className="pt-6 space-y-6">
-      <div className="border border-main rounded-xl p-5 space-y-4">
+      <div className="border border-main rounded-xl p-4 sm:p-5 space-y-4">
         <h3 className="text-sm font-semibold text-main">
           {t("dashboard.settings.storeInfo")}
         </h3>
 
-        {/* Logo de la tienda */}
+        {/* Logo */}
         <div className="flex flex-col items-center space-y-2 pb-2">
           {preview ? (
-            <img src={preview} className="w-24 h-24 rounded-xl object-cover border border-main" />
+            <img
+              src={preview}
+              className="w-24 h-24 rounded-xl object-cover border border-main"
+              alt="logo"
+            />
           ) : (
             <div className="w-24 h-24 rounded-xl border-2 border-dashed border-main flex items-center justify-center text-xs text-faint">
               Sin logo
@@ -103,8 +101,8 @@ const SettingsTab = () => {
           {imageError && <p className="text-xs text-red-500">{imageError}</p>}
         </div>
 
-        {/* Nombre y teléfono */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Nombre y teléfono: 1 col en móvil, 2 en sm+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs text-faint mb-1">
               {t("dashboard.settings.storeName")}
@@ -146,7 +144,6 @@ const SettingsTab = () => {
         </div>
       </div>
 
-      {/* Mensajes de estado */}
       {status === "success" && (
         <p className="text-sm text-emerald-600">{t("dashboard.settings.success")}</p>
       )}
@@ -154,11 +151,10 @@ const SettingsTab = () => {
         <p className="text-sm text-red-500">{t("dashboard.settings.error")}</p>
       )}
 
-      {/* Botón guardar */}
       <button
         type="submit"
         disabled={status === "saving"}
-        className="btn-primary py-2 px-5 text-sm"
+        className="btn-primary py-2 px-5 text-sm w-full sm:w-auto"
       >
         {status === "saving"
           ? t("dashboard.settings.saving")
