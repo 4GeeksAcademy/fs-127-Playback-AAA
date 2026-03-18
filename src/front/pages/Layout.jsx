@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom/dist";
 import ScrollToTop from "../components/ScrollToTop";
 import { Navbar } from "../components/Navbar/Navbar";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/Common/Footer";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getMeService } from "../services/authService";
 import { useEffect } from "react";
