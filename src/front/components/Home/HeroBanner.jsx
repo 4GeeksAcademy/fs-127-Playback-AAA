@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getFeaturedSubcategoryBannerService } from "../services/categoryService";
+import { getFeaturedSubcategoryBannerService } from "../../services/categoryService";
 import { useTranslation } from "react-i18next";
 
 export const HeroBanner = () => {

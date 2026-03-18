@@ -13,7 +13,7 @@ import {
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import orderService from "../../services/orderService";
 import { ReviewForm } from "../Common/ReviewForm";
-import IncidentForm from "../IncidentForm";
+import IncidentForm from "./IncidentForm";
 
 const STATUS_CONFIG = {
   pending: { label: "Pendiente", bg: "#F1EFE8", color: "#5F5E5A" },

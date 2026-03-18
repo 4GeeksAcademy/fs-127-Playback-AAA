@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom/dist";
-import ScrollToTop from "../components/ScrollToTop";
+import ScrollToTop from "../components/Common/ScrollToTop";
 import { Navbar } from "../components/Navbar/Navbar";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/Common/Footer";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { getMeService } from "../services/authService";
 import { useEffect } from "react";
-import ChatWidget from '../components/ChatWidget';
+import ChatWidget from '../components/Common/ChatWidget';
 
 // Base component that maintains the navbar and footer throughout the page and the scroll to top functionality.
 export const Layout = () => {
@@ -35,10 +35,14 @@ export const Layout = () => {
 
   return (
     <ScrollToTop>
-     <ChatWidget />
-      <Navbar />
-      <Outlet />
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <ChatWidget />
+        <Navbar />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
     </ScrollToTop>
   );
 };
