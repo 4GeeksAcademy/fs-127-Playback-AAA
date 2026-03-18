@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { HeroBanner } from "../components/HeroBanner";
+import { HeroBanner } from "../components/Home/HeroBanner";
 import { TopRatedSubcategories } from "../components/TopRatedSubcategories";
 import { TopSales } from "../components/TopSales";
 
