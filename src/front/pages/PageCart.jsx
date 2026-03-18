@@ -15,6 +15,7 @@ export const PageCart = () => {
 
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState(null);
+  const [stockWarning, setStockWarning] = useState(null);
 
   useEffect(() => {
     const token = store.token || localStorage.getItem("token");
@@ -48,7 +49,8 @@ export const PageCart = () => {
     }
 
     if (delta > 0 && item.stock != null && item.quantity >= item.stock) {
-      showToast("sin_stock");
+      setStockWarning(productId);
+      setTimeout(() => setStockWarning(null), 2000);
       return;
     }
 
@@ -122,7 +124,7 @@ export const PageCart = () => {
                           {t("cart.remove")}
                         </button>
                       </div>
-                      {enLimite && (
+                      {stockWarning === item.id && (
                         <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
                           <X size={11} />
                           {t("product.noStock")}

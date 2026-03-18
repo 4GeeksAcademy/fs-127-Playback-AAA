@@ -18,10 +18,10 @@ const ProfileTabBar = ({ activeTab, setActiveTab }) => {
 
   const tabs = [
     { key: "dashboard",  label: t("profile.tabs.dashboard") },
+    { key: "account",    label: t("profile.myAccount") },
     { key: "orders",     label: t("orders.title") },
     { key: "favorites",  label: t("favorites.title") },
-    { key: "incidents",  label: t("incidents.title") },   // ← NUEVO
-    { key: "account",    label: t("profile.myAccount") },
+    { key: "incidents",  label: t("incidents.title") },     
     { key: "seller",     label: sellerLabel() },
   ];
 

@@ -48,7 +48,7 @@ export default function StoreDashboard() {
   };
 
   return (
-    <div className="w-full max-w-4xl">
+    <div className="w-full max-w-4xl mx-auto">
       <div className="bg-main border border-main rounded-2xl shadow-sm overflow-hidden">
         {/* Cabecera */}
         <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-0">

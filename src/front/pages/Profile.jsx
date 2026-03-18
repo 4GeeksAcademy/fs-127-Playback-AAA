@@ -11,6 +11,8 @@ import ProfileFavorites from "../components/ProfileFavorites";
 import ProfileIncidents from "../components/ProfileIncidents";
 import ProfileAddresses from "../components/ProfileAddresses";
 import ProfileRole from "../components/Profile/ProfileRole/ProfileRole";
+import { User, MapPin, Shield } from "lucide-react";
+
 
 const ACCOUNT_SECTIONS = ["info", "addresses", "security"];
 
@@ -18,16 +20,19 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
   const { t } = useTranslation();
 
   const sections = [
-    { key: "info",      icon: "👤", label: t("profile.tabs.info") },
-    { key: "addresses", icon: "📍", label: t("profile.tabs.addresses") },
-    { key: "security",  icon: "🔒", label: t("profile.tabs.security") },
-  ];
+  { key: "info",      icon: User,   label: t("profile.tabs.info") },
+  { key: "addresses", icon: MapPin, label: t("profile.tabs.addresses") },
+  { key: "security",  icon: Shield, label: t("profile.tabs.security") },
+];
 
   const renderSection = () => {
     switch (activeSection) {
-      case "addresses": return <ProfileAddresses />;
-      case "security":  return <ProfileSecurity />;
-      default:          return <ProfileInfo />;
+      case "addresses":
+        return <ProfileAddresses />;
+      case "security":
+        return <ProfileSecurity />;
+      default:
+        return <ProfileInfo />;
     }
   };
 
@@ -48,7 +53,9 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
                 borderTop: "none",
                 borderLeft: "none",
                 borderRight: "none",
-                borderBottom: isActive ? "2px solid #534AB7" : "2px solid transparent",
+                borderBottom: isActive
+                  ? "2px solid #534AB7"
+                  : "2px solid transparent",
                 color: isActive ? "#534AB7" : "var(--color-muted)",
                 background: "none",
                 cursor: "pointer",
@@ -63,7 +70,16 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
 
       {/* ── DESKTOP: sidebar + contenido ── */}
       <div className="hidden sm:flex gap-8 items-start">
-        <aside style={{ width: "180px", flexShrink: 0, background: "var(--color-background-primary, #fff)", border: "0.5px solid var(--border-main, #e5e7eb)", borderRadius: "12px", padding: "8px" }}>
+        <aside
+          style={{
+            width: "180px",
+            flexShrink: 0,
+            background: "var(--color-background-primary, #fff)",
+            border: "0.5px solid var(--border-main, #e5e7eb)",
+            borderRadius: "12px",
+            padding: "8px",
+          }}
+        >
           {sections.map((s) => {
             const isActive = activeSection === s.key;
             return (
@@ -71,9 +87,21 @@ const AccountLayout = ({ activeSection, setActiveSection }) => {
                 key={s.key}
                 onClick={() => setActiveSection(s.key)}
                 className="flex items-center gap-3 w-full text-left transition-all"
-                style={{ padding: "10px 12px", borderRadius: "8px", fontSize: "13px", fontWeight: isActive ? "500" : "400", background: isActive ? "#EEEDFE" : "transparent", color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)", border: "none", cursor: "pointer", marginBottom: "2px", display: "flex" }}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: "8px",
+                  fontSize: "13px",
+                  fontWeight: isActive ? "500" : "400",
+                  background: isActive ? "#EEEDFE" : "transparent",
+                  color: isActive ? "#534AB7" : "var(--color-muted, #6b7280)",
+                  border: "none",
+                  cursor: "pointer",
+                  marginBottom: "2px",
+                  display: "flex",
+                }}
               >
-                <span style={{ fontSize: "14px", lineHeight: 1 }}>{s.icon}</span>
+             <s.icon size={16} />
+
                 {s.label}
               </button>
             );
@@ -93,8 +121,12 @@ const Profile = () => {
   const rawTab = searchParams.get("tab") || "dashboard";
 
   const isAccountSection = ACCOUNT_SECTIONS.includes(rawTab);
-  const [activeTab,     setActiveTab]     = useState(isAccountSection ? "account" : rawTab);
-  const [activeSection, setActiveSection] = useState(isAccountSection ? rawTab : "info");
+  const [activeTab, setActiveTab] = useState(
+    isAccountSection ? "account" : rawTab,
+  );
+  const [activeSection, setActiveSection] = useState(
+    isAccountSection ? rawTab : "info",
+  );
 
   useEffect(() => {
     const param = activeTab === "account" ? activeSection : activeTab;
@@ -108,12 +140,23 @@ const Profile = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "orders":    return <ProfileOrders />;
-      case "favorites": return <ProfileFavorites />;
-      case "incidents": return <ProfileIncidents />;
-      case "seller":    return <ProfileRole />;
-      case "account":   return <AccountLayout activeSection={activeSection} setActiveSection={setActiveSection} />;
-      default:          return <ProfileDashboard setActiveTab={handleTabChange} />;
+      case "orders":
+        return <ProfileOrders />;
+      case "favorites":
+        return <ProfileFavorites />;
+      case "incidents":
+        return <ProfileIncidents />;
+      case "seller":
+        return <ProfileRole />;
+      case "account":
+        return (
+          <AccountLayout
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+          />
+        );
+      default:
+        return <ProfileDashboard setActiveTab={handleTabChange} />;
     }
   };
 
@@ -121,9 +164,7 @@ const Profile = () => {
     <div className="min-h-screen bg-subtle">
       <ProfileHeader />
       <ProfileTabBar activeTab={activeTab} setActiveTab={handleTabChange} />
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        {renderContent()}
-      </main>
+      <main className="max-w-5xl mx-auto px-4 py-8">{renderContent()}</main>
     </div>
   );
 };
