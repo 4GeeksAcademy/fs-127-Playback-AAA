@@ -1,10 +1,6 @@
 // Import necessary components and functions from react-router-dom.
 
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-} from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Route, } from "react-router-dom";
 import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
@@ -17,7 +13,7 @@ import { PageCart } from "./pages/PageCart";
 import { Checkout } from "./pages/Checkout";
 import { MyOrders } from "./pages/MyOrders";
 import Profile from "./pages/Profile";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./components/Common/PrivateRoute";
 import {StripeReturn} from "./pages/StripeReturn";
 import {StripeRefresh} from "./pages/StripeRefresh";
 import {About} from "./pages/About";
