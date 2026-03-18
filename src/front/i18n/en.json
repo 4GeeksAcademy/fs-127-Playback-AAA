@@ -489,5 +489,65 @@
     "commentPlaceholder": "Tell us about your experience with the product...",
     "sending": "Sending...",
     "submit": "Submit review"
+  },
+  "footer": {
+    "copyright": "© 2026 Playback. Made with",
+    "madeBy": "by students from",
+    "about": "About the project",
+    "repo": "Repository",
+    "dashboard": "Dashboard"
+  },
+  "about": {
+    "hero": {
+      "subtitle": "Second-hand marketplace for retro video games, consoles and accessories.",
+      "links": {
+        "repo": "GitHub Repository",
+        "dashboard": "Project Dashboard",
+        "academy": "4Geeks Academy"
+      }
+    },
+    "features": {
+      "title": "About the project",
+      "items": [
+        {
+          "title": "Retro catalog",
+          "desc": "Second-hand video games, consoles and accessories organized by categories and subcategories."
+        },
+        {
+          "title": "Full marketplace",
+          "desc": "Persistent cart, order management, shipment tracking and seller dashboard."
+        },
+        {
+          "title": "Stripe Connect payments",
+          "desc": "Secure payments between buyers and sellers with configurable platform commission."
+        },
+        {
+          "title": "Cloud image hosting",
+          "desc": "Product image management with Cloudinary, optimized and delivered globally."
+        },
+        {
+          "title": "Email notifications",
+          "desc": "Transactional emails (registration, order, shipping status) via Brevo SMTP."
+        },
+        {
+          "title": "Internationalization ES / EN",
+          "desc": "Interface available in Spanish and English with support for light and dark mode."
+        }
+      ]
+    },
+    "tech": { "title": "Technology stack" },
+    "team": {
+      "devTitle": "Development team",
+      "devRole": "Full Stack Developer",
+      "profCredit": "Project supervised by",
+      "instructor": "Instructor",
+      "teachingAssistant": "Teaching Assistant"
+    },
+    "academy": {
+      "title": "Final project of",
+      "desc": "Developed as the MVP project of the full stack web development bootcamp. It represents the result of months of learning applied to a real and functional product.",
+      "cta": "View academy",
+      "visit": "Visit 4Geeks Academy"
+    }
   }
 }

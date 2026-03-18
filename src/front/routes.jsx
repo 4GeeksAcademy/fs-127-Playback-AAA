@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import { PrivateRoute } from "./components/PrivateRoute";
 import {StripeReturn} from "./pages/StripeReturn";
 import {StripeRefresh} from "./pages/StripeRefresh";
+import {About} from "./pages/About";
 import FAQPage     from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
 
@@ -41,6 +42,7 @@ export const router = createBrowserRouter(
       <Route path="/orders" element={<PrivateRoute><MyOrders /></PrivateRoute>} />
       <Route path="/seller/stripe/return" element={<StripeReturn />} />
       <Route path="/seller/stripe/refresh" element={<StripeRefresh />} />
+      <Route path="/about" element={<About />} />
       <Route path="/faq"     element={<FAQPage />} />
 <Route path="/contact" element={<ContactPage />} />
       </Route>
