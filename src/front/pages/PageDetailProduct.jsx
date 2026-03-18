@@ -12,12 +12,7 @@ import orderServices from "../services/orderService";
 import { ReviewForm } from "../components/ReviewForm";
 import { ProductPrice } from "../components/Common/ProductPrice";
  
-// ─── Información de envío fija ────────────────────────────────────────────────
-const SHIPPING_INFO = {
-  es: "Envíos en 24-48h laborables. Gastos de envío gratuitos para pedidos superiores a 50€. Devoluciones gratuitas en los primeros 30 días.",
-  en: "Delivery in 1-2 business days. Free shipping on orders over €50. Free returns within the first 30 days.",
-};
- 
+
 export const PageDetailProduct = () => {
   const { store, dispatch } = useGlobalReducer();
   const [hasBought, setHasBought] = useState(false);
@@ -108,10 +103,10 @@ export const PageDetailProduct = () => {
       label: t("product.characteristicsLabel"),
       content: product.characteristics || t("product.characteristics"),
     },
-    {
-      label: t("product.shippingLabel"),
-      content: SHIPPING_INFO[locale] || SHIPPING_INFO.es,
-    },
+   {
+  label: t("product.shippingLabel"),
+  content: t("product.shipping"),
+}
   ];
  
   return (

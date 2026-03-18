@@ -9,8 +9,8 @@
     "viewSubcategory": "Ver subcategoría"
   },
   "incidents": {
-  "title": "Incidencias"
-},
+    "title": "Incidencias"
+  },
   "product": {
     "noFound": "No se han encontrado productos",
     "descriptionLabel": "Descripción",
@@ -18,20 +18,19 @@
     "featuresLabel": "Características",
     "features": "Sin características especificadas.",
     "shippingLabel": "Envío & Devoluciones",
-    "shipping": "Envío gratuito en pedidos superiores a 50 €. Devoluciones aceptadas durante 30 días.",
+    "shipping": "Envíos en 48-72h laborables. Gastos de envío gratuitos para pedidos superiores a 100€. Devoluciones gratuitas en los primeros 30 días.",
     "inStock": "En stock",
     "outOfStock": "Sin stock",
-    "noStock": "No hay más stock disponible",
+    "noStock": "Sin stock",
     "available": "disponibles",
     "addToCart": "Añadir a la cesta",
     "addedToCart": "Producto añadido a tu cesta",
     "reviews": "Opiniones de clientes",
     "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
     "cartError": "Error al añadir al carrito",
-    "characteristicsLabel":"Caracteristicas",
-    "reviewsCount":"Total reseñas",
-    "noReviews":"Sin reseñas"
- 
+    "characteristicsLabel": "Caracteristicas",
+    "reviewsCount": "Total reseñas",
+    "noReviews": "Sin reseñas"
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
@@ -237,7 +236,7 @@
     "billingAddress": "Dirección de facturación",
     "recent": "Pedidos recientes",
     "viewAll": "Ver todos los pedidos",
-    "openIncident":"Incidencia"
+    "openIncident": "Incidencia"
   },
   "favorites": {
     "title": "Tus favoritos",
@@ -250,14 +249,14 @@
       "info": "Información",
       "addresses": "Direcciones",
       "security": "Seguridad",
-      "orders": "Pedidos"  
+      "orders": "Pedidos"
     },
     "manage": "Gestionar",
     "memberSince": "Cliente desde {{date}}",
-"edit": "Editar",
-"favorites": "Favoritos",
-"completeProfile": "Completa tu perfil",
-"user": "Usuario",
+    "edit": "Editar",
+    "favorites": "Favoritos",
+    "completeProfile": "Completa tu perfil",
+    "user": "Usuario",
     "userPanel": "Panel de Usuario",
     "info": {
       "currentInfo": "Información Actual",
@@ -403,7 +402,6 @@
         "current": "(actual)",
         "saving": "Guardando…",
         "saveStatus": "Guardar cambio de estado"
-
       },
       "status": {
         "pending": "Pendiente",
@@ -434,7 +432,7 @@
       "deleted": "Producto eliminado",
       "stockError": "Error al actualizar stock",
       "saved": "Producto guardado",
-      
+
       "table": {
         "product": "Producto",
         "price": "Precio",
@@ -466,14 +464,14 @@
         "saving": "Guardando…",
         "save": "Guardar",
         "characteristics": "Características",
-        "addImages":"Otras imagenes",
-        "noOtherImages":"No hay imágenes adicionales",
+        "addImages": "Otras imagenes",
+        "noOtherImages": "No hay imágenes adicionales",
         "otherImages": "Imágenes adicionales",
         "optional": "Opcional",
-                    "dimensions": "Dimensiones",
-"height": "Alto",
-"width": "Ancho",
-"length": "Largo"
+        "dimensions": "Dimensiones",
+        "height": "Alto",
+        "width": "Ancho",
+        "length": "Largo"
       }
     },
     "overview": {
@@ -516,7 +514,7 @@
     "commentPlaceholder": "Cuéntanos tu experiencia con el producto...",
     "sending": "Enviando...",
     "submit": "Enviar reseña",
-    "rate":"Valorar",
+    "rate": "Valorar",
     "alreadyReviewed": " Ya valorado "
   },
   "footer": {
@@ -582,10 +580,6 @@
       "desc": "Desarrollado como proyecto MVP del bootcamp de desarrollo web full stack. Representa el resultado de meses de aprendizaje aplicado en un producto real y funcional.",
       "cta": "Ver academia",
       "visit": "Visitar 4Geeks Academy"
-    },
-    "submit": "Enviar reseña",
-    "rate":"Valorar",
-    "alreadyReviewed": " Ya valorado "
-
+    }
   }
 }
