@@ -489,5 +489,65 @@
     "commentPlaceholder": "Cóntanos a túa experiencia co produto...",
     "sending": "Enviando...",
     "submit": "Enviar recensión"
+  },
+  "footer": {
+    "copyright": "© 2026 Playback. Feito con",
+    "madeBy": "por alumnos de",
+    "about": "Sobre o proxecto",
+    "repo": "Repositorio",
+    "dashboard": "Panel"
+  },
+  "about": {
+    "hero": {
+      "subtitle": "Marketplace de segunda man para videoxogos, consolas e accesorios retro.",
+      "links": {
+        "repo": "Repositorio GitHub",
+        "dashboard": "Panel do proxecto",
+        "academy": "4Geeks Academy"
+      }
+    },
+    "features": {
+      "title": "Sobre o proxecto",
+      "items": [
+        {
+          "title": "Catálogo retro",
+          "desc": "Videoxogos, consolas e accesorios de segunda man organizados por categorías e subcategorías."
+        },
+        {
+          "title": "Marketplace completo",
+          "desc": "Carriño persistente, xestión de pedidos, seguimento de envíos e panel de vendedor."
+        },
+        {
+          "title": "Pagos con Stripe Connect",
+          "desc": "Pagos seguros entre compradores e vendedores con comisión de plataforma configurable."
+        },
+        {
+          "title": "Imaxes na nube",
+          "desc": "Xestión de imaxes de produto con Cloudinary, optimizadas e con entrega global."
+        },
+        {
+          "title": "Notificacións por correo",
+          "desc": "Emails transaccionais (rexistro, pedido, estado de envío) vía Brevo SMTP."
+        },
+        {
+          "title": "Internacionalización ES / EN",
+          "desc": "Interface dispoñible en español e inglés con soporte para modo claro e escuro."
+        }
+      ]
+    },
+    "tech": { "title": "Stack tecnolóxico" },
+    "team": {
+      "devTitle": "Equipo de desenvolvemento",
+      "devRole": "Full Stack Developer",
+      "profCredit": "Proxecto titorizado por",
+      "instructor": "Instructor",
+      "teachingAssistant": "Teaching Assistant"
+    },
+    "academy": {
+      "title": "Proxecto final de",
+      "desc": "Desenvolvido como proxecto MVP do bootcamp de desenvolvemento web full stack. Representa o resultado de meses de aprendizaxe aplicado nun produto real e funcional.",
+      "cta": "Ver academia",
+      "visit": "Visitar 4Geeks Academy"
+    }
   }
 }

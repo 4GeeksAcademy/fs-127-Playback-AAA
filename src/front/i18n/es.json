@@ -489,5 +489,70 @@
     "commentPlaceholder": "Cuéntanos tu experiencia con el producto...",
     "sending": "Enviando...",
     "submit": "Enviar reseña"
+  },
+  "footer": {
+    "copyright": "© 2026 Playback. Hecho con",
+    "madeBy": "por alumnos de",
+    "about": "Sobre el proyecto",
+    "repo": "Repositorio",
+    "dashboard": "Dashboard"
+  },
+  "about": {
+    "hero": {
+      "subtitle": "Marketplace de segunda mano para videojuegos, consolas y accesorios retro.",
+      "links": {
+        "repo": "Repositorio GitHub",
+        "dashboard": "Dashboard del proyecto",
+        "academy": "4Geeks Academy"
+      }
+    },
+    "features": {
+      "title": "Sobre el proyecto",
+      "items": [
+        {
+          "title": "Catálogo retro",
+          "desc": "Videojuegos, consolas y accesorios de segunda mano organizados por categorías y subcategorías."
+        },
+        {
+          "title": "Marketplace completo",
+          "desc": "Carrito persistente, gestión de pedidos, seguimiento de envíos y panel de vendedor."
+        },
+        {
+          "title": "Pagos con Stripe Connect",
+          "desc": "Pagos seguros entre compradores y vendedores con comisión de plataforma configurable."
+        },
+        {
+          "title": "Imágenes en la nube",
+          "desc": "Gestión de imágenes de producto con Cloudinary, optimizadas y con entrega global."
+        },
+        {
+          "title": "Notificaciones por email",
+          "desc": "Emails transaccionales (registro, pedido, estado de envío) vía Brevo SMTP."
+        },
+        {
+          "title": "Internacionalización ES / EN",
+          "desc": "Interfaz disponible en español e inglés con soporte para modo claro y oscuro."
+        }
+      ],
+      "wip": {
+        "title": "Más funcionalidades en camino",
+        "badge": "En construcción",
+        "desc": "El proyecto sigue creciendo. Se irán añadiendo nuevas funcionalidades próximamente."
+      }
+    },
+    "tech": { "title": "Stack tecnológico" },
+    "team": {
+      "devTitle": "Equipo de desarrollo",
+      "devRole": "Full Stack Developer",
+      "profCredit": "Proyecto tutorizado por",
+      "instructor": "Instructor",
+      "teachingAssistant": "Teaching Assistant"
+    },
+    "academy": {
+      "title": "Proyecto final de",
+      "desc": "Desarrollado como proyecto MVP del bootcamp de desarrollo web full stack. Representa el resultado de meses de aprendizaje aplicado en un producto real y funcional.",
+      "cta": "Ver academia",
+      "visit": "Visitar 4Geeks Academy"
+    }
   }
 }

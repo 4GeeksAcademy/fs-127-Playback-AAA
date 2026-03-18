@@ -489,5 +489,65 @@
     "commentPlaceholder": "Explica'ns la teva experiència amb el producte...",
     "sending": "Enviant...",
     "submit": "Enviar ressenya"
+  },
+  "footer": {
+    "copyright": "© 2026 Playback. Fet amb",
+    "madeBy": "per alumnes de",
+    "about": "Sobre el projecte",
+    "repo": "Repositori",
+    "dashboard": "Dashboard"
+  },
+  "about": {
+    "hero": {
+      "subtitle": "Marketplace de segona mà per a videojocs, consoles i accessoris retro.",
+      "links": {
+        "repo": "Repositori GitHub",
+        "dashboard": "Dashboard del projecte",
+        "academy": "4Geeks Academy"
+      }
+    },
+    "features": {
+      "title": "Sobre el projecte",
+      "items": [
+        {
+          "title": "Catàleg retro",
+          "desc": "Videojocs, consoles i accessoris de segona mà organitzats per categories i subcategories."
+        },
+        {
+          "title": "Marketplace complet",
+          "desc": "Carret persistent, gestió de comandes, seguiment d’enviaments i panell de venedor."
+        },
+        {
+          "title": "Pagaments amb Stripe Connect",
+          "desc": "Pagaments segurs entre compradors i venedors amb comissió de plataforma configurable."
+        },
+        {
+          "title": "Imatges al núvol",
+          "desc": "Gestió d’imatges de producte amb Cloudinary, optimitzades i amb lliurament global."
+        },
+        {
+          "title": "Notificacions per correu electrònic",
+          "desc": "Emails transaccionals (registre, comanda, estat d’enviament) via Brevo SMTP."
+        },
+        {
+          "title": "Internacionalització ES / EN",
+          "desc": "Interfície disponible en espanyol i anglès amb suport per a mode clar i fosc."
+        }
+      ]
+    },
+    "tech": { "title": "Stack tecnològic" },
+    "team": {
+      "devTitle": "Equip de desenvolupament",
+      "devRole": "Full Stack Developer",
+      "profCredit": "Projecte tutoritzat per",
+      "instructor": "Instructor",
+      "teachingAssistant": "Teaching Assistant"
+    },
+    "academy": {
+      "title": "Projecte final de",
+      "desc": "Desenvolupat com a projecte MVP del bootcamp de desenvolupament web full stack. Representa el resultat de mesos d’aprenentatge aplicat en un producte real i funcional.",
+      "cta": "Veure acadèmia",
+      "visit": "Visitar 4Geeks Academy"
+    }
   }
 }
