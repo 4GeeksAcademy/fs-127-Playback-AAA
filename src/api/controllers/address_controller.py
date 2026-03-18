@@ -1,5 +1,6 @@
 from flask import request, jsonify, abort, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from datetime import datetime, timezone
 from api.models import db
 from api.models.address import Address
 from api.models.user import User
@@ -51,7 +52,7 @@ def create_address():
 @jwt_required()
 def get_addresses():
     user_id = int(get_jwt_identity())
-    addresses = Address.query.filter_by(user_id=user_id).all()
+    addresses = Address.query.filter_by(user_id=user_id, is_deleted=False).all()
     return jsonify([a.serialize() for a in addresses]), 200
 
 
@@ -102,7 +103,12 @@ def delete_address(address_id):
     if not address:
         abort(404, description="Dirección no encontrada")
 
-    db.session.delete(address)
+    if address.is_deleted:
+        abort(400, description="La dirección ya fue eliminada")
+
+    # Soft delete: marcar como eliminada sin borrar la fila
+    address.is_deleted = True
+    address.deleted_at = datetime.now(timezone.utc)
     db.session.commit()
 
     return jsonify({"msg": "Dirección eliminada correctamente"}), 200

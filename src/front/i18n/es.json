@@ -8,6 +8,9 @@
     "featuredProducts": "Productos destacados",
     "viewSubcategory": "Ver subcategoría"
   },
+  "incidents": {
+  "title": "Incidencias"
+},
   "product": {
     "noFound": "No se han encontrado productos",
     "descriptionLabel": "Descripción",
@@ -24,7 +27,11 @@
     "addedToCart": "Producto añadido a tu cesta",
     "reviews": "Opiniones de clientes",
     "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
-    "cartError": "Error al añadir al carrito"
+    "cartError": "Error al añadir al carrito",
+    "characteristicsLabel":"Caracteristicas",
+    "reviewsCount":"Total reseñas",
+    "noReviews":"Sin reseñas"
+ 
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
@@ -227,7 +234,10 @@
     "units": "Unidades",
     "shippingCost": "Gastos de envío",
     "shippingAddress": "Dirección de envío",
-    "billingAddress": "Dirección de facturación"
+    "billingAddress": "Dirección de facturación",
+    "recent": "Pedidos recientes",
+    "viewAll": "Ver todos los pedidos",
+    "openIncident":"Incidencia"
   },
   "favorites": {
     "title": "Tus favoritos",
@@ -239,9 +249,15 @@
       "dashboard": "Panel de control",
       "info": "Información",
       "addresses": "Direcciones",
-      "security": "Seguridad"
+      "security": "Seguridad",
+      "orders": "Pedidos"  
     },
     "manage": "Gestionar",
+    "memberSince": "Cliente desde {{date}}",
+"edit": "Editar",
+"favorites": "Favoritos",
+"completeProfile": "Completa tu perfil",
+"user": "Usuario",
     "userPanel": "Panel de Usuario",
     "info": {
       "currentInfo": "Información Actual",
@@ -349,7 +365,8 @@
         "orders": "Pedidos",
         "products": "Productos",
         "earnings": "Ganancias",
-        "settings": "Tienda"
+        "settings": "Tienda",
+        "incidents": "Incidencias"
       }
     },
     "earnings": {
@@ -386,6 +403,7 @@
         "current": "(actual)",
         "saving": "Guardando…",
         "saveStatus": "Guardar cambio de estado"
+
       },
       "status": {
         "pending": "Pendiente",
@@ -416,6 +434,7 @@
       "deleted": "Producto eliminado",
       "stockError": "Error al actualizar stock",
       "saved": "Producto guardado",
+      
       "table": {
         "product": "Producto",
         "price": "Precio",
@@ -438,7 +457,6 @@
         "price": "Precio (€)",
         "stock": "Stock",
         "discount": "Descuento (%)",
-        "size": "Talla",
         "weight": "Peso (kg)",
         "condition": "Condición",
         "description": "Descripción",
@@ -446,7 +464,16 @@
         "selectSubcategory": "Selecciona subcategoría",
         "selectItem": "Selecciona item",
         "saving": "Guardando…",
-        "save": "Guardar"
+        "save": "Guardar",
+        "characteristics": "Características",
+        "addImages":"Otras imagenes",
+        "noOtherImages":"No hay imágenes adicionales",
+        "otherImages": "Imágenes adicionales",
+        "optional": "Opcional",
+                    "dimensions": "Dimensiones",
+"height": "Alto",
+"width": "Ancho",
+"length": "Largo"
       }
     },
     "overview": {
@@ -488,7 +515,9 @@
     "commentLabel": "Comentario",
     "commentPlaceholder": "Cuéntanos tu experiencia con el producto...",
     "sending": "Enviando...",
-    "submit": "Enviar reseña"
+    "submit": "Enviar reseña",
+    "rate":"Valorar",
+    "alreadyReviewed": " Ya valorado "
   },
   "footer": {
     "copyright": "© 2026 Playback. Hecho con",
@@ -554,5 +583,9 @@
       "cta": "Ver academia",
       "visit": "Visitar 4Geeks Academy"
     }
+    "submit": "Enviar reseña",
+    "rate":"Valorar",
+    "alreadyReviewed": " Ya valorado "
+
   }
 }

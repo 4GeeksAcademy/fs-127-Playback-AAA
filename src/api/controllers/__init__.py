@@ -25,7 +25,7 @@ from .order_controller import order_bp
 from .seller_controller import seller_bp
 from .admin_controller import admin_bp
 from .payment_controller import payment_bp
-from api.controllers.incident_controller import incident_bp
+from .incident_controller import incident_bp
 
 
 
