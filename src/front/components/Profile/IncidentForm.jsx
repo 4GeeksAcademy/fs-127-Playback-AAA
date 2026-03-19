@@ -4,7 +4,7 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 const IncidentForm = ({ orderId, onClose }) => {
   const { store } = useGlobalReducer();
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(""); // se mantiene por backend
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,8 +13,8 @@ const IncidentForm = ({ orderId, onClose }) => {
 
     const token = store.token || localStorage.getItem("token");
 
-    if (!title || !description) {
-      alert("Todos los campos son obligatorios");
+    if (!description) {
+      alert("La descripción es obligatoria");
       return;
     }
 
@@ -30,7 +30,7 @@ const IncidentForm = ({ orderId, onClose }) => {
             Authorization: "Bearer " + token,
           },
           body: JSON.stringify({
-            title,
+            title: "Incidencia pedido #" + orderId,
             description,
           }),
         },
@@ -49,31 +49,28 @@ const IncidentForm = ({ orderId, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-xl w-96">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+      
+      {/* Modal */}
+      <div className="bg-white p-6 rounded-xl w-96 shadow-xl transform transition-all duration-300 scale-95 opacity-0 animate-fadeIn">
+
         <h2 className="text-lg font-semibold mb-4">Abrir incidencia</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            placeholder="Título"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border p-2 rounded"
-          />
 
           <textarea
-            placeholder="Descripción"
+            placeholder="Cuéntanos qué ha pasado con tu pedido..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded resize-none"
+            rows={4}
           />
 
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1 border rounded"
+              className="px-3 py-1 border rounded hover:bg-gray-100 transition"
             >
               Cancelar
             </button>
@@ -81,7 +78,7 @@ const IncidentForm = ({ orderId, onClose }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-3 py-1 bg-purple-600 text-white rounded"
+              className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-500 transition"
             >
               {loading ? "Enviando..." : "Enviar"}
             </button>

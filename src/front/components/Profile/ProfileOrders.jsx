@@ -258,8 +258,8 @@ const ProfileOrders = () => {
                 <button
                   onClick={() => setIncident(order.id)}
                   style={{
-                    background: "#FCEBEB",
-                    color: "#A32D2D",
+                    background: "#db8bed",
+                    color: "#592c90",
                     border: "none",
                     borderRadius: "8px",
                     padding: "4px 10px",

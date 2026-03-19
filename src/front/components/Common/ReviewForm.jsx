@@ -72,7 +72,7 @@ export const ReviewForm = ({ productId, orderId, onDone }) => {
         <p
           style={{
             fontSize: "12px",
-            color: "#A32D2D",
+            color: "#4e5226",
             background: "#FCEBEB",
             padding: "8px 12px",
             borderRadius: "8px",

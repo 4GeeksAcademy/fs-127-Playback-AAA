@@ -79,7 +79,7 @@ const ProfileOrders = () => {
         const isOpen      = expanded[order.id];
         const isDelivered = order.status === "delivered";
 
-        const canOpenIncident = ["delivered", "shipped"].includes(order.status); // añadido
+        const canOpenIncident = ["pending", "paid", "confirmed", "processing", "shipped", "delivered", "cancelled"].includes(order.status); // añadido
 
         const date        = new Date(order.created_at).toLocaleDateString("es-ES", {
           day: "numeric", month: "short", year: "numeric",
@@ -139,7 +139,7 @@ const ProfileOrders = () => {
 
                 {canOpenIncident && (
                   <button onClick={() => setIncident(order.id)}
-                    style={{ background: "#FCEBEB", color: "#A32D2D", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
+                    style={{ background: "#f0d20d", color: "#888405", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}>
                     <AlertCircle size={11} /> {t("orders.openIncident")  }
                   </button>
                 )}
