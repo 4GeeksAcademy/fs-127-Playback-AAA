@@ -205,25 +205,6 @@ export const About = () => {
               </div>
             );
           })}
-
-          {/* Card en construcción */}
-          <div className="flex gap-4 p-4 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-800/20">
-            <div className="shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-              <Wrench size={16} className="text-amber-500 dark:text-amber-400" />
-            </div>
-            <div>
-              <p className="font-semibold text-sm text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
-                {t("about.features.wip.title")}
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400">
-                  <span className="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
-                  {t("about.features.wip.badge")}
-                </span>
-              </p>
-              <p className="text-xs text-zinc-400 dark:text-zinc-600 mt-0.5 leading-relaxed">
-                {t("about.features.wip.desc")}
-              </p>
-            </div>
-          </div>
           {/* Panel de usuarios de prueba */}
           <div className="mb-10 text-left">
             <TestUsersPanel t={t} />
