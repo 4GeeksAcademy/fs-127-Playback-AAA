@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Pagination } from "../components/Common/Pagination";
 import { CardProduct } from "../components/Common/CardProduct";
 import { useProductSearch } from "../hooks/useProductSearch";
@@ -15,7 +15,11 @@ export const PageProducts = () => {
   const productosPorPagina = 8;
   const totalPages = Math.ceil(results.length / productosPorPagina);
 
-  //Aqui decimos los productos que se van a mostrar es decir del 1 al 8 la primera
+  // Resetear a página 1 cuando cambien los resultados (filtros, búsqueda, categoría…)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [results]);
+
   const productosPaginados = results.slice(
     (currentPage - 1) * productosPorPagina,
     currentPage * productosPorPagina,

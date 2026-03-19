@@ -8,14 +8,22 @@ const getPageNumbers = (currentPage, totalPages) => {
   return Array.from({ length: Math.min(VISIBLE_PAGES, totalPages) }, (_, i) => start + i);
 };
 export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-    const pages = getPageNumbers(currentPage, totalPages);
+  // No renderizar si solo hay una página o menos
+  if (totalPages <= 1) return null;
+
+  const pages = getPageNumbers(currentPage, totalPages);
+
+  const handlePageChange = (page) => {
+    onPageChange(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="flex items-center justify-center gap-1 my-8">
-      
+
       {/* Anterior */}
       <button
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="p-2 border border-main bg-main text-main hover:border-[rgb(var(--color-border-focus))] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
@@ -23,10 +31,10 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       </button>
 
       {/* Números */}
-           {pages.map(page => (
+      {pages.map(page => (
         <button
           key={page}
-          onClick={() => onPageChange(page)}
+          onClick={() => handlePageChange(page)}
           className={`w-9 h-9 text-sm font-medium border transition-all
             ${page === currentPage
               ? "bg-gray-950 text-white border-gray-950 dark:bg-violet-500 dark:text-white dark:border-violet-500"
@@ -40,7 +48,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
       {/* Siguiente */}
       <button
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className="p-2 border border-main bg-main text-main hover:border-[rgb(var(--color-border-focus))] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
