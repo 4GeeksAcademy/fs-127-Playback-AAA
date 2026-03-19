@@ -184,34 +184,44 @@ export default function ChatWidget() {
     setWinking(true);
     setTimeout(() => setWinking(false), 1200);
   };
+const [input, setInput] = useState(""); // <-- faltaba
 
-  const sendMessage = async (text) => {
-    const userText = text;
-    if (!userText || loading) return;
-    setInput("");
-    setLastUserMsg(userText);
-    const newMessages = [...messages, { role:"user", content:userText }];
-    setMessages(newMessages);
-    setLoading(true);
-    try {
-      const res  = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method:"POST",
-        headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${API_KEY}` },
-        body: JSON.stringify({
-          model:"llama-3.1-8b-instant", max_tokens:400,
-          messages:[{ role:"system", content:SYSTEM_PROMPT }, ...newMessages],
-        }),
-      });
-      const data  = await res.json();
-      const reply = data?.choices?.[0]?.message?.content || "Lo siento, no pude procesar tu mensaje.";
-      setMessages(prev => [...prev, { role:"assistant", content:reply }]);
-      if (!open) setHasUnread(true);
-    } catch {
-      setMessages(prev => [...prev, { role:"assistant", content:"Ha ocurrido un error. Por favor, inténtalo más tarde." }]);
-    } finally {
-      setLoading(false);
-    }
-  };
+const sendMessage = async (text) => {
+  const userText = text || input; // usa text del botón o del input
+  if (!userText || loading) return;
+  setInput(""); // limpia input
+  setLastUserMsg(userText);
+
+  const newMessages = [...messages, { role: "user", content: userText }];
+  setMessages(newMessages);
+  setLoading(true);
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        max_tokens: 400,
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...newMessages],
+      }),
+    });
+
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content || "Lo siento, no pude procesar tu mensaje.";
+    setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+  } catch (err) {
+    setMessages((prev) => [
+      ...prev,
+      { role: "assistant", content: "Ha ocurrido un error. Por favor, inténtalo más tarde." },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -319,17 +329,19 @@ export default function ChatWidget() {
               <div className="suggestions-wrap" style={styles.suggestionsBlock}>
                 <p style={styles.suggestionsLabel}>Preguntas frecuentes</p>
                 <div style={styles.quickReplies}>
-                  {suggestions.map((q, i) => {
-                    const isBack = q === "← Inicio";
-                    return (
-                      <button key={i}
-                        className={isBack ? "chat-quick-btn-back" : "chat-quick-btn"}
-                        onClick={() => sendMessage(q)}
-                        style={{ ...styles.quickBtn, ...(isBack ? styles.quickBtnBack : {}) }}>
-                        {q}
-                      </button>
-                    );
-                  })}
+              {suggestions.map((q, i) => {
+  const isBack = q === "← Inicio";
+  return (
+    <button
+      key={i}
+      className={isBack ? "chat-quick-btn-back" : "chat-quick-btn"}
+      onClick={() => sendMessage(q)} // <-- ahora funciona
+      style={{ ...styles.quickBtn, ...(isBack ? styles.quickBtnBack : {}) }}
+    >
+      {q}
+    </button>
+  );
+})}
                 </div>
               </div>
             )}

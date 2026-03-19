@@ -1,41 +1,45 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
-import { getSellerProfileService, updateSellerProfileService } from "../../../../services/sellerService";
+import {
+  getSellerProfileService,
+  updateSellerProfileService,
+} from "../../../../services/sellerService";
 import SellerAdressForm from "./SellerAdressForm";
 
 const SettingsTab = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
-  const [form,       setForm]       = useState(null);
-  const [loading,    setLoading]    = useState(true);
-  const [status,     setStatus]     = useState(null);
-  const [imageFile,  setImageFile]  = useState(null);
-  const [preview,    setPreview]    = useState(null);
+  const [form, setForm] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     getSellerProfileService(store.token)
       .then((data) => {
         setForm({
-          store_name:            data.store_name            || "",
-          description:           data.description           || "",
-          phone:                 data.phone                 || "",
-          origin_address:        data.origin_address        || "",
-          origin_city:           data.origin_city           || "",
-          origin_zip:            data.origin_zip            || "",
-          origin_country:        data.origin_country        || "",
+          store_name: data.store_name || "",
+          description: data.description || "",
+          phone: data.phone || "",
+          origin_address: data.origin_address || "",
+          origin_city: data.origin_city || "",
+          origin_zip: data.origin_zip || "",
+          origin_country: data.origin_country || "",
           origin_community_code: data.origin_community_code || "",
-          origin_province_code:  data.origin_province_code  || "",
-          origin_community:      data.origin_community      || "",
-          origin_province:       data.origin_province       || "",
+          origin_province_code: data.origin_province_code || "",
+          origin_community: data.origin_community || "",
+          origin_province: data.origin_province || "",
         });
         setPreview(data.logo_url || null);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -69,15 +73,18 @@ const SettingsTab = () => {
 
   if (loading)
     return (
-      <p className="text-center text-sm text-faint mt-10">
+      <p className="text-center text-sm text-[rgb(var(--color-text-secondary))] mt-10">
         {t("dashboard.settings.loading")}
       </p>
     );
 
+  const inputClass =
+    "w-full border border-[rgb(var(--color-border))] rounded-lg px-3 py-2 text-sm text-[rgb(var(--color-text))] bg-[rgb(var(--color-bg-input))] focus:outline-none focus:ring-2 focus:ring-violet-500";
+
   return (
     <form onSubmit={handleSave} className="pt-6 space-y-6">
-      <div className="border border-main rounded-xl p-4 sm:p-5 space-y-4">
-        <h3 className="text-sm font-semibold text-main">
+      <div className="border border-[rgb(var(--color-border))] rounded-xl p-4 sm:p-5 space-y-4 bg-[rgb(var(--color-bg))]">
+        <h3 className="text-sm font-semibold text-[rgb(var(--color-text))]">
           {t("dashboard.settings.storeInfo")}
         </h3>
 
@@ -86,40 +93,55 @@ const SettingsTab = () => {
           {preview ? (
             <img
               src={preview}
-              className="w-24 h-24 rounded-xl object-cover border border-main"
+              className="w-24 h-24 rounded-xl object-cover border border-[rgb(var(--color-border))]"
               alt="logo"
             />
           ) : (
-            <div className="w-24 h-24 rounded-xl border-2 border-dashed border-main flex items-center justify-center text-xs text-faint">
+            <div className="w-24 h-24 rounded-xl border-2 border-dashed border-[rgb(var(--color-border))] flex items-center justify-center text-xs text-[rgb(var(--color-text-secondary))]">
               Sin logo
             </div>
           )}
-          <label className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
+          <label className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
             {preview ? "Cambiar logo" : "Subir logo"}
-            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
           </label>
           {imageError && <p className="text-xs text-red-500">{imageError}</p>}
         </div>
 
-        {/* Nombre y teléfono: 1 col en móvil, 2 en sm+ */}
+        {/* Nombre y teléfono */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs text-faint mb-1">
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
               {t("dashboard.settings.storeName")}
             </label>
-            <input name="store_name" value={form.store_name} onChange={handleChange} className="input" />
+            <input
+              name="store_name"
+              value={form.store_name}
+              onChange={handleChange}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label className="block text-xs text-faint mb-1">
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
               {t("dashboard.settings.phone")}
             </label>
-            <input name="phone" value={form.phone} onChange={handleChange} className="input" />
+            <input
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              className={inputClass}
+            />
           </div>
         </div>
 
         {/* Descripción */}
         <div>
-          <label className="block text-xs text-faint mb-1">
+          <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
             {t("dashboard.settings.description")}
           </label>
           <textarea
@@ -127,25 +149,31 @@ const SettingsTab = () => {
             rows={3}
             value={form.description}
             onChange={handleChange}
-            className="input resize-none"
+            className={`${inputClass} resize-none`}
           />
         </div>
 
         {/* Dirección */}
-        <div className="border-t border-main pt-4">
-          <h4 className="text-xs text-faint mb-3 font-medium">
-            {t("dashboard.settings.originAddress")}
-          </h4>
-          <SellerAdressForm
-            form={form}
-            onChange={handleChange}
-            onLocationChange={(fields) => setForm(prev => ({ ...prev, ...fields }))}
-          />
+ <div className="border-t border-[rgb(var(--color-border))] pt-4 bg-[rgb(var(--color-bg))] p-2 rounded-lg">
+  <h4 className="text-xs text-[rgb(var(--color-text-secondary))] mb-3 font-medium">
+    {t("dashboard.settings.originAddress")}
+  </h4>
+
+  <SellerAdressForm
+    form={form}
+    onChange={handleChange}
+    onLocationChange={(fields) =>
+      setForm((prev) => ({ ...prev, ...fields }))
+    }
+   
+  />
         </div>
       </div>
 
       {status === "success" && (
-        <p className="text-sm text-emerald-600">{t("dashboard.settings.success")}</p>
+        <p className="text-sm text-emerald-600">
+          {t("dashboard.settings.success")}
+        </p>
       )}
       {status === "error" && (
         <p className="text-sm text-red-500">{t("dashboard.settings.error")}</p>
@@ -154,7 +182,7 @@ const SettingsTab = () => {
       <button
         type="submit"
         disabled={status === "saving"}
-        className="btn-primary py-2 px-5 text-sm w-full sm:w-auto"
+        className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-5 py-2 text-sm w-full sm:w-auto transition-colors disabled:opacity-60"
       >
         {status === "saving"
           ? t("dashboard.settings.saving")

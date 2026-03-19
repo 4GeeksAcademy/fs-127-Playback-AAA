@@ -45,25 +45,32 @@ const SellerAdressForm = ({ form, onChange, onLocationChange }) => {
       <Toast visible={showToast} />
       <div className="space-y-3">
         {/* Tarjeta de dirección guardada */}
-    {hasAddress ? (
-  <div className="bg-white border border-gray-200 rounded-xl p-4">
-  <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
-    Dirección actual
-  </p>
-  {form.origin_address && (
-    <p className="text-sm font-medium text-gray-800">{form.origin_address}</p>
-  )}
-  <p className="text-sm text-gray-600">
-    {form.origin_zip} {form.origin_city}{form.origin_province ? `, ${form.origin_province}` : ""}
-  </p>
-  {form.origin_community && (
-    <p className="text-sm text-gray-600">{form.origin_community}{form.origin_country ? `, ${form.origin_country}` : ""}</p>
-  )}
-
-  </div>
+        {hasAddress ? (
+          <div className="bg-[rgb(var(--color-bg-input))] border border-[rgb(var(--color-border))] rounded-xl p-4">
+            <p className="text-xs font-semibold text-[rgb(var(--color-text-secondary))] uppercase tracking-widest mb-3">
+              Dirección actual
+            </p>
+            {form.origin_address && (
+              <p className="text-sm font-medium text-[rgb(var(--color-text))]">
+                {form.origin_address}
+              </p>
+            )}
+            <p className="text-sm text-[rgb(var(--color-text-secondary))]">
+              {form.origin_zip} {form.origin_city}
+              {form.origin_province ? `, ${form.origin_province}` : ""}
+            </p>
+            {form.origin_community && (
+              <p className="text-sm text-[rgb(var(--color-text-secondary))]">
+                {form.origin_community}
+                {form.origin_country ? `, ${form.origin_country}` : ""}
+              </p>
+            )}
+          </div>
         ) : (
-          <div className="bg-gray-50 border border-dashed border-gray-300 rounded-xl p-4 text-center">
-            <p className="text-sm text-gray-400">No hay dirección guardada</p>
+          <div className="bg-[rgb(var(--color-bg-input))] border border-dashed border-[rgb(var(--color-border))] rounded-xl p-4 text-center">
+            <p className="text-sm text-[rgb(var(--color-text-secondary))]">
+              No hay dirección guardada
+            </p>
           </div>
         )}
 
@@ -71,7 +78,7 @@ const SellerAdressForm = ({ form, onChange, onLocationChange }) => {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-purple-600 border border-purple-200 rounded-xl hover:bg-purple-50 transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-purple-500 border border-purple-600 rounded-xl hover:bg-[rgb(var(--color-bg-hover))] transition-colors"
         >
           <span>✏️</span>
           {hasAddress ? "Modificar dirección" : "Añadir dirección"}
@@ -90,3 +97,4 @@ const SellerAdressForm = ({ form, onChange, onLocationChange }) => {
 };
 
 export default SellerAdressForm;
+

@@ -3,7 +3,6 @@ import geoService from "../../../../services/geoService";
 
 const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
   const [localForm, setLocalForm] = useState({});
-
   const [communities, setCommunities] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [municipalities, setMunicipalities] = useState([]);
@@ -15,7 +14,6 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
   const initStep = useRef(0);
 
-  // Reset y recarga cuando se abre el modal
   useEffect(() => {
     if (!isOpen) return;
     setLocalForm({ ...initialForm });
@@ -26,9 +24,8 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     setMunicipalities([]);
     initStep.current = 0;
     geoService.getCommunities().then(setCommunities);
-  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
-  // Paso 1 — preseleccionar comunidad
   useEffect(() => {
     if (!isOpen || initStep.current !== 0) return;
     if (!localForm.origin_community_code || !communities.length) return;
@@ -39,9 +36,8 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
       setProvinces(data);
       setLoadingProvinces(false);
     });
-  }, [communities, localForm.origin_community_code, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [communities, localForm.origin_community_code, isOpen]);
 
-  // Paso 2 — preseleccionar provincia
   useEffect(() => {
     if (!isOpen || initStep.current !== 1) return;
     if (!localForm.origin_province_code || !provinces.length) return;
@@ -52,9 +48,8 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
       setMunicipalities(data);
       setLoadingMunicipalities(false);
     });
-  }, [provinces, localForm.origin_province_code, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provinces, localForm.origin_province_code, isOpen]);
 
-  // Paso 3 — preseleccionar municipio
   useEffect(() => {
     if (!isOpen || initStep.current !== 2) return;
     if (!municipalities.length) return;
@@ -65,13 +60,11 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
       );
       if (found) setSelectedMunicipality(found.CMUN);
     }
-  }, [municipalities, localForm.origin_city, isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ── Handlers de selects ───────────────────────────────────────────────────
+  }, [municipalities, localForm.origin_city, isOpen]);
 
   const handleCommunityChange = async (e) => {
     const val = e.target.value;
-      const selected = communities.find((c) => c.CCOM === val); 
+    const selected = communities.find((c) => c.CCOM === val);
     setSelectedCommunity(val);
     setSelectedProvince("");
     setSelectedMunicipality("");
@@ -80,7 +73,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     setLocalForm((prev) => ({
       ...prev,
       origin_community_code: val,
-       origin_community: selected?.COM || "",
+      origin_community: selected?.COM || "",
       origin_province_code: "",
       origin_city: "",
       origin_zip: "",
@@ -93,7 +86,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
   const handleProvinceChange = async (e) => {
     const val = e.target.value;
-      const selected = provinces.find((p) => p.CPRO === val);
+    const selected = provinces.find((p) => p.CPRO === val);
     setSelectedProvince(val);
     setSelectedMunicipality("");
     setMunicipalities([]);
@@ -125,8 +118,6 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
     setLocalForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ── Guardar ───────────────────────────────────────────────────────────────
-
   const handleSave = () => {
     onSave(localForm);
     onClose();
@@ -135,21 +126,21 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
   if (!isOpen) return null;
 
   const inputClass =
-    "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400";
-  const selectClass = `${inputClass} bg-white`;
+    "w-full border border-[rgb(var(--color-border))] rounded-lg px-3 py-2 text-sm text-[rgb(var(--color-text))] bg-[rgb(var(--color-bg-input))] focus:outline-none focus:ring-2 focus:ring-violet-500";
+  const selectClass = `${inputClass} bg-[rgb(var(--color-bg-input))]`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(var(--color-bg-overlay)/0.5)] backdrop-blur-sm">
+      <div className="bg-[rgb(var(--color-bg))] rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-[rgb(var(--color-border))]">
 
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-base font-semibold text-gray-800">
+        <div className="px-6 py-4 border-b border-[rgb(var(--color-border))] flex items-center justify-between">
+          <h2 className="text-base font-semibold text-[rgb(var(--color-text))]">
             Modificar dirección
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none transition-colors"
+            className="text-[rgb(var(--color-text-muted))] hover:text-[rgb(var(--color-text))] text-2xl leading-none transition-colors"
           >
             ×
           </button>
@@ -157,10 +148,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
         {/* Body */}
         <div className="px-6 py-5 space-y-4 max-h-[65vh] overflow-y-auto">
-
           {/* Comunidad */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
               Comunidad autónoma
             </label>
             <select
@@ -181,7 +171,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
           {/* Provincia */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Provincia</label>
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
+              Provincia
+            </label>
             <select
               value={selectedProvince}
               onChange={handleProvinceChange}
@@ -201,7 +193,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
           {/* Municipio */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
               Municipio / Ciudad
             </label>
             <select
@@ -223,7 +215,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
           {/* Código postal */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
               Código postal
             </label>
             <input
@@ -237,7 +229,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
           {/* Dirección */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Dirección</label>
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
+              Dirección
+            </label>
             <input
               name="origin_address"
               value={localForm.origin_address || ""}
@@ -249,7 +243,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
 
           {/* País */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">País</label>
+            <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
+              País
+            </label>
             <input
               name="origin_country"
               value={localForm.origin_country || ""}
@@ -261,16 +257,16 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end">
+        <div className="px-6 py-4 border-t border-[rgb(var(--color-border))] flex gap-3 justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm text-[rgb(var(--color-text-secondary))] border border-[rgb(var(--color-border))] rounded-lg hover:bg-[rgb(var(--color-bg-subtle))] transition-colors"
           >
             Cancelar
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 text-sm text-white bg-purple-500 rounded-lg hover:bg-purple-600 transition-colors"
+            className="px-4 py-2 text-sm text-white bg-violet-600 rounded-lg hover:bg-violet-700 transition-colors"
           >
             Guardar dirección
           </button>

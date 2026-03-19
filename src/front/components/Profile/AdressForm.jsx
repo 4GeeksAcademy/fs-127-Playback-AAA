@@ -21,9 +21,9 @@ const EMPTY_FORM = {
 
 const Toast = ({ visible, message, type = "success" }) => (
   <div
-    className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 text-white text-sm rounded-xl shadow-lg transition-all duration-300 ${
-      type === "success" ? "bg-gray-900" : "bg-red-600"
-    } ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"}`}
+    className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 text-sm rounded-xl shadow-lg transition-all duration-300 ${
+      visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
+    } ${type === "success" ? "bg-[rgb(var(--color-bg-toast))] text-[rgb(var(--color-text-toast))]" : "bg-red-600 text-white"}`}
   >
     <span>{type === "success" ? "✓" : "✕"}</span>
     {message}
@@ -32,10 +32,10 @@ const Toast = ({ visible, message, type = "success" }) => (
 
 const SectionTitle = ({ title }) => (
   <div className="flex items-center gap-3 pt-2">
-    <p className="text-xs font-semibold tracking-widest uppercase text-gray-400">
+    <p className="text-xs font-semibold tracking-widest uppercase text-[rgb(var(--color-text-secondary))]">
       {title}
     </p>
-    <div className="flex-1 h-px bg-gray-100" />
+    <div className="flex-1 h-px bg-[rgb(var(--color-border))]" />
   </div>
 );
 
@@ -78,7 +78,7 @@ export const AddressForm = ({ onSaved }) => {
 
   const handleCommunityChange = async (e) => {
     const val = e.target.value;
-    const selected = communities.find((c) => c.CCOM === val); // ← añade esta línea
+    const selected = communities.find((c) => c.CCOM === val);
     setSelectedCommunity(val);
     setSelectedProvince("");
     setSelectedMunicipality("");
@@ -165,23 +165,19 @@ export const AddressForm = ({ onSaved }) => {
   };
 
   const inputClass =
-    "w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 transition";
-  const selectClass = `${inputClass} bg-white`;
+    "w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 transition border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg-subtle))] text-[rgb(var(--color-text))]";
+  const selectClass = `${inputClass} bg-[rgb(var(--color-bg-subtle))]`;
   const disabledSelect = `${selectClass} opacity-50 cursor-not-allowed`;
 
   return (
     <>
-      <Toast
-        visible={toast.visible}
-        message={toast.message}
-        type={toast.type}
-      />
+      <Toast visible={toast.visible} message={toast.message} type={toast.type} />
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <SectionTitle title="Datos de contacto" />
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1 col-span-2">
-            <label className="block text-xs font-medium text-gray-500">
+            <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
               Nombre completo<span className="text-violet-500 ml-0.5">*</span>
             </label>
             <input
@@ -194,7 +190,7 @@ export const AddressForm = ({ onSaved }) => {
             />
           </div>
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-500">
+            <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
               Teléfono<span className="text-violet-500 ml-0.5">*</span>
             </label>
             <input
@@ -211,7 +207,7 @@ export const AddressForm = ({ onSaved }) => {
         <SectionTitle title="Dirección" />
         <div className="space-y-3">
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-500">
+            <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
               Comunidad autónoma
               <span className="text-violet-500 ml-0.5">*</span>
             </label>
@@ -234,7 +230,7 @@ export const AddressForm = ({ onSaved }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 Provincia<span className="text-violet-500 ml-0.5">*</span>
               </label>
               <select
@@ -256,7 +252,7 @@ export const AddressForm = ({ onSaved }) => {
             </div>
 
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 Municipio<span className="text-violet-500 ml-0.5">*</span>
               </label>
               <select
@@ -267,9 +263,7 @@ export const AddressForm = ({ onSaved }) => {
                 className={municipalities.length ? selectClass : disabledSelect}
               >
                 <option value="" disabled>
-                  {loadingMunicipalities
-                    ? "Cargando..."
-                    : "Selecciona municipio"}
+                  {loadingMunicipalities ? "Cargando..." : "Selecciona municipio"}
                 </option>
                 {municipalities.map((m) => (
                   <option key={m.CMUN} value={m.CMUN}>
@@ -282,7 +276,7 @@ export const AddressForm = ({ onSaved }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 Código postal<span className="text-violet-500 ml-0.5">*</span>
               </label>
               <input
@@ -295,7 +289,7 @@ export const AddressForm = ({ onSaved }) => {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 País<span className="text-violet-500 ml-0.5">*</span>
               </label>
               <input
@@ -310,7 +304,7 @@ export const AddressForm = ({ onSaved }) => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-500">
+            <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
               Calle<span className="text-violet-500 ml-0.5">*</span>
             </label>
             <input
@@ -325,7 +319,7 @@ export const AddressForm = ({ onSaved }) => {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 Número<span className="text-violet-500 ml-0.5">*</span>
               </label>
               <input
@@ -338,7 +332,7 @@ export const AddressForm = ({ onSaved }) => {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 Piso
               </label>
               <input
@@ -350,7 +344,7 @@ export const AddressForm = ({ onSaved }) => {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-500">
+              <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
                 Puerta
               </label>
               <input
@@ -364,7 +358,7 @@ export const AddressForm = ({ onSaved }) => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-500">
+            <label className="block text-xs font-medium text-[rgb(var(--color-text-secondary))]">
               Información adicional
             </label>
             <input

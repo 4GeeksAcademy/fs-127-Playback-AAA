@@ -51,21 +51,21 @@ const ProfileAddresses = () => {
       )}
 
       {/* DIRECCIONES */}
-      <div className="bg-main p-8 rounded-2xl shadow-sm border border-main">
-        <h2 className="text-lg font-semibold mb-6 text-main">
+      <div className="bg-[rgb(var(--color-bg))] p-8 rounded-2xl shadow-sm border border-[rgb(var(--color-border))]">
+        <h2 className="text-lg font-semibold mb-6 text-[rgb(var(--color-text))]">
           {t("profile.addresses.title")}
         </h2>
 
         <div className="space-y-6">
           {addresses.length === 0 && (
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[rgb(var(--color-text-secondary))]">
               {t("profile.addresses.empty")}
             </p>
           )}
           {addresses.map((addr, index) => (
             <div
               key={addr.id}
-              className="bg-white border border-gray-200 rounded-xl p-4"
+              className="bg-[rgb(var(--color-bg-subtle))] border border-[rgb(var(--color-border))] rounded-xl p-4"
             >
               {index === 0 && (
                 <span className="text-xs bg-violet-600 text-white px-2 py-1 rounded mb-3 inline-block">
@@ -73,22 +73,22 @@ const ProfileAddresses = () => {
                 </span>
               )}
 
-              <p className="text-sm font-medium text-gray-800 mb-1">
+              <p className="text-sm font-medium text-[rgb(var(--color-text))] mb-1">
                 {addr.full_name}
               </p>
-              <p className="text-sm text-gray-600">{addr.address}</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[rgb(var(--color-text-secondary))]">{addr.address}</p>
+              <p className="text-sm text-[rgb(var(--color-text-secondary))]">
                 {addr.postal_code} {addr.municipality}
                 {addr.province ? `, ${addr.province}` : ""}
               </p>
               {addr.community && (
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-[rgb(var(--color-text-secondary))]">
                   {addr.community}
                   {addr.country ? `, ${addr.country}` : ""}
                 </p>
               )}
               {addr.phone && (
-                <p className="text-sm text-gray-500 mt-1">{addr.phone}</p>
+                <p className="text-sm text-[rgb(var(--color-text-faint))] mt-1">{addr.phone}</p>
               )}
 
               <div className="flex gap-4 mt-3 text-xs">
@@ -119,15 +119,15 @@ const ProfileAddresses = () => {
       </div>
 
       {/* FORMULARIO */}
-      <div className="bg-main p-8 rounded-2xl shadow-sm border border-main">
-        <h2 className="text-lg font-semibold mb-6 text-main">
+      <div className="bg-[rgb(var(--color-bg))] p-8 rounded-2xl shadow-sm border border-[rgb(var(--color-border))]">
+        <h2 className="text-lg font-semibold mb-6 text-[rgb(var(--color-text))]">
           {t("profile.addresses.addNew")}
         </h2>
         <AddressForm onSaved={fetchAddresses} />
       </div>
 
       {toast && (
-        <div className="fixed bottom-5 right-5 z-50 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-sm px-4 py-3 rounded-xl shadow-lg">
+        <div className="fixed bottom-5 right-5 z-50 bg-[rgb(var(--color-bg-subtle))] text-[rgb(var(--color-text))] text-sm px-4 py-3 rounded-xl shadow-lg">
           {t("profile.addresses.saved")}
         </div>
       )}

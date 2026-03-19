@@ -1,29 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import orderService from "../../services/orderService";
 
 const StatCard = ({ value, label }) => (
-  <div
-    className="bg-main rounded-xl text-center"
-    style={{
-      border: "0.5px solid var(--border-main, #e5e7eb)",
-      padding: "14px 8px",
-    }}
-  >
-    <p style={{ fontSize: "22px", fontWeight: "500", color: "#534AB7" }}>
-      {value}
-    </p>
-    <p
-      style={{
-        fontSize: "11px",
-        color: "var(--color-muted, #6b7280)",
-        marginTop: "2px",
-      }}
-    >
-      {label}
-    </p>
+  <div className="bg-main rounded-xl text-center border-main border px-2 py-3">
+    <p className="text-main font-medium text-lg">{value}</p>
+    <p className="text-muted text-xs mt-0.5">{label}</p>
   </div>
 );
 
@@ -37,27 +20,9 @@ const OrderRow = ({ order }) => {
   };
   const s = statusMap[order.status] || statusMap["pending"];
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "9px 0",
-        borderBottom: "0.5px solid var(--border-main, #e5e7eb)",
-        fontSize: "13px",
-      }}
-    >
-      <div style={{ minWidth: 0 }}>
-        <p
-          style={{
-            fontWeight: "500",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {order.order_number || `ORD-${order.id}`}
-        </p>
+    <div className="flex justify-between items-center py-2 border-b border-main text-sm">
+      <div className="truncate">
+        <p className="font-medium truncate">{order.order_number || `ORD-${order.id}`}</p>
       </div>
       <span
         style={{
@@ -77,38 +42,14 @@ const OrderRow = ({ order }) => {
 };
 
 const QuickLink = ({ icon, title, desc, href }) => (
-  <a href={href} style={{ textDecoration: "none", display: "block" }}>
-    <div
-      className="bg-main rounded-xl border border-main p-4 flex items-center gap-4 cursor-pointer"
-      style={{ transition: "border-color 0.15s" }}
-    >
-      <div
-        style={{
-          width: "40px",
-          height: "40px",
-          borderRadius: "10px",
-          background: "#EEEDFE",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "20px",
-          flexShrink: 0,
-        }}
-      >
+  <a href={href} className="block no-underline">
+    <div className="bg-main border border-main rounded-xl p-4 flex items-center gap-4 cursor-pointer transition-colors hover:border-violet-600">
+      <div className="w-10 h-10 rounded-lg bg-subtle flex items-center justify-center text-main text-xl flex-shrink-0">
         {icon}
       </div>
       <div>
-        <p
-          style={{
-            fontSize: "13px",
-            fontWeight: "500",
-            color: "var(--color-text-primary)",
-            marginBottom: "2px",
-          }}
-        >
-          {title}
-        </p>
-        <p style={{ fontSize: "11px", color: "var(--color-muted)" }}>{desc}</p>
+        <p className="text-main font-medium text-sm mb-0.5">{title}</p>
+        <p className="text-muted text-xs">{desc}</p>
       </div>
     </div>
   </a>
@@ -143,77 +84,30 @@ const ProfileDashboard = ({ setActiveTab }) => {
     { label: "Preferencias", done: !!user.preferences },
   ];
   const completedCount = profileFields.filter((f) => f.done).length;
-  const completionPct = Math.round(
-    (completedCount / profileFields.length) * 100,
-  );
+  const completionPct = Math.round((completedCount / profileFields.length) * 100);
   const recentOrders = orders.slice(0, 3);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+    <div className="flex flex-col gap-3">
       {/* ── Bienvenida ── */}
-      <div style={{ padding: "4px 0 8px" }}>
-        <p
-          style={{
-            fontSize: "18px",
-            fontWeight: "600",
-            color: "var(--color-text-primary)",
-          }}
-        >
+      <div className="pb-2">
+        <p className="text-main text-lg font-semibold">
           Hola, {user.name?.split(" ")[0] || "de nuevo"} 👋
         </p>
-        <p
-          style={{
-            fontSize: "13px",
-            color: "var(--color-muted)",
-            marginTop: "2px",
-          }}
-        >
+        <p className="text-muted text-xs mt-0.5">
           Aquí tienes un resumen de tu actividad
         </p>
       </div>
 
       {/* ── Pedidos recientes ── */}
-      <div
-        className="bg-main rounded-xl"
-        style={{
-          border: "0.5px solid var(--border-main, #e5e7eb)",
-          padding: "16px",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "12px",
-            fontWeight: "500",
-            color: "var(--color-muted)",
-            marginBottom: "8px",
-            textTransform: "uppercase",
-            letterSpacing: "0.4px",
-          }}
-        >
+      <div className="bg-main border border-main rounded-xl p-4">
+        <p className="text-muted text-xs font-medium mb-2 uppercase tracking-wide">
           {t("orders.recent")}
         </p>
         {loading ? (
-          <p
-            style={{
-              fontSize: "13px",
-              color: "var(--color-muted)",
-              textAlign: "center",
-              padding: "16px 0",
-            }}
-          >
-            Cargando…
-          </p>
+          <p className="text-muted text-sm text-center py-4">Cargando…</p>
         ) : recentOrders.length === 0 ? (
-          <p
-            style={{
-              fontSize: "13px",
-              color: "var(--color-muted)",
-              textAlign: "center",
-              padding: "16px 0",
-            }}
-          >
-            {t("orders.empty")}
-          </p>
+          <p className="text-muted text-sm text-center py-4">{t("orders.empty")}</p>
         ) : (
           <>
             {recentOrders.map((order) => (
@@ -221,17 +115,7 @@ const ProfileDashboard = ({ setActiveTab }) => {
             ))}
             <button
               onClick={() => setActiveTab("orders")}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "center",
-                marginTop: "10px",
-                fontSize: "12px",
-                color: "#534AB7",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
+              className="w-full text-center mt-2 text-sm text-main bg-none border-none cursor-pointer hover:underline"
             >
               {t("orders.viewAll")} →
             </button>
@@ -241,16 +125,7 @@ const ProfileDashboard = ({ setActiveTab }) => {
 
       {/* ── Ayuda y soporte ── */}
       <div>
-        <p
-          style={{
-            fontSize: "12px",
-            fontWeight: "500",
-            color: "var(--color-muted)",
-            textTransform: "uppercase",
-            letterSpacing: "0.4px",
-            marginBottom: "10px",
-          }}
-        >
+        <p className="text-muted text-xs font-medium uppercase tracking-wide mb-2">
           Ayuda y soporte
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
