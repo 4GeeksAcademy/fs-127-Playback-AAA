@@ -7,6 +7,7 @@ from api.models.order import Order, Status
 from extensions import mail
 from api.emails import build_new_order_seller_email, build_order_confirmation_buyer_email
 from collections import defaultdict
+from api.models.seller_order import SellerOrder, SellerOrderStatus
 
 payment_bp = Blueprint('payment', __name__, url_prefix='/payment')
 
@@ -195,12 +196,25 @@ def _handle_payment_succeeded(intent):
             # Log del error pero no abortamos — el pedido se marca como pagado igualmente
             print(f"[Webhook] Error al transferir a vendedores: {str(e)}")
 
-   # Resta el stock de cada producto
+    # Resta el stock de cada producto
     for detail in order.order_details:
         detail.product.stock = max(0, detail.product.stock - detail.quantity)
 
     # Actualiza el estado del pedido
     order.status = Status.paid
+
+    # Crea un SellerOrder por cada vendedor implicado en el pedido
+    seller_ids_seen = set()
+    for detail in order.order_details:
+        sid = detail.product.seller_id
+        if sid not in seller_ids_seen:
+            seller_ids_seen.add(sid)
+            db.session.add(SellerOrder(
+                order_id=order.id,
+                seller_id=sid,
+                status=SellerOrderStatus.paid,
+            ))
+
     db.session.commit()
 
     # Email a cada vendedor con solo sus productos
@@ -215,7 +229,7 @@ def _handle_payment_succeeded(intent):
         except Exception as e:
             print(f"[Webhook] Error al enviar email al vendedor {seller.id}: {str(e)}")
             
-    #Email a Comprador
+    #Email al Comprador
     try:
         mail.send(build_order_confirmation_buyer_email(order.user, order))
     except Exception as e:

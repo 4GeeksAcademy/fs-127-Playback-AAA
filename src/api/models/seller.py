@@ -44,6 +44,7 @@ class Seller(db.Model):
 
     user: Mapped["User"] = relationship("User", back_populates="seller")
     products: Mapped[list["Product"]] = relationship("Product", back_populates="seller", cascade="all, delete-orphan")
+    seller_orders: Mapped[list["SellerOrder"]] = relationship("SellerOrder", back_populates="seller")
 
     def __repr__(self):
         return f'<Seller {self.id}: {self.store_name} ({self.status.value})>'

@@ -46,7 +46,35 @@ class Order(db.Model):
     incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="order", cascade="all, delete-orphan")
     shipping_address: Mapped["Address"] = relationship("Address", foreign_keys=[shipping_address_id])
     billing_address: Mapped["Address"] = relationship("Address", foreign_keys=[billing_address_id])
+    seller_orders: Mapped[list["SellerOrder"]] = relationship("SellerOrder", back_populates="order", cascade="all, delete-orphan")
 
+    def sync_status(self):
+        """Recalcula el estado del pedido según los SellerOrders implicados.
+        
+        Regla: el comprador ve el estado menos avanzado de todos los vendedores
+        activos (excluidos los cancelados). Si todos están cancelados, el pedido
+        se cancela entero.
+        """
+        if not self.seller_orders:
+            return
+
+        # Orden de menor a mayor avance
+        PRIORITY = ["paid", "confirmed", "processing", "shipped", "delivered", "cancelled"]
+
+        active = [
+            so.status.value
+            for so in self.seller_orders
+            if so.status.value != "cancelled"
+        ]
+
+        if not active:
+            # Todos los vendedores cancelaron su parte
+            self.status = Status.cancelled
+            return
+
+        # El cuello de botella: el estado más retrasado entre los activos
+        least_advanced = min(active, key=lambda s: PRIORITY.index(s))
+        self.status = Status(least_advanced)
 
     def serialize(self):
         return {

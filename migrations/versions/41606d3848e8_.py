@@ -1,14 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/fdc695322578_.py
-Revision ID: fdc695322578
+Revision ID: 41606d3848e8
 Revises: 
-Create Date: 2026-03-18 19:17:44.882078
-========
-Revision ID: e9dc2cea276b
-Revises: 
-Create Date: 2026-03-18 19:49:56.418414
->>>>>>>> 744c44af5cffb0c3d5d0e8518b2001939bcc52fb:migrations/versions/e9dc2cea276b_.py
+Create Date: 2026-03-19 17:54:56.962645
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/fdc695322578_.py
-revision = 'fdc695322578'
-========
-revision = 'e9dc2cea276b'
->>>>>>>> 744c44af5cffb0c3d5d0e8518b2001939bcc52fb:migrations/versions/e9dc2cea276b_.py
+revision = '41606d3848e8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -184,6 +174,19 @@ def upgrade():
     sa.ForeignKeyConstraint(['seller_id'], ['seller.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('seller_order',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('status', sa.Enum('paid', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='sellerorderstatus'), nullable=False),
+    sa.Column('tracking_code', sa.String(length=100), nullable=True),
+    sa.Column('carrier_name', sa.String(length=100), nullable=True),
+    sa.Column('shipped_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('order_id', sa.Integer(), nullable=False),
+    sa.Column('seller_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
+    sa.ForeignKeyConstraint(['seller_id'], ['seller.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('shipment',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('shipping_code', sa.String(length=100), nullable=False),
@@ -241,6 +244,7 @@ def downgrade():
     op.drop_table('order_detail')
     op.drop_table('favorite')
     op.drop_table('shipment')
+    op.drop_table('seller_order')
     op.drop_table('product')
     op.drop_table('incident')
     op.drop_table('order')

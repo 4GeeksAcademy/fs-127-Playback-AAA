@@ -19,3 +19,4 @@ from api.models.shipment import Shipment
 from api.models.carrier import Carrier
 from api.models.review import Review
 from api.models.incident import Incident
+from .seller_order import SellerOrder, SellerOrderStatus
