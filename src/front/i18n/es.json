@@ -592,6 +592,14 @@
       "desc": "Desarrollado como proyecto MVP del bootcamp de desarrollo web full stack. Representa el resultado de meses de aprendizaje aplicado en un producto real y funcional.",
       "cta": "Ver academia",
       "visit": "Visitar 4Geeks Academy"
+    },
+    "testUsers": {
+      "label": "Usuarios de prueba",
+      "col": {
+        "role": "Rol",
+        "email": "Email",
+        "password": "Contraseña"
+      }
     }
   }
 }

@@ -1,43 +1,73 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Github, Linkedin, Globe, Instagram, ExternalLink, Code2, BookOpen, Users, Gamepad2, ShoppingCart, CreditCard, Image, Mail, LayoutDashboard, GraduationCap, Star, Wrench, } from "lucide-react";
+import {
+  Github, Linkedin, Globe, Instagram, ExternalLink,
+  BookOpen, Users, Gamepad2, ShoppingCart,
+  CreditCard, Image, Mail, LayoutDashboard, GraduationCap, Wrench,
+  ChevronDown, ChevronUp, FlaskConical,
+} from "lucide-react";
 
 // ─── Assets ──────────────────────────────────────────────────────────────────
 const LOGO_FULL_DARK  = "https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vdark.png";
 const LOGO_FULL_LIGHT = "https://res.cloudinary.com/playback-assets/image/upload/v1772853455/logo_navbar_playback_v1.png";
 
-// ─── Data estática (nombres propios, URLs — no se traducen) ───────────────────
+// ─── Usuarios de prueba ───────────────────────────────────────────────────────
+const TEST_USERS = [
+  { role: "admin",  email: "admin@playback.com",           password: "Admin!",    label: "Admin" },
+  { role: "seller", email: "seller@playback.com",          password: "Seller!",   label: "Vendedor" },
+  { role: "seller", email: "carlos@test.com",              password: "Test1234!", label: "Vendedor" },
+  { role: "seller", email: "maria@test.com",               password: "Test1234!", label: "Vendedor" },
+  { role: "seller", email: "alex@test.com",                password: "Test1234!", label: "Vendedor" },
+  { role: "seller", email: "pro.arantxa.ordoyo@gmail.com", password: "123456",    label: "Vendedor" },
+  { role: "buyer",  email: "lucia@test.com",               password: "Test1234!", label: "Comprador" },
+  { role: "buyer",  email: "pablo@test.com",               password: "Test1234!", label: "Comprador" },
+  { role: "buyer",  email: "elena@test.com",               password: "Test1234!", label: "Comprador" },
+  { role: "buyer",  email: "javier@test.com",              password: "Test1234!", label: "Comprador" },
+  { role: "buyer",  email: "ana@test.com",                 password: "Test1234!", label: "Comprador" },
+];
+
+const ROLE_STYLE = {
+  admin:  "bg-red-100    dark:bg-red-900/30    text-red-600    dark:text-red-400",
+  seller: "bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400",
+  buyer:  "bg-blue-100   dark:bg-blue-900/30   text-blue-600   dark:text-blue-400",
+};
+
+// ─── Data estática ────────────────────────────────────────────────────────────
 const PROJECT_LINKS = [
-  { key: "repo",      icon: Github,          href: "https://github.com/4GeeksAcademy/fs-127-Playback-AAA",  color: "bg-zinc-800 dark:bg-zinc-700 text-white" },
-  { key: "dashboard", icon: LayoutDashboard, href: "https://github.com/users/alexsilvan92/projects/3",      color: "bg-violet-600 text-white" },
-  { key: "academy",   icon: GraduationCap,   href: "https://4geeks.com/es",                                  color: "bg-blue-600 text-white" },
+  { key: "repo",      icon: Github,          href: "https://github.com/4GeeksAcademy/fs-127-Playback-AAA", color: "bg-zinc-800 dark:bg-zinc-700 text-white" },
+  { key: "dashboard", icon: LayoutDashboard, href: "https://github.com/users/alexsilvan92/projects/3",     color: "bg-violet-600 text-white" },
+  { key: "academy",   icon: GraduationCap,   href: "https://4geeks.com/es",                                 color: "bg-blue-600 text-white" },
 ];
 
 const PROFESSORS = [
-  { name: "Miguel Toyas Pernichi",   roleKey: "teachingAssistant", linkedin: "https://linkedin.com/in/migueltoyaspernichi",              github: "https://github.com/mitoperni",            avatar: "https://github.com/mitoperni.png" },
   { name: "Álvaro Martín Fernández", roleKey: "instructor",        linkedin: "https://www.linkedin.com/in/alvaro-martin-fernandez-esp/", github: "https://github.com/AlvaroMartinFernandez", avatar: "https://github.com/AlvaroMartinFernandez.png" },
+  { name: "Miguel Toyas Pernichi",   roleKey: "teachingAssistant", linkedin: "https://linkedin.com/in/migueltoyaspernichi",              github: "https://github.com/mitoperni",            avatar: "https://github.com/mitoperni.png" },
 ];
 
 const STUDENTS = [
+  { name: "Arantxa Ordoyo Orozco",          linkedin: "https://www.linkedin.com/in/arantxa-ordoyo/",           github: "https://github.com/arianxa",    website: "https://www.arantxaordoyo.online/",           avatar: "https://github.com/arianxa.png" },
   { name: "Anghers Fernando Bello Linares", linkedin: "https://www.linkedin.com/in/angherxs-bello-3b9488376/", github: "https://github.com/angherxs",    instagram: "https://www.instagram.com/angherxsfbello/", avatar: "https://github.com/angherxs.png" },
   { name: "Alex Silván Silván",             linkedin: "https://www.linkedin.com/in/alex-silvan/",              github: "https://github.com/alexsilvan92",                                                               avatar: "https://github.com/alexsilvan92.png" },
-  { name: "Arantxa Ordoyo Orozco",          linkedin: "https://www.linkedin.com/in/arantxa-ordoyo/",           github: "https://github.com/arianxa",    website: "https://www.arantxaordoyo.online/",           avatar: "https://github.com/arianxa.png" },
 ];
 
 const FEATURE_ICONS = [Gamepad2, ShoppingCart, CreditCard, Image, Mail, Globe];
 
 const TECH = [
-  { label: "React 18",        color: "bg-cyan-500/10    text-cyan-600    dark:text-cyan-400    border border-cyan-500/20" },
-  { label: "Flask",           color: "bg-zinc-500/10   text-zinc-600   dark:text-zinc-300   border border-zinc-500/20" },
-  { label: "PostgreSQL",      color: "bg-blue-500/10   text-blue-600   dark:text-blue-400   border border-blue-500/20" },
-  { label: "Tailwind CSS",    color: "bg-sky-500/10    text-sky-600    dark:text-sky-400    border border-sky-500/20" },
-  { label: "Stripe Connect",  color: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20" },
-  { label: "Cloudinary",      color: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20" },
-  { label: "SQLAlchemy",      color: "bg-red-500/10    text-red-600    dark:text-red-400    border border-red-500/20" },
-  { label: "i18next",         color: "bg-green-500/10  text-green-600  dark:text-green-400  border border-green-500/20" },
-  { label: "JWT Auth",        color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20" },
-  { label: "Google OAuth 2.0",color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" },
-  { label: "Brevo SMTP",      color: "bg-pink-500/10   text-pink-600   dark:text-pink-400   border border-pink-500/20" },
-  { label: "Python 3.13",     color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20" },
+  { label: "React 18",         color: "bg-cyan-500/10    text-cyan-600    dark:text-cyan-400    border border-cyan-500/20" },
+  { label: "Flask",            color: "bg-zinc-500/10   text-zinc-600   dark:text-zinc-300   border border-zinc-500/20" },
+  { label: "PostgreSQL",       color: "bg-blue-500/10   text-blue-600   dark:text-blue-400   border border-blue-500/20" },
+  { label: "Tailwind CSS",     color: "bg-sky-500/10    text-sky-600    dark:text-sky-400    border border-sky-500/20" },
+  { label: "Stripe Connect",   color: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20" },
+  { label: "Cloudinary",       color: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20" },
+  { label: "SQLAlchemy",       color: "bg-red-500/10    text-red-600    dark:text-red-400    border border-red-500/20" },
+  { label: "i18next",          color: "bg-green-500/10  text-green-600  dark:text-green-400  border border-green-500/20" },
+  { label: "JWT Auth",         color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20" },
+  { label: "Google OAuth 2.0", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" },
+  { label: "Brevo SMTP",       color: "bg-pink-500/10   text-pink-600   dark:text-pink-400   border border-pink-500/20" },
+  { label: "Python 3.13",      color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20" },
+  { label: "Groq API",         color: "bg-teal-500/10   text-teal-600   dark:text-teal-400   border border-teal-500/20" },
+  { label: "GeoAPI.es",        color: "bg-lime-500/10   text-lime-600   dark:text-lime-400   border border-lime-500/20" },
+  { label: "UI Avatars",       color: "bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border border-fuchsia-500/20" },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -71,10 +101,60 @@ function StudentCard({ person, roleLabel }) {
   );
 }
 
+function TestUsersPanel({ t }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl overflow-hidden">
+      {/* cabecera siempre visible */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+      >
+        <span className="flex items-center gap-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
+          <FlaskConical size={13} className="text-zinc-400" />
+          {t("about.testUsers.label")}
+        </span>
+        {open
+          ? <ChevronUp size={14} className="text-zinc-400 shrink-0" />
+          : <ChevronDown size={14} className="text-zinc-400 shrink-0" />
+        }
+      </button>
+
+      {/* tabla desplegable */}
+      {open && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
+                <th className="text-left px-4 py-2 font-medium">{t("about.testUsers.col.role")}</th>
+                <th className="text-left px-4 py-2 font-medium">{t("about.testUsers.col.email")}</th>
+                <th className="text-left px-4 py-2 font-medium">{t("about.testUsers.col.password")}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {TEST_USERS.map((u) => (
+                <tr key={u.email} className="bg-white dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
+                  <td className="px-4 py-2">
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${ROLE_STYLE[u.role]}`}>
+                      {u.label}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 font-mono text-zinc-600 dark:text-zinc-300">{u.email}</td>
+                  <td className="px-4 py-2 font-mono text-zinc-600 dark:text-zinc-300">{u.password}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export const About = () => {
   const { t } = useTranslation();
-
   const features = t("about.features.items", { returnObjects: true });
 
   return (
@@ -125,6 +205,7 @@ export const About = () => {
               </div>
             );
           })}
+
           {/* Card en construcción */}
           <div className="flex gap-4 p-4 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-800/20">
             <div className="shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -143,6 +224,10 @@ export const About = () => {
               </p>
             </div>
           </div>
+          {/* Panel de usuarios de prueba */}
+          <div className="mb-10 text-left">
+            <TestUsersPanel t={t} />
+          </div>
         </div>
 
         <div className="mt-10">
@@ -150,8 +235,8 @@ export const About = () => {
             {t("about.tech.title")}
           </p>
           <div className="flex flex-wrap gap-2">
-            {TECH.map((t) => (
-              <span key={t.label} className={`px-2.5 py-1 rounded-md text-xs font-medium ${t.color}`}>{t.label}</span>
+            {TECH.map((tech) => (
+              <span key={tech.label} className={`px-2.5 py-1 rounded-md text-xs font-medium ${tech.color}`}>{tech.label}</span>
             ))}
           </div>
         </div>
@@ -160,20 +245,15 @@ export const About = () => {
       {/* ── Equipo ── */}
       <section className="border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-
-          {/* Alumnos */}
-          <div>
-            <div className="flex items-center gap-2 mb-6">
-              <Users size={18} className="text-violet-500" />
-              <h2 className="text-xl font-bold tracking-tight">{t("about.team.devTitle")}</h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {STUDENTS.map((s) => (
-                <StudentCard key={s.name} person={s} roleLabel={t("about.team.devRole")} />
-              ))}
-            </div>
+          <div className="flex items-center gap-2 mb-6">
+            <Users size={18} className="text-violet-500" />
+            <h2 className="text-xl font-bold tracking-tight">{t("about.team.devTitle")}</h2>
           </div>
-
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {STUDENTS.map((s) => (
+              <StudentCard key={s.name} person={s} roleLabel={t("about.team.devRole")} />
+            ))}
+          </div>
         </div>
       </section>
 
