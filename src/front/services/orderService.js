@@ -156,6 +156,16 @@ async function buyerConfirmShipmentDelivery(token, orderId, sellerOrderId) {
     return [data, null];
 }
 
+async function validateStock(token) {
+    const response = await fetch(`${backendUrl}/api/order/cart/validate-stock`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al validar stock"];
+    return [data, null];
+}
+
+
 const orderService = {
     hasBought,
     createReview,
@@ -169,6 +179,7 @@ const orderService = {
     applyCoupon,
     buyerConfirmDelivery,
     buyerConfirmShipmentDelivery,
+    validateStock,
 };
 
 export default orderService;

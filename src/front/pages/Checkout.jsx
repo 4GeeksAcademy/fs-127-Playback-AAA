@@ -104,7 +104,20 @@ export const Checkout = () => {
     const token = store.token || localStorage.getItem("token");
     setLoading(true);
 
-    const [orderData, orderError] = await orderServices.checkout(
+    // ✅ Comprobación de stock antes de crear el pedido
+    const [stockData, stockError] = await orderServices.validateStock(token);
+    if (stockError || !stockData?.available) {
+      const names = stockData?.items?.map((i) => i.title).join(", ");
+      showToast(names
+        ? t("checkout.stockUnavailable", { items: names })
+        : t("checkout.stockError")
+      );
+      setLoading(false);
+      return;
+    }
+
+  const [orderData, orderError] = await orderServices.checkout(
+    // ... sin cambios
       token,
       shippingAddress,
       billingAddress,

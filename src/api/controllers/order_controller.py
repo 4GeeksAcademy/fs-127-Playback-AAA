@@ -569,3 +569,29 @@ def buyer_confirm_shipment_delivery(order_id, seller_order_id):
         "seller_order_status": seller_order.status.value,
         "order_status":        order.status.value,
     }), 200
+
+
+@order_bp.route('/cart/validate-stock', methods=['GET'])
+@jwt_required()
+def validate_cart_stock():
+    user_id = int(get_jwt_identity())
+
+    order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
+    if not order:
+        return jsonify({"available": True}), 200
+
+    out_of_stock = []
+    for detail in order.order_details:
+        product = detail.product
+        if not product or product.is_deleted or product.stock < detail.quantity:
+            out_of_stock.append({
+                "product_id": product.id if product else None,
+                "title":      product.name.get("es", "Producto") if product else "Producto no disponible",
+                "available":  product.stock if product else 0,
+                "requested":  detail.quantity,
+            })
+
+    if out_of_stock:
+        return jsonify({"available": False, "items": out_of_stock}), 409
+
+    return jsonify({"available": True}), 200
