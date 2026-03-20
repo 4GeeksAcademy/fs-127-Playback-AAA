@@ -128,18 +128,14 @@ const ProfileDashboard = ({ setActiveTab }) => {
         <p className="text-muted text-xs font-medium uppercase tracking-wide mb-2">
           Ayuda y soporte
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <QuickLink
-            icon="❓"
-            title="Preguntas frecuentes"
-            desc="Envíos, devoluciones, pagos..."
-            href="/faq"
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ">
+
           <QuickLink
             icon="✉️"
             title="Contactar con soporte"
             desc="Te respondemos en 24-48h"
             href="/contact"
+            className="center"
           />
         </div>
       </div>

@@ -62,7 +62,7 @@ const ResumTab = () => {
     <span className="text-3xl">📈</span>
     <div>
       <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-        €{ventasMes.toFixed(2)}
+        {ventasMes.toFixed(2)}€
       </p>
       <p className="text-xs text-muted mt-0.5">{t("dashboard.overview.salesThisMonth")}</p>
     </div>
@@ -126,7 +126,7 @@ const ResumTab = () => {
                   {new Date(o.created_at).toLocaleDateString("es-ES")}
                 </span>
                 <span className="font-semibold text-main whitespace-nowrap">
-                  €{o.products.reduce((s, p) => s + p.price * p.quantity, 0).toFixed(2)}
+                  {o.products.reduce((s, p) => s + p.price * p.quantity, 0).toFixed(2)}€
                 </span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATUS_STYLE[o.status] || "bg-muted text-muted"}`}>
                   {t(`dashboard.orders.status.${o.status}`, { defaultValue: o.status })}

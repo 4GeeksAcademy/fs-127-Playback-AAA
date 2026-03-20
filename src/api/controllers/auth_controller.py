@@ -6,10 +6,23 @@ from extensions import mail
 from flask_mail import Message
 from datetime import timedelta
 import os
+from threading import Thread
+from flask import current_app
 from api.emails import build_welcome_email, build_reset_password_email
 from api.utils import generate_initial_avatar
 
 auth_bp = Blueprint('auth', __name__)
+
+
+# ── Helper: envía cualquier mensaje de Flask-Mail en un hilo separado ─────────
+# Render free bloquea SMTP — lanzarlo en background evita que el worker muera.
+# En local funciona igual: el hilo usa SMTP normalmente.
+def _send_email_async(app, message):
+    with app.app_context():
+        try:
+            mail.send(message)
+        except Exception as e:
+            print(f"[Auth] Error al enviar email: {str(e)}")
 
 
 @auth_bp.route("/signup", methods=["POST"])
@@ -41,12 +54,15 @@ def create_user():
             role=role,
             image_url=image_url
         )
-        #correo de bienvenida
         new_user.set_password(body["password"])
         db.session.add(new_user)
         db.session.commit()
-        
-        mail.send(build_welcome_email(new_user))
+
+        # Correo de bienvenida en background — nunca bloquea ni rompe el registro
+        Thread(
+            target=_send_email_async,
+            args=(current_app._get_current_object(), build_welcome_email(new_user))
+        ).start()
 
         access_token = create_access_token(identity=str(new_user.id))
 
@@ -106,7 +122,11 @@ def forgot_password():
     frontend_url = os.getenv("FRONTEND_URL")
     reset_url = f"{frontend_url}reset-password?token={token}"
 
-    mail.send(build_reset_password_email(user, reset_url))
+    # Email de recuperación en background — nunca bloquea ni rompe el flujo
+    Thread(
+        target=_send_email_async,
+        args=(current_app._get_current_object(), build_reset_password_email(user, reset_url))
+    ).start()
 
     return jsonify({"msg": "Email enviado correctamente"}), 200
 

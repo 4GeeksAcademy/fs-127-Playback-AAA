@@ -1,4 +1,7 @@
 {
+  "common": {
+    "loading": "Cargando..."
+  },
   "home": {
     "loading": "Cargando...",
     "topSales": "Top Ventas",
@@ -32,7 +35,6 @@
     "characteristics": "Sin caracteristicas",
     "reviewsCount": "Total reseñas",
     "noReviews": "Sin reseñas"
-    
   },
   "navbar": {
     "loginTitle": "Bienvenido de nuevo",
@@ -139,6 +141,12 @@
     "city": "Ciudad",
     "zip": "Código postal",
     "country": "País",
+    "community": "Comunidad autónoma",
+    "selectCommunity": "Selecciona comunidad",
+    "province": "Provincia",
+    "selectProvince": "Selecciona provincia",
+    "municipality": "Municipio",
+    "selectMunicipality": "Selecciona municipio",
     "iban": "IBAN",
     "accountHolder": "Titular de la cuenta",
     "reviewTitle": "Revisa tu solicitud",
@@ -238,7 +246,7 @@
     "billingAddress": "Dirección de facturación",
     "recent": "Pedidos recientes",
     "viewAll": "Ver todos los pedidos",
-    "openIncident": "Abrir incidencia"
+    "openIncident": "Incidencia / Devolución"
   },
   "favorites": {
     "title": "Tus favoritos",
@@ -403,7 +411,18 @@
         "statusSection": "Estado del pedido",
         "current": "(actual)",
         "saving": "Guardando…",
-        "saveStatus": "Guardar cambio de estado"
+        "saveStatus": "Guardar cambio de estado",
+        "autoConfirming": "Confirmando…",
+        "advanceTo": "Avanzar a",
+        "cancelOrder": "Cancelar pedido",
+        "confirmCancel": "Sí, cancelar",
+        "goBack": "Volver",
+        "shippedNote": "El pedido está en camino. La entrega la confirmará el comprador o la transportista.",
+        "shippingData": "Datos de envío",
+        "carrier": "Transportista",
+        "trackingCode": "Código de seguimiento",
+        "trackingHint": "El comprador recibirá este código por email para hacer el seguimiento.",
+        "close": "Cerrar"
       },
       "status": {
         "pending": "Pendiente",
@@ -419,7 +438,8 @@
         "debit_card": "Tarjeta de débito",
         "paypal": "PayPal",
         "stripe": "Stripe",
-        "bank_transfer": "Transferencia bancaria"
+        "bank_transfer": "Transferencia bancaria",
+        "bizum": "Bizum"
       }
     },
     "products": {
@@ -434,7 +454,6 @@
       "deleted": "Producto eliminado",
       "stockError": "Error al actualizar stock",
       "saved": "Producto guardado",
-
       "table": {
         "product": "Producto",
         "price": "Precio",

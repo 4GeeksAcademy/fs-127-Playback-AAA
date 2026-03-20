@@ -7,12 +7,26 @@ from api.models.order import Order, Status
 from extensions import mail
 from api.emails import build_new_order_seller_email, build_order_confirmation_buyer_email
 from collections import defaultdict
+from api.models.seller_order import SellerOrder, SellerOrderStatus
+from threading import Thread
+from flask import current_app
 
 payment_bp = Blueprint('payment', __name__, url_prefix='/payment')
 
 # Comisión de la plataforma (por defecto 5% o un mínimo de 1€)
 COMMISSION_RATE = float(os.getenv("PLATFORM_COMMISSION_RATE", 0.05))
 MINIMUM_COMMISSION = float(os.getenv("PLATFORM_MINIMUM_COMMISSION", 1.0))
+
+
+# ── Helper: envía cualquier mensaje de Flask-Mail en un hilo separado ─────────
+# Render free bloquea SMTP — lanzarlo en background evita que el worker muera.
+# En local funciona igual: el hilo usa SMTP normalmente.
+def _send_email_async(app, message):
+    with app.app_context():
+        try:
+            mail.send(message)
+        except Exception as e:
+            print(f"[Payment] Error al enviar email: {str(e)}")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -195,28 +209,45 @@ def _handle_payment_succeeded(intent):
             # Log del error pero no abortamos — el pedido se marca como pagado igualmente
             print(f"[Webhook] Error al transferir a vendedores: {str(e)}")
 
-   # Resta el stock de cada producto
+    # Resta el stock de cada producto
     for detail in order.order_details:
         detail.product.stock = max(0, detail.product.stock - detail.quantity)
 
     # Actualiza el estado del pedido
     order.status = Status.paid
+
+    # Crea un SellerOrder por cada vendedor implicado en el pedido
+    seller_ids_seen = set()
+    for detail in order.order_details:
+        sid = detail.product.seller_id
+        if sid not in seller_ids_seen:
+            seller_ids_seen.add(sid)
+            db.session.add(SellerOrder(
+                order_id=order.id,
+                seller_id=sid,
+                status=SellerOrderStatus.paid,
+            ))
+
     db.session.commit()
 
-    # Email a cada vendedor con solo sus productos
+    # Capturamos la app antes de lanzar los hilos (necesario fuera de request context)
+    from flask import current_app
+    app = current_app._get_current_object()
+
+    # Email a cada vendedor con solo sus productos — en background
     details_by_seller = defaultdict(list)
     for detail in order.order_details:
         details_by_seller[detail.product.seller.id].append(detail)
 
     for details in details_by_seller.values():
         seller = details[0].product.seller
-        try:
-            mail.send(build_new_order_seller_email(seller, order, details))
-        except Exception as e:
-            print(f"[Webhook] Error al enviar email al vendedor {seller.id}: {str(e)}")
-            
-    #Email a Comprador
-    try:
-        mail.send(build_order_confirmation_buyer_email(order.user, order))
-    except Exception as e:
-        print(f"[Webhook] Error al enviar email al comprador: {str(e)}")
+        Thread(
+            target=_send_email_async,
+            args=(app, build_new_order_seller_email(seller, order, details))
+        ).start()
+
+    # Email al comprador — en background
+    Thread(
+        target=_send_email_async,
+        args=(app, build_order_confirmation_buyer_email(order.user, order))
+    ).start()

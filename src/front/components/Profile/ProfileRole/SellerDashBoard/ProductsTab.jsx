@@ -123,7 +123,7 @@ const ProductsTab = () => {
 
               {/* Precio + stock + acciones */}
               <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                <span className="text-sm font-semibold text-main">€{p.price}</span>
+                <span className="text-sm font-semibold text-main">{p.price}€</span>
 
                 {/* Control de stock */}
                 <div className="flex items-center gap-1">
@@ -197,7 +197,7 @@ const ProductsTab = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold text-main whitespace-nowrap">
-                    €{p.price}
+                    {p.price}€
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-1">
