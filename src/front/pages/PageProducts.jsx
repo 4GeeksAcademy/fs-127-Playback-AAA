@@ -12,18 +12,28 @@ export const PageProducts = () => {
 
   //Esto es para la paginacion le decimos que empieza en la 1 que queremos que muestre 8 y las paginas que tenemos
   const [currentPage, setCurrentPage] = useState(1);
-  const productosPorPagina = 8;
-  const totalPages = Math.ceil(results.length / productosPorPagina);
+
 
   // Resetear a página 1 cuando cambien los resultados (filtros, búsqueda, categoría…)
   useEffect(() => {
     setCurrentPage(1);
   }, [results]);
 
-  const productosPaginados = results.slice(
-    (currentPage - 1) * productosPorPagina,
-    currentPage * productosPorPagina,
-  );
+const resultadosOrdenados = results
+  .slice()
+  .sort((a, b) => {
+    const aAgotado = a.stock != null && a.stock === 0;
+    const bAgotado = b.stock != null && b.stock === 0;
+    return aAgotado - bAgotado;
+  });
+
+const productosPorPagina = 8;
+const totalPages = Math.ceil(resultadosOrdenados.length / productosPorPagina); 
+
+const productosPaginados = resultadosOrdenados.slice(
+  (currentPage - 1) * productosPorPagina,
+  currentPage * productosPorPagina,
+);
 
   return (
     <div>
