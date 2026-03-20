@@ -7,7 +7,6 @@ const SellerRejected = ({ sellerProfile, onResubmit, onCancel }) => {
   const { t } = useTranslation();
   const { store } = useGlobalReducer();
 
-  // Borra el perfil seller y notifica al padre para volver al wizard de registro
   const handleCancel = async () => {
     try {
       await deleteSellerProfileService(store.token);

@@ -305,15 +305,12 @@ const ProfileOrders = () => {
   const toggleExpand = (id) =>
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // Abre el stepper de valoración filtrando solo productos de envíos delivered
   const openReview = (order, specificProductId = null, soProducts = null) => {
     let pool;
 
     if (soProducts) {
-      // Llamada desde ShipmentSection — ya viene filtrado al envío delivered concreto
       pool = soProducts;
     } else if (order.seller_orders && order.seller_orders.length > 0) {
-      // Llamada desde el botón general — solo productos de envíos ya confirmed como delivered
       const deliveredIds = new Set(
         order.seller_orders
           .filter((so) => so.status === "delivered")
@@ -321,7 +318,6 @@ const ProfileOrders = () => {
       );
       pool = order.products.filter((p) => deliveredIds.has(p.id));
     } else {
-      // Pedido legacy sin seller_orders — el pedido entero debe estar delivered
       pool = order.products;
     }
 
@@ -333,14 +329,12 @@ const ProfileOrders = () => {
     setReviewing({ order, products: pendingProducts, step: startIdx });
   };
 
-  // Devuelve los IDs de productos entregados (solo de envíos delivered) para un pedido
   const deliveredProductIds = (order) => {
     if (order.seller_orders && order.seller_orders.length > 0) {
       return order.seller_orders
         .filter((so) => so.status === "delivered")
         .flatMap((so) => so.products.map((p) => p.id));
     }
-    // Legacy: si el pedido completo está delivered, todos sus productos cuentan
     if (order.status === "delivered") return order.products.map((p) => p.id);
     return [];
   };
@@ -371,15 +365,12 @@ const ProfileOrders = () => {
         const hasAnyDelivered = hasSellerOrders
           && order.seller_orders.some((so) => so.status === "delivered");
 
-        // IDs de productos que el comprador ya ha recibido
         const receivedIds = deliveredProductIds(order);
 
-        // ¿Quedan productos recibidos sin valorar?
         const pendingReviewCount = receivedIds.filter(
           (id) => !reviewed[`${order.id}-${id}`]
         ).length;
 
-        // Mostrar el botón solo si hay productos recibidos; cambiar label si todos valorados
         const canReview      = (isDelivered || hasAnyDelivered) && receivedIds.length > 0;
         const allReviewed    = canReview && pendingReviewCount === 0;
 
@@ -444,12 +435,7 @@ const ProfileOrders = () => {
               </div>
 
               {/* Fila inferior: botones */}
-              <div className="flex gap-2 mt-2 justify-end flex-wrap">
-
-                {/* Botón valorar — tres estados:
-                    · no visible si no hay nada recibido
-                    · activo con contador si quedan pendientes
-                    · "Todo valorado" desactivado si ya no quedan */}
+              <div className="flex gap-2 mt-2 justify-end flex-wrap">        
                 {canReview && (
                   allReviewed ? (
                     <span
@@ -464,7 +450,6 @@ const ProfileOrders = () => {
                     >
                       <Star size={11} />
                       {t("review.rate")}
-                      {/* Contador de pendientes si hay más de uno */}
                       {pendingReviewCount > 1 && (
                         <span style={{ background: "#534AB7", color: "white", borderRadius: "10px", padding: "0px 5px", fontSize: "10px", fontWeight: "700" }}>
                           {pendingReviewCount}
@@ -474,7 +459,6 @@ const ProfileOrders = () => {
                   )
                 )}
 
-                {/* Botón incidencia — amarillo, texto actualizado */}
                 <button
                   onClick={() => setIncident(order.id)}
                   style={{ background: "#FEF9C3", color: "#854D0E", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}
@@ -484,12 +468,10 @@ const ProfileOrders = () => {
               </div>
             </div>
 
-            {/* ── Detalle expandible ── */}
             {isOpen && (
               <div className="border-t border-main px-4 py-4 bg-subtle">
 
                 {hasSellerOrders ? (
-                  /* Vista subdividida por envío (modelo nuevo) */
                   <>
                     {order.seller_orders.map((so) => (
                       <ShipmentSection
@@ -505,7 +487,6 @@ const ProfileOrders = () => {
                     ))}
                   </>
                 ) : (
-                  /* Vista plana (pedidos anteriores al modelo SellerOrder) */
                   <div className="space-y-2 mb-3">
                     {order.products.map((p, i) => {
                       const reviewKey     = `${order.id}-${p.id}`;
@@ -523,7 +504,6 @@ const ProfileOrders = () => {
                             <p style={{ fontSize: "11px", color: "var(--color-muted)", marginTop: "1px" }}>
                               {finalPrice} € × {p.quantity}
                             </p>
-                            {/* Vista legacy: solo valorar si el pedido entero está delivered */}
                             {isDelivered && (
                               alreadyReviewed ? (
                                 <p style={{ fontSize: "10px", color: "#3B6D11", display: "flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>

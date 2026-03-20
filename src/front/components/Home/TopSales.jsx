@@ -22,13 +22,13 @@ export const TopSales = () => {
   const [toast, setToast] = useState(null);
   const [clicked, setClicked] = useState(null);
 
-  const [loadingCart, setLoadingCart] = useState({}); // ← cambia de null a {}
+  const [loadingCart, setLoadingCart] = useState({});
 
   const handleAddToCart = async (e, product) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (loadingCart[product.id]) return; // ← cortocircuito
+    if (loadingCart[product.id]) return;
 
     const token = store.token || localStorage.getItem("token");
 
@@ -49,9 +49,9 @@ export const TopSales = () => {
     setClicked(product.id);
     setTimeout(() => setClicked(null), 300);
 
-    setLoadingCart((prev) => ({ ...prev, [product.id]: true })); // ← bloquea
+    setLoadingCart((prev) => ({ ...prev, [product.id]: true }));
     const [, error] = await orderService.addProductToCart(token, product.id, 1);
-    setLoadingCart((prev) => ({ ...prev, [product.id]: false })); // ← desbloquea
+    setLoadingCart((prev) => ({ ...prev, [product.id]: false })); 
 
     if (error) {
       if (error.status === 401 || error.status === 403) {
@@ -232,7 +232,7 @@ export const TopSales = () => {
                       ) : (
                         <button
                           onClick={(e) => handleAddToCart(e, p)}
-                          disabled={loadingCart[p.id]} // ← añade esto
+                          disabled={loadingCart[p.id]} 
                           className={`text-white transition-all flex items-center justify-center p-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                             clicked === p.id
                               ? "bg-violet-600 scale-75"

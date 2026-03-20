@@ -25,7 +25,6 @@ export const PageDetailProduct = () => {
   useEffect(() => {
     productServices.getProduct(id).then(([data, error]) => {
       if (error) return console.error(error);
-      console.log("product.reviews:", data.reviews);
       setProduct(data);
     });
 
