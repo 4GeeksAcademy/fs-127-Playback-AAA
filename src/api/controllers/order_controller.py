@@ -485,6 +485,11 @@ def update_seller_order_status(seller_order_id):
             )
         ).start()
     
+    # ── Cancelación: guardar motivo si se proporciona ──────────────────────────
+    if new_status == "cancelled":
+        reason = (body.get("cancellation_reason") or "").strip()
+        seller_order.cancellation_reason = reason or None    
+    
     # ── Actualizar estado del SellerOrder ──────────────────────────────────────
     seller_order.status = SellerOrderStatus(new_status)
     
@@ -570,6 +575,40 @@ def buyer_confirm_shipment_delivery(order_id, seller_order_id):
         "order_status":        order.status.value,
     }), 200
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CANCELACIÓN POR EL COMPRADOR
+# PATCH /order/my-orders/<order_id>/cancel
+# Solo disponible en estado paid o confirmed
+# La devolución Stripe queda pendiente para una tarea posterior.
+# ─────────────────────────────────────────────────────────────────────────────
+@order_bp.route('/my-orders/<int:order_id>/cancel', methods=['PATCH'])
+@jwt_required()
+def buyer_cancel_order(order_id):
+    user_id = int(get_jwt_identity())
+
+    order = Order.query.get_or_404(order_id)
+
+    if order.user_id != user_id:
+        abort(403, description="Este pedido no es tuyo")
+
+    CANCELLABLE_BY_BUYER = {"paid", "confirmed"}
+    if order.status.value not in CANCELLABLE_BY_BUYER:
+        abort(400, description=f"No puedes cancelar un pedido en estado '{order.status.value}'")
+
+    # Cancelar todos los SellerOrders activos
+    for so in order.seller_orders:
+        if so.status.value not in ("cancelled", "delivered"):
+            so.status = SellerOrderStatus("cancelled")
+
+    order.sync_status()
+    db.session.commit()
+
+    # TODO: tramitar devolución Stripe (order.stripe_payment_intent_id)
+
+    return jsonify({
+        "msg":          "Pedido cancelado",
+        "order_status": order.status.value,
+    }), 200
 
 @order_bp.route('/cart/validate-stock', methods=['GET'])
 @jwt_required()

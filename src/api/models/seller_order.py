@@ -23,6 +23,7 @@ class SellerOrder(db.Model):
     tracking_code: Mapped[str] = mapped_column(String(100), nullable=True)
     carrier_name:  Mapped[str] = mapped_column(String(100), nullable=True)
     shipped_at:    Mapped[datetime] = mapped_column(DateTime(), nullable=True)
+    cancellation_reason:    Mapped[str]      = mapped_column(String(500), nullable=True)  # ← NUEVO
     created_at:    Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
 
     #---------------------ForeignKey
@@ -44,5 +45,6 @@ class SellerOrder(db.Model):
             "tracking_code": self.tracking_code,
             "carrier_name": self.carrier_name,
             "shipped_at": self.shipped_at.isoformat() if self.shipped_at else None,
+            "cancellation_reason": self.cancellation_reason,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }

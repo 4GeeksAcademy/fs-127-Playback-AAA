@@ -1,18 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Star,
-  AlertCircle,
-  ChevronDown,
-  ChevronUp,
-  CheckCircle,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  PackageCheck,
-  Truck,
-  Package,
-} from "lucide-react";
+import { Star, AlertCircle, ChevronDown, ChevronUp, CheckCircle, X, ChevronLeft, ChevronRight, PackageCheck, Truck, Package, } from "lucide-react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import orderService from "../../services/orderService";
 import { ReviewForm } from "../Common/ReviewForm";
@@ -261,11 +249,13 @@ const ProfileOrders = () => {
   const [loading,  setLoading]  = useState(true);
   const [expanded, setExpanded] = useState({});
   const [reviewing, setReviewing] = useState(null);
-  const [incident,  setIncident]  = useState(null); // ← IncidentForm de tu compañero
+  const [incident,  setIncident]  = useState(null);
 
   // seller_order_id del envío cuya confirmación está en curso
   const [confirmingDelivery, setConfirmingDelivery] = useState(null);
-
+  // Cancelación de pedido por el comprador
+  const [cancellingOrder, setCancellingOrder] = useState(null); // null | order.id
+  const [cancelError,     setCancelError]     = useState(null);
   const [reviewed, setReviewed] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("reviewed_products") || "{}");
@@ -300,6 +290,16 @@ const ProfileOrders = () => {
     const [, err] = await orderService.buyerConfirmShipmentDelivery(token, orderId, sellerOrderId);
     setConfirmingDelivery(null);
     if (!err) loadOrders();
+  };
+
+  // Cancela el pedido completo (solo en paid o confirmed)
+  const handleCancelOrder = async (orderId) => {
+    const token = store.token || localStorage.getItem("token");
+    const [, err] = await orderService.cancelOrder(token, orderId);
+    if (err) { setCancelError(err); return; }
+    setCancellingOrder(null);
+    setCancelError(null);
+    loadOrders();
   };
 
   const toggleExpand = (id) =>
@@ -481,6 +481,37 @@ const ProfileOrders = () => {
                 >
                   <AlertCircle size={11} /> {t("orders.openIncident")}
                 </button>
+
+                {/* Cancelar pedido — solo en paid o confirmed */}
+                {["paid", "confirmed"].includes(order.status) && (
+                  cancellingOrder === order.id ? (
+                    <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+                      {cancelError && (
+                        <span style={{ fontSize: "10px", color: "#A32D2D" }}>{cancelError}</span>
+                      )}
+                      <button
+                        onClick={() => handleCancelOrder(order.id)}
+                        style={{ background: "#FEE2E2", color: "#A32D2D", border: "1px solid #FCA5A5", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", fontSize: "11px", fontWeight: "600" }}
+                      >
+                        {t("orders.confirmCancel")}
+                      </button>
+                      <button
+                        onClick={() => { setCancellingOrder(null); setCancelError(null); }}
+                        style={{ background: "var(--color-background-secondary)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", fontSize: "11px" }}
+                      >
+                        {t("orders.goBack")}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setCancellingOrder(order.id); setCancelError(null); }}
+                      style={{ background: "transparent", color: "#A32D2D", border: "1px solid #FCA5A5", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", fontSize: "11px", fontWeight: "500", display: "flex", alignItems: "center", gap: "3px" }}
+                    >
+                      <X size={11} />
+                      {t("orders.cancelOrder")}
+                    </button>
+                  )
+                )}
               </div>
             </div>
 
