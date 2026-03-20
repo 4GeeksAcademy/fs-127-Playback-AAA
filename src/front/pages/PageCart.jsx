@@ -8,7 +8,6 @@ import { ProductPrice } from "../components/Common/ProductPrice";
 import OrderSummary from "../components/Checkout/OrderSummary";
 
 export const PageCart = () => {
-
   const { store, dispatch } = useGlobalReducer();
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
@@ -22,8 +21,13 @@ export const PageCart = () => {
     if (!token) return;
 
     orderServices.getCart(token).then(([data, error]) => {
-      if (error) { console.error(error); return; }
-      setCart(data.products || []);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      setCart(
+        (data.products || []).sort((a, b) => (a.stock === 0) - (b.stock === 0)),
+      );
     });
   }, [store.cart]);
 
@@ -35,12 +39,12 @@ export const PageCart = () => {
   const handleRemove = async (productId) => {
     const token = store.token || localStorage.getItem("token");
     await orderServices.removeProductFromCart(token, productId);
-    setCart(cart.filter(p => p.id !== productId));
+    setCart(cart.filter((p) => p.id !== productId));
     dispatch({ type: "cart_remove", payload: { id: productId } });
   };
 
   const handleQuantity = async (productId, delta) => {
-    const item = cart.find(p => p.id === productId);
+    const item = cart.find((p) => p.id === productId);
     if (!item) return;
 
     if (item.quantity + delta <= 0) {
@@ -56,21 +60,28 @@ export const PageCart = () => {
 
     const token = store.token || localStorage.getItem("token");
     await orderServices.addProductToCart(token, productId, delta);
-    setCart(cart.map(p => p.id === productId ? { ...p, quantity: p.quantity + delta } : p));
+    setCart(
+      cart.map((p) =>
+        p.id === productId ? { ...p, quantity: p.quantity + delta } : p,
+      ),
+    );
     dispatch({ type: "cart_add", payload: { id: productId, quantity: delta } });
   };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
-
       {toast && (
-        <div className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
-          toast === "sin_stock"
-            ? "bg-red-600 dark:bg-red-500"
-            : "bg-stone-900 dark:bg-stone-100"
-        }`}>
+        <div
+          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+            toast === "sin_stock"
+              ? "bg-red-600 dark:bg-red-500"
+              : "bg-stone-900 dark:bg-stone-100"
+          }`}
+        >
           {toast === "sin_stock" ? <X size={15} /> : <ShoppingCart size={15} />}
-          {toast === "sin_stock" ? t("product.noStock") : t("product.addedToCart")}
+          {toast === "sin_stock"
+            ? t("product.noStock")
+            : t("product.addedToCart")}
         </div>
       )}
 
@@ -78,30 +89,43 @@ export const PageCart = () => {
         {t("cart.title")}
       </h1>
 
-      {cart.length === 0 && (
-        <p className="text-faint">{t("cart.empty")}</p>
-      )}
+      {cart.length === 0 && <p className="text-faint">{t("cart.empty")}</p>}
 
       {cart.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
           {/* PRODUCTOS */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2  space-y-6">
             {cart.map((item) => {
-              const name = item.name?.[i18n.language] || item.name?.es || item.name?.en;
-              const priceWithDiscount = item.price * (1 - (item.discount || 0) / 100);
+              const name =
+                item.name?.[i18n.language] || item.name?.es || item.name?.en;
+              const priceWithDiscount =
+                item.price * (1 - (item.discount || 0) / 100);
               const lineTotal = priceWithDiscount * item.quantity;
-              const enLimite = item.stock != null && item.quantity >= item.stock;
+              const enLimite =
+                item.stock != null && item.quantity >= item.stock;
 
               return (
-                <div key={item.id} className="flex justify-between items-center border-b border-main pb-6">
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center border-b border-main pb-6"
+                >
                   <div className="flex gap-5 items-center">
-                    <img src={item.image_url} alt={name} className="w-24 h-24 object-cover rounded" />
+                    <img
+                      src={item.image_url}
+                      alt={name}
+                      className="w-24 h-24 object-cover rounded"
+                    />
                     <div className="space-y-1">
-                      <Link to={`/product/${item.id}`} className="font-medium text-main hover:underline">
+                      <Link
+                        to={`/product/${item.id}`}
+                        className="font-medium text-main hover:underline"
+                      >
                         {name}
                       </Link>
-                      <ProductPrice price={item.price} discount={item.discount} />
+                      <ProductPrice
+                        price={item.price}
+                        discount={item.discount}
+                      />
                       <div className="flex items-center gap-2 mt-1">
                         <button
                           onClick={() => handleQuantity(item.id, -1)}
@@ -109,7 +133,9 @@ export const PageCart = () => {
                         >
                           −
                         </button>
-                        <span className="text-sm w-4 text-center text-main">{item.quantity}</span>
+                        <span className="text-sm w-4 text-center text-main">
+                          {item.quantity}
+                        </span>
                         <button
                           onClick={() => handleQuantity(item.id, 1)}
                           disabled={enLimite}
@@ -133,18 +159,21 @@ export const PageCart = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-faint">{t("checkout.subtotal")}</p>
-                    <p className="font-semibold text-main">{lineTotal.toFixed(2)} €</p>
+                    <p className="text-sm text-faint">
+                      {t("checkout.subtotal")}
+                    </p>
+                    <p className="font-semibold text-main">
+                      {lineTotal.toFixed(2)} €
+                    </p>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* RESUMEN */}
-          <OrderSummary cart={cart} step="cart" onContinue={() => navigate("/checkout")} />
+                    <OrderSummary cart={cart} step="cart" onContinue={() => navigate("/checkout")} />
 
         </div>
+        
       )}
 
     </div>
