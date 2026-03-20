@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import orderService from "../../../../services/orderService";
 import useGlobalReducer from "../../../../hooks/useGlobalReducer";
@@ -13,7 +13,20 @@ const STATUS_STYLE = {
   cancelled:  "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
-const ALL_STATUSES = ["pending", "paid", "confirmed", "processing", "shipped", "delivered", "cancelled"];
+// El vendedor NO puede marcar como delivered — eso lo hace el comprador o la transportista.
+// Por eso "shipped" no tiene siguiente estado aquí.
+const NEXT_STATUS = {
+  pending:    "confirmed",
+  paid:       "confirmed",
+  confirmed:  "processing",
+  processing: "shipped",
+};
+
+// Estados desde los que el vendedor SÍ puede cancelar
+const CANCELLABLE = new Set(["paid", "confirmed", "processing"]);
+
+// Transportistas más habituales en España para el selector
+const CARRIERS = ["Correos", "SEUR", "MRW", "DHL", "GLS", "Nacex", "UPS", "Otro"];
 
 // ── Dirección ─────────────────────────────────────────────────────────────────
 const AddressBlock = ({ label, address }) => {
@@ -45,23 +58,83 @@ const AddressBlock = ({ label, address }) => {
 const OrderTabModal = ({ order, onClose, onUpdated }) => {
   const { t } = useTranslation();
   const { store } = useGlobalReducer();
-  const [newStatus, setNewStatus] = useState(order.status);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
 
-  const isLocked = order.status === "delivered" || order.status === "cancelled";
+  // currentStatus refleja el estado real del SellerOrder en esta sesión del modal.
+  // Si el pedido entra como "confirmed" lo inicializamos directamente en "processing"
+  // (optimistic update) — el PATCH se lanza en background y el usuario nunca ve
+  // el estado intermedio. Para cualquier otro estado arranca con el valor recibido.
+  const [currentStatus,  setCurrentStatus]  = useState(
+    order.status === "confirmed" ? "processing" : order.status
+  );
+  const [saving,         setSaving]         = useState(false);
+  const [confirming,     setConfirming]     = useState(false); // auto-advance en curso
+  const [error,          setError]          = useState(null);
+  const [confirmCancel,  setConfirmCancel]  = useState(false);
 
-  const handleSaveStatus = async () => {
-    if (newStatus === order.status) { onClose(); return; }
+  // Estado para el formulario de envío (solo se usa cuando nextStatus === "shipped")
+  const [trackingCode, setTrackingCode] = useState("");
+  const [carrierName,  setCarrierName]  = useState("Correos");
+
+  const token = store.token || localStorage.getItem("token");
+
+  // ── Auto-advance al abrir el modal ────────────────────────────────────────
+  // El tab ya habrá auto-confirmado los "paid" → "confirmed" al cargar.
+  // Al abrir el modal avanzamos automáticamente "confirmed" → "processing" para
+  // que el vendedor vea directamente el formulario de envío listo.
+  useEffect(() => {
+    if (order.status !== "confirmed") return;
+
+    const autoAdvance = async () => {
+      setConfirming(true);
+      const [, err] = await orderService.updateOrderStatus(
+        token,
+        order.seller_order_id,
+        "processing",
+      );
+      setConfirming(false);
+      if (!err) {
+        setCurrentStatus("processing");
+        onUpdated(); // refresca la lista detrás del modal
+      }
+      // Si falla ignoramos silenciosamente — el vendedor puede avanzar manualmente
+    };
+
+    autoAdvance();
+  }, []); // solo al montar
+
+  const isLocked    = currentStatus === "delivered" || currentStatus === "cancelled";
+  const nextStatus  = NEXT_STATUS[currentStatus];
+  const canCancel   = CANCELLABLE.has(currentStatus); // solo antes de enviado
+
+  // Actualiza el estado usando seller_order_id, no order.id.
+  // NOTA para el equipo: orderService.updateOrderStatus debe aceptar un 4º parámetro
+  // opcional extraData = {} que se mezcle en el body del PATCH:
+  //   updateOrderStatus(token, id, status, extraData = {}) {
+  //     return this.patch(`/order/seller-orders/${id}/status`, token, { status, ...extraData });
+  //   }
+  const handleUpdateStatus = async (targetStatus) => {
     setSaving(true);
     setError(null);
-    const token = store.token || localStorage.getItem("token");
-    const [, err] = await orderService.updateOrderStatus(token, order.id, newStatus);
+
+    // Si estamos marcando como enviado, incluimos código y transportista
+    const extraData = targetStatus === "shipped"
+      ? { tracking_code: trackingCode.trim(), carrier_name: carrierName }
+      : {};
+
+    const [, err] = await orderService.updateOrderStatus(
+      token,
+      order.seller_order_id,   // ← seller_order_id, no order.id
+      targetStatus,
+      extraData,
+    );
     setSaving(false);
     if (err) { setError(err); return; }
     onUpdated();
     onClose();
   };
+
+  // El botón de avanzar a "shipped" solo se activa si hay código de tracking
+  const canAdvance = nextStatus !== "shipped" || trackingCode.trim().length > 0;
 
   return (
     <div
@@ -124,10 +197,10 @@ const OrderTabModal = ({ order, onClose, onUpdated }) => {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-main truncate">{producto.name}</p>
-                  <p className="text-xs text-faint">x{producto.quantity} · €{producto.price} c/u</p>
+                  <p className="text-xs text-faint">x{producto.quantity} · {producto.price} c/u€</p>
                 </div>
                 <p className="text-sm font-semibold text-sub flex-shrink-0">
-                  €{(producto.price * producto.quantity).toFixed(2)}
+                  {(producto.price * producto.quantity).toFixed(2)}€
                 </p>
               </div>
             ))}
@@ -142,19 +215,19 @@ const OrderTabModal = ({ order, onClose, onUpdated }) => {
           <div className="space-y-1 text-sm">
             <div className="flex justify-between text-muted">
               <span>{t("checkout.subtotal")}</span>
-              <span>€{Number(order.subtotal).toFixed(2)}</span>
+              <span>{Number(order.subtotal).toFixed(2)}€</span>
             </div>
             <div className="flex justify-between text-muted">
               <span>{t("checkout.tax")}</span>
-              <span>€{Number(order.tax).toFixed(2)}</span>
+              <span>{Number(order.tax).toFixed(2)}€</span>
             </div>
             <div className="flex justify-between text-muted">
               <span>{t("checkout.shipping")}</span>
-              <span>€{Number(order.shipping_cost).toFixed(2)}</span>
+              <span>{Number(order.shipping_cost).toFixed(2)}€</span>
             </div>
             <div className="flex justify-between font-bold text-main pt-2 border-t border-main mt-2">
               <span>{t("checkout.total")}</span>
-              <span>€{Number(order.total_price).toFixed(2)}</span>
+              <span>{Number(order.total_price).toFixed(2)}€</span>
             </div>
           </div>
         </div>
@@ -165,35 +238,139 @@ const OrderTabModal = ({ order, onClose, onUpdated }) => {
             {t("dashboard.orders.modal.statusSection")}
           </p>
 
-          {isLocked ? (
-            <div className="flex items-center gap-2">
-              <span className={`inline-block text-sm px-3 py-1.5 rounded-full font-medium ${STATUS_STYLE[order.status]}`}>
-                {t(`dashboard.orders.status.${order.status}`, { defaultValue: order.status })}
+          {/* Estado actual — si el auto-advance está en curso mostramos feedback sutil */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className={`inline-block text-sm px-3 py-1.5 rounded-full font-medium ${STATUS_STYLE[currentStatus]}`}>
+              {t(`dashboard.orders.status.${currentStatus}`, { defaultValue: currentStatus })}
+            </span>
+            {confirming && (
+              <span className="text-xs text-faint animate-pulse">
+                {t("dashboard.orders.modal.autoConfirming") || "Preparando…"}
               </span>
-              <span className="text-xs text-faint">
-                {order.status === "delivered" ? " Pedido finalizado" : " Pedido cancelado"}
-              </span>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} className="input">
-                {ALL_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {t(`dashboard.orders.status.${s}`, { defaultValue: s })}
-                    {s === order.status ? ` — ${t("dashboard.orders.modal.current")}` : ""}
-                  </option>
-                ))}
-              </select>
-              {error && <p className="text-xs text-red-500">{error}</p>}
-              <button
-                onClick={handleSaveStatus}
-                disabled={saving || newStatus === order.status}
-                className="btn-primary w-full"
-              >
-                {saving ? t("dashboard.orders.modal.saving") : t("dashboard.orders.modal.saveStatus")}
-              </button>
-            </div>
+            )}
+          </div>
+
+          {/* Aviso informativo cuando el pedido ya está enviado */}
+          {currentStatus === "shipped" && (
+            <p className="text-xs text-faint mb-4 p-3 rounded-lg bg-subtle border border-main">
+              📬 {t("dashboard.orders.modal.shippedNote") || "El pedido está en camino. La entrega la confirmará el comprador o la transportista."}
+              {order.tracking_code && (
+                <span className="block mt-1 font-mono font-medium text-sub">
+                  {order.carrier_name} · {order.tracking_code}
+                </span>
+              )}
+            </p>
           )}
+
+          {isLocked ? (
+            /* Pedido finalizado o cancelado: sin acciones */
+            <p className="text-xs text-faint">
+              {currentStatus === "delivered" ? "Pedido finalizado" : "Pedido cancelado"}
+            </p>
+          ) : (
+            !confirming && (
+              <div className="space-y-3">
+
+                {/* ── Formulario de envío (solo cuando el siguiente paso es "shipped") ── */}
+                {nextStatus === "shipped" && (
+                  <div className="space-y-2 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40">
+                    <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wide">
+                      📦 {t("dashboard.orders.modal.shippingData") || "Datos de envío"}
+                    </p>
+
+                    {/* Transportista */}
+                    <div>
+                      <label className="block text-xs text-faint mb-1">
+                        {t("dashboard.orders.modal.carrier") || "Transportista"}
+                      </label>
+                      <select
+                        value={carrierName}
+                        onChange={(e) => setCarrierName(e.target.value)}
+                        className="input w-full"
+                      >
+                        {CARRIERS.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Código de seguimiento */}
+                    <div>
+                      <label className="block text-xs text-faint mb-1">
+                        {t("dashboard.orders.modal.trackingCode") || "Código de seguimiento"}
+                        <span className="text-red-500 ml-0.5">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={trackingCode}
+                        onChange={(e) => setTrackingCode(e.target.value)}
+                        placeholder="Ej. EA123456789ES"
+                        className="input w-full font-mono"
+                      />
+                      <p className="text-[10px] text-faint mt-1">
+                        {t("dashboard.orders.modal.trackingHint") || "El comprador recibirá este código por email para hacer el seguimiento."}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Botón avanzar al siguiente estado (no aparece si ya está en shipped) */}
+                {nextStatus && (
+                  <button
+                    onClick={() => handleUpdateStatus(nextStatus)}
+                    disabled={saving || !canAdvance}
+                    className="btn-primary w-full disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {saving
+                      ? t("dashboard.orders.modal.saving")
+                      : `${t("dashboard.orders.modal.advanceTo") || "Avanzar a"} ${t(`dashboard.orders.status.${nextStatus}`, { defaultValue: nextStatus })} →`}
+                  </button>
+                )}
+
+                {/* Cancelar — solo disponible antes de enviado, botón pequeño y discreto */}
+                {canCancel && (
+                  !confirmCancel ? (
+                    <button
+                      onClick={() => setConfirmCancel(true)}
+                      disabled={saving}
+                      className="w-full text-xs py-1.5 px-3 rounded-lg text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition text-center"
+                    >
+                      {t("dashboard.orders.modal.cancelOrder") || "Cancelar pedido"}
+                    </button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleUpdateStatus("cancelled")}
+                        disabled={saving}
+                        className="flex-1 text-sm py-2 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition"
+                      >
+                        {t("dashboard.orders.modal.confirmCancel") || "Sí, cancelar"}
+                      </button>
+                      <button
+                        onClick={() => setConfirmCancel(false)}
+                        disabled={saving}
+                        className="flex-1 text-sm py-2 px-4 rounded-xl border border-main text-sub hover:bg-subtle transition"
+                      >
+                        {t("dashboard.orders.modal.goBack") || "Volver"}
+                      </button>
+                    </div>
+                  )
+                )}
+
+                {error && <p className="text-xs text-red-500">{error}</p>}
+              </div>
+            )
+          )}
+        </div>
+
+        {/* ── Botón cerrar al pie ── */}
+        <div className="px-6 pb-5 pt-1">
+          <button
+            onClick={onClose}
+            className="w-full text-sm py-2 px-4 rounded-xl border border-main text-faint hover:text-main hover:bg-subtle transition"
+          >
+            {t("dashboard.orders.modal.close") || "Cerrar"}
+          </button>
         </div>
 
       </div>

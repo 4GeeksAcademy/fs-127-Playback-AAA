@@ -77,7 +77,10 @@ async function getSellerOrders(token) {
     return [data, null];
 }
 
-async function updateOrderStatus(token, orderId, status) {
+// extraData permite pasar campos adicionales al body (p.ej. tracking_code y carrier_name
+// cuando se avanza a "shipped"). Por defecto es un objeto vacío para no romper
+// los usos existentes que solo pasan token, orderId y status.
+async function updateOrderStatus(token, orderId, status, extraData = {}) {
        console.log("token:", token); 
     console.log("orderId:", orderId, "status:", status);
     const response = await fetch(`${backendUrl}/api/order/seller-orders/${orderId}/status`, {
@@ -86,7 +89,7 @@ async function updateOrderStatus(token, orderId, status) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status, ...extraData })
     });
     const data = await response.json();
         console.log("respuesta backend:", response.status, data); 
@@ -128,6 +131,31 @@ async function applyCoupon(token, code) {
     return [data, null];
 }
 
+// El comprador confirma la entrega de todo el pedido
+async function buyerConfirmDelivery(token, orderId) {
+    const response = await fetch(`${backendUrl}/api/order/my-orders/${orderId}/delivered`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al confirmar entrega"];
+    return [data, null];
+}
+
+// El comprador confirma la entrega de un envío concreto (un vendedor dentro del pedido)
+async function buyerConfirmShipmentDelivery(token, orderId, sellerOrderId) {
+    const response = await fetch(
+        `${backendUrl}/api/order/my-orders/${orderId}/seller-orders/${sellerOrderId}/delivered`,
+        {
+            method: "PATCH",
+            headers: { Authorization: `Bearer ${token}` }
+        }
+    );
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al confirmar entrega parcial"];
+    return [data, null];
+}
+
 const orderService = {
     hasBought,
     createReview,
@@ -138,7 +166,9 @@ const orderService = {
     updateOrderStatus,
     getMyOrders,
     removeProductFromCart,
-    applyCoupon
+    applyCoupon,
+    buyerConfirmDelivery,
+    buyerConfirmShipmentDelivery,
 };
 
 export default orderService;

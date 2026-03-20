@@ -51,7 +51,7 @@ const EarningTab = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="rounded-xl p-5 border border-purple-200 dark:border-purple-900 bg-purple-50 dark:bg-purple-950">
           <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-            €{totalGanado.toFixed(2)}
+            {totalGanado.toFixed(2)}€
           </p>
           <p className="text-xs text-muted mt-0.5">
             {t("dashboard.earnings.totalRevenue")}
@@ -64,7 +64,7 @@ const EarningTab = () => {
           </p>
         </div>
         <div className="rounded-xl p-5 border border-main">
-          <p className="text-2xl font-bold text-main">€{ticketMedio.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-main">{ticketMedio.toFixed(2)}€</p>
           <p className="text-xs text-muted mt-0.5">
             {t("dashboard.earnings.avgTicket")}
           </p>
@@ -93,7 +93,7 @@ const EarningTab = () => {
                   className={`flex-1 flex flex-col items-center gap-1 ${isMobileHidden ? "hidden sm:flex" : "flex"}`}
                 >
                   <span className="text-[10px] text-faint leading-none">
-                    €{valor.toFixed(0)}
+                    {valor.toFixed(0)}€
                   </span>
                   <div
                     className="w-full rounded-t-md bg-purple-500 hover:bg-purple-600 transition-all"
@@ -134,7 +134,7 @@ const EarningTab = () => {
                 <span className={`font-semibold flex-shrink-0 ${cancelado ? "text-red-500" : "text-emerald-600"}`}>
                   {cancelado
                     ? t("dashboard.orders.status.cancelled")
-                    : `+€${ganancia.toFixed(2)}`}
+                    : `+${ganancia.toFixed(2)}€`}
                 </span>
               </div>
             );

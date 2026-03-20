@@ -15,6 +15,18 @@ const STATUS_STYLE = {
   cancelled:  "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
+// El vendedor NO puede marcar como delivered — eso lo hace el comprador o la transportista.
+// Por eso "shipped" no tiene siguiente estado aquí.
+const NEXT_STATUS = {
+  pending:    "confirmed",
+  paid:       "confirmed",
+  confirmed:  "processing",
+  processing: "shipped",
+};
+
+// Estados que requieren datos extra — se abre el modal en lugar de avanzar inline
+const REQUIRES_MODAL = new Set(["shipped"]);
+
 const OrdersTab = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
@@ -34,12 +46,47 @@ const OrdersTab = () => {
   const loadOrders = async () => {
     setLoading(true);
     const [data, error] = await orderService.getSellerOrders(store.token);
-    if (error) showToast(error);
-    else setOrders(data);
+    if (error) { showToast(error); setLoading(false); return; }
+
+    // Auto-confirmar en paralelo todos los SellerOrders que sigan en "paid".
+    // Se hace silenciosamente: si alguno falla no interrumpe el resto.
+    const paidOrders = data.filter((p) => p.status === "paid");
+    if (paidOrders.length > 0) {
+      await Promise.allSettled(
+        paidOrders.map((p) =>
+          orderService.updateOrderStatus(store.token, p.seller_order_id, "confirmed")
+        )
+      );
+      // Recargar para que la lista refleje los estados ya actualizados
+      const [refreshed] = await orderService.getSellerOrders(store.token);
+      setOrders(refreshed ?? data);
+    } else {
+      setOrders(data);
+    }
+
     setLoading(false);
   };
 
   useEffect(() => { loadOrders(); }, []);
+
+  // Avance rápido de estado desde la lista sin abrir el modal.
+  // Usa seller_order_id (no order.id) para el PATCH.
+  // Si el siguiente estado requiere datos extra (código de envío), abre el modal.
+  const handleInlineAdvance = async (e, pedido) => {
+    e.stopPropagation();
+    const next = NEXT_STATUS[pedido.status];
+    if (!next) return;
+
+    // Transiciones que necesitan input del vendedor → abrir modal
+    if (REQUIRES_MODAL.has(next)) {
+      setSelected(pedido);
+      return;
+    }
+
+    const [, err] = await orderService.updateOrderStatus(store.token, pedido.seller_order_id, next);
+    if (err) showToast(err);
+    else loadOrders();
+  };
 
   const toggleSort = (key) => {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -65,6 +112,16 @@ const OrdersTab = () => {
       }`}
     />
   );
+
+  // Clases del botón de badge según si tiene siguiente estado o no
+  const badgeClasses = (pedido) => {
+    const hasNext = !!NEXT_STATUS[pedido.status];
+    const base = STATUS_STYLE[pedido.status] || "bg-muted text-muted";
+    const interactive = hasNext
+      ? "hover:brightness-95 hover:scale-[1.06] hover:shadow-sm active:scale-95 transition-all duration-150 cursor-pointer"
+      : "cursor-default";
+    return `${base} ${interactive}`;
+  };
 
   if (loading)
     return (
@@ -100,7 +157,7 @@ const OrdersTab = () => {
         <div className="flex flex-col gap-3 sm:hidden">
           {sorted.map((pedido) => (
             <div
-              key={pedido.id}
+              key={pedido.seller_order_id}
               onClick={() => setSelected(pedido)}
               className="border border-main rounded-xl p-3 cursor-pointer hover:bg-subtle transition active:scale-[0.99]"
             >
@@ -140,14 +197,19 @@ const OrdersTab = () => {
                   </div>
                 )}
 
-                {/* Total + badge */}
+                {/* Total + badge (botón de avance rápido con hover) */}
                 <div className="flex flex-col items-end gap-1 flex-shrink-0">
                   <span className="font-semibold text-main text-sm">
-                    €{Number(pedido.total_price).toFixed(2)}
+                    {Number(pedido.total_price).toFixed(2)}€
                   </span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_STYLE[pedido.status] || "bg-muted text-muted"}`}>
+                  <button
+                    onClick={(e) => handleInlineAdvance(e, pedido)}
+                    disabled={!NEXT_STATUS[pedido.status]}
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${badgeClasses(pedido)}`}
+                  >
                     {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
-                  </span>
+                    {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
+                  </button>
                 </div>
 
               </div>
@@ -187,7 +249,7 @@ const OrdersTab = () => {
             <tbody className="divide-y divide-[rgb(var(--color-border))]">
               {sorted.map((pedido) => (
                 <tr
-                  key={pedido.id}
+                  key={pedido.seller_order_id}
                   onClick={() => setSelected(pedido)}
                   className="hover:bg-subtle transition cursor-pointer"
                 >
@@ -218,15 +280,21 @@ const OrdersTab = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold text-main whitespace-nowrap">
-                    €{Number(pedido.total_price).toFixed(2)}
+                    {Number(pedido.total_price).toFixed(2)}€
                   </td>
                   <td className="px-4 py-3 text-right text-faint text-xs whitespace-nowrap">
                     {new Date(pedido.created_at).toLocaleDateString("es-ES")}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${STATUS_STYLE[pedido.status] || "bg-muted text-muted"}`}>
+                    {/* Badge convertido en botón de avance con hover */}
+                    <button
+                      onClick={(e) => handleInlineAdvance(e, pedido)}
+                      disabled={!NEXT_STATUS[pedido.status]}
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${badgeClasses(pedido)}`}
+                    >
                       {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
-                    </span>
+                      {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
+                    </button>
                   </td>
                 </tr>
               ))}

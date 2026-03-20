@@ -31,6 +31,8 @@ from api.models.orderdetail import OrderDetail
 from api.models.review import Review
 from api.models.favorite import Favorite
 from api.models.address import Address
+from api.models.carrier import Carrier
+from api.models.seller_order import SellerOrder, SellerOrderStatus
 from api.models.shipment import Shipment
 from api.models.incident import Incident
 
@@ -150,6 +152,148 @@ SELLERS_DATA = [
 # ══════════════════════════════════════════════════════════════════════════════
 
 PRODUCTS_DATA = [
+
+    # ── PRODUCTOS DE PLAYBACK (tienda oficial certificada) ────────────────────
+    {
+        "name": "Super Nintendo SNES Certificada",
+        "name_en": "Certified SNES Console",
+        "name_ca": "Super Nintendo SNES Certificada",
+        "name_gl": "Super Nintendo SNES Certificada",
+        "description": "SNES revisada y certificada por Playback. Incluye mando original, cables SCART y garantía de 3 meses.",
+        "description_en": "SNES serviced and certified by Playback. Includes original controller, SCART cables and 3-month warranty.",
+        "description_ca": "SNES revisada i certificada per Playback. Inclou comandament original, cables SCART i garantia de 3 mesos.",
+        "description_gl": "SNES revisada e certificada por Playback. Inclúe mando orixinal, cables SCART e garantía de 3 meses.",
+        "price": 109.99, "stock": 4, "discount": 0.0, "condition": "refurbished",
+        "item_slug": "snes",
+        "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Nintendo 64 Certificada con Mando",
+        "name_en": "Certified Nintendo 64 with Controller",
+        "name_ca": "Nintendo 64 Certificada amb Comandament",
+        "name_gl": "Nintendo 64 Certificada con Mando",
+        "description": "N64 revisada, limpiada y certificada por Playback. Condensadores comprobados, lector y cartuchos probados. Mando y cables incluidos.",
+        "description_en": "N64 serviced, cleaned and certified by Playback. Capacitors checked, cartridge slot and games tested. Controller and cables included.",
+        "description_ca": "N64 revisada, netejada i certificada per Playback. Condensadors comprovats, lector i cartutxos provats. Comandament i cables inclosos.",
+        "description_gl": "N64 revisada, limpada e certificada por Playback. Condensadores comprobados, lector e cartuchos probados. Mando e cables incluídos.",
+        "price": 129.99, "stock": 3, "discount": 5.0, "condition": "refurbished",
+        "item_slug": "nintendo-64",
+        "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "PlayStation 1 Certificada",
+        "name_en": "Certified PlayStation 1",
+        "name_ca": "PlayStation 1 Certificada",
+        "name_gl": "PlayStation 1 Certificada",
+        "description": "PS1 con lector revisado, limpieza interna completa y garantía de 3 meses. Incluye 2 mandos DualShock y cable AV.",
+        "description_en": "PS1 with serviced disc reader, complete internal cleaning and 3-month warranty. Includes 2 DualShock controllers and AV cable.",
+        "description_ca": "PS1 amb lector revisat, neteja interna completa i garantia de 3 mesos. Inclou 2 comandaments DualShock i cable AV.",
+        "description_gl": "PS1 con lector revisado, limpeza interna completa e garantía de 3 meses. Inclúe 2 mandos DualShock e cable AV.",
+        "price": 89.99, "stock": 5, "discount": 0.0, "condition": "refurbished",
+        "item_slug": "ps1",
+        "image_url": "https://m.media-amazon.com/images/I/71TCoWMwK+L.jpg",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Sega Mega Drive II Certificada",
+        "name_en": "Certified Sega Mega Drive II",
+        "name_ca": "Sega Mega Drive II Certificada",
+        "name_gl": "Sega Mega Drive II Certificada",
+        "description": "Mega Drive II revisada y certificada. Dos mandos originales, cable AV y fuente de alimentación incluidos. Garantía 3 meses.",
+        "description_en": "Mega Drive II serviced and certified. Two original controllers, AV cable and power supply included. 3-month warranty.",
+        "description_ca": "Mega Drive II revisada i certificada. Dos comandaments originals, cable AV i font d'alimentació inclosos. Garantia 3 mesos.",
+        "description_gl": "Mega Drive II revisada e certificada. Dous mandos orixinais, cable AV e fonte de alimentación incluídos. Garantía 3 meses.",
+        "price": 84.99, "stock": 4, "discount": 0.0, "condition": "refurbished",
+        "item_slug": "mega-drive",
+        "image_url": "https://www.museodelvideojuego.com/files/imgs/consolas/Mega-Drive-II-caja.jpg",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Game Boy Advance SP Certificada",
+        "name_en": "Certified Game Boy Advance SP",
+        "name_ca": "Game Boy Advance SP Certificada",
+        "name_gl": "Game Boy Advance SP Certificada",
+        "description": "GBA SP con batería nueva, pantalla retroiluminada y cargador original. Revisada y certificada por Playback.",
+        "description_en": "GBA SP with new battery, backlit screen and original charger. Serviced and certified by Playback.",
+        "description_ca": "GBA SP amb bateria nova, pantalla retroil·luminada i carregador original. Revisada i certificada per Playback.",
+        "description_gl": "GBA SP con batería nova, pantalla retroiluminada e cargador orixinal. Revisada e certificada por Playback.",
+        "price": 99.99, "stock": 6, "discount": 0.0, "condition": "refurbished",
+        "item_slug": "game-boy-advance",
+        "image_url": "https://m.media-amazon.com/images/I/61hNR9cWhZL.jpg",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "The Legend of Zelda: OoT N64 Certificado",
+        "name_en": "Certified The Legend of Zelda: OoT N64",
+        "name_ca": "The Legend of Zelda: OoT N64 Certificat",
+        "name_gl": "The Legend of Zelda: OoT N64 Certificado",
+        "description": "Zelda Ocarina of Time cartucho PAL original para N64. Batería de guardado verificada y funcional. Certificado por Playback.",
+        "description_en": "Zelda Ocarina of Time original PAL cartridge for N64. Save battery verified and functional. Certified by Playback.",
+        "description_ca": "Zelda Ocarina of Time cartutx PAL original per a N64. Bateria de desat verificada i funcional. Certificat per Playback.",
+        "description_gl": "Zelda Ocarina of Time cartucho PAL orixinal para N64. Batería de gardado verificada e funcional. Certificado por Playback.",
+        "price": 59.99, "stock": 3, "discount": 0.0, "condition": "used",
+        "item_slug": "juegos-nintendo-64",
+        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPo0fYRIsSTEYir_VND0m40qs6Oc2kdggSDg&s",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Final Fantasy VII PS1 Certificado",
+        "name_en": "Certified Final Fantasy VII PS1",
+        "name_ca": "Final Fantasy VII PS1 Certificat",
+        "name_gl": "Final Fantasy VII PS1 Certificado",
+        "description": "Final Fantasy VII PAL completo con caja y manual. Discos comprobados sin arañazos. Certificado por Playback.",
+        "description_en": "Final Fantasy VII PAL complete with box and manual. Discs checked, scratch-free. Certified by Playback.",
+        "description_ca": "Final Fantasy VII PAL complet amb caixa i manual. Discos comprovats sense ratllades. Certificat per Playback.",
+        "description_gl": "Final Fantasy VII PAL completo con caixa e manual. Discos comprobados sen arañazos. Certificado por Playback.",
+        "price": 79.99, "stock": 2, "discount": 10.0, "condition": "used",
+        "item_slug": "juegos-ps1",
+        "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Pack Pokémon Rojo + Azul Game Boy",
+        "name_en": "Pokémon Red + Blue Game Boy Pack",
+        "name_ca": "Pack Pokémon Vermell + Blau Game Boy",
+        "name_gl": "Pack Pokémon Vermello + Azul Game Boy",
+        "description": "Pack con los dos cartuchos originales de Pokémon Rojo y Azul para Game Boy. Baterías de guardado verificadas. Certificado por Playback.",
+        "description_en": "Pack with both original Pokémon Red and Blue cartridges for Game Boy. Save batteries verified. Certified by Playback.",
+        "description_ca": "Pack amb els dos cartutxos originals de Pokémon Vermell i Blau per a Game Boy. Bateries de desat verificades. Certificat per Playback.",
+        "description_gl": "Pack cos dous cartuchos orixinais de Pokémon Vermello e Azul para Game Boy. Baterías de gardado verificadas. Certificado por Playback.",
+        "price": 69.99, "stock": 3, "discount": 0.0, "condition": "used",
+        "item_slug": "juegos-game-boy",
+        "image_url": "https://media2.gameplaystores.es/77648-large_default/pokemon-rojo-cartucho-gb.jpg",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Vinilo Pink Floyd The Dark Side of the Moon",
+        "name_en": "Pink Floyd The Dark Side of the Moon Vinyl",
+        "name_ca": "Vinil Pink Floyd The Dark Side of the Moon",
+        "name_gl": "Vinilo Pink Floyd The Dark Side of the Moon",
+        "description": "The Dark Side of the Moon edición UK original 1973. Revisado y certificado por Playback. Incluye pósters originales.",
+        "description_en": "The Dark Side of the Moon original 1973 UK edition. Reviewed and certified by Playback. Includes original posters.",
+        "description_ca": "The Dark Side of the Moon edició UK original 1973. Revisat i certificat per Playback. Inclou pòsters originals.",
+        "description_gl": "The Dark Side of the Moon edición UK orixinal 1973. Revisado e certificado por Playback. Inclúe pósters orixinais.",
+        "price": 89.99, "stock": 2, "discount": 0.0, "condition": "used",
+        "item_slug": "discos-de-vinilo",
+        "image_url": "https://signosdisqueria.cl/cdn/shop/files/pink-floyd-the-wall-vinilo-2.jpg?v=1702653827&width=1000",
+        "seller_email": "seller@playback.com",
+    },
+    {
+        "name": "Nokia 3310 Certificado Batería Nueva",
+        "name_en": "Certified Nokia 3310 New Battery",
+        "name_ca": "Nokia 3310 Certificat Bateria Nova",
+        "name_gl": "Nokia 3310 Certificado Batería Nova",
+        "description": "Nokia 3310 revisado por Playback. Batería nueva, pantalla sin arañazos. Incluye cargador compatible. Garantía 3 meses.",
+        "description_en": "Nokia 3310 serviced by Playback. New battery, scratch-free screen. Includes compatible charger. 3-month warranty.",
+        "description_ca": "Nokia 3310 revisat per Playback. Bateria nova, pantalla sense ratllades. Inclou carregador compatible. Garantia 3 mesos.",
+        "description_gl": "Nokia 3310 revisado por Playback. Batería nova, pantalla sen arañazos. Inclúe cargador compatible. Garantía 3 meses.",
+        "price": 44.99, "stock": 8, "discount": 0.0, "condition": "refurbished",
+        "item_slug": "moviles-antiguos",
+        "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
+        "seller_email": "seller@playback.com",
+    },
 
     # ── PRODUCTOS DE ARANTXA ──────────────────────────────────────────────────
     {
@@ -2681,6 +2825,76 @@ PRODUCTS_DATA = [
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# TRANSPORTISTAS
+# ══════════════════════════════════════════════════════════════════════════════
+
+CARRIERS_DATA = [
+    {
+        "name": "Correos",
+        "code": "CORREOS",
+        "tracking_url_template": "https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number={code}",
+        "estimated_days": 5,
+    },
+    {
+        "name": "MRW",
+        "code": "MRW",
+        "tracking_url_template": "https://www.mrw.es/seguimiento_envios/MRW_resultados_consulta.asp?modo=nacional&nro_alb={code}",
+        "estimated_days": 2,
+    },
+    {
+        "name": "SEUR",
+        "code": "SEUR",
+        "tracking_url_template": "https://www.seur.com/livetracking/?seguimiento-online={code}",
+        "estimated_days": 2,
+    },
+    {
+        "name": "DHL Express",
+        "code": "DHL",
+        "tracking_url_template": "https://www.dhl.com/es-es/home/rastreo.html?tracking-id={code}",
+        "estimated_days": 1,
+    },
+]
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# INCIDENCIAS (títulos y descripciones de prueba)
+# ══════════════════════════════════════════════════════════════════════════════
+
+INCIDENTS_DATA = [
+    {
+        "title": "Producto llegó dañado",
+        "description": "El paquete llegó con el embalaje aplastado y la consola tiene una grieta en la carcasa que no aparecía en las fotos.",
+        "status": "open",
+    },
+    {
+        "title": "Producto no funciona",
+        "description": "El artículo no enciende a pesar de estar descrito como funcionando correctamente. He probado con diferentes cables.",
+        "status": "in_progress",
+    },
+    {
+        "title": "Artículo no corresponde a la descripción",
+        "description": "El estado real del producto es mucho peor que el descrito. Tiene arañazos profundos y la etiqueta original está arrancada.",
+        "status": "resolved",
+    },
+    {
+        "title": "Envío con retraso excesivo",
+        "description": "Han pasado 3 semanas desde el pedido y el seguimiento no se ha actualizado desde el día de la recogida.",
+        "status": "open",
+    },
+    {
+        "title": "Falta un accesorio incluido en el anuncio",
+        "description": "El anuncio indicaba que incluía el mando y los cables, pero solo llegó la consola sin ningún accesorio.",
+        "status": "in_progress",
+    },
+    {
+        "title": "Recibí un artículo diferente al pedido",
+        "description": "He recibido un producto distinto al que aparece en mi pedido. Parece un error en el almacén o en el envío.",
+        "status": "resolved",
+    },
+]
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # REVIEWS
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -2713,13 +2927,39 @@ def reset_data():
     Incident.query.delete()
     Shipment.query.delete()
     OrderDetail.query.delete()
+    SellerOrder.query.delete()   # antes de Order (FK)
     Order.query.delete()
     Address.query.delete()
     Product.query.delete()
     Seller.query.delete()
     User.query.delete()
+    Carrier.query.delete()
     db.session.commit()
     print("  [OK] Datos eliminados.")
+
+
+def seed_carriers():
+    """Crea los transportistas."""
+    print("\n🚚 Seeding transportistas...")
+    carriers = []
+    for c in CARRIERS_DATA:
+        existing = Carrier.query.filter_by(code=c["code"]).first()
+        if existing:
+            print(f"  [SKIP] {c['name']}")
+            carriers.append(existing)
+            continue
+        carrier = Carrier(
+            name=c["name"],
+            code=c["code"],
+            tracking_url_template=c["tracking_url_template"],
+            estimated_days=c["estimated_days"],
+            is_active=True,
+        )
+        db.session.add(carrier)
+        carriers.append(carrier)
+        print(f"  [OK]   {c['name']} ({c['code']})")
+    db.session.flush()
+    return carriers
 
 
 def seed_users():
@@ -2796,41 +3036,105 @@ def seed_sellers():
     return sellers
 
 
-def seed_addresses(users):
-    """Crea una dirección por cada usuario."""
+def seed_addresses(users, sellers):
+    """
+    Crea direcciones reales para cada usuario.
+    - Admin y sellers: 1 dirección (ciudad de origen del seller cuando aplique)
+    - Buyers: 2 direcciones (casa y trabajo)
+    Siempre usa el nombre real del usuario como full_name.
+    Devuelve {user_id: [addr_principal, ...]}
+    """
     print("\n📍 Seeding direcciones...")
     addresses = {}
 
-    address_data = [
-        {"full_name": "Lucía Sánchez",   "phone": "+34 611 111 111", "address": "Calle Mayor 1",        "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
-        {"full_name": "Pablo Fernández", "phone": "+34 622 222 222", "address": "Calle Sierpes 10",     "city": "Sevilla",   "province": "Sevilla",   "postal_code": "41001", "country": "España"},
-        {"full_name": "Elena Ruiz",      "phone": "+34 633 333 333", "address": "Passeig de Gràcia 20", "city": "Barcelona", "province": "Barcelona", "postal_code": "08007", "country": "España"},
-        {"full_name": "Javier Moreno",   "phone": "+34 644 444 444", "address": "Gran Vía 5",           "city": "Valencia",  "province": "Valencia",  "postal_code": "46002", "country": "España"},
-        {"full_name": "Ana Jiménez",     "phone": "+34 655 555 555", "address": "Calle Larios 3",       "city": "Málaga",    "province": "Málaga",    "postal_code": "29005", "country": "España"},
-        {"full_name": "PlayBack Admin",  "phone": "+34 666 000 000", "address": "Calle Sin Nombre 0",   "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
-        {"full_name": "Carlos García",   "phone": "+34 612 345 678", "address": "Calle Mayor 12",       "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
-        {"full_name": "María López",     "phone": "+34 623 456 789", "address": "Passeig de Gràcia 55", "city": "Barcelona", "province": "Barcelona", "postal_code": "08007", "country": "España"},
-        {"full_name": "Alejandro Martínez", "phone": "+34 634 567 890", "address": "Gran Vía 10",       "city": "Valencia",  "province": "Valencia",  "postal_code": "46002", "country": "España"},
-        {"full_name": "Arantxa Ordoyo",  "phone": "+34 600 000 000", "address": "Calle Test 1",         "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
-        {"full_name": "PlayBack Seller", "phone": "+34 666 000 666", "address": "Calle Sin Nombre 1",   "city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "country": "España"},
+    # Datos de ciudades españolas para buyers
+    CITIES = [
+        {"city": "Madrid",    "province": "Madrid",    "postal_code": "28001", "community": "Comunidad de Madrid",  "community_code": "MD", "province_code": "M",  "street": "Calle Mayor"},
+        {"city": "Sevilla",   "province": "Sevilla",   "postal_code": "41001", "community": "Andalucía",            "community_code": "AN", "province_code": "SE", "street": "Calle Sierpes"},
+        {"city": "Barcelona", "province": "Barcelona", "postal_code": "08001", "community": "Cataluña",             "community_code": "CT", "province_code": "B",  "street": "Passeig de Gràcia"},
+        {"city": "Valencia",  "province": "Valencia",  "postal_code": "46001", "community": "Comunidad Valenciana", "community_code": "VC", "province_code": "V",  "street": "Calle Colón"},
+        {"city": "Málaga",    "province": "Málaga",    "postal_code": "29001", "community": "Andalucía",            "community_code": "AN", "province_code": "MA", "street": "Calle Larios"},
+        {"city": "Zaragoza",  "province": "Zaragoza",  "postal_code": "50001", "community": "Aragón",               "community_code": "AR", "province_code": "Z",  "street": "Paseo de la Independencia"},
+        {"city": "Bilbao",    "province": "Vizcaya",   "postal_code": "48001", "community": "País Vasco",           "community_code": "PV", "province_code": "BI", "street": "Gran Vía"},
     ]
 
-    for i, user in enumerate(users):
-        data = address_data[i % len(address_data)]
-        addr = Address(
-            user_id=user.id,
-            full_name=data["full_name"],
-            phone=data["phone"],
-            address=data["address"],
-            city=data["city"],
-            province=data["province"],
-            postal_code=data["postal_code"],
-            country=data["country"],
-        )
-        db.session.add(addr)
-        db.session.flush()
-        addresses[user.id] = addr
-        print(f"  [OK]   {user.email} → {addr.city}")
+    # Construir mapa email -> Seller para obtener ciudad de origen
+    seller_by_email = {s["email"]: s for s in SELLERS_DATA}
+
+    buyer_city_cycle = list(CITIES)
+    random.shuffle(buyer_city_cycle)
+    city_idx = 0
+
+    for user in users:
+        full_name = f"{user.name} {user.last_name}"
+        user_addrs = []
+
+        if user.role == RoleName.seller:
+            # Usar la ciudad de origen del seller
+            s_data = seller_by_email.get(user.email, {})
+            city    = s_data.get("origin_city",    "Madrid")
+            province = city  # simplificado
+            postal   = s_data.get("origin_zip",     "28001")
+            street   = s_data.get("origin_address", "Calle Sin Nombre 1")
+            addr = Address(
+                user_id=user.id,
+                full_name=full_name,
+                phone=s_data.get("phone", "+34 600 000 000"),
+                address=street,
+                city=city,
+                province=province,
+                postal_code=postal,
+                country=s_data.get("origin_country", "España"),
+            )
+            db.session.add(addr)
+            db.session.flush()
+            user_addrs.append(addr)
+
+        elif user.role == RoleName.admin:
+            addr = Address(
+                user_id=user.id,
+                full_name=full_name,
+                phone="+34 666 000 000",
+                address="Calle Admin 1",
+                city="Madrid",
+                province="Madrid",
+                postal_code="28001",
+                country="España",
+                community="Comunidad de Madrid",
+                community_code="MD",
+                province_code="M",
+            )
+            db.session.add(addr)
+            db.session.flush()
+            user_addrs.append(addr)
+
+        else:
+            # Buyer: 2 direcciones (casa y trabajo con ciudades distintas)
+            for label, num in [("casa", 1), ("trabajo", 2)]:
+                city_data = buyer_city_cycle[city_idx % len(buyer_city_cycle)]
+                city_idx += 1
+                addr = Address(
+                    user_id=user.id,
+                    full_name=full_name,
+                    phone=f"+34 6{user.id:02d} {city_idx:03d} {city_idx:03d}",
+                    address=f"{city_data['street']} {num * 10}",
+                    city=city_data["city"],
+                    province=city_data["province"],
+                    postal_code=city_data["postal_code"],
+                    country="España",
+                    community=city_data["community"],
+                    community_code=city_data["community_code"],
+                    province_code=city_data["province_code"],
+                )
+                db.session.add(addr)
+                db.session.flush()
+                user_addrs.append(addr)
+                print(f"  [OK]   {user.email} → {label}: {city_data['city']}")
+
+        if user_addrs:
+            addresses[user.id] = user_addrs
+            if user.role != RoleName.buyer:
+                print(f"  [OK]   {user.email} → {user_addrs[0].city}")
 
     return addresses
 
@@ -2895,43 +3199,67 @@ def seed_products(sellers):
     return products
 
 
-def seed_orders(users, products, addresses):
+def seed_orders(users, sellers, products, addresses, carriers):
     """
-    Crea pedidos con diferentes estados.
-    Solo los buyers y admins hacen pedidos.
+    Crea pedidos con todos los estados posibles.
+    - Solo buyers y admins compran.
+    - Cada pedido mezcla productos de 1-3 sellers distintos.
+    - Por cada seller implicado se crea un SellerOrder con status coherente.
+    - El status del Order refleja el estado menos avanzado de sus SellerOrders.
     """
-    print("\n🛒 Seeding pedidos...")
+    print("\n🛒 Seeding pedidos y SellerOrders...")
     orders = []
-    all_statuses = [Status.confirmed, Status.paid, Status.shipped, Status.delivered, Status.cancelled]
     all_payments = list(Payment)
 
-    # Solo usuarios no vendedores hacen pedidos
-    buyers = [u for u in users if u.role != RoleName.seller]
+    # Mapeo de Status Order -> SellerOrderStatus
+    STATUS_MAP = {
+        Status.paid:       SellerOrderStatus.paid,
+        Status.confirmed:  SellerOrderStatus.confirmed,
+        Status.processing: SellerOrderStatus.processing,
+        Status.shipped:    SellerOrderStatus.shipped,
+        Status.delivered:  SellerOrderStatus.delivered,
+        Status.cancelled:  SellerOrderStatus.cancelled,
+    }
 
-    # Cola de estados garantizados (cada estado aparece al menos 3 veces)
-    status_queue = all_statuses * 3
-    random.shuffle(status_queue)
+    # Solo buyers y admin realizan pedidos
+    buyers = [u for u in users if u.role in (RoleName.buyer, RoleName.admin)]
 
-    
+    # Cola de estados garantizados: cada estado aparece al menos 4 veces
+    order_statuses = [s for s in STATUS_MAP.keys()] * 4
+    random.shuffle(order_statuses)
+
+    # Índice para rotar tracking codes realistas
+    tracking_idx = 1000
 
     for user in buyers:
-        addr = addresses.get(user.id)
-        n_orders = random.randint(3, 6)
-        for _ in range(n_orders):
-            order_items = [(p, random.randint(1, 2)) for p in random.sample(products, min(random.randint(1, 4), len(products)))]
+        user_addrs = addresses.get(user.id, [])
+        shipping_addr = user_addrs[0] if user_addrs else None
+        billing_addr  = user_addrs[-1] if user_addrs else None   # puede ser la misma
 
-            subtotal    = round(sum(p.price * (1 - p.discount / 100) * qty for p, qty in order_items), 2)
+        n_orders = random.randint(4, 7)
+        for _ in range(n_orders):
+            # Tomar el siguiente status garantizado o aleatorio
+            status = order_statuses.pop(0) if order_statuses else random.choice(list(STATUS_MAP.keys()))
+
+            # Seleccionar 1-4 productos de distintos sellers
+            sample_size = min(random.randint(1, 4), len(products))
+            order_prods = random.sample(products, sample_size)
+
+            # Calcular importes con IVA incluido
+            subtotal    = round(sum(p.price * (1 - p.discount / 100) for p in order_prods), 2)
             tax         = round(subtotal - (subtotal / 1.21), 2)
             shipping    = round(random.uniform(3.5, 9.99), 2)
             total_price = round(subtotal + shipping, 2)
 
-            status = status_queue.pop(0) if status_queue else random.choice(all_statuses)
-
-            days_ago = random.randint(1, 30)
+            # Fecha coherente con el estado
             if status == Status.delivered:
-                days_ago = random.randint(7, 180)
+                days_ago = random.randint(10, 120)
+            elif status in (Status.shipped, Status.processing):
+                days_ago = random.randint(3, 20)
             elif status == Status.cancelled:
                 days_ago = random.randint(1, 90)
+            else:
+                days_ago = random.randint(1, 15)
 
             order = Order(
                 user_id=user.id,
@@ -2942,27 +3270,62 @@ def seed_orders(users, products, addresses):
                 payment_method=random.choice(all_payments),
                 status=status,
                 created_at=datetime.now(timezone.utc) - timedelta(days=days_ago),
-                shipping_address_id=addr.id if addr else None,
-                billing_address_id=addr.id if addr else None,
+                shipping_address_id=shipping_addr.id if shipping_addr else None,
+                billing_address_id=billing_addr.id if billing_addr else None,
             )
             db.session.add(order)
             db.session.flush()
 
-            for p, qty in order_items:
-                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=qty))
+            # OrderDetails
+            for p in order_prods:
+                db.session.add(OrderDetail(
+                    order_id=order.id,
+                    product_id=p.id,
+                    quantity=random.randint(1, 2),
+                ))
 
-            print(f"  [OK]   {user.email} | {status.value:12} | {total_price:.2f}€")
+            # Agrupar productos por seller para crear SellerOrders
+            seller_groups = {}
+            for p in order_prods:
+                seller_groups.setdefault(p.seller_id, []).append(p)
+
+            so_status = STATUS_MAP.get(status, SellerOrderStatus.paid)
+
+            for seller_id in seller_groups:
+                tracking_code = None
+                carrier_name  = None
+                shipped_at    = None
+
+                if so_status in (SellerOrderStatus.shipped, SellerOrderStatus.delivered):
+                    carrier = random.choice(carriers) if carriers else None
+                    if carrier:
+                        tracking_idx += 1
+                        tracking_code = f"ES{tracking_idx:09d}ES"
+                        carrier_name  = carrier.name
+                        shipped_at    = order.created_at + timedelta(days=random.randint(1, 3))
+
+                db.session.add(SellerOrder(
+                    order_id=order.id,
+                    seller_id=seller_id,
+                    status=so_status,
+                    tracking_code=tracking_code,
+                    carrier_name=carrier_name,
+                    shipped_at=shipped_at,
+                    created_at=order.created_at,
+                ))
+
+            print(f"  [OK]   {user.email} | {status.value:12} | {total_price:.2f}€ | {len(seller_groups)} seller(s)")
             orders.append(order)
 
     db.session.flush()
-    print(f"\n  Total pedidos: {len(orders)}")
 
+    print(f"\n  Total pedidos: {len(orders)}")
     status_counts = {}
     for o in orders:
         status_counts[o.status.value] = status_counts.get(o.status.value, 0) + 1
     print("\n  Distribución de estados:")
-    for s, count in sorted(status_counts.items()):
-        print(f"    {s:15} × {count}")
+    for s, c in sorted(status_counts.items()):
+        print(f"    {s:15} × {c}")
 
     return orders
 
@@ -3034,127 +3397,55 @@ def seed_favorites(users, products):
     print(f"  Total favoritos: {count}")
 
 
-def seed_playback_seller_orders(users, products, addresses):
-    """Crea pedidos específicos para el seller seller@playback.com."""
-    print("\n🛒 Seeding pedidos para PlayBack Seller...")
-
-    # Buscar el seller de playback
-    playback_user = User.query.filter_by(email="seller@playback.com").first()
-    if not playback_user:
-        print("  [WARN] seller@playback.com no encontrado")
-        return []
-
-    playback_seller = Seller.query.filter_by(user_id=playback_user.id).first()
-    if not playback_seller:
-        print("  [WARN] Seller profile no encontrado para seller@playback.com")
-        return []
-
-    # Productos de este seller
-    my_products = [p for p in products if p.seller_id == playback_seller.id]
-    if not my_products:
-        print("  [WARN] Este seller no tiene productos")
-        return []
-
-    # Compradores que harán los pedidos
+def seed_incidents(users, orders):
+    """
+    Crea incidencias para pedidos en estado shipped o delivered.
+    Solo buyers abren incidencias.
+    """
+    print("\n🚨 Seeding incidencias...")
+    count = 0
+    status_map = {
+        "open":        "open",
+        "in_progress": "in_progress",
+        "resolved":    "resolved",
+        "rejected":    "rejected",
+    }
     buyers = [u for u in users if u.role == RoleName.buyer]
+    # Pedidos elegibles: shipped o delivered
+    eligible = [o for o in orders if o.status in (Status.shipped, Status.delivered)]
 
-    all_statuses = [Status.confirmed, Status.paid, Status.shipped, Status.delivered, Status.cancelled]
-    orders = []
+    if not eligible:
+        print("  [WARN] No hay pedidos elegibles para incidencias")
+        return
+
+    # Cada buyer abre 1-2 incidencias
+    incident_pool = list(INCIDENTS_DATA)
+    random.shuffle(incident_pool)
+    pool_idx = 0
 
     for buyer in buyers:
-        addr = addresses.get(buyer.id)
-        for _ in range(random.randint(1, 3)):
-            order_items = [(p, random.randint(1, 2)) for p in random.sample(my_products, min(random.randint(1, 3), len(my_products)))]
-
-            subtotal    = round(sum(p.price * (1 - p.discount / 100) * qty for p, qty in order_items), 2)
-            tax         = round(subtotal - (subtotal / 1.21), 2)
-            shipping    = round(random.uniform(3.5, 9.99), 2)
-            total_price = round(subtotal + shipping, 2)
-            status      = random.choice(all_statuses)
-
-            order = Order(
+        buyer_orders = [o for o in eligible if o.user_id == buyer.id]
+        if not buyer_orders:
+            continue
+        n = random.randint(1, min(2, len(buyer_orders)))
+        for order in random.sample(buyer_orders, n):
+            data = incident_pool[pool_idx % len(incident_pool)]
+            pool_idx += 1
+            db.session.add(Incident(
                 user_id=buyer.id,
-                subtotal=subtotal,
-                tax=tax,
-                shipping_cost=shipping,
-                total_price=total_price,
-                payment_method=random.choice(list(Payment)),
-                status=status,
-                created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 120)),
-                shipping_address_id=addr.id if addr else None,
-                billing_address_id=addr.id if addr else None,
-            )
-            db.session.add(order)
-            db.session.flush()
-
-            for p, qty in order_items:
-                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=qty))
-
-            orders.append(order)
-            print(f"  [OK]   {buyer.email} → {status.value:12} | {total_price:.2f}€")
+                order_id=order.id,
+                title=data["title"],
+                description=data["description"],
+                status=data["status"],
+                created_at=order.created_at + timedelta(days=random.randint(2, 10)),
+            ))
+            count += 1
+            print(f"  [OK]   {buyer.email} | {data['status']:12} | {data['title'][:40]}")
 
     db.session.flush()
-    print(f"\n  Total pedidos PlayBack: {len(orders)}")
-    return orders
+    print(f"\n  Total incidencias: {count}")
 
 
-def seed_arantxa_orders(users, products, addresses):
-    print("\n🛒 Seeding pedidos para Arantxa...")
-
-    arantxa_user = User.query.filter_by(email="pro.arantxa.ordoyo@gmail.com").first()
-    if not arantxa_user:
-        print("  [WARN] pro.arantxa.ordoyo@gmail.com no encontrado")
-        return []
-
-    arantxa_seller = Seller.query.filter_by(user_id=arantxa_user.id).first()
-    if not arantxa_seller:
-        print("  [WARN] Seller profile no encontrado")
-        return []
-
-    my_products = [p for p in products if p.seller_id == arantxa_seller.id]
-    if not my_products:
-        print("  [WARN] Sin productos para Arantxa")
-        return []
-
-    buyers = [u for u in users if u.role == RoleName.buyer]
-    all_statuses = [Status.confirmed, Status.paid, Status.shipped, Status.delivered, Status.cancelled]
-    orders = []
-
-    for buyer in buyers:
-        addr = addresses.get(buyer.id)
-        for _ in range(random.randint(1, 3)):
-            order_items = [(p, random.randint(1, 2)) for p in random.sample(my_products, min(random.randint(1, 3), len(my_products)))]
-
-            subtotal    = round(sum(p.price * (1 - p.discount / 100) * qty for p, qty in order_items), 2)
-            tax         = round(subtotal - (subtotal / 1.21), 2)
-            shipping    = round(random.uniform(3.5, 9.99), 2)
-            total_price = round(subtotal + shipping, 2)
-            status      = random.choice(all_statuses)
-
-            order = Order(
-                user_id=buyer.id,
-                subtotal=subtotal,
-                tax=tax,
-                shipping_cost=shipping,
-                total_price=total_price,
-                payment_method=random.choice(list(Payment)),
-                status=status,
-                created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 120)),
-                shipping_address_id=addr.id if addr else None,
-                billing_address_id=addr.id if addr else None,
-            )
-            db.session.add(order)
-            db.session.flush()
-
-            for p, qty in order_items:
-                db.session.add(OrderDetail(order_id=order.id, product_id=p.id, quantity=qty))
-
-            orders.append(order)
-            print(f"  [OK]   {buyer.email} → {status.value} | {total_price:.2f}€")
-
-    db.session.flush()
-    print(f"  Total: {len(orders)} pedidos")
-    return orders
 # ══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ══════════════════════════════════════════════════════════════════════════════
@@ -3169,18 +3460,18 @@ if __name__ == "__main__":
             if args.reset:
                 reset_data()
 
-            users    = seed_users()
-            sellers  = seed_sellers()
-            addresses = seed_addresses(users)
-            products = seed_products(sellers)
+            carriers  = seed_carriers()
+            users     = seed_users()
+            sellers   = seed_sellers()
+            addresses = seed_addresses(users, sellers)
+            products  = seed_products(sellers)
 
             if not products:
                 print("\n⚠️  Sin productos — ejecuta seed_categories.py primero.")
                 sys.exit(1)
 
-            orders = seed_orders(users, products, addresses)
-            seed_playback_seller_orders(users, products, addresses) 
-            seed_arantxa_orders(users, products, addresses)
+            orders = seed_orders(users, sellers, products, addresses, carriers)
+            seed_incidents(users, orders)
             seed_reviews(users, products, orders)
             seed_favorites(users, products)
 
@@ -3189,13 +3480,14 @@ if __name__ == "__main__":
             print("\n" + "═" * 50)
             print("✅ Seed completado con éxito.")
             print("═" * 50)
-            print(f"\n  👤 Usuarios:   {len(users)}")
-            print(f"  🏪 Vendedores: {len(sellers)}")
-            print(f"  📦 Productos:  {len(products)}")
-            print(f"  🛒 Pedidos:    {len(orders)}")
+            print(f"\n  🚚 Transportistas: {len(carriers)}")
+            print(f"  👤 Usuarios:       {len(users)}")
+            print(f"  🏪 Vendedores:     {len(sellers)}")
+            print(f"  📦 Productos:      {len(products)}")
+            print(f"  🛒 Pedidos:        {len(orders)}")
             print(f"\n📋 Credenciales:")
             for u in USERS_DATA:
-                print(f"   {u['email']:30} / {u['password']:12} [{u.get('role', 'buyer')}]")
+                print(f"   {u['email']:40} / {u['password']:12} [{u.get('role', 'buyer')}]")
 
         except Exception as e:
             db.session.rollback()

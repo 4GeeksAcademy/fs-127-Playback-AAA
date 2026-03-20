@@ -8,9 +8,22 @@ from api.utils import generate_initial_avatar
 import stripe
 from extensions import mail
 from api.emails import build_seller_registration_email, build_new_seller_admin_email
+from threading import Thread
+from flask import current_app
 
 
 seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
+
+
+# ── Helper: envía cualquier mensaje de Flask-Mail en un hilo separado ─────────
+# Render free bloquea SMTP — lanzarlo en background evita que el worker muera.
+# En local funciona igual: el hilo usa SMTP normalmente.
+def _send_email_async(app, message):
+    with app.app_context():
+        try:
+            mail.send(message)
+        except Exception as e:
+            print(f"[Seller] Error al enviar email: {str(e)}")
 
 
 # -------------------------
@@ -57,7 +70,7 @@ def create_seller_profile():
             origin_community_code=body.get("origin_community_code"),  
             origin_community=body.get("origin_community"),
             origin_province_code=body.get("origin_province_code"),
-              origin_province=body.get("origin_province"),  
+            origin_province=body.get("origin_province"),  
             status=SellerStatus.pending,
             logo_url=logo_url
         )
@@ -79,10 +92,11 @@ def create_seller_profile():
 
         db.session.commit()
 
-        try:
-            mail.send(build_seller_registration_email(seller))
-        except Exception as e:
-            print(f"[Seller] Error al enviar email al vendedor: {str(e)}")
+        # Email de confirmación al vendedor en background — nunca bloquea ni rompe el flujo
+        Thread(
+            target=_send_email_async,
+            args=(current_app._get_current_object(), build_seller_registration_email(seller))
+        ).start()
 
         return jsonify({
             "msg": "Perfil de vendedor creado correctamente",
@@ -227,10 +241,11 @@ def get_stripe_account_status():
                 seller.stripe_onboarding_completed = True
                 db.session.commit()
 
-                try:
-                    mail.send(build_new_seller_admin_email(seller))
-                except Exception as e:
-                    print(f"[Stripe] Error al enviar email al admin: {str(e)}")
+                # Email de notificación al admin en background — nunca bloquea ni rompe el flujo
+                Thread(
+                    target=_send_email_async,
+                    args=(current_app._get_current_object(), build_new_seller_admin_email(seller))
+                ).start()
 
             except Exception as e:
                 db.session.rollback()

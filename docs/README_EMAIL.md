@@ -85,7 +85,36 @@ def send_order_confirmation(user_email, order_id):
 
 ---
 
-## 5. Emails enviados por la plataforma
+## 5. Envío asíncrono en producción (Render)
+
+El plan gratuito de Render **bloquea las conexiones SMTP salientes**. Para evitar que un timeout de red mate el worker de gunicorn, todos los `mail.send()` se ejecutan en un hilo separado mediante un helper compartido:
+
+```python
+from threading import Thread
+from flask import current_app
+
+def _send_email_async(app, message):
+    with app.app_context():
+        try:
+            mail.send(message)
+        except Exception as e:
+            print(f"[Mail] Error al enviar email: {str(e)}")
+
+# Uso
+Thread(
+    target=_send_email_async,
+    args=(current_app._get_current_object(), mensaje)
+).start()
+```
+
+**¿Por qué `current_app._get_current_object()`?**
+Flask usa proxies de contexto — `current_app` dentro de un hilo nuevo no tiene contexto activo. `_get_current_object()` extrae la instancia real de la app para pasarla al hilo, que luego abre su propio contexto con `app.app_context()`.
+
+> ⚠️ En local el comportamiento es idéntico: el hilo envía el email por SMTP normalmente. No hay diferencia funcional entre entornos.
+
+---
+
+## 6. Emails enviados por la plataforma
 
 | Evento | Destinatario | Descripción |
 |---|---|---|
@@ -100,7 +129,7 @@ def send_order_confirmation(user_email, order_id):
 
 ---
 
-## 6. Límites del plan gratuito de Brevo
+## 7. Límites del plan gratuito de Brevo
 
 | Plan | Emails/día | Emails/mes |
 |---|---|---|
@@ -111,7 +140,7 @@ El plan gratuito es suficiente para desarrollo y pruebas.
 
 ---
 
-## 7. Verificar el remitente en Brevo
+## 8. Verificar el remitente en Brevo
 
 Para que los emails no caigan en spam, debes **verificar el dominio o el email remitente**:
 
@@ -135,3 +164,8 @@ Para que los emails no caigan en spam, debes **verificar el dominio o el email r
 **El remitente no aparece verificado**
 - Sin verificar, Brevo puede limitar el envío o redirigir los mensajes
 - Completa la verificación del remitente en el panel de Brevo
+
+**Los emails no se envían en producción (Render free)**
+- Render bloquea los puertos SMTP en el plan gratuito
+- Todos los `mail.send()` deben ejecutarse en un hilo separado (ver sección 5)
+- Los errores de envío se registran en los logs del servidor pero no interrumpen el flujo principal
