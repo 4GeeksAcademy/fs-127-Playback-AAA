@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import geoService from "../../../../services/geoService";
 
 const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
+  const { t } = useTranslation();
   const [localForm, setLocalForm] = useState({});
   const [communities, setCommunities] = useState([]);
   const [provinces, setProvinces] = useState([]);
@@ -136,7 +138,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-[rgb(var(--color-border))] flex items-center justify-between">
           <h2 className="text-base font-semibold text-[rgb(var(--color-text))]">
-            Modificar dirección
+            {t("dashboard.settings.editAddress")}
           </h2>
           <button
             onClick={onClose}
@@ -151,7 +153,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
           {/* Comunidad */}
           <div>
             <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
-              Comunidad autónoma
+              {t("dashboard.settings.community")}
             </label>
             <select
               value={selectedCommunity}
@@ -159,7 +161,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
               className={selectClass}
             >
               <option value="" disabled>
-                {communities.length === 0 ? "Cargando..." : "Selecciona comunidad"}
+                {communities.length === 0
+                  ? t("dashboard.settings.loadingCommunity")
+                  : t("dashboard.settings.selectCommunity")}
               </option>
               {communities.map((c) => (
                 <option key={c.CCOM} value={c.CCOM}>
@@ -172,7 +176,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
           {/* Provincia */}
           <div>
             <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
-              Provincia
+              {t("dashboard.settings.province")}
             </label>
             <select
               value={selectedProvince}
@@ -181,7 +185,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
               className={selectClass}
             >
               <option value="" disabled>
-                {loadingProvinces ? "Cargando..." : "Selecciona provincia"}
+                {loadingProvinces
+                  ? t("dashboard.settings.loadingProvince")
+                  : t("dashboard.settings.selectProvince")}
               </option>
               {provinces.map((p) => (
                 <option key={p.CPRO} value={p.CPRO}>
@@ -194,7 +200,7 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
           {/* Municipio */}
           <div>
             <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
-              Municipio / Ciudad
+              {t("dashboard.settings.municipality")}
             </label>
             <select
               value={selectedMunicipality}
@@ -203,7 +209,9 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
               className={selectClass}
             >
               <option value="" disabled>
-                {loadingMunicipalities ? "Cargando..." : "Selecciona municipio"}
+                {loadingMunicipalities
+                  ? t("dashboard.settings.loadingMunicipality")
+                  : t("dashboard.settings.selectMunicipality")}
               </option>
               {municipalities.map((m) => (
                 <option key={m.CMUN} value={m.CMUN}>
@@ -216,13 +224,13 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
           {/* Código postal */}
           <div>
             <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
-              Código postal
+              {t("dashboard.settings.zip")}
             </label>
             <input
               name="origin_zip"
               value={localForm.origin_zip || ""}
               onChange={handleInputChange}
-              placeholder="Código postal"
+              placeholder={t("dashboard.settings.zipPlaceholder")}
               className={inputClass}
             />
           </div>
@@ -230,13 +238,13 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
           {/* Dirección */}
           <div>
             <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
-              Dirección
+              {t("dashboard.settings.address")}
             </label>
             <input
               name="origin_address"
               value={localForm.origin_address || ""}
               onChange={handleInputChange}
-              placeholder="Calle y número"
+              placeholder={t("dashboard.settings.addressPlaceholder")}
               className={inputClass}
             />
           </div>
@@ -244,13 +252,13 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
           {/* País */}
           <div>
             <label className="block text-xs text-[rgb(var(--color-text-secondary))] mb-1">
-              País
+              {t("dashboard.settings.country")}
             </label>
             <input
               name="origin_country"
               value={localForm.origin_country || ""}
               onChange={handleInputChange}
-              placeholder="País"
+              placeholder={t("dashboard.settings.countryPlaceholder")}
               className={inputClass}
             />
           </div>
@@ -262,13 +270,13 @@ const SellerAddressFormModal = ({ isOpen, onClose, onSave, initialForm }) => {
             onClick={onClose}
             className="px-4 py-2 text-sm text-[rgb(var(--color-text-secondary))] border border-[rgb(var(--color-border))] rounded-lg hover:bg-[rgb(var(--color-bg-subtle))] transition-colors"
           >
-            Cancelar
+            {t("seller.cancel")}
           </button>
           <button
             onClick={handleSave}
             className="px-4 py-2 text-sm text-white bg-violet-600 rounded-lg hover:bg-violet-700 transition-colors"
           >
-            Guardar dirección
+            {t("dashboard.settings.saveAddress")}
           </button>
         </div>
       </div>

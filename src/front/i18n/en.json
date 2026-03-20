@@ -5,8 +5,11 @@
     "featuredCategories": "Featured Categories",
     "heroBannerSpan1": "Special offer!",
     "heroBannerSpan2": "View Offers",
-    "featuredProducts": "Featured Products",
+    "featuredProducts": "Featured products",
     "viewSubcategory": "View subcategory"
+  },
+  "incidents": {
+    "title": "Incidents"
   },
   "product": {
     "noFound": "No products found",
@@ -15,16 +18,20 @@
     "featuresLabel": "Features",
     "features": "No features specified.",
     "shippingLabel": "Shipping & Returns",
-    "shipping": "Free shipping on orders over €50. Returns accepted within 30 days.",
+    "shipping": "Delivery in 48-72 business hours. Free shipping on orders over €100. Free returns within the first 30 days.",
     "inStock": "In stock",
     "outOfStock": "Out of stock",
-    "noStock": "No more stock available",
+    "noStock": "Out of stock",
     "available": "available",
     "addToCart": "Add to cart",
     "addedToCart": "Product added to your cart",
     "reviews": "Customer reviews",
-    "loginRequired": "You must be logged in to add products to your cart",
-    "cartError": "Error adding to cart"
+    "loginRequired": "You must be logged in to add products to the cart",
+    "cartError": "Error adding to cart",
+    "characteristicsLabel": "Characteristics",
+    "characteristics": "No characteristics",
+    "reviewsCount": "Total reviews",
+    "noReviews": "No reviews"
   },
   "navbar": {
     "loginTitle": "Welcome back",
@@ -39,11 +46,11 @@
     "dontHaveAccount": "Don't have an account?",
     "signupButton": "Sign up",
     "alreadyHaveAccount": "Already have an account? ",
-    "forgotPassword": "Forgot your password?",
+    "forgotPassword": "Can't remember your password?",
     "forgotPasswordButton": "Recover it here",
     "profile": "Profile",
     "orders": "Orders",
-    "favorites": "Favourites",
+    "favorites": "Favorites",
     "cart": "Cart",
     "logout": "Log out",
     "labelCategories": "Categories",
@@ -61,7 +68,7 @@
     "forgotSuccess": "If the email exists you will receive instructions shortly",
     "missingToken": "Token not found. Use the link from the email.",
     "goHome": "Go to home",
-    "backToLogin": "Back to login",
+    "backToLogin": "Back to Login",
     "resetTitle": "Reset your password",
     "newPasswordPlaceholder": "Your new password",
     "confirmPasswordPlaceholder": "Confirm your new password",
@@ -73,7 +80,7 @@
       "new": "New",
       "used": "Used",
       "refurbished": "Refurbished",
-      "broken": "For parts"
+      "broken": "Broken"
     }
   },
   "search": {
@@ -82,7 +89,7 @@
     "applyPrice": "Apply price",
     "clearAll": "Clear all filters",
     "noResults": "No results",
-    "noResultsHint": "Try changing the filters or search term.",
+    "noResultsHint": "Try changing the filters or the search term.",
     "clearFilters": "Remove all filters",
     "searching": "Searching...",
     "productCount_one": "{{count}} product",
@@ -95,7 +102,7 @@
     "conditionSection": "Condition",
     "onSale": "On sale",
     "inStockOnly": "In stock only",
-    "lowStock": "Few units left",
+    "lowStock": "Few units",
     "lowStockBadge": "Last",
     "seeAll": "See all results for \"{{query}}\" →",
     "sort_relevance": "Relevance",
@@ -105,8 +112,8 @@
     "sort_newest": "Newest",
     "sort_discount": "Biggest discount",
     "sort_stock_asc": "Few units first",
-    "filterChip_min_price": "From {{value}}€",
-    "filterChip_max_price": "Up to {{value}}€",
+    "filterChip_min_price": "From €{{value}}",
+    "filterChip_max_price": "Up to €{{value}}",
     "filterChip_in_stock": "In stock",
     "filterChip_on_sale": "On sale",
     "filterChip_low_stock": "Few units"
@@ -129,7 +136,7 @@
     "phone": "Contact phone",
     "address": "Address",
     "city": "City",
-    "zip": "Postcode",
+    "zip": "Postal code",
     "country": "Country",
     "iban": "IBAN",
     "accountHolder": "Account holder",
@@ -145,7 +152,7 @@
     "errorPasswordMatch": "Passwords do not match",
     "errorPasswordLength": "Password must be at least 8 characters",
     "errorRequired": "This field is required",
-    "errorRequiredFields": "Please fill in all required fields",
+    "errorRequiredFields": "Fill in all required fields",
     "becomeSeller": "Sell on Playback",
     "myStore": "My store",
     "adminPanel": "Admin panel",
@@ -154,13 +161,13 @@
     "goToDashboard": "Go to my store",
     "registerSubtitle": "Join our seller community and reach thousands of buyers.",
     "pendingTitle": "Application under review",
-    "pendingDesc": "We are reviewing your application. We will notify you once it is approved.",
-    "verifiedTitle": "Your store is live!",
-    "verifiedDesc": "You can now manage your products and orders from your seller dashboard.",
+    "pendingDesc": "We are reviewing your application. We will notify you as soon as it is approved.",
+    "verifiedTitle": "Your store is active!",
+    "verifiedDesc": "You can now manage your products and orders from your seller panel.",
     "rejectedTitle": "Application rejected",
-    "rejectedDesc": "Your application was not approved. Contact support for more information.",
+    "rejectedDesc": "Your application has not been approved. Contact support for more information.",
     "editTitle": "Correct application",
-    "editSubtitle": "Correct the indicated data and resubmit your application.",
+    "editSubtitle": "Fix the indicated data and resubmit your application.",
     "resubmitNotice": "Your corrected application will return to pending status for review.",
     "resubmit": "Resubmit application",
     "rejectionReason": "Rejection reason",
@@ -193,7 +200,7 @@
     "newAddress": "New address",
     "save": "Save",
     "saving": "Saving...",
-    "selectAddress": "Please select a shipping and billing address",
+    "selectAddress": "Select shipping and billing address",
     "shippingAddress": "Shipping address",
     "billingAddress": "Billing address",
     "sameAsBilling": "Use the same address for billing",
@@ -209,7 +216,7 @@
       "phone": "Phone",
       "city": "City",
       "province": "Province (optional)",
-      "postalCode": "Postcode",
+      "postalCode": "Postal code",
       "country": "Country"
     }
   },
@@ -227,11 +234,14 @@
     "units": "Units",
     "shippingCost": "Shipping cost",
     "shippingAddress": "Shipping address",
-    "billingAddress": "Billing address"
+    "billingAddress": "Billing address",
+    "recent": "Recent orders",
+    "viewAll": "View all orders",
+    "openIncident": "Incident / Return"
   },
   "favorites": {
-    "title": "Your favourites",
-    "empty": "You have no favourites yet"
+    "title": "Your favorites",
+    "empty": "You have no favorites yet"
   },
   "profile": {
     "myAccount": "My Account",
@@ -239,14 +249,22 @@
       "dashboard": "Dashboard",
       "info": "Information",
       "addresses": "Addresses",
-      "security": "Security"
+      "security": "Security",
+      "orders": "Orders"
+    
+
     },
     "manage": "Manage",
+    "memberSince": "Customer since {{date}}",
+    "edit": "Edit",
+    "favorites": "Favorites",
+    "completeProfile": "Complete your profile",
+    "user": "User",
     "userPanel": "User Panel",
     "info": {
       "currentInfo": "Current Information",
       "editInfo": "Edit Information",
-      "nameRequired": "First name is required",
+      "nameRequired": "Name is required",
       "lastNameRequired": "Last name is required",
       "imageFormat": "Format not allowed. Use JPG, PNG or WEBP.",
       "imageSize": "Image cannot exceed 2MB.",
@@ -260,7 +278,17 @@
       "confirmChanges": "Are you sure you want to save the changes?",
       "confirm": "Confirm",
       "close": "Close",
-      "profileUpdated": "Profile updated successfully"
+      "profileUpdated": "Profile updated successfully",
+"name": "First name",
+"lastName": "Last name",
+"email": "Email",
+"memberSince": "Member since",
+"profilePhoto": "Profile photo",
+"photoFormats": "JPG, PNG or WEBP · max. 2MB",
+"emailReadonly": "Email cannot be changed"
+
+
+
     },
     "addresses": {
       "title": "My Addresses",
@@ -280,13 +308,21 @@
       "update": "Update password",
       "updated": "Password updated successfully",
       "error": "Error updating password"
-    }
+  }},
+     "dashboard": {
+    "welcome": "Hi, {{name}} 👋",
+    "subtitle": "Here's a summary of your activity",
+    "helpTitle": "Help & support",
+    "loading": "Loading…",
+    "contactTitle": "Contact support",
+    "contactDesc": "We'll reply within 24-48h"
+  
   },
   "admin": {
     "rejectTitle": "Reject application",
-    "rejectDesc1": "Indicate the reason for rejecting",
+    "rejectDesc1": "Enter the reason for rejecting",
     "rejectDesc2": ". The seller will be able to read it and correct their application.",
-    "rejectPlaceholder": "E.g.: The Tax ID entered is not valid. Please review it and resubmit your application.",
+    "rejectPlaceholder": "E.g.: The entered Tax ID is not valid. Please review it and resubmit your application.",
     "confirmReject": "Confirm rejection",
     "verify": "Verify",
     "reject": "Reject",
@@ -295,7 +331,7 @@
     "filterVerified": "Verified",
     "filterRejected": "Rejected",
     "results": "results",
-    "noSellers": "No sellers match this filter.",
+    "noSellers": "No sellers with this filter.",
     "status": {
       "pending": "Pending",
       "verified": "Verified",
@@ -317,7 +353,7 @@
       "shippingAddress": "Shipping address",
       "address": "Address",
       "city": "City",
-      "zip": "Postcode",
+      "zip": "ZIP",
       "country": "Country",
       "accountId": "Account ID",
       "accountCreated": "Account created",
@@ -349,7 +385,8 @@
         "orders": "Orders",
         "products": "Products",
         "earnings": "Earnings",
-        "settings": "Store"
+        "settings": "Store",
+        "incidents": "Incidents"
       }
     },
     "earnings": {
@@ -358,7 +395,7 @@
       "completedOrders": "Completed orders",
       "avgTicket": "Average order value",
       "revenueByMonth": "Revenue by month",
-      "lastMovements": "Recent transactions",
+      "lastMovements": "Latest transactions",
       "order": "Order",
       "noMovements": "No transactions yet."
     },
@@ -385,7 +422,18 @@
         "statusSection": "Order status",
         "current": "(current)",
         "saving": "Saving…",
-        "saveStatus": "Save status change"
+        "saveStatus": "Save status change",
+        "autoConfirming": "Confirming…",
+        "advanceTo": "Advance to",
+        "cancelOrder": "Cancel order",
+        "confirmCancel": "Yes, cancel",
+        "goBack": "Go back",
+        "shippedNote": "The order is on its way. Delivery will be confirmed by the buyer or the carrier.",
+        "shippingData": "Shipping details",
+        "carrier": "Carrier",
+        "trackingCode": "Tracking code",
+        "trackingHint": "The buyer will receive this code by email to track their shipment.",
+        "close": "Close"
       },
       "status": {
         "pending": "Pending",
@@ -401,7 +449,8 @@
         "debit_card": "Debit card",
         "paypal": "PayPal",
         "stripe": "Stripe",
-        "bank_transfer": "Bank transfer"
+        "bank_transfer": "Bank transfer",
+        "bizum": "Bizum"
       }
     },
     "products": {
@@ -438,7 +487,6 @@
         "price": "Price (€)",
         "stock": "Stock",
         "discount": "Discount (%)",
-        "size": "Size",
         "weight": "Weight (kg)",
         "condition": "Condition",
         "description": "Description",
@@ -446,7 +494,16 @@
         "selectSubcategory": "Select subcategory",
         "selectItem": "Select item",
         "saving": "Saving…",
-        "save": "Save"
+        "save": "Save",
+        "characteristics": "Characteristics",
+        "addImages": "Other images",
+        "noOtherImages": "No additional images",
+        "otherImages": "Additional images",
+        "optional": "Optional",
+        "dimensions": "Dimensions",
+        "height": "Height",
+        "width": "Width",
+        "length": "Length"
       }
     },
     "overview": {
@@ -467,14 +524,35 @@
       "phone": "Phone",
       "address": "Address",
       "city": "City",
-      "zip": "Postcode",
+      "zip": "Postal code",
       "country": "Country",
       "description": "Brief description",
       "originAddress": "Origin address",
       "saving": "Saving…",
       "save": "Save changes",
       "success": "Saved successfully.",
-      "error": "Error saving."
+      "error": "Error saving.",
+      "editAddress": "Edit address",
+"community": "Autonomous community",
+"loadingCommunity": "Loading...",
+"selectCommunity": "Select community",
+"province": "Province",
+"loadingProvince": "Loading...",
+"selectProvince": "Select province",
+"municipality": "Municipality / City",
+"loadingMunicipality": "Loading...",
+"selectMunicipality": "Select municipality",
+"zipPlaceholder": "Postal code",
+"addressPlaceholder": "Street and number",
+"countryPlaceholder": "Country",
+"saveAddress": "Save address",
+"addAddress": "Add address",
+"noLogo": "No logo",
+"changeLogo": "Change logo",
+"uploadLogo": "Upload logo",
+"logoFormat": "Invalid format. Use JPG, PNG or WEBP",
+"logoSize": "Image cannot exceed 2MB"
+
     }
   },
   "review": {
@@ -488,11 +566,13 @@
     "commentLabel": "Comment",
     "commentPlaceholder": "Tell us about your experience with the product...",
     "sending": "Sending...",
-    "submit": "Submit review"
+    "submit": "Submit review",
+    "rate": "Rate",
+    "alreadyReviewed": " Already reviewed "
   },
   "footer": {
     "copyright": "© 2026 Playback. Made with",
-    "madeBy": "by students from",
+    "madeBy": "by students of",
     "about": "About the project",
     "repo": "Repository",
     "dashboard": "Dashboard"
@@ -510,42 +590,47 @@
       "title": "About the project",
       "items": [
         {
-          "title": "Retro catalog",
-          "desc": "Second-hand video games, consoles and accessories organized by categories and subcategories."
+          "title": "Retro catalogue",
+          "desc": "Second-hand video games, consoles and accessories organised by categories and subcategories."
         },
         {
           "title": "Full marketplace",
-          "desc": "Persistent cart, order management, shipment tracking and seller dashboard."
+          "desc": "Persistent cart, order management, shipment tracking and seller panel."
         },
         {
-          "title": "Stripe Connect payments",
+          "title": "Payments with Stripe Connect",
           "desc": "Secure payments between buyers and sellers with configurable platform commission."
         },
         {
-          "title": "Cloud image hosting",
-          "desc": "Product image management with Cloudinary, optimized and delivered globally."
+          "title": "Cloud images",
+          "desc": "Product image management with Cloudinary, optimised and with global delivery."
         },
         {
           "title": "Email notifications",
           "desc": "Transactional emails (registration, order, shipping status) via Brevo SMTP."
         },
         {
-          "title": "Internationalization ES / EN",
+          "title": "Internationalisation ES / EN",
           "desc": "Interface available in Spanish and English with support for light and dark mode."
         }
-      ]
+      ],
+      "wip": {
+        "title": "More features on the way",
+        "badge": "Under construction",
+        "desc": "The project keeps growing. New features will be added soon."
+      }
     },
-    "tech": { "title": "Technology stack" },
+    "tech": { "title": "Tech stack" },
     "team": {
       "devTitle": "Development team",
       "devRole": "Full Stack Developer",
-      "profCredit": "Project supervised by",
+      "profCredit": "Project mentored by",
       "instructor": "Instructor",
       "teachingAssistant": "Teaching Assistant"
     },
     "academy": {
       "title": "Final project of",
-      "desc": "Developed as the MVP project of the full stack web development bootcamp. It represents the result of months of learning applied to a real and functional product.",
+      "desc": "Developed as an MVP project for the full stack web development bootcamp. It represents the result of months of applied learning in a real and functional product.",
       "cta": "View academy",
       "visit": "Visit 4Geeks Academy"
     }

@@ -28,8 +28,8 @@
     "reviews": "Opiniones de clientes",
     "loginRequired": "Debes iniciar sesión para añadir productos al carrito",
     "cartError": "Error al añadir al carrito",
-    "characteristicsLabel": "Caracteristicas",
-    "characteristics": "Sin caracteristicas",
+    "characteristicsLabel": "Características",
+    "characteristics": "Sin características",
     "reviewsCount": "Total reseñas",
     "noReviews": "Sin reseñas"
   },
@@ -54,7 +54,7 @@
     "cart": "Cesta",
     "logout": "Cerrar sesión",
     "labelCategories": "Categorías",
-    "searchPlaceholder": "Buscar ...",
+    "searchPlaceholder": "Buscar...",
     "offers": "Ofertas",
     "aboutPlayback": "Acerca de Playback",
     "opportunities": "Oportunidades",
@@ -276,7 +276,14 @@
       "confirmChanges": "¿Estás seguro de guardar los cambios?",
       "confirm": "Confirmar",
       "close": "Cerrar",
-      "profileUpdated": "Perfil actualizado correctamente"
+      "profileUpdated": "Perfil actualizado correctamente",
+      "name": "Nombre",
+      "lastName": "Apellido",
+      "email": "Email",
+      "memberSince": "Miembro desde",
+      "profilePhoto": "Foto de perfil",
+      "photoFormats": "JPG, PNG o WEBP · máx. 2MB",
+      "emailReadonly": "El email no se puede modificar"
     },
     "addresses": {
       "title": "Mis Direcciones",
@@ -296,6 +303,14 @@
       "update": "Actualizar contraseña",
       "updated": "Contraseña actualizada correctamente",
       "error": "Error al actualizar la contraseña"
+    },
+    "dashboard": {
+      "welcome": "Hola, {{name}} 👋",
+      "subtitle": "Aquí tienes un resumen de tu actividad",
+      "helpTitle": "Ayuda y soporte",
+      "loading": "Cargando…",
+      "contactTitle": "Contactar con soporte",
+      "contactDesc": "Te respondemos en 24-48h"
     }
   },
   "admin": {
@@ -476,7 +491,7 @@
         "saving": "Guardando…",
         "save": "Guardar",
         "characteristics": "Características",
-        "addImages": "Otras imagenes",
+        "addImages": "Otras imágenes",
         "noOtherImages": "No hay imágenes adicionales",
         "otherImages": "Imágenes adicionales",
         "optional": "Opcional",
@@ -511,7 +526,27 @@
       "saving": "Guardando…",
       "save": "Guardar cambios",
       "success": "Guardado correctamente.",
-      "error": "Error al guardar."
+      "error": "Error al guardar.",
+      "editAddress": "Modificar dirección",
+"community": "Comunidad autónoma",
+"loadingCommunity": "Cargando...",
+"selectCommunity": "Selecciona comunidad",
+"province": "Provincia",
+"loadingProvince": "Cargando...",
+"selectProvince": "Selecciona provincia",
+"municipality": "Municipio / Ciudad",
+"loadingMunicipality": "Cargando...",
+"selectMunicipality": "Selecciona municipio",
+"zipPlaceholder": "Código postal",
+"addressPlaceholder": "Calle y número",
+"countryPlaceholder": "País",
+"saveAddress": "Guardar dirección",
+"addAddress": "Añadir dirección",
+"noLogo": "Sin logo",
+"changeLogo": "Cambiar logo",
+"uploadLogo": "Subir logo",
+"logoFormat": "Formato no válido. Usa JPG, PNG o WEBP",
+"logoSize": "La imagen no puede superar 2MB"
     }
   },
   "review": {
