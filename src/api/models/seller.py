@@ -30,6 +30,7 @@ class Seller(db.Model):
     origin_community_code: Mapped[str] = mapped_column(String(50), nullable=True)
     origin_community: Mapped[str] = mapped_column(String(50), nullable=True)
     origin_province_code: Mapped[str] = mapped_column(String(50), nullable=True)
+    origin_province: Mapped[str] = mapped_column(String(100), nullable=True)
     status: Mapped[SellerStatus] = mapped_column(Enum(SellerStatus), nullable=False, default=SellerStatus.pending)
     rejection_reason: Mapped[str] = mapped_column(Text(), nullable=True)
     stripe_account_id: Mapped[str] = mapped_column(String(120), nullable=True)
@@ -65,6 +66,7 @@ class Seller(db.Model):
             "origin_country": self.origin_country,
             "origin_community_code": self.origin_community_code,
             "origin_province_code": self.origin_province_code,
+            "origin_province": self.origin_province,
             "origin_community": self.origin_community,
             "status": self.status.value,
             "rejection_reason": self.rejection_reason,
@@ -87,6 +89,10 @@ class Seller(db.Model):
             "origin_city": self.origin_city,
             "origin_zip": self.origin_zip,
             "origin_country": self.origin_country,
+            "origin_community_code": self.origin_community_code,
+            "origin_province_code": self.origin_province_code,
+            "origin_province": self.origin_province,
+            "origin_community": self.origin_community,
             "status": self.status.value,
             "rejection_reason": self.rejection_reason,
             "created_at": self.created_at.isoformat() if self.created_at else None,

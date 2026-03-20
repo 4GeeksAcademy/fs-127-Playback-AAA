@@ -1,4 +1,7 @@
 {
+  "common": {
+    "loading": "Cargando..."
+  },
   "home": {
     "loading": "Cargando...",
     "topSales": "Top Ventas",
@@ -138,6 +141,12 @@
     "city": "Ciudad",
     "zip": "Código postal",
     "country": "País",
+    "community": "Comunidad autónoma",
+    "selectCommunity": "Selecciona comunidad",
+    "province": "Provincia",
+    "selectProvince": "Selecciona provincia",
+    "municipality": "Municipio",
+    "selectMunicipality": "Selecciona municipio",
     "iban": "IBAN",
     "accountHolder": "Titular de la cuenta",
     "reviewTitle": "Revisa tu solicitud",
