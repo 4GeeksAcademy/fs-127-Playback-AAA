@@ -8,6 +8,8 @@ from api.models.product import Product
 from api.models.address import Address
 from api.models.seller_order import SellerOrder, SellerOrderStatus
 from datetime import datetime, timezone
+from threading import Thread
+from flask import current_app
 
 
 
@@ -420,6 +422,17 @@ def seller_orders():
     return jsonify(result), 200
 
 
+# ── Helper: envía el email de envío en un hilo separado ───────────────────────
+def _send_shipped_email_async(app, user, order, tracking_code, carrier_name):
+    with app.app_context():
+        try:
+            from extensions import mail
+            from api.emails import build_order_shipped_buyer_email
+            mail.send(build_order_shipped_buyer_email(user, order, tracking_code, carrier_name))
+        except Exception as e:
+            print(f"[Order] Error al enviar email de envío al comprador: {str(e)}")
+
+
 @order_bp.route('/seller-orders/<int:seller_order_id>/status', methods=['PATCH'])
 @jwt_required()
 def update_seller_order_status(seller_order_id):
@@ -448,7 +461,7 @@ def update_seller_order_status(seller_order_id):
         abort(400, description=f"No puedes pasar de '{current}' a '{new_status}'")
     
     # ── Transición especial: processing → shipped ──────────────────────────────
-    # Requiere código de seguimiento y dispara email al comprador
+    # Requiere código de seguimiento y dispara email al comprador en background
     if new_status == "shipped":
         tracking_code = (body.get("tracking_code") or "").strip()
         carrier_name  = (body.get("carrier_name")  or "Otro").strip()
@@ -461,17 +474,16 @@ def update_seller_order_status(seller_order_id):
         seller_order.shipped_at    = datetime.now(timezone.utc)
         
         # Email al comprador (nunca rompe el flujo si falla)
-        try:
-            from extensions import mail
-            from api.emails import build_order_shipped_buyer_email
-            mail.send(build_order_shipped_buyer_email(
+        Thread(
+            target=_send_shipped_email_async,
+            args=(
+                current_app._get_current_object(),
                 seller_order.order.user,
                 seller_order.order,
                 tracking_code,
                 carrier_name,
-            ))
-        except Exception as e:
-            print(f"[Order] Error al enviar email de envío al comprador: {str(e)}")
+            )
+        ).start()
     
     # ── Actualizar estado del SellerOrder ──────────────────────────────────────
     seller_order.status = SellerOrderStatus(new_status)
