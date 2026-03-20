@@ -164,6 +164,18 @@ async function validateStock(token) {
 }
 
 
+// El comprador cancela su pedido (solo en estado paid o confirmed)
+async function cancelOrder(token, orderId) {
+    const response = await fetch(`${backendUrl}/api/order/my-orders/${orderId}/cancel`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) return [null, data.description || "Error al cancelar el pedido"];
+    return [data, null];
+}
+
+
 const orderService = {
     hasBought,
     createReview,
@@ -178,6 +190,7 @@ const orderService = {
     buyerConfirmDelivery,
     buyerConfirmShipmentDelivery,
     validateStock,
+    cancelOrder,
 };
 
 export default orderService;

@@ -254,7 +254,10 @@
     "billingAddress": "Dirección de facturación",
     "recent": "Pedidos recientes",
     "viewAll": "Ver todos los pedidos",
-    "openIncident": "Incidencia / Devolución"
+    "openIncident": "Incidencia / Devolución",
+    "cancelOrder": "Cancelar pedido",
+    "confirmCancel": "Sí, cancelar",
+    "goBack": "Volver"
   },
   "favorites": {
     "title": "Tus favoritos",
@@ -445,7 +448,9 @@
         "carrier": "Transportista",
         "trackingCode": "Código de seguimiento",
         "trackingHint": "El comprador recibirá este código por email para hacer el seguimiento.",
-        "close": "Cerrar"
+        "close": "Cerrar",
+        "cancelReasonLabel": "Indica el motivo de la cancelación",
+        "cancelReasonPlaceholder": "Ej. Producto sin stock, error en el pedido…"
       },
       "status": {
         "pending": "Pendiente",
@@ -545,25 +550,25 @@
       "success": "Guardado correctamente.",
       "error": "Error al guardar.",
       "editAddress": "Modificar dirección",
-"community": "Comunidad autónoma",
-"loadingCommunity": "Cargando...",
-"selectCommunity": "Selecciona comunidad",
-"province": "Provincia",
-"loadingProvince": "Cargando...",
-"selectProvince": "Selecciona provincia",
-"municipality": "Municipio / Ciudad",
-"loadingMunicipality": "Cargando...",
-"selectMunicipality": "Selecciona municipio",
-"zipPlaceholder": "Código postal",
-"addressPlaceholder": "Calle y número",
-"countryPlaceholder": "País",
-"saveAddress": "Guardar dirección",
-"addAddress": "Añadir dirección",
-"noLogo": "Sin logo",
-"changeLogo": "Cambiar logo",
-"uploadLogo": "Subir logo",
-"logoFormat": "Formato no válido. Usa JPG, PNG o WEBP",
-"logoSize": "La imagen no puede superar 2MB"
+      "community": "Comunidad autónoma",
+      "loadingCommunity": "Cargando...",
+      "selectCommunity": "Selecciona comunidad",
+      "province": "Provincia",
+      "loadingProvince": "Cargando...",
+      "selectProvince": "Selecciona provincia",
+      "municipality": "Municipio / Ciudad",
+      "loadingMunicipality": "Cargando...",
+      "selectMunicipality": "Selecciona municipio",
+      "zipPlaceholder": "Código postal",
+      "addressPlaceholder": "Calle y número",
+      "countryPlaceholder": "País",
+      "saveAddress": "Guardar dirección",
+      "addAddress": "Añadir dirección",
+      "noLogo": "Sin logo",
+      "changeLogo": "Cambiar logo",
+      "uploadLogo": "Subir logo",
+      "logoFormat": "Formato no válido. Usa JPG, PNG o WEBP",
+      "logoSize": "La imagen no puede superar 2MB"
     }
   },
   "review": {
