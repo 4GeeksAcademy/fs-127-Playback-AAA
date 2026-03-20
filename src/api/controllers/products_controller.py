@@ -16,11 +16,18 @@ product_bp = Blueprint('product', __name__, url_prefix='/product')
 
 LOW_STOCK_THRESHOLD = 1
 
+LANGS = ["en", "ca", "gl"]
 
-def translate_text(text, target_lang):
+def translate_field(text):
     if not text:
         return None
-    return GoogleTranslator(source='auto', target=target_lang).translate(text)
+    result = {"es": text}
+    for lang in LANGS:
+        try:
+            result[lang] = GoogleTranslator(source='auto', target=lang).translate(text)
+        except:
+            result[lang] = text
+    return result
 
 
 @product_bp.route('', methods=['GET'])
@@ -177,9 +184,9 @@ def create_product():
     if not name or not price or not item_id:
         abort(400, description="name, price e item_id son obligatorios")
 
-    translated_name            = translate_text(name, "en")
-    translated_desc            = translate_text(description, "en")
-    translated_characteristics = translate_text(characteristics, "en")
+    translated_name            = translate_field(name)
+    translated_desc            = translate_field(description)
+    translated_characteristics = translate_field(characteristics)
 
     # ── Imagen principal
     image_url = None
@@ -203,9 +210,9 @@ def create_product():
 
     try:
         new_product = Product(
-            name={"es": name, "en": translated_name or name},
-            description={"es": description, "en": translated_desc or description} if description else None,
-            characteristics={"es": characteristics, "en": translated_characteristics or characteristics} if characteristics else None,
+            name=translated_name or {"es": name},
+            description=translated_desc if description else None,
+            characteristics=translated_characteristics if characteristics else None,
             price=float(price),
             image_url=image_url,
             other_image_url=other_image_url if other_image_url else [],
@@ -271,11 +278,11 @@ def update_product(id):
 
     try:
         if name:
-            product.name = {"es": name, "en": translate_text(name, "en") or name}
+            product.name = translate_field(name)
         if description:
-            product.description = {"es": description, "en": translate_text(description, "en") or description}
+             product.description = translate_field(description)
         if characteristics:
-            product.characteristics = {"es": characteristics, "en": translate_text(characteristics, "en") or characteristics}
+            product.characteristics = translate_field(characteristics)
         if price:    product.price  = float(price)
         if stock:    product.stock  = int(stock)
         if item_id and item_id != "undefined": product.item_id = int(item_id)

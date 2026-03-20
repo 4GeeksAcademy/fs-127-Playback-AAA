@@ -46,11 +46,11 @@ const SettingsTab = () => {
     if (!file) return;
     setImageError("");
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setImageError("Formato no válido. Usa JPG, PNG o WEBP");
+      setImageError(t("dashboard.settings.logoFormat"));
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      setImageError("La imagen no puede superar 2MB");
+      setImageError(t("dashboard.settings.logoSize"));
       return;
     }
     setImageFile(file);
@@ -98,11 +98,13 @@ const SettingsTab = () => {
             />
           ) : (
             <div className="w-24 h-24 rounded-xl border-2 border-dashed border-[rgb(var(--color-border))] flex items-center justify-center text-xs text-[rgb(var(--color-text-secondary))]">
-              Sin logo
+              {t("dashboard.settings.noLogo")}
             </div>
           )}
           <label className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
-            {preview ? "Cambiar logo" : "Subir logo"}
+            {preview
+              ? t("dashboard.settings.changeLogo")
+              : t("dashboard.settings.uploadLogo")}{" "}
             <input
               type="file"
               accept="image/*"
@@ -154,19 +156,18 @@ const SettingsTab = () => {
         </div>
 
         {/* Dirección */}
- <div className="border-t border-[rgb(var(--color-border))] pt-4 bg-[rgb(var(--color-bg))] p-2 rounded-lg">
-  <h4 className="text-xs text-[rgb(var(--color-text-secondary))] mb-3 font-medium">
-    {t("dashboard.settings.originAddress")}
-  </h4>
+        <div className="border-t border-[rgb(var(--color-border))] pt-4 bg-[rgb(var(--color-bg))] p-2 rounded-lg">
+          <h4 className="text-xs text-[rgb(var(--color-text-secondary))] mb-3 font-medium">
+            {t("dashboard.settings.originAddress")}
+          </h4>
 
-  <SellerAdressForm
-    form={form}
-    onChange={handleChange}
-    onLocationChange={(fields) =>
-      setForm((prev) => ({ ...prev, ...fields }))
-    }
-   
-  />
+          <SellerAdressForm
+            form={form}
+            onChange={handleChange}
+            onLocationChange={(fields) =>
+              setForm((prev) => ({ ...prev, ...fields }))
+            }
+          />
         </div>
       </div>
 

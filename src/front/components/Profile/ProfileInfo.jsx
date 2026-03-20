@@ -35,7 +35,7 @@ const Field = ({ label, value }) => (
 );
 
 const ProfileInfo = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const token = localStorage.getItem("token");
 
   const [user, setUser] = useState({
@@ -54,7 +54,7 @@ const ProfileInfo = () => {
   const [imageError, setImageError] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
   const [imageSuccess, setImageSuccess] = useState(false);
-  const { dispatch } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
 
   useEffect(() => {
     userService.getProfile(token).then(([data, error]) => {
@@ -129,7 +129,7 @@ const ProfileInfo = () => {
 
   const formatDate = (iso) => {
     if (!iso) return "—";
-    return new Date(iso).toLocaleDateString("es-ES", {
+    return new Date(iso).toLocaleDateString(i18n.language, {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -150,12 +150,11 @@ const ProfileInfo = () => {
           {t("profile.info.currentInfo")}
         </h2>
 
-        {/* Campos de info */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-          <Field label="Nombre" value={user.name} />
-          <Field label="Apellido" value={user.last_name} />
-          <Field label="Email" value={user.email} />
-          <Field label="Miembro desde" value={formatDate(user.created_at)} />
+          <Field label={t("profile.info.name")} value={user.name} />
+          <Field label={t("profile.info.lastName")} value={user.last_name} />
+          <Field label={t("profile.info.email")} value={user.email} />
+          <Field label={t("profile.info.memberSince")} value={formatDate(user.created_at)} />
         </div>
       </div>
 
@@ -198,9 +197,11 @@ const ProfileInfo = () => {
             )}
           </div>
           <div>
-            <p className="text-sm font-medium text-main mb-1">Foto de perfil</p>
+            <p className="text-sm font-medium text-main mb-1">
+              {t("profile.info.profilePhoto")}
+            </p>
             <p className="text-xs text-muted mb-2">
-              JPG, PNG o WEBP · máx. 2MB
+              {t("profile.info.photoFormats")}
             </p>
             <label className="inline-block bg-purple-600 text-white px-3 py-1.5 rounded-lg cursor-pointer hover:bg-purple-700 transition text-xs">
               {imageLoading
@@ -228,7 +229,9 @@ const ProfileInfo = () => {
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-xs text-muted mb-1">Nombre</label>
+              <label className="block text-xs text-muted mb-1">
+                {t("profile.info.name")}
+              </label>
               <input
                 name="name"
                 value={user.name}
@@ -241,7 +244,9 @@ const ProfileInfo = () => {
               )}
             </div>
             <div>
-              <label className="block text-xs text-muted mb-1">Apellido</label>
+              <label className="block text-xs text-muted mb-1">
+                {t("profile.info.lastName")}
+              </label>
               <input
                 name="last_name"
                 value={user.last_name}
@@ -257,7 +262,9 @@ const ProfileInfo = () => {
 
           {/* Email — solo lectura */}
           <div className="mb-5">
-            <label className="block text-xs text-muted mb-1">Email</label>
+            <label className="block text-xs text-muted mb-1">
+              {t("profile.info.email")}
+            </label>
             <input
               value={user.email}
               disabled
@@ -265,7 +272,7 @@ const ProfileInfo = () => {
               style={{ background: "var(--color-background-secondary)" }}
             />
             <p className="text-xs text-muted mt-1">
-              El email no se puede modificar
+              {t("profile.info.emailReadonly")}
             </p>
           </div>
 

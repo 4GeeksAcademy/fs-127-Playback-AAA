@@ -432,22 +432,19 @@ export default function ChatWidget() {
 
     setLastUserMsg(userText);
 
-    // Añade mensaje usuario
     setMessages((prev) => [...prev, { role: "user", content: userText }]);
 
-    // 👉 RESPUESTA ESTÁTICA (instantánea)
     if (STATIC_RESPONSES[userText]) {
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
           { role: "assistant", content: STATIC_RESPONSES[userText] },
         ]);
-      }, 300); // pequeño delay UX
+      }, 300);
 
       return;
     }
 
-    // 👉 SOLO IA si no existe respuesta
     setLoading(true);
 
     try {
