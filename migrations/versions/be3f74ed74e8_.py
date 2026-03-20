@@ -1,26 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/19a7165170db_.py
-<<<<<<< HEAD:migrations/versions/19a7165170db_.py
-Revision ID: 19a7165170db
+Revision ID: be3f74ed74e8
 Revises: 
-Create Date: 2026-03-19 16:32:11.781349
-=======
-<<<<<<<< HEAD:migrations/versions/fdc695322578_.py
-Revision ID: fdc695322578
-Revises: 
-Create Date: 2026-03-18 19:17:44.882078
-========
-Revision ID: e9dc2cea276b
-Revises: 
-Create Date: 2026-03-18 19:49:56.418414
->>>>>>>> 744c44af5cffb0c3d5d0e8518b2001939bcc52fb:migrations/versions/e9dc2cea276b_.py
->>>>>>> 758258057df3b4b932d5c584ce0f4dd9d540d0a7:migrations/versions/e9dc2cea276b_.py
-========
-Revision ID: 3baa6dcc40c5
-Revises: 
-Create Date: 2026-03-20 16:44:22.857440
->>>>>>>> c2e29fc9066c94babeef1628b33ab2eaaeef5925:migrations/versions/3baa6dcc40c5_.py
+Create Date: 2026-03-20 17:50:47.891035
 
 """
 from alembic import op
@@ -28,19 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/19a7165170db_.py
-<<<<<<< HEAD:migrations/versions/19a7165170db_.py
-revision = '19a7165170db'
-=======
-<<<<<<<< HEAD:migrations/versions/fdc695322578_.py
-revision = 'fdc695322578'
-========
-revision = 'e9dc2cea276b'
->>>>>>>> 744c44af5cffb0c3d5d0e8518b2001939bcc52fb:migrations/versions/e9dc2cea276b_.py
->>>>>>> 758258057df3b4b932d5c584ce0f4dd9d540d0a7:migrations/versions/e9dc2cea276b_.py
-========
-revision = '3baa6dcc40c5'
->>>>>>>> c2e29fc9066c94babeef1628b33ab2eaaeef5925:migrations/versions/3baa6dcc40c5_.py
+revision = 'be3f74ed74e8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -116,6 +86,7 @@ def upgrade():
     sa.Column('origin_community_code', sa.String(length=50), nullable=True),
     sa.Column('origin_community', sa.String(length=50), nullable=True),
     sa.Column('origin_province_code', sa.String(length=50), nullable=True),
+    sa.Column('origin_province', sa.String(length=100), nullable=True),
     sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
     sa.Column('rejection_reason', sa.Text(), nullable=True),
     sa.Column('stripe_account_id', sa.String(length=120), nullable=True),
