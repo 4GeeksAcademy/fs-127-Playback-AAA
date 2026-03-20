@@ -32,8 +32,8 @@ def create_incidence(order_id):
     if order.user_id != int(user_id):
         abort(403, description="No puedes abrir incidencias en pedidos de otros usuarios")
 
-    # Solo permitir incidencias si el pedido está entregado
-    if order.status.value != "delivered":
+    # Solo permitir incidencias si el pedido está entregado y pagados
+    if order.status.value not in ["paid", "confirmed", "processing", "shipped", "delivered"]:
         abort(400, description="Solo puedes abrir incidencias en pedidos entregados")
 
     # Evitar incidencias duplicadas
