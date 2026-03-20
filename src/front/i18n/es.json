@@ -1,6 +1,9 @@
 {
   "common": {
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "cancel": "Cancelar",
+    "sending": "Enviando...",
+    "send": "Enviar"
   },
   "home": {
     "loading": "Cargando...",
@@ -12,7 +15,10 @@
     "viewSubcategory": "Ver subcategoría"
   },
   "incidents": {
-    "title": "Incidencias"
+    "title": "Abrir incidencia",
+    "placeholder": "Cuéntanos qué ha pasado con tu pedido...",
+    "descriptionRequired": "La descripción es obligatoria",
+    "submitError": "Error al crear la incidencia"
   },
   "product": {
     "noFound": "No se han encontrado productos",
