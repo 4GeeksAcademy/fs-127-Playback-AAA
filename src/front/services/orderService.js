@@ -81,8 +81,7 @@ async function getSellerOrders(token) {
 // cuando se avanza a "shipped"). Por defecto es un objeto vacío para no romper
 // los usos existentes que solo pasan token, orderId y status.
 async function updateOrderStatus(token, orderId, status, extraData = {}) {
-       console.log("token:", token); 
-    console.log("orderId:", orderId, "status:", status);
+  
     const response = await fetch(`${backendUrl}/api/order/seller-orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
@@ -92,7 +91,6 @@ async function updateOrderStatus(token, orderId, status, extraData = {}) {
         body: JSON.stringify({ status, ...extraData })
     });
     const data = await response.json();
-        console.log("respuesta backend:", response.status, data); 
 
     if (!response.ok) return [null, data.description || "Error al actualizar estado"];
     return [data, null];

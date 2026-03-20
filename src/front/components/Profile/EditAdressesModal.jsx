@@ -29,9 +29,8 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
     setMunicipalities([]);
     initStep.current = 0;
     geoService.getCommunities().then(setCommunities);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
-  // Paso 1 — preseleccionar comunidad
   useEffect(() => {
     if (initStep.current !== 0) return;
     if (!address.community_code || !communities.length) return;
@@ -42,9 +41,8 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
       setProvinces(data);
       setLoadingProvinces(false);
     });
-  }, [communities]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [communities]); 
 
-  // Paso 2 — preseleccionar provincia
   useEffect(() => {
     if (initStep.current !== 1) return;
     if (!address.province_code || !provinces.length) return;
@@ -55,9 +53,9 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
       setMunicipalities(data);
       setLoadingMunicipalities(false);
     });
-  }, [provinces]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provinces]); 
 
-  // Paso 3 — preseleccionar municipio
+
   useEffect(() => {
     if (initStep.current !== 2) return;
     if (!municipalities.length) return;
@@ -66,8 +64,7 @@ const EditAddressModal = ({ address, onClose, onSaved }) => {
       (m) => (m.ALTERNATIVO_DMUN50 || m.DMUN50) === address.municipality,
     );
     if (found) setSelectedMunicipality(found.CMUN);
-  }, [municipalities]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  }, [municipalities]); 
   const handleCommunityChange = async (e) => {
     const val = e.target.value;
     setSelectedCommunity(val);

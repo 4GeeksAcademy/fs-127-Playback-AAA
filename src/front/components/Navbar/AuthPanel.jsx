@@ -2,10 +2,7 @@ import { LoginForm } from "./LoginForm";
 import { SignupForm } from "./SignupForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
-// Contenedor compartido entre desktop y móvil que gestiona las tres vistas de autenticación:
-// "login"  → formulario de inicio de sesión
-// "signup" → formulario de registro
-// "forgot" → formulario para pedir recuperación de contraseña por email
+
 export const AuthPanel = ({ view, onChangeView, onSuccess, t }) => (
   <div className="space-y-3">
     {view === "login" ? (
