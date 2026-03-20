@@ -190,6 +190,8 @@
     }
   },
   "checkout": {
+    "stockUnavailable": "Sin stock suficiente: {{items}}. Revisa tu carrito.",
+    "stockError": "Error al verificar el stock. Inténtalo de nuevo.",
     "successTitle": "¡Pago realizado!",
     "successMsg": "Tu pedido está siendo procesado. Te redirigimos a tus pedidos...",
     "payNow": "Pagar ahora",
