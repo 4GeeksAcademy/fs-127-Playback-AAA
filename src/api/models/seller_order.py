@@ -22,9 +22,9 @@ class SellerOrder(db.Model):
     status:        Mapped[SellerOrderStatus] = mapped_column( Enum(SellerOrderStatus), nullable=False, default=SellerOrderStatus.paid )
     tracking_code: Mapped[str] = mapped_column(String(100), nullable=True)
     carrier_name:  Mapped[str] = mapped_column(String(100), nullable=True)
-    shipped_at:    Mapped[datetime] = mapped_column(DateTime(), nullable=True)
-    cancellation_reason:    Mapped[str]      = mapped_column(String(500), nullable=True)  # ← NUEVO
-    created_at:    Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
+    shipped_at:    Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    cancellation_reason:    Mapped[str]      = mapped_column(String(500), nullable=True)
+    created_at:    Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     #---------------------ForeignKey
 

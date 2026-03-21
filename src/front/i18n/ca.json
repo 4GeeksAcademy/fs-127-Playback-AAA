@@ -1,4 +1,10 @@
 {
+  "common": {
+    "loading": "Carregant...",
+    "cancel": "Cancel·lar",
+    "sending": "Enviant...",
+    "send": "Enviar"
+  },
   "home": {
     "loading": "Carregant...",
     "topSales": "Top Vendes",
@@ -9,7 +15,10 @@
     "viewSubcategory": "Veure subcategoria"
   },
   "incidents": {
-    "title": "Incidències"
+    "title": "Incidències",
+    "placeholder": "Explica'ns què ha passat amb la teva comanda...",
+    "descriptionRequired": "La descripció és obligatòria",
+    "submitError": "Error en crear la incidència"
   },
   "product": {
     "noFound": "No s'han trobat productes",
@@ -17,7 +26,7 @@
     "description": "Sense descripció disponible.",
     "featuresLabel": "Característiques",
     "features": "Sense característiques especificades.",
-    "shippingLabel": "Enviament & Devolucions",
+    "shippingLabel": "Enviament i Devolucions",
     "shipping": "Enviaments en 48-72h laborables. Despeses d'enviament gratuïtes per a comandes superiors a 100€. Devolucions gratuïtes durant els primers 30 dies.",
     "inStock": "En estoc",
     "outOfStock": "Sense estoc",
@@ -26,8 +35,8 @@
     "addToCart": "Afegir a la cistella",
     "addedToCart": "Producte afegit a la teva cistella",
     "reviews": "Opinions de clients",
-    "loginRequired": "Has d'iniciar sessió per afegir productes al carret",
-    "cartError": "Error en afegir al carret",
+    "loginRequired": "Has d'iniciar sessió per afegir productes a la cistella",
+    "cartError": "Error en afegir a la cistella",
     "characteristicsLabel": "Característiques",
     "characteristics": "Sense característiques",
     "reviewsCount": "Total ressenyes",
@@ -38,8 +47,8 @@
     "signupTitle": "Crea el teu compte",
     "nameLabel": "Nom",
     "namePlaceholder": "El teu nom",
-    "lastNameLabel": "Cognom",
-    "lastNamePlaceholder": "El teu cognom",
+    "lastNameLabel": "Cognoms",
+    "lastNamePlaceholder": "Els teus cognoms",
     "passwordPlaceholder": "La teva contrasenya",
     "password": "Contrasenya",
     "loginButton": "Iniciar sessió",
@@ -50,7 +59,7 @@
     "forgotPasswordButton": "Recupera-la aquí",
     "profile": "Perfil",
     "orders": "Comandes",
-    "favorites": "Favorits",
+    "favorites": "Preferits",
     "cart": "Cistella",
     "logout": "Tancar sessió",
     "labelCategories": "Categories",
@@ -60,7 +69,7 @@
     "opportunities": "Oportunitats",
     "onSale": "En oferta",
     "lowStock": "Últimes unitats",
-    "refurbished": "Recondicionat",
+    "refurbished": "Reacondicionat",
     "viewAll": "Veure tots",
     "theme": "Tema",
     "forgotTitle": "Recuperar contrasenya",
@@ -68,19 +77,19 @@
     "forgotSuccess": "Si el correu existeix rebràs instruccions en breu",
     "missingToken": "Token no trobat. Utilitza l'enllaç del correu.",
     "goHome": "Anar a l'inici",
-    "backToLogin": "Tornar a Inici de sessió",
+    "backToLogin": "Tornar a Iniciar sessió",
     "resetTitle": "Restableix la teva contrasenya",
     "newPasswordPlaceholder": "La teva nova contrasenya",
     "confirmPasswordPlaceholder": "Confirma la teva nova contrasenya",
     "resetButton": "Restablir contrasenya",
-    "resetSuccess": "La teva contrasenya s'ha restablit correctament. Ara pots iniciar sessió amb la teva nova contrasenya."
+    "resetSuccess": "La teva contrasenya ha estat restablerta correctament. Ara pots iniciar sessió amb la teva nova contrasenya."
   },
   "enums": {
     "productCondition": {
       "new": "Nou",
       "used": "Usat",
-      "refurbished": "Recondicionat",
-      "broken": "Espatllat"
+      "refurbished": "Reacondicionat",
+      "broken": "Trencat"
     }
   },
   "search": {
@@ -125,7 +134,7 @@
     "stepShipping": "Enviament i Banca",
     "stepConfirm": "Confirmació",
     "name": "Nom",
-    "lastName": "Cognom",
+    "lastName": "Cognoms",
     "email": "Correu electrònic",
     "password": "Contrasenya",
     "confirmPassword": "Confirmar contrasenya",
@@ -138,6 +147,12 @@
     "city": "Ciutat",
     "zip": "Codi postal",
     "country": "País",
+    "community": "Comunitat autònoma",
+    "selectCommunity": "Selecciona comunitat",
+    "province": "Província",
+    "selectProvince": "Selecciona província",
+    "municipality": "Municipi",
+    "selectMunicipality": "Selecciona municipi",
     "iban": "IBAN",
     "accountHolder": "Titular del compte",
     "reviewTitle": "Revisa la teva sol·licitud",
@@ -162,25 +177,27 @@
     "registerSubtitle": "Uneix-te a la nostra comunitat de venedors i arriba a milers de compradors.",
     "pendingTitle": "Sol·licitud en revisió",
     "pendingDesc": "Estem revisant la teva sol·licitud. T'avisarem quan estigui aprovada.",
-    "verifiedTitle": "La teva botiga està activa!",
+    "verifiedTitle": "La teva botiga és activa!",
     "verifiedDesc": "Ja pots gestionar els teus productes i comandes des del teu panell de venedor.",
     "rejectedTitle": "Sol·licitud rebutjada",
     "rejectedDesc": "La teva sol·licitud no ha estat aprovada. Contacta amb suport per a més informació.",
     "editTitle": "Corregir sol·licitud",
     "editSubtitle": "Corregeix les dades indicades i torna a enviar la teva sol·licitud.",
-    "resubmitNotice": "La teva sol·licitud corregida tornarà a estat pendent per a la seva revisió.",
+    "resubmitNotice": "La teva sol·licitud corregida tornarà a l'estat pendent per a la seva revisió.",
     "resubmit": "Reenviar sol·licitud",
     "rejectionReason": "Motiu del rebuig",
-    "cancelApplicationDesc": "Si no vols corregir la sol·licitud, pots cancel·lar-la i tornar a començar.",
+    "cancelApplicationDesc": "Si no vols corregir la sol·licitud, pots cancel·lar-la i començar de nou.",
     "cancelApplication": "Cancel·lar sol·licitud",
     "stripe": {
       "title": "Connecta el teu compte de pagaments",
-      "desc": "Per rebre pagaments de les teves vendes necessites connectar el teu compte amb Stripe. El procés triga menys de 5 minuts.",
+      "desc": "Per rebre pagaments de les teves vendes has de connectar el teu compte amb Stripe. El procés tarda menys de 5 minuts.",
       "opening": "Obrint...",
       "cta": "Registrar-me a Stripe →"
     }
   },
   "checkout": {
+    "stockUnavailable": "Estoc insuficient: {{items}}. Revisa la teva cistella.",
+    "stockError": "Error en verificar l'estoc. Torna-ho a intentar.",
     "successTitle": "Pagament realitzat!",
     "successMsg": "La teva comanda s'està processant. Et redirigim a les teves comandes...",
     "payNow": "Pagar ara",
@@ -198,8 +215,8 @@
     "completePaymentLeft": "Completa el pagament al formulari de l'esquerra.",
     "addNewAddress": "Afegir nova adreça",
     "newAddress": "Nova adreça",
-    "save": "Desar",
-    "saving": "Desant...",
+    "save": "Guardar",
+    "saving": "Guardant...",
     "selectAddress": "Selecciona adreça d'enviament i facturació",
     "shippingAddress": "Adreça d'enviament",
     "billingAddress": "Adreça de facturació",
@@ -209,7 +226,7 @@
     "couponPlaceholder": "Introdueix el teu codi",
     "couponApply": "Aplicar",
     "couponApplied": "Cupó aplicat",
-    "couponInvalid": "Codi invàlid o expirat",
+    "couponInvalid": "Codi no vàlid o expirat",
     "addr": {
       "fullName": "Nom complet",
       "address": "Adreça",
@@ -222,7 +239,7 @@
   },
   "cart": {
     "title": "Cistella",
-    "empty": "La teva cistella està buida",
+    "empty": "La teva cistella és buida",
     "remove": "Eliminar"
   },
   "orders": {
@@ -237,16 +254,23 @@
     "billingAddress": "Adreça de facturació",
     "recent": "Comandes recents",
     "viewAll": "Veure totes les comandes",
-    "openIncident": "Incidència / Devolució"
+    "openIncident": "Incidència / Devolució",
+    "cancelOrder": "Cancel·lar comanda",
+    "confirmCancel": "Sí, cancel·lar",
+    "goBack": "Tornar",
+    "cancelledBySeller": "Aquest enviament va ser cancel·lat pel venedor.",
+    "cancelledByYou": "Has cancel·lat aquesta comanda.",
+    "cancelReason": "Motiu",
+    "refundPending": "Es processarà el reemborsament de l'import en els propers dies hàbils."
   },
   "favorites": {
-    "title": "Els teus favorits",
-    "empty": "Encara no tens favorits"
+    "title": "Els teus preferits",
+    "empty": "Encara no tens preferits"
   },
   "profile": {
     "myAccount": "Les meves dades",
     "tabs": {
-      "dashboard": "Tauler de control",
+      "dashboard": "Panell de control",
       "info": "Informació",
       "addresses": "Adreces",
       "security": "Seguretat",
@@ -255,7 +279,7 @@
     "manage": "Gestionar",
     "memberSince": "Client des de {{date}}",
     "edit": "Editar",
-    "favorites": "Favorits",
+    "favorites": "Preferits",
     "completeProfile": "Completa el teu perfil",
     "user": "Usuari",
     "userPanel": "Panell d'Usuari",
@@ -263,7 +287,7 @@
       "currentInfo": "Informació Actual",
       "editInfo": "Editar Informació",
       "nameRequired": "El nom és obligatori",
-      "lastNameRequired": "El cognom és obligatori",
+      "lastNameRequired": "Els cognoms són obligatoris",
       "imageFormat": "Format no permès. Usa JPG, PNG o WEBP.",
       "imageSize": "La imatge no pot superar els 2MB.",
       "imageUploadError": "Error en pujar la imatge",
@@ -271,14 +295,14 @@
       "connectionError": "Error de connexió",
       "uploading": "Pujant...",
       "changeImage": "Canviar Imatge",
-      "saving": "Desant...",
-      "saveChanges": "Desar Canvis",
-      "confirmChanges": "Estàs segur de desar els canvis?",
+      "saving": "Guardant...",
+      "saveChanges": "Guardar Canvis",
+      "confirmChanges": "Estàs segur de guardar els canvis?",
       "confirm": "Confirmar",
       "close": "Tancar",
       "profileUpdated": "Perfil actualitzat correctament",
       "name": "Nom",
-      "lastName": "Cognom",
+      "lastName": "Cognoms",
       "email": "Correu electrònic",
       "memberSince": "Membre des de",
       "profilePhoto": "Foto de perfil",
@@ -291,10 +315,10 @@
       "setMain": "Usar com a principal",
       "edit": "Editar",
       "delete": "Eliminar",
-      "empty": "No tens adreces desades.",
+      "empty": "No tens adreces guardades.",
       "addNew": "Afegir Nova Adreça",
-      "save": "Desar Adreça",
-      "saved": "Adreça desada correctament",
+      "save": "Guardar Adreça",
+      "saved": "Adreça guardada correctament",
       "municipality": "Municipi"
     },
     "security": {
@@ -338,8 +362,8 @@
       "email": "Correu electrònic",
       "role": "Rol",
       "account": "Compte",
-      "active": "Activa",
-      "inactive": "Inactiva",
+      "active": "Actiu",
+      "inactive": "Inactiu",
       "storeData": "Dades de la botiga",
       "store": "Botiga",
       "nifCif": "NIF / CIF",
@@ -373,7 +397,7 @@
   },
   "dashboard": {
     "seller": {
-      "title": "La meva Botiga",
+      "title": "La Meva Botiga",
       "desc": "Gestiona les teves comandes, productes i guanys des d'aquí.",
       "tabs": {
         "overview": "Resum",
@@ -399,6 +423,7 @@
       "found": "comandes trobades",
       "noOrders": "Encara no tens comandes.",
       "noAddress": "No disponible",
+      "refundIssued": "Reemborsament tramitat al comprador.",
       "table": {
         "order": "Comanda",
         "customer": "Client",
@@ -416,19 +441,21 @@
         "summary": "Resum",
         "statusSection": "Estat de la comanda",
         "current": "(actual)",
-        "saving": "Desant…",
-        "saveStatus": "Desar canvi d'estat",
+        "saving": "Guardant…",
+        "saveStatus": "Guardar canvi d'estat",
         "autoConfirming": "Confirmant…",
         "advanceTo": "Avançar a",
         "cancelOrder": "Cancel·lar comanda",
         "confirmCancel": "Sí, cancel·lar",
         "goBack": "Tornar",
-        "shippedNote": "La comanda està en camí. El lliurament el confirmarà el comprador o el transportista.",
+        "shippedNote": "La comanda està en camí. L'entrega la confirmarà el comprador o el transportista.",
         "shippingData": "Dades d'enviament",
         "carrier": "Transportista",
         "trackingCode": "Codi de seguiment",
         "trackingHint": "El comprador rebrà aquest codi per correu per fer el seguiment.",
-        "close": "Tancar"
+        "close": "Tancar",
+        "cancelReasonLabel": "Indica el motiu de la cancel·lació",
+        "cancelReasonPlaceholder": "Ex. Producte sense estoc, error en la comanda…"
       },
       "status": {
         "pending": "Pendent",
@@ -436,7 +463,7 @@
         "confirmed": "Confirmat",
         "processing": "En preparació",
         "shipped": "Enviat",
-        "delivered": "Lliurat",
+        "delivered": "Entregat",
         "cancelled": "Cancel·lat"
       },
       "payment": {
@@ -458,8 +485,8 @@
       "edit": "Editar",
       "delete": "Eliminar",
       "deleted": "Producte eliminat",
-      "stockError": "Error en actualitzar estoc",
-      "saved": "Producte desat",
+      "stockError": "Error en actualitzar l'estoc",
+      "saved": "Producte guardat",
       "table": {
         "product": "Producte",
         "price": "Preu",
@@ -478,7 +505,7 @@
         "name": "Nom",
         "category": "Categoria",
         "subcategory": "Subcategoria",
-        "item": "Item",
+        "item": "Article",
         "price": "Preu (€)",
         "stock": "Estoc",
         "discount": "Descompte (%)",
@@ -487,18 +514,18 @@
         "description": "Descripció",
         "selectCategory": "Selecciona categoria",
         "selectSubcategory": "Selecciona subcategoria",
-        "selectItem": "Selecciona item",
-        "saving": "Desant…",
-        "save": "Desar",
+        "selectItem": "Selecciona article",
+        "saving": "Guardant…",
+        "save": "Guardar",
         "characteristics": "Característiques",
         "addImages": "Altres imatges",
         "noOtherImages": "No hi ha imatges addicionals",
         "otherImages": "Imatges addicionals",
         "optional": "Opcional",
         "dimensions": "Dimensions",
-        "height": "Alt",
-        "width": "Ample",
-        "length": "Llarg"
+        "height": "Alçada",
+        "width": "Amplada",
+        "length": "Llargada"
       }
     },
     "overview": {
@@ -509,7 +536,7 @@
       "noStock": "sense estoc",
       "attention": "ATENCIÓ",
       "recentActivity": "Activitat recent",
-      "noActivity": "No hi ha activitat encara.",
+      "noActivity": "Encara no hi ha activitat.",
       "customer": "Client"
     },
     "settings": {
@@ -523,10 +550,10 @@
       "country": "País",
       "description": "Descripció breu",
       "originAddress": "Adreça d'origen",
-      "saving": "Desant…",
-      "save": "Desar canvis",
-      "success": "Desat correctament.",
-      "error": "Error en desar.",
+      "saving": "Guardant…",
+      "save": "Guardar canvis",
+      "success": "Guardat correctament.",
+      "error": "Error en guardar.",
       "editAddress": "Modificar adreça",
       "community": "Comunitat autònoma",
       "loadingCommunity": "Carregant...",
@@ -540,7 +567,7 @@
       "zipPlaceholder": "Codi postal",
       "addressPlaceholder": "Carrer i número",
       "countryPlaceholder": "País",
-      "saveAddress": "Desar adreça",
+      "saveAddress": "Guardar adreça",
       "addAddress": "Afegir adreça",
       "noLogo": "Sense logo",
       "changeLogo": "Canviar logo",
@@ -604,8 +631,8 @@
           "desc": "Correus transaccionals (registre, comanda, estat d'enviament) via Brevo SMTP."
         },
         {
-          "title": "Internacionalització ES / EN",
-          "desc": "Interfície disponible en espanyol i anglès amb suport per a mode clar i fosc."
+          "title": "Internacionalització ES / CA",
+          "desc": "Interfície disponible en espanyol i català amb suport per a mode clar i fosc."
         }
       ],
       "wip": {

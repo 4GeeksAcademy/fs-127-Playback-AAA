@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: b9fdc4b0178d
+Revision ID: bca05264f03a
 Revises: 
-Create Date: 2026-03-21 08:49:38.997861
+Create Date: 2026-03-21 21:01:20.572109
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b9fdc4b0178d'
+revision = 'bca05264f03a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,7 +46,7 @@ def upgrade():
     sa.Column('password', sa.String(length=255), nullable=False),
     sa.Column('image_url', sa.String(length=500), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('role', sa.Enum('buyer', 'seller', 'admin', name='rolename'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
@@ -65,9 +65,9 @@ def upgrade():
     sa.Column('province_code', sa.String(length=10), nullable=True),
     sa.Column('country', sa.String(length=100), nullable=False),
     sa.Column('is_deleted', sa.Boolean(), nullable=False),
-    sa.Column('deleted_at', sa.DateTime(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -86,11 +86,12 @@ def upgrade():
     sa.Column('origin_community_code', sa.String(length=50), nullable=True),
     sa.Column('origin_community', sa.String(length=50), nullable=True),
     sa.Column('origin_province_code', sa.String(length=50), nullable=True),
+    sa.Column('origin_province', sa.String(length=100), nullable=True),
     sa.Column('status', sa.Enum('pending', 'verified', 'rejected', name='sellerstatus'), nullable=False),
     sa.Column('rejection_reason', sa.Text(), nullable=True),
     sa.Column('stripe_account_id', sa.String(length=120), nullable=True),
     sa.Column('stripe_onboarding_completed', sa.Boolean(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -128,7 +129,7 @@ def upgrade():
     sa.Column('shipping_cost', sa.Float(), nullable=False),
     sa.Column('status', sa.Enum('pending', 'paid', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='status'), nullable=False),
     sa.Column('stripe_payment_intent_id', sa.String(length=255), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('shipping_address_id', sa.Integer(), nullable=True),
     sa.Column('billing_address_id', sa.Integer(), nullable=True),
@@ -142,8 +143,8 @@ def upgrade():
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('description', sa.String(length=1000), nullable=False),
     sa.Column('status', sa.Enum('open', 'in_progress', 'resolved', 'rejected', name='incident_status'), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
@@ -165,9 +166,9 @@ def upgrade():
     sa.Column('stock', sa.Integer(), nullable=False),
     sa.Column('discount', sa.Float(), nullable=False),
     sa.Column('condition', sa.Enum('new', 'used', 'refurbished', 'broken', name='productcondition'), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('is_deleted', sa.Boolean(), nullable=False),
-    sa.Column('deleted_at', sa.DateTime(), nullable=True),
+    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['item.id'], ),
@@ -179,8 +180,9 @@ def upgrade():
     sa.Column('status', sa.Enum('paid', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', name='sellerorderstatus'), nullable=False),
     sa.Column('tracking_code', sa.String(length=100), nullable=True),
     sa.Column('carrier_name', sa.String(length=100), nullable=True),
-    sa.Column('shipped_at', sa.DateTime(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('shipped_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('cancellation_reason', sa.String(length=500), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=False),
     sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
@@ -224,8 +226,8 @@ def upgrade():
     sa.Column('title', sa.String(length=255), nullable=True),
     sa.Column('comment', sa.String(length=2000), nullable=True),
     sa.Column('is_visible', sa.Boolean(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=False),
