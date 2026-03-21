@@ -196,14 +196,18 @@ def _handle_payment_succeeded(intent):
             for seller_id, data in seller_breakdown.items():
                 transfer_amount_cents = int(round(data["transfer_amount"] * 100))
 
-                if transfer_amount_cents > 0:
-                    stripe.Transfer.create(
-                        amount=transfer_amount_cents,
-                        currency="eur",
-                        destination=data["stripe_account_id"],
-                        transfer_group=f"order_{order_id}",
-                        metadata={"order_id": order_id, "seller_id": str(seller_id)},
-                    )
+                # Recuperar el charge_id del PaymentIntent
+                payment_intent = stripe.PaymentIntent.retrieve(intent["id"])
+                charge_id = payment_intent["latest_charge"]
+
+                stripe.Transfer.create(
+                    amount=transfer_amount_cents,
+                    currency="eur",
+                    destination=data["stripe_account_id"],
+                    source_transaction=charge_id,   # ← vinculado al cobro real
+                    transfer_group=f"order_{order_id}",
+                    metadata={"order_id": order_id, "seller_id": str(seller_id)},
+                )
 
         except Exception as e:
             # Log del error pero no abortamos — el pedido se marca como pagado igualmente

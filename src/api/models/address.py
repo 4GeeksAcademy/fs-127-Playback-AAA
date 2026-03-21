@@ -24,9 +24,9 @@ class Address(db.Model):
     province_code = db.Column(db.String(10), nullable=True)
     country: Mapped[str] = mapped_column(String(100), nullable=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
-    deleted_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True, default=None)
-    created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
-    updated_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     #----------------------ForeignKey
 

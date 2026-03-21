@@ -11,6 +11,7 @@ from deep_translator import GoogleTranslator
 import cloudinary.uploader
 from api.models.seller import Seller
 from datetime import datetime, timezone
+import unicodedata
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
@@ -29,6 +30,8 @@ def translate_field(text):
             result[lang] = text
     return result
 
+def strip_accents(s):
+    return unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode('ascii')
 
 @product_bp.route('', methods=['GET'])
 def get_products():
@@ -40,7 +43,7 @@ def get_products():
 @product_bp.route('/search', methods=['GET'])
 def search_products():
     locale = request.args.get("locale", "es")
-    q = request.args.get("q", "").strip().lower()
+    q = strip_accents(request.args.get("q", "").strip().lower())
     cat_slug = request.args.get("category", "").strip().lower()
     sub_slug = request.args.get("subcategory", "").strip().lower()
     item_slug = request.args.get("item", "").strip().lower()
@@ -52,8 +55,7 @@ def search_products():
     on_sale = request.args.get("on_sale", "false").lower() == "true"
     low_stock = request.args.get("low_stock", "false").lower() == "true"
     conditions_param = request.args.get("condition", "").strip()
-    conditions = [c.strip() for c in conditions_param.split(",")
-                  if c.strip()] if conditions_param else []
+    conditions = [c.strip() for c in conditions_param.split(",") if c.strip()] if conditions_param else []
 
     products = Product.query.filter_by(is_deleted=False).options(
         joinedload(Product.item)
@@ -87,16 +89,28 @@ def search_products():
             continue
 
         if q:
-            searchable = " ".join(filter(None, [
-                p.name.get("es", ""),          p.name.get("en", ""),
-                (p.description or {}).get("es", ""), (p.description or {}).get("en", ""),
+            searchable = strip_accents(" ".join(filter(None, [
+                p.name.get("es", ""),
+                p.name.get("en", ""),
+                p.name.get("ca", ""),
+                p.name.get("gl", ""),
+                (p.description or {}).get("es", ""),
+                (p.description or {}).get("en", ""),
+                (p.description or {}).get("ca", ""),
+                (p.description or {}).get("gl", ""),
                 item.name.get("es", "") if item else "",
                 item.name.get("en", "") if item else "",
+                item.name.get("ca", "") if item else "",
+                item.name.get("gl", "") if item else "",
                 sub.name.get("es", "") if sub else "",
                 sub.name.get("en", "") if sub else "",
+                sub.name.get("ca", "") if sub else "",
+                sub.name.get("gl", "") if sub else "",
                 cat.name.get("es", "") if cat else "",
                 cat.name.get("en", "") if cat else "",
-            ])).lower()
+                cat.name.get("ca", "") if cat else "",
+                cat.name.get("gl", "") if cat else "",
+            ]))).lower()
             if q not in searchable:
                 continue
 
@@ -279,10 +293,8 @@ def update_product(id):
     try:
         if name:
             product.name = translate_field(name)
-        if description:
-             product.description = translate_field(description)
-        if characteristics:
-            product.characteristics = translate_field(characteristics)
+        if description: product.description = translate_field(description)
+        if characteristics: product.characteristics = translate_field(characteristics)
         if price:    product.price  = float(price)
         if stock:    product.stock  = int(stock)
         if item_id and item_id != "undefined": product.item_id = int(item_id)

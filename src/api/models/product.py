@@ -1,6 +1,6 @@
 from sqlalchemy import String, DateTime, Float, Integer, ForeignKey, Text, JSON, Enum, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from api.models import db
 import enum
 
@@ -31,9 +31,9 @@ class Product(db.Model):
     stock: Mapped[int] = mapped_column(Integer(), nullable=False, default=0)
     discount: Mapped[float] = mapped_column(Float(), nullable=False, default=0)
     condition: Mapped[ProductCondition] = mapped_column( Enum(ProductCondition), nullable=False, default=ProductCondition.new )
-    created_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     is_deleted: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
-    deleted_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True, default=None)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True, default=None)
 
     # ── ForeignKey ─────────────────────────────────────────────────────────────
     item_id: Mapped[int] = mapped_column(ForeignKey("item.id"), nullable=False)
