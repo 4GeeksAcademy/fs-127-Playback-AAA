@@ -131,7 +131,7 @@ export const TopSales = () => {
     <section className="mt-8">
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
+          className={`fixed bottom-6 left-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
             toast.type === "auth" || toast.type === "sin_stock"
               ? "bg-red-600 dark:bg-red-500"
               : "bg-stone-900 dark:bg-stone-100"
