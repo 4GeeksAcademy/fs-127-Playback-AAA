@@ -12,6 +12,7 @@ from threading import Thread
 from flask import current_app
 import stripe
 import os
+from api.emails.brevo_service import send_email
 
 
 
@@ -441,7 +442,7 @@ def _send_email_async(app, message):
     with app.app_context():
         try:
             from extensions import mail
-            mail.send(message)
+            send_email(message)
         except Exception as e:
             print(f"[Order] Error al enviar email: {str(e)}")
 

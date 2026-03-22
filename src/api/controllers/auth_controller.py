@@ -10,6 +10,7 @@ from threading import Thread
 from flask import current_app
 from api.emails import build_welcome_email, build_reset_password_email
 from api.utils import generate_initial_avatar
+from api.emails.brevo_service import send_email
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -20,7 +21,7 @@ auth_bp = Blueprint('auth', __name__)
 def _send_email_async(app, message):
     with app.app_context():
         try:
-            mail.send(message)
+            send_email(message)
         except Exception as e:
             print(f"[Auth] Error al enviar email: {str(e)}")
 

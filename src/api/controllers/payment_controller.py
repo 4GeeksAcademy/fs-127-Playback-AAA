@@ -10,6 +10,7 @@ from collections import defaultdict
 from api.models.seller_order import SellerOrder, SellerOrderStatus
 from threading import Thread
 from flask import current_app
+from api.emails.brevo_service import send_email
 
 payment_bp = Blueprint('payment', __name__, url_prefix='/payment')
 
@@ -24,7 +25,7 @@ MINIMUM_COMMISSION = float(os.getenv("PLATFORM_MINIMUM_COMMISSION", 1.0))
 def _send_email_async(app, message):
     with app.app_context():
         try:
-            mail.send(message)
+            send_email(message)
         except Exception as e:
             print(f"[Payment] Error al enviar email: {str(e)}")
 
