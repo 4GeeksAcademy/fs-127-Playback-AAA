@@ -10,6 +10,7 @@ from extensions import mail
 from api.emails import build_seller_registration_email, build_new_seller_admin_email
 from threading import Thread
 from flask import current_app
+from api.emails.brevo_service import send_email
 
 
 seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
@@ -21,7 +22,7 @@ seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
 def _send_email_async(app, message):
     with app.app_context():
         try:
-            mail.send(message)
+            send_email(message)
         except Exception as e:
             print(f"[Seller] Error al enviar email: {str(e)}")
 
