@@ -15,30 +15,23 @@ class Review(db.Model):
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=True)
     comment: Mapped[str] = mapped_column(String(2000), nullable=True)
-    is_visible: Mapped[bool] = mapped_column(
-        Boolean, default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(), default=datetime.now(timezone.utc))
-    updated_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(
-        timezone.utc), onupdate=datetime.now(timezone.utc))
+    is_visible: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # ----------------------ForeignKey
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    product_id: Mapped[int] = mapped_column(
-        ForeignKey("product.id"), nullable=False)
-    order_id: Mapped[int] = mapped_column(
-        ForeignKey("order.id"), nullable=False)
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"), nullable=False)
+    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=False)
 
     __table_args__ = (
-        CheckConstraint('rating >= 1 AND rating <= 5',
-                        name='check_rating_range'),
+        CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
     )
 
     # ----------------------RelationShip
     user: Mapped["User"] = relationship("User", back_populates="reviews")
-    product: Mapped["Product"] = relationship(
-        "Product", back_populates="reviews")
+    product: Mapped["Product"] = relationship("Product", back_populates="reviews")
     order: Mapped["Order"] = relationship("Order", back_populates="reviews")
 
     def __repr__(self):

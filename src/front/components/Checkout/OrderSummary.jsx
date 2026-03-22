@@ -3,15 +3,33 @@
 import { useTranslation } from "react-i18next";
 import { ProductPrice } from "../Common/ProductPrice";
 
+const ENVIO_GRATIS_DESDE = 100;
+const PESO_MINIMO_KG     = 0.5; // mismo fallback que el backend
+
 // Misma lógica que el backend — país por defecto España (en el carrito aún no sabemos la dirección)
 const calcularEnvio = (subtotal, cart, pais = "españa") => {
-    const ENVIO_GRATIS_DESDE = 100;
     if (subtotal >= ENVIO_GRATIS_DESDE) return 0;
 
     const ESPAÑA = ["españa", "espana", "spain", "es", "esp"];
     if (!ESPAÑA.includes(pais.trim().toLowerCase())) return 15.00;
 
-    const pesoTotal = cart.reduce((acc, item) => acc + (item.weight || 0) * item.quantity, 0);
+    const pesoVolumetrico = (item) => {
+        if (item.height && item.width && item.length) {
+            return (item.height * item.width * item.length) / 5000;
+        }
+        return 0;
+    };
+
+    const pesoFacturable = (item) => {
+        const real = item.weight || 0;
+        const vol  = pesoVolumetrico(item);
+        const max  = Math.max(real, vol);
+        return max > 0 ? max : PESO_MINIMO_KG;
+    };
+
+    const pesoTotal = cart.reduce((acc, item) =>
+        acc + pesoFacturable(item) * item.quantity, 0
+    );
 
     const tramos = [
         [1,        3.99],
@@ -23,6 +41,8 @@ const calcularEnvio = (subtotal, cart, pais = "españa") => {
     for (const [limite, coste] of tramos) {
         if (pesoTotal <= limite) return coste;
     }
+
+    return 14.99;
 };
 
 const OrderSummary = ({ step, loading, onContinue, cart, disabled, shippingCost, country, coupon }) => {
@@ -40,7 +60,7 @@ const OrderSummary = ({ step, loading, onContinue, cart, disabled, shippingCost,
     // Si el padre ya conoce el coste real (post-checkout), lo usa; si no, lo estima
     const shipping = shippingCost !== undefined
         ? shippingCost
-        : calcularEnvio(subtotal, cart, country);
+        : calcularEnvio(subtotal, cart, country || "españa");
 
     // Aplicar cupón
     let discountAmount = 0;
@@ -67,28 +87,22 @@ const OrderSummary = ({ step, loading, onContinue, cart, disabled, shippingCost,
             {cart.length > 0 && (
                 <div className="space-y-4 mb-6">
                     {cart.map(item => {
-
                         const name = item.name?.[i18n.language] || item.name?.es || item.name?.en;
-
                         return (
                             <div key={item.id} className="flex items-center gap-3">
-
                                 <img
                                     src={item.image_url}
                                     alt={name}
                                     className="w-14 h-14 object-cover rounded-lg border border-main"
                                 />
-
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-main truncate">{name}</p>
                                     <p className="text-xs text-faint">x{item.quantity}</p>
                                     <ProductPrice price={item.price} discount={item.discount} />
                                 </div>
-
                                 <p className="text-sm font-medium text-main whitespace-nowrap">
                                     {(item.price * (1 - (item.discount || 0) / 100) * item.quantity).toFixed(2)} €
                                 </p>
-
                             </div>
                         );
                     })}

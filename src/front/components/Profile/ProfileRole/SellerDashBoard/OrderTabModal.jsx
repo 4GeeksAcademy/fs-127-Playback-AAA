@@ -70,6 +70,7 @@ const OrderTabModal = ({ order, onClose, onUpdated }) => {
   const [confirming,     setConfirming]     = useState(false); // auto-advance en curso
   const [error,          setError]          = useState(null);
   const [confirmCancel,  setConfirmCancel]  = useState(false);
+  const [cancelReason,   setCancelReason]   = useState("");
 
   // Estado para el formulario de envío (solo se usa cuando nextStatus === "shipped")
   const [trackingCode, setTrackingCode] = useState("");
@@ -119,7 +120,9 @@ const OrderTabModal = ({ order, onClose, onUpdated }) => {
     // Si estamos marcando como enviado, incluimos código y transportista
     const extraData = targetStatus === "shipped"
       ? { tracking_code: trackingCode.trim(), carrier_name: carrierName }
-      : {};
+      : targetStatus === "cancelled"
+        ? { cancellation_reason: cancelReason.trim() }
+        : {};
 
     const [, err] = await orderService.updateOrderStatus(
       token,
@@ -338,21 +341,34 @@ const OrderTabModal = ({ order, onClose, onUpdated }) => {
                       {t("dashboard.orders.modal.cancelOrder") || "Cancelar pedido"}
                     </button>
                   ) : (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleUpdateStatus("cancelled")}
-                        disabled={saving}
-                        className="flex-1 text-sm py-2 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition"
-                      >
-                        {t("dashboard.orders.modal.confirmCancel") || "Sí, cancelar"}
-                      </button>
-                      <button
-                        onClick={() => setConfirmCancel(false)}
-                        disabled={saving}
-                        className="flex-1 text-sm py-2 px-4 rounded-xl border border-main text-sub hover:bg-subtle transition"
-                      >
-                        {t("dashboard.orders.modal.goBack") || "Volver"}
-                      </button>
+                    <div className="space-y-2">
+                      <p className="text-xs text-faint">
+                        {t("dashboard.orders.modal.cancelReasonLabel") || "Indica el motivo de la cancelación"}
+                        <span className="text-red-500 ml-0.5">*</span>
+                      </p>
+                      <textarea
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                        placeholder={t("dashboard.orders.modal.cancelReasonPlaceholder") || "Ej. Producto sin stock, error en el pedido…"}
+                        rows={3}
+                        className="input w-full resize-none text-sm"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleUpdateStatus("cancelled")}
+                          disabled={saving || cancelReason.trim().length === 0}
+                          className="flex-1 text-sm py-2 px-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-medium transition disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          {t("dashboard.orders.modal.confirmCancel") || "Sí, cancelar"}
+                        </button>
+                        <button
+                          onClick={() => { setConfirmCancel(false); setCancelReason(""); }}
+                          disabled={saving}
+                          className="flex-1 text-sm py-2 px-4 rounded-xl border border-main text-sub hover:bg-subtle transition"
+                        >
+                          {t("dashboard.orders.modal.goBack") || "Volver"}
+                        </button>
+                      </div>
                     </div>
                   )
                 )}

@@ -11,16 +11,41 @@ from deep_translator import GoogleTranslator
 import cloudinary.uploader
 from api.models.seller import Seller
 from datetime import datetime, timezone
+import unicodedata
 
 product_bp = Blueprint('product', __name__, url_prefix='/product')
 
 LOW_STOCK_THRESHOLD = 1
 
+LANGS = ["en", "ca", "gl"]
 
-def translate_text(text, target_lang):
+def translate_field(text):
     if not text:
         return None
-    return GoogleTranslator(source='auto', target=target_lang).translate(text)
+    result = {"es": text}
+    for lang in LANGS:
+        try:
+            result[lang] = GoogleTranslator(source='auto', target=lang).translate(text)
+        except:
+            result[lang] = text
+    return result
+
+def strip_accents(s):
+    return unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode('ascii')
+
+# ─── Helper: convierte string de FormData a float, con fallback ───────────────
+def to_float(value, fallback=None):
+    """Devuelve float si value es un string numérico válido, si no devuelve fallback."""
+    try:
+        return float(value) if value not in (None, "", "undefined") else fallback
+    except (ValueError, TypeError):
+        return fallback
+
+def to_int(value, fallback=None):
+    try:
+        return int(value) if value not in (None, "", "undefined") else fallback
+    except (ValueError, TypeError):
+        return fallback
 
 
 @product_bp.route('', methods=['GET'])
@@ -33,7 +58,7 @@ def get_products():
 @product_bp.route('/search', methods=['GET'])
 def search_products():
     locale = request.args.get("locale", "es")
-    q = request.args.get("q", "").strip().lower()
+    q = strip_accents(request.args.get("q", "").strip().lower())
     cat_slug = request.args.get("category", "").strip().lower()
     sub_slug = request.args.get("subcategory", "").strip().lower()
     item_slug = request.args.get("item", "").strip().lower()
@@ -45,8 +70,7 @@ def search_products():
     on_sale = request.args.get("on_sale", "false").lower() == "true"
     low_stock = request.args.get("low_stock", "false").lower() == "true"
     conditions_param = request.args.get("condition", "").strip()
-    conditions = [c.strip() for c in conditions_param.split(",")
-                  if c.strip()] if conditions_param else []
+    conditions = [c.strip() for c in conditions_param.split(",") if c.strip()] if conditions_param else []
 
     products = Product.query.filter_by(is_deleted=False).options(
         joinedload(Product.item)
@@ -80,16 +104,28 @@ def search_products():
             continue
 
         if q:
-            searchable = " ".join(filter(None, [
-                p.name.get("es", ""),          p.name.get("en", ""),
-                (p.description or {}).get("es", ""), (p.description or {}).get("en", ""),
+            searchable = strip_accents(" ".join(filter(None, [
+                p.name.get("es", ""),
+                p.name.get("en", ""),
+                p.name.get("ca", ""),
+                p.name.get("gl", ""),
+                (p.description or {}).get("es", ""),
+                (p.description or {}).get("en", ""),
+                (p.description or {}).get("ca", ""),
+                (p.description or {}).get("gl", ""),
                 item.name.get("es", "") if item else "",
                 item.name.get("en", "") if item else "",
+                item.name.get("ca", "") if item else "",
+                item.name.get("gl", "") if item else "",
                 sub.name.get("es", "") if sub else "",
                 sub.name.get("en", "") if sub else "",
+                sub.name.get("ca", "") if sub else "",
+                sub.name.get("gl", "") if sub else "",
                 cat.name.get("es", "") if cat else "",
                 cat.name.get("en", "") if cat else "",
-            ])).lower()
+                cat.name.get("ca", "") if cat else "",
+                cat.name.get("gl", "") if cat else "",
+            ]))).lower()
             if q not in searchable:
                 continue
 
@@ -150,6 +186,7 @@ def create_product():
         stock           = request.form.get("stock", 1)
         item_id         = request.form.get("item_id")
         condition       = request.form.get("condition", "new")
+        discount        = request.form.get("discount", "0")
         height          = request.form.get("height")
         width           = request.form.get("width")
         length          = request.form.get("length")
@@ -167,6 +204,7 @@ def create_product():
         stock           = body.get("stock", 1)
         item_id         = body.get("item_id")
         condition       = body.get("condition", "new")
+        discount        = body.get("discount", 0)
         height          = body.get("height")
         width           = body.get("width")
         length          = body.get("length")
@@ -177,11 +215,11 @@ def create_product():
     if not name or not price or not item_id:
         abort(400, description="name, price e item_id son obligatorios")
 
-    translated_name            = translate_text(name, "en")
-    translated_desc            = translate_text(description, "en")
-    translated_characteristics = translate_text(characteristics, "en")
+    translated_name            = translate_field(name)
+    translated_desc            = translate_field(description)
+    translated_characteristics = translate_field(characteristics)
 
-    # ── Imagen principal
+    # ── Imagen principal ───────────────────────────────────────────────────────
     image_url = None
     if imagen:
         try:
@@ -190,7 +228,7 @@ def create_product():
         except Exception as e:
             abort(500, description=f"Error al subir imagen: {str(e)}")
 
-    # ── Imágenes adicionales
+    # ── Imágenes adicionales ───────────────────────────────────────────────────
     other_image_url = other_images
     if other_images and hasattr(other_images[0], "read"):
         try:
@@ -203,18 +241,19 @@ def create_product():
 
     try:
         new_product = Product(
-            name={"es": name, "en": translated_name or name},
-            description={"es": description, "en": translated_desc or description} if description else None,
-            characteristics={"es": characteristics, "en": translated_characteristics or characteristics} if characteristics else None,
+            name=translated_name or {"es": name},
+            description=translated_desc if description else None,
+            characteristics=translated_characteristics if characteristics else None,
             price=float(price),
             image_url=image_url,
             other_image_url=other_image_url if other_image_url else [],
-            height=float(height) if height else None,
-            width=float(width)   if width  else None,
-            length=float(length) if length else None,
-            weight=float(weight) if weight else None,
-            stock=int(stock),
-            discount=0.0,
+            # ── Usar fallback explícito para que nunca llegue NULL a la BD ──────
+            height=to_float(height, fallback=10.0),
+            width=to_float(width,   fallback=10.0),
+            length=to_float(length, fallback=10.0),
+            weight=to_float(weight, fallback=0.5),
+            stock=to_int(stock, fallback=1),
+            discount=to_float(discount, fallback=0.0),
             condition=condition,
             item_id=int(item_id),
             seller_id=seller.id
@@ -271,29 +310,43 @@ def update_product(id):
 
     try:
         if name:
-            product.name = {"es": name, "en": translate_text(name, "en") or name}
+            product.name = translate_field(name)
         if description:
-            product.description = {"es": description, "en": translate_text(description, "en") or description}
+            product.description = translate_field(description)
         if characteristics:
-            product.characteristics = {"es": characteristics, "en": translate_text(characteristics, "en") or characteristics}
-        if price:    product.price  = float(price)
-        if stock:    product.stock  = int(stock)
-        if item_id and item_id != "undefined": product.item_id = int(item_id)
+            product.characteristics = translate_field(characteristics)
+
+        # ── Numéricos: usar to_float/to_int para no romper con strings vacíos ──
+        # y actualizar SOLO si el campo viene en la petición (no es None/vacío)
+        parsed_price    = to_float(price)
+        parsed_stock    = to_int(stock)
+        parsed_discount = to_float(discount)
+        parsed_height   = to_float(height)
+        parsed_width    = to_float(width)
+        parsed_length   = to_float(length)
+        parsed_weight   = to_float(weight)
+
+        if parsed_price    is not None: product.price    = parsed_price
+        if parsed_stock    is not None: product.stock    = parsed_stock
+        if parsed_discount is not None: product.discount = parsed_discount
+        if parsed_height   is not None: product.height   = parsed_height
+        if parsed_width    is not None: product.width    = parsed_width
+        if parsed_length   is not None: product.length   = parsed_length
+        if parsed_weight   is not None: product.weight   = parsed_weight
+
+        if item_id and item_id != "undefined":
+            product.item_id = int(item_id)
+
         if condition:
             from api.models.product import ProductCondition
             product.condition = ProductCondition(condition)
-        if discount is not None: product.discount = float(discount)
-        if height:   product.height = float(height)
-        if width:    product.width  = float(width)
-        if length:   product.length = float(length)
-        if weight:   product.weight = float(weight)
 
-        # ── Imagen principal
+        # ── Imagen principal ───────────────────────────────────────────────────
         if imagen:
             resultado = cloudinary.uploader.upload(imagen, folder="productos")
             product.image_url = resultado["secure_url"]
 
-        # ── Imágenes adicionales
+        # ── Imágenes adicionales ───────────────────────────────────────────────
         if other_images:
             if hasattr(other_images[0], "read"):
                 product.other_image_url = [

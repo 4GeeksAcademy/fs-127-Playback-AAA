@@ -154,7 +154,7 @@ export const Checkout = () => {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+          className={`fixed bottom-6 left-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
             toast.type === "error"
               ? "bg-red-600 dark:bg-red-500"
               : "bg-stone-900 dark:bg-stone-100"

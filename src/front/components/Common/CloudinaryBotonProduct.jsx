@@ -1,9 +1,7 @@
  import { useState } from "react";
  import productServices from "../../services/productService";
 
-//Para instalar cloudinari en otra pagina pondremos el import 
-//import { CloudinaryBotonProduct } from "../components/CloudinaryBotonProduct";
-//y pasaremos tambien el input y lo que queremos modificar 
+
 //<CloudinaryBotonProduct onProductoCreado={(p) => setProducts(prev => [...prev, p])} />
 export const CloudinaryBotonProduct = ({ onProductoCreado }) => {
   const [showForm, setShowForm] = useState(false);

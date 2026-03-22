@@ -1,12 +1,3 @@
-// Router de vistas según el rol del usuario y el estado de su solicitud:
-//   - admin                        → AdminDashboard
-//   - seller verificado            → SellerDashboard
-//   - solicitud pendiente          → SellerPending
-//   - solicitud rechazada          → SellerRejected
-//   - wizard enviado, sin Stripe   → SellerStripeConnect
-//   - wizard enviado, con Stripe   → SellerSuccess
-//   - buyer sin solicitud          → SellerRegister
-
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useGlobalReducer from "../../../hooks/useGlobalReducer";
@@ -23,18 +14,13 @@ const ProfileRole = () => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
 
-  // true tras enviar el wizard con éxito — muestra SellerStripeConnect
   const [submitted, setSubmitted] = useState(false);
-  // true tras completar el onboarding de Stripe — muestra SellerSuccess
   const [stripeConnected, setStripeConnected] = useState(false);
-  // Datos del perfil seller (null = cargando, false = no existe)
   const [sellerProfile, setSellerProfile] = useState(null);
-  // Controla el spinner mientras se consulta el perfil
   const [loadingProfile, setLoadingProfile] = useState(true);
 
   const role = store.user?.role;
 
-  // Carga el perfil seller para todos los roles excepto admin
   useEffect(() => {
     if (role === "admin") {
       setLoadingProfile(false);
@@ -46,7 +32,6 @@ const ProfileRole = () => {
       .finally(() => setLoadingProfile(false));
   }, [role]);
 
-  // ── Spinner mientras se carga el perfil ───────────────────────────────────
   if (loadingProfile)
     return (
       <div className="flex items-center gap-2 text-muted text-sm">
@@ -59,7 +44,6 @@ const ProfileRole = () => {
   if (role === "seller" && sellerProfile?.status === "verified")
     return <SellerDashboard />;
 
-  // Sin Stripe completado — vuelve al paso de conectar cuenta
   if (
     sellerProfile?.status === "pending" &&
     !sellerProfile?.stripe_onboarding_completed
@@ -70,14 +54,12 @@ const ProfileRole = () => {
       </div>
     );
 
-  // Con onboarding completado — solicitud en revisión
   if (
     sellerProfile?.status === "pending" &&
     sellerProfile?.stripe_onboarding_completed
   )
     return <SellerPending />;
 
-  // Wizard enviado — conectar Stripe antes de pasar a SellerSuccess
   if (submitted && !stripeConnected)
     return (
       <div className="space-y-6 max-w-3xl mx-auto px-4">
@@ -102,7 +84,6 @@ const ProfileRole = () => {
       />
     );
 
-  // ── Buyer sin solicitud: formulario de registro ───────────────────────────
   return (
     <div className="space-y-6 max-w-3xl mx-auto px-4">
       <div className="bg-main border border-main rounded-2xl p-8 shadow-sm">

@@ -14,7 +14,6 @@ export const SearchBar = ({ placeholder = '', className = '' }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // ── Llama a la API con debounce 300ms (evita llamadas en cada tecla)
   const fetchResults = useDebouncedCallback(async (q) => {
     if (!q || q.length < 2) {
       setResults([]);
@@ -28,7 +27,6 @@ export const SearchBar = ({ placeholder = '', className = '' }) => {
     setOpen(true);
   }, 300);
 
-  // ── Actualiza el estado visual del input con throttle 50ms (siempre fluido)
   const handleChange = useThrottledCallback((value) => {
     setInputValue(value);
     if (!value) {
@@ -61,7 +59,6 @@ export const SearchBar = ({ placeholder = '', className = '' }) => {
     setLoading(false);
   };
 
-  // Cierra el dropdown al hacer clic fuera
   useEffect(() => {
     const handler = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target))

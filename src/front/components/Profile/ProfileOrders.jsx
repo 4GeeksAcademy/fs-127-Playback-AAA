@@ -1,18 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Star,
-  AlertCircle,
-  ChevronDown,
-  ChevronUp,
-  CheckCircle,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  PackageCheck,
-  Truck,
-  Package,
-} from "lucide-react";
+import { Star, AlertCircle, ChevronDown, ChevronUp, CheckCircle, X, ChevronLeft, ChevronRight, PackageCheck, Truck, Package, } from "lucide-react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import orderService from "../../services/orderService";
 import { ReviewForm } from "../Common/ReviewForm";
@@ -56,6 +44,7 @@ const trackingUrl = (carrier, code) => {
 // ── Sub-sección de un envío dentro del desplegable ────────────────────────────
 const ShipmentSection = ({ so, orderId, i18n, reviewed, onReview, onConfirm, confirming }) => {
   const cfg         = STATUS_CONFIG[so.status] || STATUS_CONFIG.pending;
+  const { t } = useTranslation();
   const isShipped   = so.status === "shipped";
   const isDelivered = so.status === "delivered";
   const isCancelled = so.status === "cancelled";
@@ -244,8 +233,18 @@ const ShipmentSection = ({ so, orderId, i18n, reviewed, onReview, onConfirm, con
 
       {/* ── Nota estado cancelado ── */}
       {isCancelled && (
-        <div style={{ padding: "6px 12px 10px", fontSize: "11px", color: "#A32D2D" }}>
-          Este envío fue cancelado.
+        <div style={{ padding: "8px 12px 12px", borderTop: "1px solid #FEE2E2" }}>
+          <p style={{ fontSize: "11px", color: "#A32D2D", fontWeight: "600", marginBottom: "2px" }}>
+            {so.cancellation_reason ? t("orders.cancelledBySeller") : t("orders.cancelledByYou")}
+          </p>
+          {so.cancellation_reason && (
+            <p style={{ fontSize: "11px", color: "#A32D2D", opacity: 0.8, fontStyle: "italic", marginBottom: "4px" }}>
+              {t("orders.cancelReason")}: {so.cancellation_reason}
+            </p>
+          )}
+          <p style={{ fontSize: "11px", color: "#A32D2D", opacity: 0.7 }}>
+            💳 {t("orders.refundPending")}
+          </p>
         </div>
       )}
     </div>
@@ -261,11 +260,13 @@ const ProfileOrders = () => {
   const [loading,  setLoading]  = useState(true);
   const [expanded, setExpanded] = useState({});
   const [reviewing, setReviewing] = useState(null);
-  const [incident,  setIncident]  = useState(null); // ← IncidentForm de tu compañero
+  const [incident,  setIncident]  = useState(null);
 
   // seller_order_id del envío cuya confirmación está en curso
   const [confirmingDelivery, setConfirmingDelivery] = useState(null);
-
+  // Cancelación de pedido por el comprador
+  const [cancellingOrder, setCancellingOrder] = useState(null); // null | order.id
+  const [cancelError,     setCancelError]     = useState(null);
   const [reviewed, setReviewed] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("reviewed_products") || "{}");
@@ -327,18 +328,25 @@ const ProfileOrders = () => {
     if (!err) loadOrders();
   };
 
+  // Cancela el pedido completo (solo en paid o confirmed)
+  const handleCancelOrder = async (orderId) => {
+    const token = store.token || localStorage.getItem("token");
+    const [, err] = await orderService.cancelOrder(token, orderId);
+    if (err) { setCancelError(err); return; }
+    setCancellingOrder(null);
+    setCancelError(null);
+    loadOrders();
+  };
+
   const toggleExpand = (id) =>
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // Abre el stepper de valoración filtrando solo productos de envíos delivered
   const openReview = (order, specificProductId = null, soProducts = null) => {
     let pool;
 
     if (soProducts) {
-      // Llamada desde ShipmentSection — ya viene filtrado al envío delivered concreto
       pool = soProducts;
     } else if (order.seller_orders && order.seller_orders.length > 0) {
-      // Llamada desde el botón general — solo productos de envíos ya confirmed como delivered
       const deliveredIds = new Set(
         order.seller_orders
           .filter((so) => so.status === "delivered")
@@ -346,7 +354,6 @@ const ProfileOrders = () => {
       );
       pool = order.products.filter((p) => deliveredIds.has(p.id));
     } else {
-      // Pedido legacy sin seller_orders — el pedido entero debe estar delivered
       pool = order.products;
     }
 
@@ -358,14 +365,12 @@ const ProfileOrders = () => {
     setReviewing({ order, products: pendingProducts, step: startIdx });
   };
 
-  // Devuelve los IDs de productos entregados (solo de envíos delivered) para un pedido
   const deliveredProductIds = (order) => {
     if (order.seller_orders && order.seller_orders.length > 0) {
       return order.seller_orders
         .filter((so) => so.status === "delivered")
         .flatMap((so) => so.products.map((p) => p.id));
     }
-    // Legacy: si el pedido completo está delivered, todos sus productos cuentan
     if (order.status === "delivered") return order.products.map((p) => p.id);
     return [];
   };
@@ -396,15 +401,12 @@ const ProfileOrders = () => {
         const hasAnyDelivered = hasSellerOrders
           && order.seller_orders.some((so) => so.status === "delivered");
 
-        // IDs de productos que el comprador ya ha recibido
         const receivedIds = deliveredProductIds(order);
 
-        // ¿Quedan productos recibidos sin valorar?
         const pendingReviewCount = receivedIds.filter(
           (id) => !reviewed[`${order.id}-${id}`]
         ).length;
 
-        // Mostrar el botón solo si hay productos recibidos; cambiar label si todos valorados
         const canReview      = (isDelivered || hasAnyDelivered) && receivedIds.length > 0;
         const allReviewed    = canReview && pendingReviewCount === 0;
 
@@ -469,15 +471,10 @@ const ProfileOrders = () => {
               </div>
 
               {/* Fila inferior: botones */}
-              <div className="flex gap-2 mt-2 justify-end flex-wrap">
+              <div className="flex gap-2 mt-2 justify-end flex-wrap">        
                      {/*boton Factura PDF*/}
 
                     <button onClick={() => downloadInvoice(order.id)} style={{ background: "#E6F1FB", color: "#185FA5", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}> Factura</button>
-
-                {/* Botón valorar — tres estados:
-                    · no visible si no hay nada recibido
-                    · activo con contador si quedan pendientes
-                    · "Todo valorado" desactivado si ya no quedan */}
                 {canReview && (
                   allReviewed ? (
                     <span
@@ -492,7 +489,6 @@ const ProfileOrders = () => {
                     >
                       <Star size={11} />
                       {t("review.rate")}
-                      {/* Contador de pendientes si hay más de uno */}
                       {pendingReviewCount > 1 && (
                         <span style={{ background: "#534AB7", color: "white", borderRadius: "10px", padding: "0px 5px", fontSize: "10px", fontWeight: "700" }}>
                           {pendingReviewCount}
@@ -502,22 +498,50 @@ const ProfileOrders = () => {
                   )
                 )}
 
-                {/* Botón incidencia — amarillo, texto actualizado */}
                 <button
                   onClick={() => setIncident(order.id)}
                   style={{ background: "#FEF9C3", color: "#854D0E", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}
                 >
                   <AlertCircle size={11} /> {t("orders.openIncident")}
                 </button>
+
+                {/* Cancelar pedido — solo en paid o confirmed */}
+                {["paid", "confirmed"].includes(order.status) && (
+                  cancellingOrder === order.id ? (
+                    <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+                      {cancelError && (
+                        <span style={{ fontSize: "10px", color: "#A32D2D" }}>{cancelError}</span>
+                      )}
+                      <button
+                        onClick={() => handleCancelOrder(order.id)}
+                        style={{ background: "#FEE2E2", color: "#A32D2D", border: "1px solid #FCA5A5", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", fontSize: "11px", fontWeight: "600" }}
+                      >
+                        {t("orders.confirmCancel")}
+                      </button>
+                      <button
+                        onClick={() => { setCancellingOrder(null); setCancelError(null); }}
+                        style={{ background: "var(--color-background-secondary)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", fontSize: "11px" }}
+                      >
+                        {t("orders.goBack")}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setCancellingOrder(order.id); setCancelError(null); }}
+                      style={{ background: "transparent", color: "#A32D2D", border: "1px solid #FCA5A5", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", fontSize: "11px", fontWeight: "500", display: "flex", alignItems: "center", gap: "3px" }}
+                    >
+                      <X size={11} />
+                      {t("orders.cancelOrder")}
+                    </button>
+                  )
+                )}
               </div>
             </div>
 
-            {/* ── Detalle expandible ── */}
             {isOpen && (
               <div className="border-t border-main px-4 py-4 bg-subtle">
 
                 {hasSellerOrders ? (
-                  /* Vista subdividida por envío (modelo nuevo) */
                   <>
                     {order.seller_orders.map((so) => (
                       <ShipmentSection
@@ -533,7 +557,6 @@ const ProfileOrders = () => {
                     ))}
                   </>
                 ) : (
-                  /* Vista plana (pedidos anteriores al modelo SellerOrder) */
                   <div className="space-y-2 mb-3">
                     {order.products.map((p, i) => {
                       const reviewKey     = `${order.id}-${p.id}`;
@@ -551,7 +574,6 @@ const ProfileOrders = () => {
                             <p style={{ fontSize: "11px", color: "var(--color-muted)", marginTop: "1px" }}>
                               {finalPrice} € × {p.quantity}
                             </p>
-                            {/* Vista legacy: solo valorar si el pedido entero está delivered */}
                             {isDelivered && (
                               alreadyReviewed ? (
                                 <p style={{ fontSize: "10px", color: "#3B6D11", display: "flex", alignItems: "center", gap: "3px", marginTop: "2px" }}>

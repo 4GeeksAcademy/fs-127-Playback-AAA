@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import productServices from "../../../../services/productService";
 
-// ─── Opciones de condición ────────────────────────────────────────────────────
 const CONDITIONS = ["new", "used", "refurbished", "broken"];
 
-// ─── Formulario vacío por defecto ─────────────────────────────────────────────
 const EMPTY_FORM = {
   name: "",
   description: "",
@@ -24,7 +22,6 @@ const EMPTY_FORM = {
 const ProductModal = ({ product, token, onClose, onSaved }) => {
   const { t, i18n } = useTranslation();
 
-  // ─── Estado del formulario ──────────────────────────────────────────────────
   const [form, setForm] = useState(
     product
       ? {
@@ -41,33 +38,38 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             typeof product.characteristics === "object"
               ? product.characteristics?.es || ""
               : product.characteristics || "",
-          height: product.height || "",
-          width:  product.width  || "",
-          length: product.length || "",
-          weight: product.weight || "",
+          height:   product.height   || "",
+          width:    product.width    || "",
+          length:   product.length   || "",
+          weight:   product.weight   || "",
           discount: product.discount ?? 0,
           image_url: product.image_url || "",
-          item_id: product.item_id ? String(product.item_id) : "",
+          item_id:  product.item_id ? String(product.item_id) : "",
         }
       : EMPTY_FORM,
   );
 
-  // ─── Estado de imagen principal ─────────────────────────────────────────────
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(product?.image_url || null);
+  // ─── Imagen principal ────────────────────────────────────────────────────────
+  const [imageFile, setImageFile]   = useState(null);
+  const [preview, setPreview]       = useState(product?.image_url || null);
   const [imageError, setImageError] = useState("");
 
-  // ─── Estado de imágenes adicionales ────────────────────────────────────────
-  const [otherImageFiles, setOtherImageFiles] = useState([]);
-  const [otherPreviews, setOtherPreviews] = useState(product?.other_image_url || []);
+  // ─── Imágenes adicionales ────────────────────────────────────────────────────
+  // Cada entrada es { file: File|null, url: string }
+  // - Las existentes que vienen del producto tienen file=null y url=<remote url>
+  // - Las nuevas seleccionadas tienen file=File y url=objectURL
+  const [otherImages, setOtherImages] = useState(
+    (product?.other_image_url || []).map((url) => ({ file: null, url }))
+  );
   const [otherImageError, setOtherImageError] = useState("");
+  const otherInputRef = useRef(null);
 
-  // ─── Estado de carga y errores ──────────────────────────────────────────────
+  // ─── Carga / error ───────────────────────────────────────────────────────────
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]   = useState(null);
 
-  // ─── Estado de categorías ───────────────────────────────────────────────────
-  const [categories, setCategories] = useState([]);
+  // ─── Categorías ──────────────────────────────────────────────────────────────
+  const [categories, setCategories]   = useState([]);
   const [selectedCat, setSelectedCat] = useState("");
   const [selectedSub, setSelectedSub] = useState("");
 
@@ -93,9 +95,9 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
   }, [categories]);
 
   const catSeleccionada = categories.find((c) => c.id === parseInt(selectedCat));
-  const subcategories = catSeleccionada?.subcategories || [];
+  const subcategories   = catSeleccionada?.subcategories || [];
   const subSeleccionada = subcategories.find((s) => s.id === parseInt(selectedSub));
-  const items = subSeleccionada?.items || [];
+  const items           = subSeleccionada?.items || [];
 
   const nameOf = (val) =>
     typeof val === "object" ? val?.[i18n.language] || val?.es || val?.en : val;
@@ -103,6 +105,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  // ─── Imagen principal ────────────────────────────────────────────────────────
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -113,26 +116,43 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
       return setImageError(t("dashboard.products.modal.sizeError"));
     setImageFile(file);
     setPreview(URL.createObjectURL(file));
+    // Limpiar el input para que se pueda volver a seleccionar el mismo archivo
+    e.target.value = "";
   };
 
+  // ─── Imágenes adicionales: AÑADIR (no reemplazar) ────────────────────────────
   const handleOtherImagesChange = (e) => {
     const files = Array.from(e.target.files);
+    if (!files.length) return;
     setOtherImageError("");
+
     const invalid = files.find(
       (f) => !["image/jpeg", "image/png", "image/webp"].includes(f.type)
     );
     if (invalid) return setOtherImageError(t("dashboard.products.modal.formatError"));
+
     const tooBig = files.find((f) => f.size > 2 * 1024 * 1024);
     if (tooBig) return setOtherImageError(t("dashboard.products.modal.sizeError"));
-    setOtherImageFiles(files);
-    setOtherPreviews(files.map((f) => URL.createObjectURL(f)));
+
+    const newEntries = files.map((f) => ({ file: f, url: URL.createObjectURL(f) }));
+
+    // APPEND — no reemplaza las anteriores
+    setOtherImages((prev) => [...prev, ...newEntries]);
+
+    // Resetear el input para que se puedan volver a seleccionar los mismos archivos
+    e.target.value = "";
   };
 
   const removeOtherImage = (index) => {
-    setOtherImageFiles((prev) => prev.filter((_, i) => i !== index));
-    setOtherPreviews((prev) => prev.filter((_, i) => i !== index));
+    setOtherImages((prev) => {
+      const entry = prev[index];
+      // Revocar objectURL para liberar memoria (solo si es nuevo)
+      if (entry.file) URL.revokeObjectURL(entry.url);
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
+  // ─── FormData ────────────────────────────────────────────────────────────────
   const buildFormData = () => {
     const fd = new FormData();
     fd.append("name",            form.name);
@@ -148,10 +168,16 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
     if (form.length) fd.append("length", form.length);
     if (form.weight) fd.append("weight", form.weight);
     if (imageFile)   fd.append("imagen", imageFile);
-    otherImageFiles.forEach((img) => fd.append("other_images", img));
+
+    // Solo enviar los archivos nuevos; las URLs existentes no se retransmiten
+    otherImages.forEach((entry) => {
+      if (entry.file) fd.append("other_images", entry.file);
+    });
+
     return fd;
   };
 
+  // ─── Submit ──────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -202,11 +228,17 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
                 {t("dashboard.products.modal.noImage")}
               </div>
             )}
+            {/* Input propio para la imagen principal — completamente aislado */}
             <label className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg cursor-pointer transition text-sm">
               {preview
                 ? t("dashboard.products.modal.changeImage")
                 : t("dashboard.products.modal.uploadImage")}
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={handleImageChange}
+              />
             </label>
             {imageError && <p className="text-xs text-red-500">{imageError}</p>}
           </div>
@@ -298,7 +330,7 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
               </select>
             </div>
 
-            {/* ── Dimensiones (cm) ── */}
+            {/* Dimensiones */}
             <div className="col-span-2">
               <label className="block text-xs text-faint mb-2">
                 {t("dashboard.products.modal.dimensions")} <span className="text-faint/60">(cm)</span>
@@ -322,19 +354,13 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
             {/* Descripción */}
             <div className="col-span-2">
               <label className="block text-xs text-faint mb-1">{t("dashboard.products.modal.description")}</label>
-              <textarea
-                name="description" rows={3} value={form.description}
-                onChange={handleChange} required className="input resize-none"
-              />
+              <textarea name="description" rows={3} value={form.description} onChange={handleChange} required className="input resize-none" />
             </div>
 
             {/* Características */}
             <div className="col-span-2">
               <label className="block text-xs text-faint mb-1">{t("dashboard.products.modal.characteristics")}</label>
-              <textarea
-                name="characteristics" rows={3} value={form.characteristics}
-                onChange={handleChange} required className="input resize-none"
-              />
+              <textarea name="characteristics" rows={3} value={form.characteristics} onChange={handleChange} required className="input resize-none" />
             </div>
 
           </div>
@@ -348,17 +374,28 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
                   {t("dashboard.products.modal.optional")} · JPG, PNG, WEBP · máx. 2 MB
                 </p>
               </div>
+              {/* Input exclusivo para imágenes adicionales — separado del de la imagen principal */}
               <label className="flex items-center gap-1 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg cursor-pointer transition text-xs font-medium shrink-0">
                 + {t("dashboard.products.modal.addImages")}
-                <input type="file" accept="image/*" multiple className="hidden" onChange={handleOtherImagesChange} />
+                <input
+                  ref={otherInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  className="hidden"
+                  onChange={handleOtherImagesChange}
+                />
               </label>
             </div>
 
-            {otherPreviews.length > 0 ? (
+            {otherImages.length > 0 ? (
               <div className="grid grid-cols-4 gap-2">
-                {otherPreviews.map((src, i) => (
+                {otherImages.map((entry, i) => (
                   <div key={i} className="relative group aspect-square">
-                    <img src={src} className="w-full h-full rounded-lg object-cover border border-main" />
+                    <img
+                      src={entry.url}
+                      className="w-full h-full rounded-lg object-cover border border-main"
+                    />
                     <button
                       type="button"
                       onClick={() => removeOtherImage(i)}

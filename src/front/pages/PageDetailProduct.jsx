@@ -22,11 +22,14 @@ export const PageDetailProduct = () => {
   const [toast, setToast] = useState(null);
   const [clicked, setClicked] = useState(false);
 
+  // ─── Imagen activa en la galería ────────────────────────────────────────────
+  const [activeImage, setActiveImage] = useState(null);
+
   useEffect(() => {
     productServices.getProduct(id).then(([data, error]) => {
       if (error) return console.error(error);
-      console.log("product.reviews:", data.reviews);
       setProduct(data);
+      setActiveImage(data?.image_url || null);
     });
 
     const token = store.token || localStorage.getItem("token");
@@ -66,11 +69,7 @@ export const PageDetailProduct = () => {
     setTimeout(() => setClicked(false), 300);
 
     setLoadingCart(true);
-    const [, error] = await orderServices.addProductToCart(
-      token,
-      product.id,
-      1,
-    );
+    const [, error] = await orderServices.addProductToCart(token, product.id, 1);
     setLoadingCart(false);
 
     if (error) {
@@ -94,8 +93,14 @@ export const PageDetailProduct = () => {
   const inStock = product.stock == null ? true : product.stock > 0;
   const stockAgotado = product.stock != null && enCarrito >= product.stock;
 
-  // ─── Locale activo (es | en …) ─────────────────────────────────────────────
   const locale = i18n.language?.split("-")[0] || "es";
+
+  // ─── Galería: imagen principal + adicionales (si las hay) ──────────────────
+  const extraImages = Array.isArray(product.other_image_url)
+    ? product.other_image_url.filter(Boolean)
+    : [];
+  const allImages = [product.image_url, ...extraImages].filter(Boolean);
+  const hasGallery = allImages.length > 1;
 
   const accordionItems = [
     {
@@ -116,39 +121,64 @@ export const PageDetailProduct = () => {
     <div className="w-full px-6 md:px-20 max-w-screen-2xl mx-auto py-10">
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
+          className={`fixed bottom-6 left-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 ${
             toast.type === "error"
               ? "bg-red-600 dark:bg-red-500"
               : "bg-stone-900 dark:bg-stone-100"
           }`}
         >
-          {toast.type === "error" ? (
-            <X size={15} />
-          ) : (
-            <ShoppingCart size={15} />
-          )}
+          {toast.type === "error" ? <X size={15} /> : <ShoppingCart size={15} />}
           {toast.msg}
         </div>
       )}
 
       <div className="flex flex-col lg:flex-row gap-10">
+
+        {/* ── Columna izquierda: imagen + miniaturas ── */}
         <div className="flex flex-col gap-3 lg:w-1/2">
+
+          {/* Imagen activa */}
           <div className="relative overflow-hidden bg-subtle">
             <img
-              src={product.image_url}
+              src={activeImage || product.image_url}
               alt={product.name}
               className="w-full h-[420px] md:h-[560px] object-cover transition-all duration-500"
               onError={(e) =>
                 (e.target.src = "https://placehold.co/600x700?text=Sin+imagen")
               }
             />
-            <FavoriteButton
-              product={product}
-              className="absolute top-2 right-2"
-            />
+            <FavoriteButton product={product} className="absolute top-2 right-2" />
           </div>
+
+          {/* Miniaturas — solo si hay más de una imagen */}
+          {hasGallery && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {allImages.map((src, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveImage(src)}
+                  className={`shrink-0 w-16 h-16 md:w-20 md:h-20 overflow-hidden border-2 transition-all duration-200 ${
+                    activeImage === src
+                      ? "border-stone-900 dark:border-stone-100 opacity-100"
+                      : "border-transparent opacity-60 hover:opacity-90"
+                  }`}
+                >
+                  <img
+                    src={src}
+                    alt={`${product.name} ${i + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) =>
+                      (e.target.src = "https://placehold.co/80x80?text=img")
+                    }
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* ── Columna derecha ── */}
         <div className="lg:w-1/2 flex flex-col gap-4 pt-2">
           <p className="text-xs text-faint uppercase tracking-widest">
             {product.category || ""}

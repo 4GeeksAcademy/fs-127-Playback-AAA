@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 const ProfileHeader = () => {
   const { store } = useGlobalReducer();
-  const { t } = useTranslation();
+  const { t,i18n  } = useTranslation();
   const user = store.user;
 
   const getInitials = () => {
@@ -17,7 +17,7 @@ const ProfileHeader = () => {
 
   const getMemberSince = () => {
     if (!user?.created_at) return "";
-    return new Date(user.created_at).toLocaleDateString("es-ES", {
+return new Date(user.created_at).toLocaleDateString(i18n.language, {
       month: "long",
       year: "numeric",
     });

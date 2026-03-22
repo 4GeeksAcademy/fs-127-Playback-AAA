@@ -92,10 +92,10 @@ const ProfileDashboard = ({ setActiveTab }) => {
       {/* ── Bienvenida ── */}
       <div className="pb-2">
         <p className="text-main text-lg font-semibold">
-          Hola, {user.name?.split(" ")[0] || "de nuevo"} 👋
+<p>{t("profile.dashboard.welcome", { name: user.name?.split(" ")[0] || t("navbar.loginTitle") })}</p>
         </p>
         <p className="text-muted text-xs mt-0.5">
-          Aquí tienes un resumen de tu actividad
+<p>{t("profile.dashboard.subtitle")}</p>
         </p>
       </div>
 
@@ -105,7 +105,7 @@ const ProfileDashboard = ({ setActiveTab }) => {
           {t("orders.recent")}
         </p>
         {loading ? (
-          <p className="text-muted text-sm text-center py-4">Cargando…</p>
+          <p className="text-muted text-sm text-center py-4">{t("profile.dashboard.loading")}</p>
         ) : recentOrders.length === 0 ? (
           <p className="text-muted text-sm text-center py-4">{t("orders.empty")}</p>
         ) : (
@@ -126,14 +126,14 @@ const ProfileDashboard = ({ setActiveTab }) => {
       {/* ── Ayuda y soporte ── */}
       <div>
         <p className="text-muted text-xs font-medium uppercase tracking-wide mb-2">
-          Ayuda y soporte
+<p>{t("profile.dashboard.helpTitle")}</p>
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ">
 
           <QuickLink
             icon="✉️"
-            title="Contactar con soporte"
-            desc="Te respondemos en 24-48h"
+  title={t("profile.dashboard.contactTitle")}            desc={t("profile.dashboard.contactDesc")}
+
             href="/contact"
             className="center"
           />

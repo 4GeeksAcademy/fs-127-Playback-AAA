@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import SellerAddressFormModal from "./SellerAdressFormModal";
+import { useTranslation } from "react-i18next";
+
 
 const Toast = ({ visible }) => (
   <div
@@ -17,6 +19,7 @@ const Toast = ({ visible }) => (
 const SellerAdressForm = ({ form, onChange, onLocationChange }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!showToast) return;
@@ -80,8 +83,8 @@ const SellerAdressForm = ({ form, onChange, onLocationChange }) => {
           onClick={() => setIsModalOpen(true)}
           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-purple-500 border border-purple-600 rounded-xl hover:bg-[rgb(var(--color-bg-hover))] transition-colors"
         >
-          <span>✏️</span>
-          {hasAddress ? "Modificar dirección" : "Añadir dirección"}
+         
+{hasAddress ? t("dashboard.settings.editAddress") : t("dashboard.settings.addAddress")}
         </button>
 
         {/* Modal */}

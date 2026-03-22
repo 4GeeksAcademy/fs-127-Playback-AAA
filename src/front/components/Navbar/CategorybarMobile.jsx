@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { ListFilter } from "lucide-react";
 import productServices from "../../services/productService";
 
-// Enlaces de "Oportunidades"
 const FEATURED_LINKS = [
   { key: "onSale",      href: "/products?on_sale=true" },
   { key: "lowStock",    href: "/products?low_stock=true" },

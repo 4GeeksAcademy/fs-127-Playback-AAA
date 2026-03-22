@@ -1,4 +1,10 @@
 {
+  "common": {
+    "loading": "Cargando...",
+    "cancel": "Cancelar",
+    "sending": "Enviando...",
+    "send": "Enviar"
+  },
   "home": {
     "loading": "Cargando...",
     "topSales": "Top Vendas",
@@ -8,26 +14,36 @@
     "featuredProducts": "Produtos destacados",
     "viewSubcategory": "Ver subcategoría"
   },
+  "incidents": {
+    "title": "Incidencias",
+    "placeholder": "Cóntanos que pasou co teu pedido...",
+    "descriptionRequired": "A descrición é obrigatoria",
+    "submitError": "Erro ao crear a incidencia"
+  },
   "product": {
     "noFound": "Non se atoparon produtos",
     "descriptionLabel": "Descrición",
     "description": "Sen descrición dispoñible.",
     "featuresLabel": "Características",
     "features": "Sen características especificadas.",
-    "shippingLabel": "Envío & Devolucións",
-    "shipping": "Envío gratuíto en pedidos superiores a 50 €. Devolucións aceptadas durante 30 días.",
+    "shippingLabel": "Envío e Devolucións",
+    "shipping": "Envíos en 48-72h laborables. Gastos de envío gratuítos para pedidos superiores a 100€. Devolucións gratuítas nos primeiros 30 días.",
     "inStock": "En stock",
     "outOfStock": "Sen stock",
-    "noStock": "Non hai máis stock dispoñible",
+    "noStock": "Sen stock",
     "available": "dispoñibles",
     "addToCart": "Engadir á cesta",
     "addedToCart": "Produto engadido á túa cesta",
     "reviews": "Opinións de clientes",
-    "loginRequired": "Debes iniciar sesión para engadir produtos á cesta",
-    "cartError": "Erro ao engadir á cesta"
+    "loginRequired": "Debes iniciar sesión para engadir produtos ao carriño",
+    "cartError": "Erro ao engadir ao carriño",
+    "characteristicsLabel": "Características",
+    "characteristics": "Sen características",
+    "reviewsCount": "Total recensións",
+    "noReviews": "Sen recensións"
   },
   "navbar": {
-    "loginTitle": "Benvido de novo",
+    "loginTitle": "Benvido de volta",
     "signupTitle": "Crea a túa conta",
     "nameLabel": "Nome",
     "namePlaceholder": "O teu nome",
@@ -40,7 +56,7 @@
     "signupButton": "Rexistrarse",
     "alreadyHaveAccount": "Xa tes conta? ",
     "forgotPassword": "Non lembras o teu contrasinal?",
-    "forgotPasswordButton": "Recupéraa aquí",
+    "forgotPasswordButton": "Recupérao aquí",
     "profile": "Perfil",
     "orders": "Pedidos",
     "favorites": "Favoritos",
@@ -61,7 +77,7 @@
     "forgotSuccess": "Se o correo existe recibirás instrucións en breve",
     "missingToken": "Token non atopado. Usa a ligazón do correo.",
     "goHome": "Ir ao inicio",
-    "backToLogin": "Volver ao inicio de sesión",
+    "backToLogin": "Volver ao Inicio de sesión",
     "resetTitle": "Restablece o teu contrasinal",
     "newPasswordPlaceholder": "O teu novo contrasinal",
     "confirmPasswordPlaceholder": "Confirma o teu novo contrasinal",
@@ -73,7 +89,7 @@
       "new": "Novo",
       "used": "Usado",
       "refurbished": "Reacondicionado",
-      "broken": "Para pezas"
+      "broken": "Estragado"
     }
   },
   "search": {
@@ -105,8 +121,8 @@
     "sort_newest": "Máis recentes",
     "sort_discount": "Maior desconto",
     "sort_stock_asc": "Poucas unidades primeiro",
-    "filterChip_min_price": "Dende {{value}}€",
-    "filterChip_max_price": "Até {{value}}€",
+    "filterChip_min_price": "Desde {{value}}€",
+    "filterChip_max_price": "Ata {{value}}€",
     "filterChip_in_stock": "En stock",
     "filterChip_on_sale": "En oferta",
     "filterChip_low_stock": "Poucas unidades"
@@ -131,17 +147,23 @@
     "city": "Cidade",
     "zip": "Código postal",
     "country": "País",
+    "community": "Comunidade autónoma",
+    "selectCommunity": "Selecciona comunidade",
+    "province": "Provincia",
+    "selectProvince": "Selecciona provincia",
+    "municipality": "Municipio",
+    "selectMunicipality": "Selecciona municipio",
     "iban": "IBAN",
     "accountHolder": "Titular da conta",
     "reviewTitle": "Revisa a túa solicitude",
-    "pendingNotice": "A túa solicitude quedará pendente até que un administrador a aprobe.",
+    "pendingNotice": "A túa solicitude quedará pendente ata que un administrador a aprobe.",
     "submit": "Enviar solicitude",
     "submitting": "Enviando...",
     "next": "Seguinte",
     "back": "Atrás",
     "cancel": "Cancelar",
     "successTitle": "Solicitude enviada!",
-    "successMsg": "Revisaremos a túa solicitude e recibirás unha resposta pronto.",
+    "successMsg": "Revisaremos a túa solicitude e recibirás unha resposta en breve.",
     "errorPasswordMatch": "Os contrasinais non coinciden",
     "errorPasswordLength": "O contrasinal debe ter polo menos 8 caracteres",
     "errorRequired": "Este campo é obrigatorio",
@@ -154,26 +176,28 @@
     "goToDashboard": "Ir á miña tenda",
     "registerSubtitle": "Únete á nosa comunidade de vendedores e chega a miles de compradores.",
     "pendingTitle": "Solicitude en revisión",
-    "pendingDesc": "Estamos revisando a túa solicitude. Avisarémoste cando estea aprobada.",
+    "pendingDesc": "Estamos revisando a túa solicitude. Avisaremoste en canto estea aprobada.",
     "verifiedTitle": "A túa tenda está activa!",
-    "verifiedDesc": "Xa podes xestionar os teus produtos e pedidos dende o teu panel de vendedor.",
+    "verifiedDesc": "Xa podes xestionar os teus produtos e pedidos desde o teu panel de vendedor.",
     "rejectedTitle": "Solicitude rexeitada",
-    "rejectedDesc": "A túa solicitude non foi aprobada. Contacta co soporte para máis información.",
+    "rejectedDesc": "A túa solicitude non foi aprobada. Contacta con soporte para máis información.",
     "editTitle": "Corrixir solicitude",
-    "editSubtitle": "Corrixe os datos indicados e volve enviar a túa solicitude.",
-    "resubmitNotice": "A túa solicitude corrixida voltará a estado pendente para a súa revisión.",
+    "editSubtitle": "Corrixe os datos indicados e volve a enviar a túa solicitude.",
+    "resubmitNotice": "A túa solicitude corrixida volverá ao estado pendente para a súa revisión.",
     "resubmit": "Reenviar solicitude",
     "rejectionReason": "Motivo do rexeitamento",
     "cancelApplicationDesc": "Se non desexas corrixir a solicitude, podes cancelala e comezar de novo.",
     "cancelApplication": "Cancelar solicitude",
     "stripe": {
       "title": "Conecta a túa conta de pagamentos",
-      "desc": "Para recibir pagamentos das túas vendas necesitas conectar a túa conta con Stripe. O proceso leva menos de 5 minutos.",
+      "desc": "Para recibir pagamentos das túas vendas necesitas conectar a túa conta con Stripe. O proceso dura menos de 5 minutos.",
       "opening": "Abrindo...",
       "cta": "Rexistrarme en Stripe →"
     }
   },
   "checkout": {
+    "stockUnavailable": "Sen stock suficiente: {{items}}. Revisa a túa cesta.",
+    "stockError": "Erro ao verificar o stock. Téntao de novo.",
     "successTitle": "Pagamento realizado!",
     "successMsg": "O teu pedido está sendo procesado. Redirixímoste aos teus pedidos...",
     "payNow": "Pagar agora",
@@ -202,7 +226,7 @@
     "couponPlaceholder": "Introduce o teu código",
     "couponApply": "Aplicar",
     "couponApplied": "Cupón aplicado",
-    "couponInvalid": "Código inválido ou caducado",
+    "couponInvalid": "Código non válido ou expirado",
     "addr": {
       "fullName": "Nome completo",
       "address": "Enderezo",
@@ -214,8 +238,8 @@
     }
   },
   "cart": {
-    "title": "Cesta",
-    "empty": "A túa cesta está baleira",
+    "title": "Carriño",
+    "empty": "O teu carriño está baleiro",
     "remove": "Eliminar"
   },
   "orders": {
@@ -227,21 +251,37 @@
     "units": "Unidades",
     "shippingCost": "Gastos de envío",
     "shippingAddress": "Enderezo de envío",
-    "billingAddress": "Enderezo de facturación"
+    "billingAddress": "Enderezo de facturación",
+    "recent": "Pedidos recentes",
+    "viewAll": "Ver todos os pedidos",
+    "openIncident": "Incidencia / Devolución",
+    "cancelOrder": "Cancelar pedido",
+    "confirmCancel": "Si, cancelar",
+    "goBack": "Volver",
+    "cancelledBySeller": "Este envío foi cancelado polo vendedor.",
+    "cancelledByYou": "Cancelaches este pedido.",
+    "cancelReason": "Motivo",
+    "refundPending": "Procesarase o reembolso do importe nos próximos días hábiles."
   },
   "favorites": {
     "title": "Os teus favoritos",
     "empty": "Aínda non tes favoritos"
   },
   "profile": {
-    "myAccount": "A miña Conta",
+    "myAccount": "Os Meus Datos",
     "tabs": {
       "dashboard": "Panel de control",
       "info": "Información",
       "addresses": "Enderezos",
-      "security": "Seguridade"
+      "security": "Seguridade",
+      "orders": "Pedidos"
     },
     "manage": "Xestionar",
+    "memberSince": "Cliente desde {{date}}",
+    "edit": "Editar",
+    "favorites": "Favoritos",
+    "completeProfile": "Completa o teu perfil",
+    "user": "Usuario",
     "userPanel": "Panel de Usuario",
     "info": {
       "currentInfo": "Información Actual",
@@ -250,7 +290,7 @@
       "lastNameRequired": "O apelido é obrigatorio",
       "imageFormat": "Formato non permitido. Usa JPG, PNG ou WEBP.",
       "imageSize": "A imaxe non pode superar os 2MB.",
-      "imageUploadError": "Erro ao subir a imaxe",
+      "imageUploadError": "Erro ao subir imaxe",
       "imageUpdated": "Imaxe actualizada correctamente",
       "connectionError": "Erro de conexión",
       "uploading": "Subindo...",
@@ -260,7 +300,14 @@
       "confirmChanges": "Estás seguro de gardar os cambios?",
       "confirm": "Confirmar",
       "close": "Pechar",
-      "profileUpdated": "Perfil actualizado correctamente"
+      "profileUpdated": "Perfil actualizado correctamente",
+      "name": "Nome",
+      "lastName": "Apelido",
+      "email": "Correo electrónico",
+      "memberSince": "Membro desde",
+      "profilePhoto": "Foto de perfil",
+      "photoFormats": "JPG, PNG ou WEBP · máx. 2MB",
+      "emailReadonly": "O correo electrónico non se pode modificar"
     },
     "addresses": {
       "title": "Os meus Enderezos",
@@ -280,13 +327,21 @@
       "update": "Actualizar contrasinal",
       "updated": "Contrasinal actualizado correctamente",
       "error": "Erro ao actualizar o contrasinal"
+    },
+    "dashboard": {
+      "welcome": "Ola, {{name}} 👋",
+      "subtitle": "Aquí tes un resumo da túa actividade",
+      "helpTitle": "Axuda e soporte",
+      "loading": "Cargando…",
+      "contactTitle": "Contactar con soporte",
+      "contactDesc": "Respondémoste en 24-48h"
     }
   },
   "admin": {
     "rejectTitle": "Rexeitar solicitude",
     "rejectDesc1": "Indica o motivo do rexeitamento de",
     "rejectDesc2": ". O vendedor poderá lelo e corrixir a súa solicitude.",
-    "rejectPlaceholder": "Ex: O NIF introducido non é válido. Por favor revísao e volve enviar a solicitude.",
+    "rejectPlaceholder": "Ex: O NIF introducido non é válido. Por favor revísao e volve a enviar a solicitude.",
     "confirmReject": "Confirmar rexeitamento",
     "verify": "Verificar",
     "reject": "Rexeitar",
@@ -319,7 +374,7 @@
       "city": "Cidade",
       "zip": "CP",
       "country": "País",
-      "accountId": "ID da conta",
+      "accountId": "Account ID",
       "accountCreated": "Conta creada",
       "yes": "Si",
       "no": "Non",
@@ -342,14 +397,15 @@
   },
   "dashboard": {
     "seller": {
-      "title": "A miña Tenda",
-      "desc": "Xestiona os teus pedidos, produtos e ganancias dende aquí.",
+      "title": "A Miña Tenda",
+      "desc": "Xestiona os teus pedidos, produtos e ganancias desde aquí.",
       "tabs": {
         "overview": "Resumo",
         "orders": "Pedidos",
         "products": "Produtos",
         "earnings": "Ganancias",
-        "settings": "Tenda"
+        "settings": "Tenda",
+        "incidents": "Incidencias"
       }
     },
     "earnings": {
@@ -360,13 +416,14 @@
       "revenueByMonth": "Ingresos por mes",
       "lastMovements": "Últimos movementos",
       "order": "Pedido",
-      "noMovements": "Aínda non hai movementos."
+      "noMovements": "Non hai movementos aínda."
     },
     "orders": {
       "loading": "Cargando pedidos…",
       "found": "pedidos atopados",
       "noOrders": "Aínda non tes pedidos.",
       "noAddress": "Non dispoñible",
+      "refundIssued": "Reembolso tramitado ao comprador.",
       "table": {
         "order": "Pedido",
         "customer": "Cliente",
@@ -385,7 +442,20 @@
         "statusSection": "Estado do pedido",
         "current": "(actual)",
         "saving": "Gardando…",
-        "saveStatus": "Gardar cambio de estado"
+        "saveStatus": "Gardar cambio de estado",
+        "autoConfirming": "Confirmando…",
+        "advanceTo": "Avanzar a",
+        "cancelOrder": "Cancelar pedido",
+        "confirmCancel": "Si, cancelar",
+        "goBack": "Volver",
+        "shippedNote": "O pedido está en camiño. A entrega confirmaraa o comprador ou a transportista.",
+        "shippingData": "Datos de envío",
+        "carrier": "Transportista",
+        "trackingCode": "Código de seguimento",
+        "trackingHint": "O comprador recibirá este código por correo para facer o seguimento.",
+        "close": "Pechar",
+        "cancelReasonLabel": "Indica o motivo da cancelación",
+        "cancelReasonPlaceholder": "Ex. Produto sen stock, erro no pedido…"
       },
       "status": {
         "pending": "Pendente",
@@ -401,7 +471,8 @@
         "debit_card": "Tarxeta de débito",
         "paypal": "PayPal",
         "stripe": "Stripe",
-        "bank_transfer": "Transferencia bancaria"
+        "bank_transfer": "Transferencia bancaria",
+        "bizum": "Bizum"
       }
     },
     "products": {
@@ -414,7 +485,7 @@
       "edit": "Editar",
       "delete": "Eliminar",
       "deleted": "Produto eliminado",
-      "stockError": "Erro ao actualizar o stock",
+      "stockError": "Erro ao actualizar stock",
       "saved": "Produto gardado",
       "table": {
         "product": "Produto",
@@ -438,7 +509,6 @@
         "price": "Prezo (€)",
         "stock": "Stock",
         "discount": "Desconto (%)",
-        "size": "Talla",
         "weight": "Peso (kg)",
         "condition": "Condición",
         "description": "Descrición",
@@ -446,7 +516,16 @@
         "selectSubcategory": "Selecciona subcategoría",
         "selectItem": "Selecciona artigo",
         "saving": "Gardando…",
-        "save": "Gardar"
+        "save": "Gardar",
+        "characteristics": "Características",
+        "addImages": "Outras imaxes",
+        "noOtherImages": "Non hai imaxes adicionais",
+        "otherImages": "Imaxes adicionais",
+        "optional": "Opcional",
+        "dimensions": "Dimensións",
+        "height": "Alto",
+        "width": "Ancho",
+        "length": "Longo"
       }
     },
     "overview": {
@@ -474,7 +553,27 @@
       "saving": "Gardando…",
       "save": "Gardar cambios",
       "success": "Gardado correctamente.",
-      "error": "Erro ao gardar."
+      "error": "Erro ao gardar.",
+      "editAddress": "Modificar enderezo",
+      "community": "Comunidade autónoma",
+      "loadingCommunity": "Cargando...",
+      "selectCommunity": "Selecciona comunidade",
+      "province": "Provincia",
+      "loadingProvince": "Cargando...",
+      "selectProvince": "Selecciona provincia",
+      "municipality": "Municipio / Cidade",
+      "loadingMunicipality": "Cargando...",
+      "selectMunicipality": "Selecciona municipio",
+      "zipPlaceholder": "Código postal",
+      "addressPlaceholder": "Rúa e número",
+      "countryPlaceholder": "País",
+      "saveAddress": "Gardar enderezo",
+      "addAddress": "Engadir enderezo",
+      "noLogo": "Sen logo",
+      "changeLogo": "Cambiar logo",
+      "uploadLogo": "Subir logo",
+      "logoFormat": "Formato non válido. Usa JPG, PNG ou WEBP",
+      "logoSize": "A imaxe non pode superar 2MB"
     }
   },
   "review": {
@@ -488,21 +587,23 @@
     "commentLabel": "Comentario",
     "commentPlaceholder": "Cóntanos a túa experiencia co produto...",
     "sending": "Enviando...",
-    "submit": "Enviar recensión"
+    "submit": "Enviar recensión",
+    "rate": "Valorar",
+    "alreadyReviewed": " Xa valorado "
   },
   "footer": {
     "copyright": "© 2026 Playback. Feito con",
     "madeBy": "por alumnos de",
     "about": "Sobre o proxecto",
     "repo": "Repositorio",
-    "dashboard": "Panel"
+    "dashboard": "Dashboard"
   },
   "about": {
     "hero": {
       "subtitle": "Marketplace de segunda man para videoxogos, consolas e accesorios retro.",
       "links": {
         "repo": "Repositorio GitHub",
-        "dashboard": "Panel do proxecto",
+        "dashboard": "Dashboard do proxecto",
         "academy": "4Geeks Academy"
       }
     },
@@ -518,8 +619,8 @@
           "desc": "Carriño persistente, xestión de pedidos, seguimento de envíos e panel de vendedor."
         },
         {
-          "title": "Pagos con Stripe Connect",
-          "desc": "Pagos seguros entre compradores e vendedores con comisión de plataforma configurable."
+          "title": "Pagamentos con Stripe Connect",
+          "desc": "Pagamentos seguros entre compradores e vendedores con comisión de plataforma configurable."
         },
         {
           "title": "Imaxes na nube",
@@ -527,25 +628,30 @@
         },
         {
           "title": "Notificacións por correo",
-          "desc": "Emails transaccionais (rexistro, pedido, estado de envío) vía Brevo SMTP."
+          "desc": "Correos transaccionais (rexistro, pedido, estado de envío) vía Brevo SMTP."
         },
         {
-          "title": "Internacionalización ES / EN",
-          "desc": "Interface dispoñible en español e inglés con soporte para modo claro e escuro."
+          "title": "Internacionalización ES / GL",
+          "desc": "Interface dispoñible en castelán e galego con soporte para modo claro e escuro."
         }
-      ]
+      ],
+      "wip": {
+        "title": "Máis funcionalidades en camiño",
+        "badge": "En construción",
+        "desc": "O proxecto segue medrando. Iranse engadindo novas funcionalidades proximamente."
+      }
     },
     "tech": { "title": "Stack tecnolóxico" },
     "team": {
       "devTitle": "Equipo de desenvolvemento",
       "devRole": "Full Stack Developer",
-      "profCredit": "Proxecto titorizado por",
+      "profCredit": "Proxecto titoriado por",
       "instructor": "Instructor",
       "teachingAssistant": "Teaching Assistant"
     },
     "academy": {
       "title": "Proxecto final de",
-      "desc": "Desenvolvido como proxecto MVP do bootcamp de desenvolvemento web full stack. Representa o resultado de meses de aprendizaxe aplicado nun produto real e funcional.",
+      "desc": "Desenvolvido como proxecto MVP do bootcamp de desenvolvemento web full stack. Representa o resultado de meses de aprendizaxe aplicada nun produto real e funcional.",
       "cta": "Ver academia",
       "visit": "Visitar 4Geeks Academy"
     }

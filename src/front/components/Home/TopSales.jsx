@@ -22,13 +22,13 @@ export const TopSales = () => {
   const [toast, setToast] = useState(null);
   const [clicked, setClicked] = useState(null);
 
-  const [loadingCart, setLoadingCart] = useState({}); // ← cambia de null a {}
+  const [loadingCart, setLoadingCart] = useState({});
 
   const handleAddToCart = async (e, product) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (loadingCart[product.id]) return; // ← cortocircuito
+    if (loadingCart[product.id]) return;
 
     const token = store.token || localStorage.getItem("token");
 
@@ -49,9 +49,9 @@ export const TopSales = () => {
     setClicked(product.id);
     setTimeout(() => setClicked(null), 300);
 
-    setLoadingCart((prev) => ({ ...prev, [product.id]: true })); // ← bloquea
+    setLoadingCart((prev) => ({ ...prev, [product.id]: true }));
     const [, error] = await orderService.addProductToCart(token, product.id, 1);
-    setLoadingCart((prev) => ({ ...prev, [product.id]: false })); // ← desbloquea
+    setLoadingCart((prev) => ({ ...prev, [product.id]: false })); 
 
     if (error) {
       if (error.status === 401 || error.status === 403) {
@@ -131,7 +131,7 @@ export const TopSales = () => {
     <section className="mt-8">
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
+          className={`fixed bottom-6 left-6 text-white dark:text-stone-900 text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 animate-fade-in ${
             toast.type === "auth" || toast.type === "sin_stock"
               ? "bg-red-600 dark:bg-red-500"
               : "bg-stone-900 dark:bg-stone-100"
@@ -171,7 +171,7 @@ export const TopSales = () => {
       </div>
 
       <div className="overflow-hidden">
-        <div ref={carouselRef} className="flex gap-4 overflow-x-hidden">
+<div ref={carouselRef} className="flex gap-4 overflow-x-auto scroll-smooth touch-pan-x scrollbar-hide">
           {products.map((p) => {
             const enCarrito =
               store.cart?.find((item) => item.id === p.id)?.quantity || 0;
@@ -232,7 +232,7 @@ export const TopSales = () => {
                       ) : (
                         <button
                           onClick={(e) => handleAddToCart(e, p)}
-                          disabled={loadingCart[p.id]} // ← añade esto
+                          disabled={loadingCart[p.id]} 
                           className={`text-white transition-all flex items-center justify-center p-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                             clicked === p.id
                               ? "bg-violet-600 scale-75"

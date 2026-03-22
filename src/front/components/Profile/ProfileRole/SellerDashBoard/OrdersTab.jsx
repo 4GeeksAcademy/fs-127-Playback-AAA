@@ -94,6 +94,10 @@ const OrdersTab = () => {
   };
 
   const sorted = [...orders].sort((a, b) => {
+    // Los cancelados siempre al final, independientemente del sort activo
+    if (a.status === "cancelled" && b.status !== "cancelled") return 1;
+    if (b.status === "cancelled" && a.status !== "cancelled") return -1;
+
     let va, vb;
     if (sortKey === "id")     { va = a.id;                   vb = b.id; }
     if (sortKey === "date")   { va = new Date(a.created_at); vb = new Date(b.created_at); }
@@ -134,7 +138,7 @@ const OrdersTab = () => {
     <div className="pt-6 space-y-4">
 
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-red-600 dark:bg-red-500 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
+        <div className="fixed bottom-6 left-6 bg-red-600 dark:bg-red-500 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
           <AlertCircle size={15} />
           {toast.msg}
         </div>
@@ -210,6 +214,12 @@ const OrdersTab = () => {
                     {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
                     {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
                   </button>
+                  {pedido.status === "cancelled" && (
+                    <p style={{ fontSize: "9px", color: "#A32D2D", opacity: 0.7, textAlign: "right", marginTop: "2px" }}>
+                      💳 {t("dashboard.orders.refundIssued")}
+                    </p>
+                  )}
+
                 </div>
 
               </div>
@@ -295,6 +305,11 @@ const OrdersTab = () => {
                       {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
                       {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
                     </button>
+                    {pedido.status === "cancelled" && (
+                      <p style={{ fontSize: "9px", color: "#A32D2D", opacity: 0.7, marginTop: "3px", textAlign: "right" }}>
+                        💳 {t("dashboard.orders.refundIssued")}
+                      </p>
+                    )}
                   </td>
                 </tr>
               ))}

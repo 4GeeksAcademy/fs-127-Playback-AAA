@@ -30,7 +30,7 @@ class Order(db.Model):
     shipping_cost: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     status:Mapped[Status] = mapped_column(Enum(Status), nullable=False)
     stripe_payment_intent_id: Mapped[str] = mapped_column(String(255), nullable=True)
-    created_at: Mapped[datetime] = mapped_column( DateTime(),default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     #---------------------ForeignKey
 
