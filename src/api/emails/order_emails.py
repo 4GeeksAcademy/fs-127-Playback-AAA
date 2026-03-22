@@ -257,7 +257,7 @@ def build_order_confirmation_buyer_email(user, order):
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td align="center">
-                                        <a href="{os.getenv('FRONTEND_URL')}orders" style="display:inline-block; background-color:#1a1a1a; color:#f0c040; text-decoration:none; font-size:14px; font-weight:700; padding:14px 40px; border-radius:4px; letter-spacing:2px; text-transform:uppercase; font-family:'Courier New', Courier, monospace;">
+                                        <a href="{os.getenv('FRONTEND_URL')}profile?tab=orders" style="display:inline-block; background-color:#1a1a1a; color:#f0c040; text-decoration:none; font-size:14px; font-weight:700; padding:14px 40px; border-radius:4px; letter-spacing:2px; text-transform:uppercase; font-family:'Courier New', Courier, monospace;">
                                             Ver mis pedidos →
                                         </a>
                                     </td>
@@ -302,7 +302,7 @@ def build_order_confirmation_buyer_email(user, order):
         f"Tu pedido #{order.id} ha sido confirmado y pagado.\n\n"
         f"Total: {order.total_price:.2f} €\n\n"
         f"Dirección de envío:\n{address.full_name}\n{address.address}\n{address.city}, {address.country}\n\n"
-        f"Historial de pedidos: {os.getenv('FRONTEND_URL')}orders\n\n"
+        f"Historial de pedidos: {os.getenv('FRONTEND_URL')}profile?tab=orders\n\n"
         "Equipo Playback"
     )
 
@@ -470,6 +470,245 @@ def build_order_shipped_buyer_email(user, order, tracking_code, carrier_name):
         f"Código de seguimiento: {tracking_code}\n\n"
         f"Seguimiento: {tracking_url}\n\n"
         f"Dirección de entrega:\n{address.full_name}\n{address.address}\n{address.city}, {address.country}\n\n"
+        "Equipo Playback"
+    )
+
+    return msg
+
+def build_order_cancelled_buyer_email(user, order, seller_name, reason):
+    """Email al comprador cuando un vendedor cancela su parte del pedido."""
+
+    reason_html = (
+        f'<p style="margin:0 0 28px; color:#444444; font-size:15px; line-height:1.7;">'
+        f'El motivo indicado por el vendedor es: <em>"{reason}"</em></p>'
+    ) if reason else ""
+
+    msg = Message(
+        subject=f"▶ Parte de tu pedido #{order.id} ha sido cancelada",
+        recipients=[user.email],
+        sender=("Playback", os.getenv("MAIL_DEFAULT_SENDER"))
+    )
+
+    msg.html = f"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#f5f0e8; font-family:'Courier New', Courier, monospace;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0e8; padding:40px 0;">
+        <tr>
+            <td align="center">
+                <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px; width:100%;">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td align="center" style="background-color:#1a1a1a; padding:28px 40px; border-radius:8px 8px 0 0;">
+                            <img src="{LOGO_FULL}" alt="Playback" width="180" style="display:block; max-width:180px;">
+                        </td>
+                    </tr>
+
+                    <!-- DIVIDER -->
+                    <tr>
+                        <td style="background-color:#f0c040; height:4px;"></td>
+                    </tr>
+
+                    <!-- BODY -->
+                    <tr>
+                        <td style="background-color:#ffffff; padding:40px 40px 32px;">
+                            <p style="margin:0 0 8px; color:#888888; font-size:11px; letter-spacing:2px; text-transform:uppercase;">
+                                Cancelación parcial de pedido
+                            </p>
+                            <h2 style="margin:0 0 16px; color:#1a1a1a; font-size:22px; font-weight:700; font-family:'Courier New', Courier, monospace;">
+                                Hola, {user.name}
+                            </h2>
+                            <p style="margin:0 0 16px; color:#444444; font-size:15px; line-height:1.7;">
+                                El vendedor <strong>{seller_name}</strong> ha tenido que cancelar
+                                su parte del pedido <strong>#{order.id}</strong>.
+                            </p>
+                            {reason_html}
+                            <p style="margin:0 0 28px; color:#444444; font-size:15px; line-height:1.7;">
+                                Procesaremos la devolución del importe correspondiente a esos productos
+                                en los próximos días hábiles. El resto de tu pedido sigue su curso normal.
+                            </p>
+
+                            <!-- CTA -->
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{os.getenv('FRONTEND_URL')}profile?tab=orders" style="display:inline-block; background-color:#1a1a1a; color:#f0c040; text-decoration:none; font-size:14px; font-weight:700; padding:14px 40px; border-radius:4px; letter-spacing:2px; text-transform:uppercase; font-family:'Courier New', Courier, monospace;">
+                                            Ver mis pedidos →
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- DIVIDER -->
+                    <tr>
+                        <td style="background-color:#f0c040; height:4px;"></td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="background-color:#1a1a1a; padding:20px 40px; border-radius:0 0 8px 8px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <img src="{LOGO_MINI}" alt="Playback" height="28" style="display:block;">
+                                    </td>
+                                    <td align="right">
+                                        <p style="margin:0; color:#555555; font-size:11px; font-family:'Courier New', Courier, monospace;">
+                                            © 2026 Playback
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+"""
+
+    msg.body = (
+        f"Hola {user.name},\n\n"
+        f"El vendedor {seller_name} ha cancelado su parte del pedido #{order.id}.\n"
+        + (f"Motivo: {reason}\n\n" if reason else "\n")
+        + "Procesaremos la devolución del importe correspondiente en los próximos días hábiles.\n\n"
+        f"Ver mis pedidos: {os.getenv('FRONTEND_URL')}profile?tab=orders\n\n"
+        "Equipo Playback"
+    )
+
+    return msg
+
+
+def build_order_cancelled_seller_email(seller, order):
+    """Email al vendedor cuando el comprador cancela el pedido completo."""
+
+    msg = Message(
+        subject=f"▶ El comprador ha cancelado el pedido #{order.id}",
+        recipients=[seller.user.email],
+        sender=("Playback", os.getenv("MAIL_DEFAULT_SENDER"))
+    )
+
+    msg.html = f"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#f5f0e8; font-family:'Courier New', Courier, monospace;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0e8; padding:40px 0;">
+        <tr>
+            <td align="center">
+                <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px; width:100%;">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td align="center" style="background-color:#1a1a1a; padding:28px 40px; border-radius:8px 8px 0 0;">
+                            <img src="{LOGO_FULL}" alt="Playback" width="180" style="display:block; max-width:180px;">
+                        </td>
+                    </tr>
+
+                    <!-- DIVIDER -->
+                    <tr>
+                        <td style="background-color:#f0c040; height:4px;"></td>
+                    </tr>
+
+                    <!-- BODY -->
+                    <tr>
+                        <td style="background-color:#ffffff; padding:40px 40px 32px;">
+                            <p style="margin:0 0 8px; color:#888888; font-size:11px; letter-spacing:2px; text-transform:uppercase;">
+                                Pedido cancelado
+                            </p>
+                            <h2 style="margin:0 0 16px; color:#1a1a1a; font-size:22px; font-weight:700; font-family:'Courier New', Courier, monospace;">
+                                Hola, {seller.store_name}
+                            </h2>
+                            <p style="margin:0 0 28px; color:#444444; font-size:15px; line-height:1.7;">
+                                El comprador ha cancelado el pedido <strong>#{order.id}</strong>
+                                antes de que fuera puesto en preparación. No es necesaria ninguna acción
+                                por tu parte.
+                            </p>
+
+                            <!-- INFO PEDIDO -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px; border:1px solid #e8e8e8; border-radius:6px; overflow:hidden;">
+                                <tr>
+                                    <td style="padding:10px 16px; border-bottom:1px solid #f0f0f0; background:#fafafa; color:#888888; font-size:12px; text-transform:uppercase; letter-spacing:1px; width:40%;">
+                                        Pedido
+                                    </td>
+                                    <td style="padding:10px 16px; border-bottom:1px solid #f0f0f0; background:#fafafa; color:#1a1a1a; font-size:14px; font-weight:700;">
+                                        #{order.id}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:10px 16px; color:#888888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">
+                                        Estado
+                                    </td>
+                                    <td style="padding:10px 16px;">
+                                        <span style="display:inline-block; background-color:#fee2e2; color:#a32d2d; font-size:12px; font-weight:700; padding:3px 10px; border-radius:3px; letter-spacing:1px; text-transform:uppercase;">
+                                            Cancelado
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- CTA -->
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{os.getenv('FRONTEND_URL')}seller/orders" style="display:inline-block; background-color:#1a1a1a; color:#f0c040; text-decoration:none; font-size:14px; font-weight:700; padding:14px 40px; border-radius:4px; letter-spacing:2px; text-transform:uppercase; font-family:'Courier New', Courier, monospace;">
+                                            Ver mis pedidos →
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- DIVIDER -->
+                    <tr>
+                        <td style="background-color:#f0c040; height:4px;"></td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="background-color:#1a1a1a; padding:20px 40px; border-radius:0 0 8px 8px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <img src="{LOGO_MINI}" alt="Playback" height="28" style="display:block;">
+                                    </td>
+                                    <td align="right">
+                                        <p style="margin:0; color:#555555; font-size:11px; font-family:'Courier New', Courier, monospace;">
+                                            © 2026 Playback
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+"""
+
+    msg.body = (
+        f"Hola {seller.store_name},\n\n"
+        f"El comprador ha cancelado el pedido #{order.id} antes de que fuera puesto en preparación.\n"
+        "No es necesaria ninguna acción por tu parte.\n\n"
+        f"Panel de vendedor: {os.getenv('FRONTEND_URL')}seller/orders\n\n"
         "Equipo Playback"
     )
 

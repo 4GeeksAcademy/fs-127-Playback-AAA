@@ -48,7 +48,7 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     image_url: Mapped[str] = mapped_column(String(500), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     role: Mapped[RoleName] = mapped_column(Enum(RoleName), nullable=True, default=RoleName.buyer)
 
     #----------------------RelationShip

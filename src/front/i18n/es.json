@@ -15,7 +15,7 @@
     "viewSubcategory": "Ver subcategoría"
   },
   "incidents": {
-    "title": "Abrir incidencia",
+    "title": "Incidencias",
     "placeholder": "Cuéntanos qué ha pasado con tu pedido...",
     "descriptionRequired": "La descripción es obligatoria",
     "submitError": "Error al crear la incidencia"
@@ -257,7 +257,11 @@
     "openIncident": "Incidencia / Devolución",
     "cancelOrder": "Cancelar pedido",
     "confirmCancel": "Sí, cancelar",
-    "goBack": "Volver"
+    "goBack": "Volver",
+    "cancelledBySeller": "Este envío fue cancelado por el vendedor.",
+    "cancelledByYou": "Cancelaste este pedido.",
+    "cancelReason": "Motivo",
+    "refundPending": "Se procesará el reembolso del importe en los próximos días hábiles."
   },
   "favorites": {
     "title": "Tus favoritos",
@@ -419,6 +423,7 @@
       "found": "pedidos encontrados",
       "noOrders": "No tienes pedidos aún.",
       "noAddress": "No disponible",
+      "refundIssued": "Reembolso tramitado al comprador.",
       "table": {
         "order": "Pedido",
         "customer": "Cliente",

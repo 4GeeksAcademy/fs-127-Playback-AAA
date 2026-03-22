@@ -44,6 +44,7 @@ const trackingUrl = (carrier, code) => {
 // ── Sub-sección de un envío dentro del desplegable ────────────────────────────
 const ShipmentSection = ({ so, orderId, i18n, reviewed, onReview, onConfirm, confirming }) => {
   const cfg         = STATUS_CONFIG[so.status] || STATUS_CONFIG.pending;
+  const { t } = useTranslation();
   const isShipped   = so.status === "shipped";
   const isDelivered = so.status === "delivered";
   const isCancelled = so.status === "cancelled";
@@ -232,8 +233,18 @@ const ShipmentSection = ({ so, orderId, i18n, reviewed, onReview, onConfirm, con
 
       {/* ── Nota estado cancelado ── */}
       {isCancelled && (
-        <div style={{ padding: "6px 12px 10px", fontSize: "11px", color: "#A32D2D" }}>
-          Este envío fue cancelado.
+        <div style={{ padding: "8px 12px 12px", borderTop: "1px solid #FEE2E2" }}>
+          <p style={{ fontSize: "11px", color: "#A32D2D", fontWeight: "600", marginBottom: "2px" }}>
+            {so.cancellation_reason ? t("orders.cancelledBySeller") : t("orders.cancelledByYou")}
+          </p>
+          {so.cancellation_reason && (
+            <p style={{ fontSize: "11px", color: "#A32D2D", opacity: 0.8, fontStyle: "italic", marginBottom: "4px" }}>
+              {t("orders.cancelReason")}: {so.cancellation_reason}
+            </p>
+          )}
+          <p style={{ fontSize: "11px", color: "#A32D2D", opacity: 0.7 }}>
+            💳 {t("orders.refundPending")}
+          </p>
         </div>
       )}
     </div>

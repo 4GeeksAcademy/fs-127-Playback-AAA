@@ -35,7 +35,7 @@ class Seller(db.Model):
     rejection_reason: Mapped[str] = mapped_column(Text(), nullable=True)
     stripe_account_id: Mapped[str] = mapped_column(String(120), nullable=True)
     stripe_onboarding_completed: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     #---------------------ForeignKey
 

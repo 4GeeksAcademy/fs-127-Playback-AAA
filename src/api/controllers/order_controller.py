@@ -10,6 +10,8 @@ from api.models.seller_order import SellerOrder, SellerOrderStatus
 from datetime import datetime, timezone
 from threading import Thread
 from flask import current_app
+import stripe
+import os
 
 
 
@@ -217,6 +219,7 @@ def my_orders():
                     "tracking_code":   so.tracking_code,
                     "carrier_name":    so.carrier_name,
                     "shipped_at":      so.shipped_at.isoformat() if so.shipped_at else None,
+                    "cancellation_reason": so.cancellation_reason,
                     "products": [{
                         "id":        d.product.id,
                         "name":      d.product.name,
@@ -422,15 +425,16 @@ def seller_orders():
     return jsonify(result), 200
 
 
-# ── Helper: envía el email de envío en un hilo separado ───────────────────────
-def _send_shipped_email_async(app, user, order, tracking_code, carrier_name):
+# ── Helper genérico: envía un mensaje de Flask-Mail en un hilo separado ───────
+# Render free bloquea SMTP — lanzarlo en background evita que el worker muera.
+# Todos los emails transaccionales del blueprint reutilizan este helper.
+def _send_email_async(app, message):
     with app.app_context():
         try:
             from extensions import mail
-            from api.emails import build_order_shipped_buyer_email
-            mail.send(build_order_shipped_buyer_email(user, order, tracking_code, carrier_name))
+            mail.send(message)
         except Exception as e:
-            print(f"[Order] Error al enviar email de envío al comprador: {str(e)}")
+            print(f"[Order] Error al enviar email: {str(e)}")
 
 
 @order_bp.route('/seller-orders/<int:seller_order_id>/status', methods=['PATCH'])
@@ -474,21 +478,66 @@ def update_seller_order_status(seller_order_id):
         seller_order.shipped_at    = datetime.now(timezone.utc)
         
         # Email al comprador (nunca rompe el flujo si falla)
-        Thread(
-            target=_send_shipped_email_async,
-            args=(
-                current_app._get_current_object(),
-                seller_order.order.user,
-                seller_order.order,
-                tracking_code,
-                carrier_name,
-            )
-        ).start()
+        try:
+            from api.emails import build_order_shipped_buyer_email
+            Thread(
+                target=_send_email_async,
+                args=(
+                    current_app._get_current_object(),
+                    build_order_shipped_buyer_email(
+                        seller_order.order.user,
+                        seller_order.order,
+                        tracking_code,
+                        carrier_name,
+                    ),
+                )
+            ).start()
+        except Exception as e:
+            print(f"[Order] Error al preparar email de envío al comprador: {str(e)}")
     
-    # ── Cancelación: guardar motivo si se proporciona ──────────────────────────
+    # ── Cancelación: guardar motivo, refund parcial y email al comprador ───────
     if new_status == "cancelled":
         reason = (body.get("cancellation_reason") or "").strip()
-        seller_order.cancellation_reason = reason or None    
+        seller_order.cancellation_reason = reason or None
+
+        # Refund parcial — solo los productos de este vendedor
+        if seller_order.order.stripe_payment_intent_id:
+            try:
+                my_details = [
+                    d for d in seller_order.order.order_details
+                    if d.product.seller_id == seller_order.seller_id
+                ]
+                seller_subtotal = sum(
+                    d.product.price * (1 - (d.product.discount or 0) / 100) * d.quantity
+                    for d in my_details
+                )
+                refund_cents = int(round(seller_subtotal * 100))
+                if refund_cents > 0:
+                    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+                    stripe.Refund.create(
+                        payment_intent=seller_order.order.stripe_payment_intent_id,
+                        amount=refund_cents,
+                    )
+            except Exception as e:
+                print(f"[Order] Error al tramitar refund parcial: {str(e)}")
+
+        # Email al comprador en background
+        try:
+            from api.emails import build_order_cancelled_buyer_email
+            Thread(
+                target=_send_email_async,
+                args=(
+                    current_app._get_current_object(),
+                    build_order_cancelled_buyer_email(
+                        seller_order.order.user,
+                        seller_order.order,
+                        seller.store_name,
+                        reason or None,
+                    ),
+                )
+            ).start()
+        except Exception as e:
+            print(f"[Order] Error al preparar email de cancelación al comprador: {str(e)}")
     
     # ── Actualizar estado del SellerOrder ──────────────────────────────────────
     seller_order.status = SellerOrderStatus(new_status)
@@ -575,11 +624,11 @@ def buyer_confirm_shipment_delivery(order_id, seller_order_id):
         "order_status":        order.status.value,
     }), 200
 
+
 # ─────────────────────────────────────────────────────────────────────────────
 # CANCELACIÓN POR EL COMPRADOR
 # PATCH /order/my-orders/<order_id>/cancel
 # Solo disponible en estado paid o confirmed
-# La devolución Stripe queda pendiente para una tarea posterior.
 # ─────────────────────────────────────────────────────────────────────────────
 @order_bp.route('/my-orders/<int:order_id>/cancel', methods=['PATCH'])
 @jwt_required()
@@ -603,7 +652,33 @@ def buyer_cancel_order(order_id):
     order.sync_status()
     db.session.commit()
 
-    # TODO: tramitar devolución Stripe (order.stripe_payment_intent_id)
+    # Refund total al comprador
+    if order.stripe_payment_intent_id:
+        try:
+            stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+            stripe.Refund.create(
+                payment_intent=order.stripe_payment_intent_id,
+            )
+        except Exception as e:
+            print(f"[Order] Error al tramitar refund total: {str(e)}")
+
+    # Email a cada vendedor afectado en background
+    try:
+        from api.emails import build_order_cancelled_seller_email
+        sellers_afectados = list({
+            so.seller for so in order.seller_orders
+            if so.status.value == "cancelled"
+        })
+        for s in sellers_afectados:
+            Thread(
+                target=_send_email_async,
+                args=(
+                    current_app._get_current_object(),
+                    build_order_cancelled_seller_email(s, order),
+                )
+            ).start()
+    except Exception as e:
+        print(f"[Order] Error al preparar emails de cancelación a vendedores: {str(e)}")
 
     return jsonify({
         "msg":          "Pedido cancelado",

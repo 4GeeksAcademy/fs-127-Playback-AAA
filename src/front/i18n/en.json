@@ -1,4 +1,10 @@
 {
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "sending": "Sending...",
+    "send": "Send"
+  },
   "home": {
     "loading": "Loading...",
     "topSales": "Top Sales",
@@ -9,7 +15,10 @@
     "viewSubcategory": "View subcategory"
   },
   "incidents": {
-    "title": "Incidents"
+    "title": "Incidents",
+    "placeholder": "Tell us what happened with your order...",
+    "descriptionRequired": "Description is required",
+    "submitError": "Error creating incident"
   },
   "product": {
     "noFound": "No products found",
@@ -18,7 +27,7 @@
     "featuresLabel": "Features",
     "features": "No features specified.",
     "shippingLabel": "Shipping & Returns",
-    "shipping": "Delivery in 48-72 business hours. Free shipping on orders over €100. Free returns within the first 30 days.",
+    "shipping": "Shipping within 48-72 business hours. Free shipping on orders over €100. Free returns within the first 30 days.",
     "inStock": "In stock",
     "outOfStock": "Out of stock",
     "noStock": "Out of stock",
@@ -28,31 +37,31 @@
     "reviews": "Customer reviews",
     "loginRequired": "You must be logged in to add products to the cart",
     "cartError": "Error adding to cart",
-    "characteristicsLabel": "Characteristics",
-    "characteristics": "No characteristics",
+    "characteristicsLabel": "Features",
+    "characteristics": "No features",
     "reviewsCount": "Total reviews",
     "noReviews": "No reviews"
   },
   "navbar": {
     "loginTitle": "Welcome back",
     "signupTitle": "Create your account",
-    "nameLabel": "First name",
-    "namePlaceholder": "Your first name",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
     "lastNameLabel": "Last name",
     "lastNamePlaceholder": "Your last name",
     "passwordPlaceholder": "Your password",
     "password": "Password",
-    "loginButton": "Log in",
+    "loginButton": "Sign in",
     "dontHaveAccount": "Don't have an account?",
     "signupButton": "Sign up",
     "alreadyHaveAccount": "Already have an account? ",
-    "forgotPassword": "Can't remember your password?",
+    "forgotPassword": "Forgot your password?",
     "forgotPasswordButton": "Recover it here",
     "profile": "Profile",
     "orders": "Orders",
     "favorites": "Favorites",
     "cart": "Cart",
-    "logout": "Log out",
+    "logout": "Sign out",
     "labelCategories": "Categories",
     "searchPlaceholder": "Search...",
     "offers": "Offers",
@@ -63,17 +72,17 @@
     "refurbished": "Refurbished",
     "viewAll": "View all",
     "theme": "Theme",
-    "forgotTitle": "Recover password",
+    "forgotTitle": "Reset password",
     "forgotButton": "Send instructions",
     "forgotSuccess": "If the email exists you will receive instructions shortly",
     "missingToken": "Token not found. Use the link from the email.",
-    "goHome": "Go to home",
-    "backToLogin": "Back to Login",
+    "goHome": "Go home",
+    "backToLogin": "Back to Sign in",
     "resetTitle": "Reset your password",
     "newPasswordPlaceholder": "Your new password",
     "confirmPasswordPlaceholder": "Confirm your new password",
     "resetButton": "Reset password",
-    "resetSuccess": "Your password has been successfully reset. You can now log in with your new password."
+    "resetSuccess": "Your password has been successfully reset. You can now sign in with your new password."
   },
   "enums": {
     "productCondition": {
@@ -89,7 +98,7 @@
     "applyPrice": "Apply price",
     "clearAll": "Clear all filters",
     "noResults": "No results",
-    "noResultsHint": "Try changing the filters or the search term.",
+    "noResultsHint": "Try changing the filters or search term.",
     "clearFilters": "Remove all filters",
     "searching": "Searching...",
     "productCount_one": "{{count}} product",
@@ -102,7 +111,7 @@
     "conditionSection": "Condition",
     "onSale": "On sale",
     "inStockOnly": "In stock only",
-    "lowStock": "Few units",
+    "lowStock": "Low stock",
     "lowStockBadge": "Last",
     "seeAll": "See all results for \"{{query}}\" →",
     "sort_relevance": "Relevance",
@@ -111,12 +120,12 @@
     "sort_rating": "Best rated",
     "sort_newest": "Newest",
     "sort_discount": "Biggest discount",
-    "sort_stock_asc": "Few units first",
-    "filterChip_min_price": "From €{{value}}",
-    "filterChip_max_price": "Up to €{{value}}",
+    "sort_stock_asc": "Low stock first",
+    "filterChip_min_price": "From {{value}}€",
+    "filterChip_max_price": "Up to {{value}}€",
     "filterChip_in_stock": "In stock",
     "filterChip_on_sale": "On sale",
-    "filterChip_low_stock": "Few units"
+    "filterChip_low_stock": "Low stock"
   },
   "seller": {
     "registerTitle": "Become a seller",
@@ -124,13 +133,13 @@
     "stepStore": "Store",
     "stepShipping": "Shipping & Banking",
     "stepConfirm": "Confirmation",
-    "name": "First name",
+    "name": "Name",
     "lastName": "Last name",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm password",
     "storeName": "Store name",
-    "nifCif": "Tax ID",
+    "nifCif": "NIF / CIF",
     "storeDescription": "Store description",
     "storeDescriptionPlaceholder": "Tell us what you sell...",
     "phone": "Contact phone",
@@ -138,6 +147,12 @@
     "city": "City",
     "zip": "Postal code",
     "country": "Country",
+    "community": "Autonomous community",
+    "selectCommunity": "Select community",
+    "province": "Province",
+    "selectProvince": "Select province",
+    "municipality": "Municipality",
+    "selectMunicipality": "Select municipality",
     "iban": "IBAN",
     "accountHolder": "Account holder",
     "reviewTitle": "Review your application",
@@ -152,7 +167,7 @@
     "errorPasswordMatch": "Passwords do not match",
     "errorPasswordLength": "Password must be at least 8 characters",
     "errorRequired": "This field is required",
-    "errorRequiredFields": "Fill in all required fields",
+    "errorRequiredFields": "Please fill in all required fields",
     "becomeSeller": "Sell on Playback",
     "myStore": "My store",
     "adminPanel": "Admin panel",
@@ -161,17 +176,17 @@
     "goToDashboard": "Go to my store",
     "registerSubtitle": "Join our seller community and reach thousands of buyers.",
     "pendingTitle": "Application under review",
-    "pendingDesc": "We are reviewing your application. We will notify you as soon as it is approved.",
+    "pendingDesc": "We are reviewing your application. We will notify you once it is approved.",
     "verifiedTitle": "Your store is active!",
     "verifiedDesc": "You can now manage your products and orders from your seller panel.",
     "rejectedTitle": "Application rejected",
-    "rejectedDesc": "Your application has not been approved. Contact support for more information.",
+    "rejectedDesc": "Your application was not approved. Contact support for more information.",
     "editTitle": "Correct application",
-    "editSubtitle": "Fix the indicated data and resubmit your application.",
+    "editSubtitle": "Correct the indicated data and resubmit your application.",
     "resubmitNotice": "Your corrected application will return to pending status for review.",
     "resubmit": "Resubmit application",
     "rejectionReason": "Rejection reason",
-    "cancelApplicationDesc": "If you do not wish to correct the application, you can cancel it and start over.",
+    "cancelApplicationDesc": "If you don't want to correct the application, you can cancel it and start over.",
     "cancelApplication": "Cancel application",
     "stripe": {
       "title": "Connect your payment account",
@@ -181,6 +196,8 @@
     }
   },
   "checkout": {
+    "stockUnavailable": "Insufficient stock: {{items}}. Review your cart.",
+    "stockError": "Error checking stock. Please try again.",
     "successTitle": "Payment completed!",
     "successMsg": "Your order is being processed. Redirecting you to your orders...",
     "payNow": "Pay now",
@@ -237,7 +254,14 @@
     "billingAddress": "Billing address",
     "recent": "Recent orders",
     "viewAll": "View all orders",
-    "openIncident": "Incident / Return"
+    "openIncident": "Incident / Return",
+    "cancelOrder": "Cancel order",
+    "confirmCancel": "Yes, cancel",
+    "goBack": "Go back",
+    "cancelledBySeller": "This shipment was cancelled by the seller.",
+    "cancelledByYou": "You cancelled this order.",
+    "cancelReason": "Reason",
+    "refundPending": "A refund will be processed in the next few business days."
   },
   "favorites": {
     "title": "Your favorites",
@@ -251,8 +275,6 @@
       "addresses": "Addresses",
       "security": "Security",
       "orders": "Orders"
-    
-
     },
     "manage": "Manage",
     "memberSince": "Customer since {{date}}",
@@ -279,16 +301,13 @@
       "confirm": "Confirm",
       "close": "Close",
       "profileUpdated": "Profile updated successfully",
-"name": "First name",
-"lastName": "Last name",
-"email": "Email",
-"memberSince": "Member since",
-"profilePhoto": "Profile photo",
-"photoFormats": "JPG, PNG or WEBP · max. 2MB",
-"emailReadonly": "Email cannot be changed"
-
-
-
+      "name": "Name",
+      "lastName": "Last name",
+      "email": "Email",
+      "memberSince": "Member since",
+      "profilePhoto": "Profile photo",
+      "photoFormats": "JPG, PNG or WEBP · max. 2MB",
+      "emailReadonly": "Email cannot be modified"
     },
     "addresses": {
       "title": "My Addresses",
@@ -308,21 +327,21 @@
       "update": "Update password",
       "updated": "Password updated successfully",
       "error": "Error updating password"
-  }},
-     "dashboard": {
-    "welcome": "Hi, {{name}} 👋",
-    "subtitle": "Here's a summary of your activity",
-    "helpTitle": "Help & support",
-    "loading": "Loading…",
-    "contactTitle": "Contact support",
-    "contactDesc": "We'll reply within 24-48h"
-  
+    },
+    "dashboard": {
+      "welcome": "Hello, {{name}} 👋",
+      "subtitle": "Here is a summary of your activity",
+      "helpTitle": "Help & support",
+      "loading": "Loading…",
+      "contactTitle": "Contact support",
+      "contactDesc": "We respond within 24-48h"
+    }
   },
   "admin": {
     "rejectTitle": "Reject application",
-    "rejectDesc1": "Enter the reason for rejecting",
+    "rejectDesc1": "Indicate the reason for rejecting",
     "rejectDesc2": ". The seller will be able to read it and correct their application.",
-    "rejectPlaceholder": "E.g.: The entered Tax ID is not valid. Please review it and resubmit your application.",
+    "rejectPlaceholder": "E.g.: The NIF entered is not valid. Please review it and resubmit your application.",
     "confirmReject": "Confirm rejection",
     "verify": "Verify",
     "reject": "Reject",
@@ -347,7 +366,7 @@
       "inactive": "Inactive",
       "storeData": "Store data",
       "store": "Store",
-      "nifCif": "Tax ID",
+      "nifCif": "NIF / CIF",
       "phone": "Phone",
       "description": "Description",
       "shippingAddress": "Shipping address",
@@ -370,7 +389,7 @@
     "panelTitle": "Admin panel",
     "panelDesc": "Manage sellers, users and platform incidents.",
     "tabs": {
-      "stats": "Statistics",
+      "stats": "Stats",
       "sellers": "Sellers",
       "users": "Users",
       "incidents": "Incidents"
@@ -393,17 +412,18 @@
       "loading": "Loading earnings…",
       "totalRevenue": "Total revenue",
       "completedOrders": "Completed orders",
-      "avgTicket": "Average order value",
+      "avgTicket": "Average ticket",
       "revenueByMonth": "Revenue by month",
-      "lastMovements": "Latest transactions",
+      "lastMovements": "Latest movements",
       "order": "Order",
-      "noMovements": "No transactions yet."
+      "noMovements": "No movements yet."
     },
     "orders": {
       "loading": "Loading orders…",
       "found": "orders found",
-      "noOrders": "You have no orders yet.",
+      "noOrders": "No orders yet.",
       "noAddress": "Not available",
+      "refundIssued": "Refund issued to the buyer.",
       "table": {
         "order": "Order",
         "customer": "Customer",
@@ -429,17 +449,19 @@
         "confirmCancel": "Yes, cancel",
         "goBack": "Go back",
         "shippedNote": "The order is on its way. Delivery will be confirmed by the buyer or the carrier.",
-        "shippingData": "Shipping details",
+        "shippingData": "Shipping data",
         "carrier": "Carrier",
         "trackingCode": "Tracking code",
-        "trackingHint": "The buyer will receive this code by email to track their shipment.",
-        "close": "Close"
+        "trackingHint": "The buyer will receive this code by email to track the shipment.",
+        "close": "Close",
+        "cancelReasonLabel": "Enter the reason for cancellation",
+        "cancelReasonPlaceholder": "E.g. Out of stock, order error…"
       },
       "status": {
         "pending": "Pending",
         "paid": "Paid",
         "confirmed": "Confirmed",
-        "processing": "Processing",
+        "processing": "In preparation",
         "shipped": "Shipped",
         "delivered": "Delivered",
         "cancelled": "Cancelled"
@@ -457,7 +479,7 @@
       "loading": "Loading products…",
       "count": "products",
       "newProduct": "+ New product",
-      "noProducts": "You have no products yet.",
+      "noProducts": "No products yet.",
       "noStock": "Out of stock",
       "confirmDelete": "Delete this product?",
       "edit": "Edit",
@@ -495,7 +517,7 @@
         "selectItem": "Select item",
         "saving": "Saving…",
         "save": "Save",
-        "characteristics": "Characteristics",
+        "characteristics": "Features",
         "addImages": "Other images",
         "noOtherImages": "No additional images",
         "otherImages": "Additional images",
@@ -507,7 +529,7 @@
       }
     },
     "overview": {
-      "loading": "Loading overview…",
+      "loading": "Loading summary…",
       "salesThisMonth": "Sales this month",
       "pendingOrders": "Pending orders",
       "activeProducts": "Active products",
@@ -532,27 +554,26 @@
       "save": "Save changes",
       "success": "Saved successfully.",
       "error": "Error saving.",
-      "editAddress": "Edit address",
-"community": "Autonomous community",
-"loadingCommunity": "Loading...",
-"selectCommunity": "Select community",
-"province": "Province",
-"loadingProvince": "Loading...",
-"selectProvince": "Select province",
-"municipality": "Municipality / City",
-"loadingMunicipality": "Loading...",
-"selectMunicipality": "Select municipality",
-"zipPlaceholder": "Postal code",
-"addressPlaceholder": "Street and number",
-"countryPlaceholder": "Country",
-"saveAddress": "Save address",
-"addAddress": "Add address",
-"noLogo": "No logo",
-"changeLogo": "Change logo",
-"uploadLogo": "Upload logo",
-"logoFormat": "Invalid format. Use JPG, PNG or WEBP",
-"logoSize": "Image cannot exceed 2MB"
-
+      "editAddress": "Modify address",
+      "community": "Autonomous community",
+      "loadingCommunity": "Loading...",
+      "selectCommunity": "Select community",
+      "province": "Province",
+      "loadingProvince": "Loading...",
+      "selectProvince": "Select province",
+      "municipality": "Municipality / City",
+      "loadingMunicipality": "Loading...",
+      "selectMunicipality": "Select municipality",
+      "zipPlaceholder": "Postal code",
+      "addressPlaceholder": "Street and number",
+      "countryPlaceholder": "Country",
+      "saveAddress": "Save address",
+      "addAddress": "Add address",
+      "noLogo": "No logo",
+      "changeLogo": "Change logo",
+      "uploadLogo": "Upload logo",
+      "logoFormat": "Invalid format. Use JPG, PNG or WEBP",
+      "logoSize": "Image cannot exceed 2MB"
     }
   },
   "review": {
@@ -568,7 +589,7 @@
     "sending": "Sending...",
     "submit": "Submit review",
     "rate": "Rate",
-    "alreadyReviewed": " Already reviewed "
+    "alreadyReviewed": " Already rated "
   },
   "footer": {
     "copyright": "© 2026 Playback. Made with",
@@ -594,7 +615,7 @@
           "desc": "Second-hand video games, consoles and accessories organised by categories and subcategories."
         },
         {
-          "title": "Full marketplace",
+          "title": "Complete marketplace",
           "desc": "Persistent cart, order management, shipment tracking and seller panel."
         },
         {
@@ -615,16 +636,16 @@
         }
       ],
       "wip": {
-        "title": "More features on the way",
+        "title": "More features coming",
         "badge": "Under construction",
         "desc": "The project keeps growing. New features will be added soon."
       }
     },
-    "tech": { "title": "Tech stack" },
+    "tech": { "title": "Technology stack" },
     "team": {
       "devTitle": "Development team",
       "devRole": "Full Stack Developer",
-      "profCredit": "Project mentored by",
+      "profCredit": "Project tutored by",
       "instructor": "Instructor",
       "teachingAssistant": "Teaching Assistant"
     },
