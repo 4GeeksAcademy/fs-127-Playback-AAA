@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  padding: 30px;
+}
+
+/* CONTENEDOR */
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* HEADER NEGRO */
+.header {
+  background: #0f0f0f;
+  padding: 20px;
+  text-align: center;
+}
+
+.header img {
+  height: 40px;
+}
+
+/* LINEA DORADA */
+.gold-line {
+  height: 4px;
+  background: #d4af37;
+}
+
+/* BODY */
+.content {
+  padding: 25px;
+}
+
+/* TITULO PEQUEÑO */
+.subtitle {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+/* NOMBRE */
+h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+/* TEXTO */
+.text {
+  font-size: 13px;
+  color: #555;
+  margin: 10px 0;
+}
+
+/* TABLA */
+.table-box {
+  background: #f7f7f7;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-size: 11px;
+  color: #888;
+  text-align: left;
+  padding: 12px;
+}
+
+td {
+  padding: 12px;
+  font-size: 13px;
+}
+
+td:last-child {
+  text-align: right;
+}
+
+/* TOTALES */
+.totals {
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.total-final {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* DIRECCIÓN */
+.address {
+  margin-top: 25px;
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #555;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="file://{{ logo_path }}">
+  </div>
+
+  <div class="gold-line"></div>
+
+  <div class="content">
+
+    <div class="subtitle">CONFIRMACIÓN DE PEDIDO</div>
+
+    <h1>Hola, {{ order.user.email }}</h1>
+
+    <p class="text">
+      Tu pedido #{{ order.id }} ha sido confirmado.<br>
+      Factura {{ invoice_number }} · {{ date }}
+    </p>
+
+    <!-- TABLA -->
+    <div class="table-box">
+      <table>
+        <tr>
+          <th>PRODUCTO</th>
+          <th>UD.</th>
+          <th>TOTAL</th>
+        </tr>
+
+        {% for d in order.order_details %}
+        <tr>
+          <td>
+            {{ d.product.name["es"] if d.product.name is mapping else d.product.name }}
+          </td>
+          <td>x{{ d.quantity }}</td>
+          <td>
+            {{ "%.2f"|format((d.product.price * (1 - (d.product.discount or 0)/100)) * d.quantity) }} €
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <!-- TOTALES -->
+    <div class="totals">
+      <p>Subtotal: {{ "%.2f"|format(order.subtotal) }} €</p>
+      <p>Gastos de envío: {{ "%.2f"|format(order.shipping_cost) }} €</p>
+      <p class="total-final">Total pagado: {{ "%.2f"|format(order.total_price) }} €</p>
+    </div>
+
+    <!-- DIRECCIÓN -->
+    {% if order.shipping_address %}
+    <div class="address">
+      <strong>DIRECCIÓN DE ENVÍO</strong><br><br>
+      {{ order.shipping_address.full_name }}<br>
+      {{ order.shipping_address.address }}<br>
+      {{ order.shipping_address.city }}, {{ order.shipping_address.country }}
+    </div>
+    {% endif %}
+
+  </div>
+
+</div>
+
+</body>
+</html>

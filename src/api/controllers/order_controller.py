@@ -9,6 +9,8 @@ from api.models.address import Address
 from api.models.seller_order import SellerOrder, SellerOrderStatus
 from datetime import datetime, timezone
 from threading import Thread
+from flask import send_file
+from api.utils import generate_order_pdf
 from flask import current_app
 
 
@@ -595,3 +597,22 @@ def validate_cart_stock():
         return jsonify({"available": False, "items": out_of_stock}), 409
 
     return jsonify({"available": True}), 200
+
+@order_bp.route('/<int:order_id>/invoice', methods=['GET'])
+@jwt_required()
+def download_invoice(order_id):
+    user_id = int(get_jwt_identity())
+
+    order = Order.query.get_or_404(order_id)
+
+    if order.user_id != user_id:
+        abort(403, description="No autorizado")
+
+    pdf_buffer = generate_order_pdf(order)
+
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"factura_{order.id}.pdf",
+        mimetype="application/pdf"
+    )

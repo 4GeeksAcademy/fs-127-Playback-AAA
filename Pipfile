@@ -25,6 +25,8 @@ cloudinary = "*"
 stripe = "*"
 flask-mail = "*"
 requests = "*"
+reportlab = "*"
+weasyprint = "*"
 
 [requires]
 python_version = "3.13"

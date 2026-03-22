@@ -1,7 +1,10 @@
-from flask import jsonify, url_for
+from flask import jsonify, url_for, render_template
 from functools import wraps
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
-
+from weasyprint import HTML
+import io
+import os
+from datetime import datetime
 
 class APIException(Exception):
     status_code = 400
@@ -98,3 +101,21 @@ def generate_initial_avatar(*, name=None, last_name=None, store_name=None):
     return (
         f"https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name={formatted}"
     )
+# PDF FACTURA
+
+def generate_invoice_number(order_id):
+    return f"INV-{datetime.now().year}-{str(order_id).zfill(5)}"
+
+def generate_order_pdf(order):
+    logo_path = os.path.abspath("src/api/static/logo.png")
+
+    html = render_template(
+        "invoice.html",
+        order=order,
+        invoice_number=generate_invoice_number(order.id),
+        date=datetime.now().strftime("%d %B %Y"),
+        logo_path=logo_path
+    )
+
+    pdf = HTML(string=html, base_url=os.getcwd()).write_pdf()
+    return io.BytesIO(pdf)

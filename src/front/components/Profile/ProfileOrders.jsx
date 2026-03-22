@@ -273,7 +273,7 @@ const ProfileOrders = () => {
       return {};
     }
   });
-
+   
   const markReviewed = (key) => {
     setReviewed((prev) => {
       const next = { ...prev, [key]: true };
@@ -292,6 +292,31 @@ const ProfileOrders = () => {
   };
 
   useEffect(() => { loadOrders(); }, []);
+
+
+  //Descarga la factura en PDF de un pedido 
+  const downloadInvoice = async (orderId) => {
+  const token = store.token || localStorage.getItem("token");
+
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/${orderId}/invoice`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    console.error("Error descargando factura");
+    return;
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `factura_${orderId}.pdf`;
+  a.click();
+};
 
   // Confirma la entrega de un envío concreto (por seller_order_id)
   const handleConfirmShipment = async (orderId, sellerOrderId) => {
@@ -445,6 +470,9 @@ const ProfileOrders = () => {
 
               {/* Fila inferior: botones */}
               <div className="flex gap-2 mt-2 justify-end flex-wrap">
+                     {/*boton Factura PDF*/}
+
+                    <button onClick={() => downloadInvoice(order.id)} style={{ background: "#E6F1FB", color: "#185FA5", border: "none", borderRadius: "8px", padding: "4px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: "500" }}> Factura</button>
 
                 {/* Botón valorar — tres estados:
                     · no visible si no hay nada recibido
