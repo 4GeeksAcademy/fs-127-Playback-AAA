@@ -49,29 +49,27 @@ ABSOLUTE RULES:
 `,
 };
 
-// Keep SYSTEM_PROMPT_BASE for backwards compat with setSystemPrompt
 const SYSTEM_PROMPT_BASE = SYSTEM_PROMPT.es;
 
-// ── Detectar si el mensaje pregunta por un producto específico ──────────────
 const PRODUCT_QUERY_TRIGGERS = [
   "tienes", "tenéis", "teneis", "hay algo de", "venden", "vendéis", "vendeis",
   "buscando", "busco", "cuánto vale", "cuanto vale", "cuánto cuesta",
   "cuanto cuesta", "stock de", "en stock", "disponible",
 ];
 
+const PRODUCT_QUERY_TRIGGERS_EN = [
+  "do you have", "have you got", "do you sell", "looking for", "searching for",
+  "how much is", "how much does", "price of", "in stock", "available",
+];
+
 const isProductQuery = (text, lang) => {
   const lower = text.toLowerCase();
-  const triggers = lang === "en"
-    ? PRODUCT_QUERY_TRIGGERS_EN
-    : PRODUCT_QUERY_TRIGGERS;
+  const triggers = lang === "en" ? PRODUCT_QUERY_TRIGGERS_EN : PRODUCT_QUERY_TRIGGERS;
   return triggers.some((kw) => lower.includes(kw));
 };
 
-// Extraer término de búsqueda del mensaje del usuario
 const extractSearchTerm = (text) => {
-  // Palabras funcionales Y palabras genéricas que no son nombres de productos
   const stopWords = new Set([
-    // funcionales
     "tienes","teneis","hay","venden","vendeis","buscando","busco",
     "quiero","necesito","disponen","tienen","existe","encuentro","encontrar",
     "cuanto","vale","cuesta","stock","disponible","comprar","conseguir",
@@ -80,7 +78,6 @@ const extractSearchTerm = (text) => {
     "una","uno","unos","unas","los","las","del","este","esta","estos","estas",
     "nada","todo","todos","todas","tengo","tenemos","tiene","precio",
     "ref","dame","dime","muestra","cuales","cuantos","mas","hay",
-    // genéricas (no son nombres de producto)
     "cosas","cosa","productos","producto","articulos","articulo","items",
     "tipo","tipos","modelo","modelos","coleccion","accion","especial",
     "especiales","antiguos","antigua","antiguos","edicion","ediciones",
@@ -96,18 +93,12 @@ const extractSearchTerm = (text) => {
     .filter(w => w.length >= 3 && !stopWords.has(norm(w)));
   return words.join(" ").trim();
 };
-// Formatear condición del producto en español legible
+
 const formatCondition = (condition) => {
-  const map = {
-    new: "Nuevo",
-    used: "Usado",
-    refurbished: "Reacondicionado",
-    like_new: "Como nuevo",
-  };
+  const map = { new: "Nuevo", used: "Usado", refurbished: "Reacondicionado", like_new: "Como nuevo" };
   return map[condition] || condition;
 };
 
-// Formatear precio
 const formatPrice = (price, discount) => {
   if (discount > 0) {
     const final = price * (1 - discount / 100);
@@ -116,7 +107,6 @@ const formatPrice = (price, discount) => {
   return `${price.toFixed(2)}€`;
 };
 
-// Construir contexto de productos para el prompt
 const buildProductContext = (products, query) => {
   if (!products.length) {
     return `\n\n---\nRESULTADOS DE BÚSQUEDA EN CATÁLOGO para "${query}": NINGÚN producto encontrado. Di al usuario que no tienes ese producto.\n---`;
@@ -142,7 +132,6 @@ const buildProductContext = (products, query) => {
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const BACKEND = import.meta.env.VITE_BACKEND_URL || "";
 
-// ── i18n ──────────────────────────────────────────────────────────────────────
 const I18N = {
   es: {
     greeting: "¡Hola! 👾 ¿Qué necesitas hoy? Elige una opción o escríbeme directamente 👇",
@@ -267,10 +256,6 @@ const I18N = {
   },
 };
 
-const PRODUCT_QUERY_TRIGGERS_EN = [
-  "do you have", "have you got", "do you sell", "looking for", "searching for",
-  "how much is", "how much does", "price of", "in stock", "available",
-];
 // ── Consola SVG ────────────────────────────────────────────────────────────────
 const ConsoleIcon = ({ size = 40, wink = false, small = false }) => {
   const h = size * 1.25;
@@ -328,34 +313,20 @@ const TypingDots = () => (
   </div>
 );
 
-// Renderiza texto con soporte básico de markdown (negrita, tachado)
 const BubbleText = ({ content }) => {
   const renderLine = (line, idx) => {
-    // Procesar ~~tachado~~ y **negrita**
     const parts = [];
     let remaining = line;
     let key = 0;
-
     while (remaining.length > 0) {
       const strikeStart = remaining.indexOf("~~");
       const boldStart = remaining.indexOf("**");
-
       const nextSpecial = Math.min(
         strikeStart === -1 ? Infinity : strikeStart,
         boldStart === -1 ? Infinity : boldStart,
       );
-
-      if (nextSpecial === Infinity) {
-        parts.push(<span key={key++}>{remaining}</span>);
-        break;
-      }
-
-      if (nextSpecial > 0) {
-        parts.push(<span key={key++}>{remaining.slice(0, nextSpecial)}</span>);
-        remaining = remaining.slice(nextSpecial);
-        continue;
-      }
-
+      if (nextSpecial === Infinity) { parts.push(<span key={key++}>{remaining}</span>); break; }
+      if (nextSpecial > 0) { parts.push(<span key={key++}>{remaining.slice(0, nextSpecial)}</span>); remaining = remaining.slice(nextSpecial); continue; }
       if (remaining.startsWith("~~")) {
         const end = remaining.indexOf("~~", 2);
         if (end === -1) { parts.push(<span key={key++}>{remaining}</span>); break; }
@@ -368,21 +339,14 @@ const BubbleText = ({ content }) => {
         remaining = remaining.slice(end + 2);
       }
     }
-
     return <span key={idx}>{parts}</span>;
   };
-
   if (!content.includes("\n")) return <>{renderLine(content, 0)}</>;
-
   return content.split("\n").map((line, i, arr) => (
-    <span key={i}>
-      {renderLine(line, i)}
-      {i < arr.length - 1 && <br />}
-    </span>
+    <span key={i}>{renderLine(line, i)}{i < arr.length - 1 && <br />}</span>
   ));
 };
 
-// Pill de estado para indicar que se está buscando en el catálogo
 const SearchingPill = ({ label }) => (
   <div style={styles.searchingPill}>
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -423,7 +387,6 @@ export default function ChatWidget() {
     setMessages([{ role: "assistant", content: I18N[next].greeting }]);
   };
 
-  // Carga categorías al montar
   useEffect(() => {
     fetch(`${BACKEND}/api/categories?locale=es`)
       .then((r) => r.json())
@@ -460,7 +423,6 @@ export default function ChatWidget() {
     setTimeout(() => setWinking(false), 1200);
   };
 
-  // ── Búsqueda de productos en el backend ─────────────────────────────────────
   const normalize = (str) =>
     (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
@@ -470,16 +432,13 @@ export default function ChatWidget() {
       if (!res.ok) return [];
       const data = await res.json();
       if (!Array.isArray(data)) return [];
-
       const words = normalize(query).split(/\s+/).filter(w => w.length >= 2);
       if (!words.length) return [];
-
       return data.filter((p) => {
         const blob = normalize(
           [p.name, p.description, p.item, p.category, p.subcategory,
            JSON.stringify(p.characteristics)].join(" ")
         );
-        // Todos los términos deben aparecer (AND), así "figuras pokemon" = tiene figuras Y pokemon
         return words.every(w => blob.includes(w));
       });
     } catch {
@@ -487,7 +446,6 @@ export default function ChatWidget() {
     }
   };
 
-  // Qué botones mostrar según el nivel de navegación
   const getSuggestions = () => {
     if (browseLevel === "categories") return [...catalogData.map((cat) => cat.name), t.back];
     if (browseLevel?.cat) {
@@ -508,7 +466,6 @@ export default function ChatWidget() {
     if (!text || loading) return;
     setInputValue("");
 
-    // ── Navegación local ───────────────────────────────────────────────────
     if (text === t.back) { setBrowseLevel(null); setLastUserMsg(null); return; }
     if (text === t.backCat) { setBrowseLevel("categories"); return; }
 
@@ -538,40 +495,27 @@ export default function ChatWidget() {
         const msgContent = items?.length
           ? `${sub.name}:\n${items.map((n) => `· ${n}`).join("\n")}`
           : (lang === "es" ? `No hay artículos disponibles en ${sub.name} por el momento.` : `No items available in ${sub.name} at the moment.`);
-        setMessages((prev) => [
-          ...prev,
-          { role: "user", content: text },
-          { role: "assistant", content: msgContent },
-        ]);
+        setMessages((prev) => [...prev, { role: "user", content: text }, { role: "assistant", content: msgContent }]);
         return;
       }
     }
 
-    // ── Respuesta estática instantánea ────────────────────────────────────
     setLastUserMsg(text);
 
     if (t.static[text]) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "user", content: text },
-        { role: "assistant", content: t.static[text] },
-      ]);
+      setMessages((prev) => [...prev, { role: "user", content: text }, { role: "assistant", content: t.static[text] }]);
       return;
     }
 
-    // ── Añadir mensaje del usuario y mostrar carga ────────────────────────
     const newMessages = [...messages, { role: "user", content: text }];
     setMessages(newMessages);
     setLoading(true);
 
-    // ── Búsqueda de productos si el mensaje lo requiere ───────────────────
     let productContext = "";
-
     const searchTerm = extractSearchTerm(text);
     const isProduct = isProductQuery(text, lang);
 
     if (isProduct) {
-      // Mensaje sobre productos: buscar con término nuevo o reusar el anterior
       setIsSearchingProducts(true);
       const effectiveTerm = searchTerm.length >= 2 ? searchTerm : lastSearchTermRef.current;
       if (effectiveTerm.length >= 2) {
@@ -581,20 +525,14 @@ export default function ChatWidget() {
       }
       setIsSearchingProducts(false);
     } else {
-      // Mensaje que NO es sobre productos: resetear contexto de búsqueda
       lastSearchTermRef.current = "";
     }
 
-    // ── Llamada a la IA ───────────────────────────────────────────────────
     try {
       const effectiveSystemPrompt = SYSTEM_PROMPT[lang] + catalogText + (productContext || "");
-
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${API_KEY}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${API_KEY}` },
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           max_tokens: 200,
@@ -608,10 +546,7 @@ export default function ChatWidget() {
       });
 
       const data = await res.json();
-      const reply =
-        data?.choices?.[0]?.message?.content ||
-        "Puedes contactarnos desde el formulario de contacto de la web 😊";
-
+      const reply = data?.choices?.[0]?.message?.content || "Puedes contactarnos desde el formulario de contacto de la web 😊";
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
 
       if (t.catalogKeywords.some(kw => text.toLowerCase().includes(kw)) && catalogData.length > 0) {
@@ -620,10 +555,7 @@ export default function ChatWidget() {
 
       if (!open) setHasUnread(true);
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Ha ocurrido un error. Inténtalo más tarde." },
-      ]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "Ha ocurrido un error. Inténtalo más tarde." }]);
     } finally {
       setLoading(false);
       setIsSearchingProducts(false);
@@ -657,22 +589,6 @@ export default function ChatWidget() {
           0%,100% { opacity: 0.7; }
           50%      { opacity: 1; }
         }
-        .fab-wrap {
-          position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .fab-btn {
-          background: none; border: none; padding: 0; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
-          animation: fabFloat 3s ease-in-out infinite;
-        }
-        .fab-btn:hover  { animation: none; transform: scale(1.1); }
-        .fab-btn:active { transform: scale(0.93); }
-        .chat-quick-btn:hover      { background:#534AB7!important; color:#fff!important; border-color:#534AB7!important; }
-        .chat-quick-btn-back:hover { background:#eee!important; color:#555!important; }
-        .chat-send-btn:hover       { background:#1a1a1a!important; }
-        .chat-input:focus          { outline:none; border-color:#534AB7!important; }
-        .suggestions-wrap          { animation:fadeIn .25s ease; }
         @keyframes eyeIdleBlink {
           0%, 88%, 100% { transform: scaleY(1); }
           92%            { transform: scaleY(0.05); }
@@ -681,10 +597,101 @@ export default function ChatWidget() {
           transform-origin: 38px 21px;
           animation: eyeIdleBlink 3.5s ease-in-out infinite;
         }
+
+        /* ── FAB ── */
+        .fab-wrap {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .fab-btn {
+          background: none; border: none; padding: 0; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          animation: fabFloat 3s ease-in-out infinite;
+        }
+        .fab-btn:hover  { animation: none; transform: scale(1.1); }
+        .fab-btn:active { transform: scale(0.93); }
+
+        /* ── Panel ── */
+        .chat-panel {
+          position: fixed;
+          bottom: 110px;
+          right: 24px;
+          width: 360px;
+          height: 540px;
+          max-height: 540px;
+          background: #ffffff;
+          border-radius: 20px;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.14);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          z-index: 9999;
+          animation: fadeSlideUp .25s ease;
+          font-family: 'DM Sans', system-ui, sans-serif;
+        }
+
+        /* ── Suggestions scroll ── */
+        .suggestions-footer {
+          padding: 10px 14px 14px;
+          background: #f9f9f7;
+          border-top: 0.5px solid #e8e8e6;
+          flex-shrink: 0;
+          max-height: 140px;
+          overflow-y: auto;
+          animation: fadeIn .25s ease;
+        }
+
+        /* ── Mobile: pantalla completa ── */
+        @media (max-width: 480px) {
+          .fab-wrap {
+            bottom: 16px;
+            right: 16px;
+          }
+          .chat-panel {
+            /* ocupa toda la pantalla menos el FAB */
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            height: 100dvh;
+            max-height: 100dvh;
+            border-radius: 0;
+            /* en iOS safe-area */
+            padding-bottom: env(safe-area-inset-bottom);
+          }
+        }
+
+        /* ── Tablet estrecho (481–600px): panel más ancho pero no fullscreen ── */
+        @media (min-width: 481px) and (max-width: 600px) {
+          .chat-panel {
+            right: 12px;
+            bottom: 90px;
+            width: calc(100vw - 24px);
+            max-width: 400px;
+            height: 70vh;
+            max-height: 560px;
+          }
+          .fab-wrap {
+            bottom: 16px;
+            right: 16px;
+          }
+        }
+
+        /* ── Botones e inputs ── */
+        .chat-quick-btn:hover      { background:#534AB7!important; color:#fff!important; border-color:#534AB7!important; }
+        .chat-quick-btn-back:hover { background:#eee!important; color:#555!important; }
+        .chat-send-btn:hover       { background:#1a1a1a!important; }
+        .chat-input:focus          { outline:none; border-color:#534AB7!important; }
       `}</style>
 
       {open && (
-        <div style={styles.panel}>
+        <div className="chat-panel">
+          {/* Header */}
           <div style={styles.header}>
             <div style={styles.headerAvatar}>
               <ConsoleIcon size={24} small />
@@ -704,6 +711,7 @@ export default function ChatWidget() {
             </button>
           </div>
 
+          {/* Messages */}
           <div style={styles.messages}>
             {messages.map((msg, i) => (
               <div
@@ -711,9 +719,7 @@ export default function ChatWidget() {
                 style={{ ...styles.messageRow, justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}
               >
                 {msg.role === "assistant" && (
-                  <div style={styles.botAvatar}>
-                    <ConsoleIcon size={20} small />
-                  </div>
+                  <div style={styles.botAvatar}><ConsoleIcon size={20} small /></div>
                 )}
                 <div style={{ ...styles.bubble, ...(msg.role === "user" ? styles.userBubble : styles.botBubble) }}>
                   <BubbleText content={msg.content} />
@@ -721,31 +727,25 @@ export default function ChatWidget() {
               </div>
             ))}
 
-            {/* Indicador de búsqueda en catálogo */}
             {isSearchingProducts && !loading && (
               <div style={{ ...styles.messageRow, justifyContent: "flex-start" }}>
-                <div style={styles.botAvatar}>
-                  <ConsoleIcon size={20} small />
-                </div>
+                <div style={styles.botAvatar}><ConsoleIcon size={20} small /></div>
                 <SearchingPill label={t.searching} />
               </div>
             )}
 
             {loading && (
               <div style={{ ...styles.messageRow, justifyContent: "flex-start" }}>
-                <div style={styles.botAvatar}>
-                  <ConsoleIcon size={20} small />
-                </div>
-                <div style={{ ...styles.bubble, ...styles.botBubble }}>
-                  <TypingDots />
-                </div>
+                <div style={styles.botAvatar}><ConsoleIcon size={20} small /></div>
+                <div style={{ ...styles.bubble, ...styles.botBubble }}><TypingDots /></div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Suggestions */}
           {showSuggestions && (
-            <div className="suggestions-wrap" style={styles.suggestionsFooter}>
+            <div className="suggestions-footer">
               <p style={styles.suggestionsLabel}>{getSuggestionsLabel()}</p>
               <div style={styles.quickReplies}>
                 {suggestions.map((q, i) => {
@@ -765,6 +765,7 @@ export default function ChatWidget() {
             </div>
           )}
 
+          {/* Input */}
           <div style={styles.inputArea}>
             <input
               ref={inputRef}
@@ -773,10 +774,7 @@ export default function ChatWidget() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
+                if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
               }}
               placeholder={t.placeholder}
               disabled={loading}
@@ -812,16 +810,6 @@ export default function ChatWidget() {
 }
 
 const styles = {
-  panel: {
-    position: "fixed", bottom: "110px", right: "24px",
-    width: "360px", height: "540px", maxHeight: "540px",
-    background: "#ffffff", borderRadius: "20px",
-    boxShadow: "0 8px 40px rgba(0,0,0,0.14)",
-    display: "flex", flexDirection: "column",
-    overflow: "hidden", zIndex: 9999,
-    animation: "fadeSlideUp .25s ease",
-    fontFamily: "'DM Sans',system-ui,sans-serif",
-  },
   header: {
     display: "flex", alignItems: "center", gap: "12px",
     padding: "16px 20px", background: "#111111", color: "#fff", flexShrink: 0,
@@ -834,7 +822,6 @@ const styles = {
   langBtn: { background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "6px", padding: "4px 8px", fontSize: "11px", fontWeight: "700", color: "#fff", cursor: "pointer", letterSpacing: "0.05em", transition: "background .15s" },
   contactBtn: { marginLeft: "auto", background: "rgba(255,255,255,0.1)", borderRadius: "6px", padding: "5px 8px", fontSize: "14px", textDecoration: "none", display: "flex", alignItems: "center", color: "rgba(255,255,255,0.8)" },
   messages: { flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "10px", background: "#f9f9f7" },
-  suggestionsFooter: { padding: "10px 14px 14px", background: "#f9f9f7", borderTop: "0.5px solid #e8e8e6", flexShrink: 0 },
   messageRow: { display: "flex", alignItems: "flex-end", gap: "8px" },
   botAvatar: { width: "26px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
   bubble: { maxWidth: "78%", padding: "10px 14px", borderRadius: "16px", fontSize: "13.5px", lineHeight: "1.55", wordBreak: "break-word" },

@@ -46,7 +46,7 @@ export const LoginForm = ({ onSuccess }) => {
   return (
     <>
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-red-600 dark:bg-red-500 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
+        <div className="fixed bottom-6 left-6 bg-red-600 dark:bg-red-500 text-white text-sm px-5 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2">
           <AlertCircle size={15} />
           {toast.msg}
         </div>
