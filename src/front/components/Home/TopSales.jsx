@@ -171,7 +171,7 @@ export const TopSales = () => {
       </div>
 
       <div className="overflow-hidden">
-        <div ref={carouselRef} className="flex gap-4 overflow-x-hidden">
+<div ref={carouselRef} className="flex gap-4 overflow-x-auto scroll-smooth touch-pan-x scrollbar-hide">
           {products.map((p) => {
             const enCarrito =
               store.cart?.find((item) => item.id === p.id)?.quantity || 0;

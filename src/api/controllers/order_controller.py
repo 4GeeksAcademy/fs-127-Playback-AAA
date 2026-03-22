@@ -128,28 +128,27 @@ def add_product():
 @order_bp.route('/cart', methods=['GET'])
 @jwt_required()
 def get_cart():
-
     user_id = int(get_jwt_identity())
-
     order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
 
     if not order:
         return jsonify({"products": []}), 200
 
     products = []
-
     for detail in order.order_details:
-
         product = detail.product
-
         products.append({
-            "id": product.id,
-            "name": product.name,
-            "price": product.price,
-            "discount": product.discount,
-            "quantity": detail.quantity,
+            "id":        product.id,
+            "name":      product.name,
+            "price":     product.price,
+            "discount":  product.discount,
+            "quantity":  detail.quantity,
             "image_url": product.image_url,
-            "stock": product.stock 
+            "stock":     product.stock,
+            "weight":    product.weight,
+            "height":    product.height,
+            "width":     product.width,
+            "length":    product.length,
         })
 
     return jsonify({
@@ -264,56 +263,64 @@ def my_orders():
 @order_bp.route('/checkout', methods=['POST'])
 @jwt_required()
 def checkout():
-
+ 
     user_id = int(get_jwt_identity())
     data = request.get_json()
-
+ 
     shipping_address_id = data.get("shipping_address_id")
     billing_address_id  = data.get("billing_address_id")
     payment_method      = data.get("payment_method", "credit_card")
     coupon_code         = data.get("coupon_code")
-
+ 
     order = Order.query.filter_by(user_id=user_id, status=Status.pending).first()
     if not order:
         return jsonify({"msg": "Carrito vacío"}), 400
-
+ 
     # ── Calcular precios ───────────────────────────────────────────────────────
-
+ 
     subtotal = 0
     for detail in order.order_details:
         product = detail.product
         price_with_discount = product.price * (1 - product.discount / 100)
         subtotal += price_with_discount * detail.quantity
-
+ 
     # IVA ya incluido — extraemos cuánto representa
     tax = round(subtotal - (subtotal / 1.21), 2)
-
+ 
     # ── Calcular envío por peso volumétrico y país ─────────────────────────────
-
+ 
     shipping_address = Address.query.get(shipping_address_id)
     if not shipping_address:
         return jsonify({"msg": "Dirección de envío no encontrada"}), 400
-
+ 
     ENVIO_GRATIS_DESDE = 100.00
-
+    PESO_MINIMO_KG     = 0.5   # peso por defecto cuando el producto no tiene datos
+ 
     def peso_volumetrico(product):
         """Peso volumétrico en kg según dimensiones en cm (divisor estándar 5000)."""
         if product.height and product.width and product.length:
             return (product.height * product.width * product.length) / 5000
         return 0
-
+ 
     def peso_facturable(product):
-        """Se cobra el mayor entre peso real y peso volumétrico."""
-        return max(product.weight or 0, peso_volumetrico(product))
-
+        """
+        Se cobra el mayor entre peso real y peso volumétrico.
+        Si no hay ningún dato se usa PESO_MINIMO_KG para evitar
+        que todos los productos caigan siempre en el primer tramo.
+        """
+        real       = product.weight or 0
+        volumetric = peso_volumetrico(product)
+        facturable = max(real, volumetric)
+        return facturable if facturable > 0 else PESO_MINIMO_KG
+ 
     def calcular_envio(pais, peso_kg, subtotal):
         if subtotal >= ENVIO_GRATIS_DESDE:
             return 0.00
-
+ 
         ESPAÑA = {"españa", "espana", "spain", "es", "esp"}
         if pais.strip().lower() not in ESPAÑA:
             return 15.00
-
+ 
         tramos = [
             (1,            3.99),
             (5,            5.99),
@@ -323,19 +330,22 @@ def checkout():
         for limite, coste in tramos:
             if peso_kg <= limite:
                 return coste
-
+ 
+        return 14.99  # fallback de seguridad (nunca debería llegar aquí)
+ 
     peso_total = sum(
         peso_facturable(d.product) * d.quantity
         for d in order.order_details
     )
+    print(f"DEBUG >>> peso_total={peso_total} | subtotal={subtotal} | país={shipping_address.country}")
 
     shipping_cost = calcular_envio(shipping_address.country, peso_total, subtotal)
-
+ 
     # ── Aplicar cupón ──────────────────────────────────────────────────────────
-
+ 
     discount_amount = 0
     coupon = COUPONS.get(coupon_code.strip().upper()) if coupon_code else None
-
+ 
     if coupon:
         if coupon["type"] == "percentage":
             discount_amount = round(subtotal * coupon["value"] / 100, 2)
@@ -343,26 +353,25 @@ def checkout():
             discount_amount = round(min(float(coupon["value"]), subtotal), 2)
         elif coupon["type"] == "free_shipping":
             shipping_cost = 0.00
-
+ 
     total_price = subtotal + shipping_cost - discount_amount
-
+ 
     # ── Guardar datos ──────────────────────────────────────────────────────────
-
-    order.subtotal           = subtotal
-    order.tax                = tax
-    order.shipping_cost      = shipping_cost
-    order.total_price        = total_price
+ 
+    order.subtotal            = subtotal
+    order.tax                 = tax
+    order.shipping_cost       = shipping_cost
+    order.total_price         = total_price
     order.shipping_address_id = shipping_address_id
     order.billing_address_id  = billing_address_id
-    order.payment_method     = payment_method
+    order.payment_method      = payment_method
     db.session.commit()
-
+ 
     return jsonify({
         "msg":             "Compra realizada correctamente",
         "order_id":        order.id,
         "discount_amount": discount_amount,
     }), 200
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SELLER ORDERS
