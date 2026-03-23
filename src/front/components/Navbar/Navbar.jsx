@@ -9,6 +9,8 @@ import logo from "../../assets/img/logo_navbar_playback_v1.png";
 import logo_dark from "../../assets/img/logo_navbar_playback_vdark.png";
 import logo_mini from "../../assets/img/logo_navbar_playback_vmini.png";
 import { useTranslation } from "react-i18next";
+import { getSellerProfileService } from "../../services/sellerService";
+import { User, Heart, Package, Store, ShieldCheck, AlertTriangle } from "lucide-react";
 
 export const Navbar = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -26,6 +28,9 @@ export const Navbar = () => {
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [langOpen, setLangOpen]         = useState(false);
 
+  // Perfil de tienda (solo para sellers)
+  const [sellerProfile, setSellerProfile] = useState(null);
+
   // Refs para detectar clics fuera de cada dropdown
   // langRef necesita ser doble porque LanguagePicker se monta dos veces (desktop + móvil)
   // y un ref solo puede apuntar a un nodo — usamos uno por vista
@@ -35,12 +40,44 @@ export const Navbar = () => {
   const langRefMobile  = useRef();
 
   const userEmail = store.user?.email;
+  const role      = store.user?.role;
+
+  // Cargar perfil del seller para obtener store_name y logo_url
+  useEffect(() => {
+    if (role !== "seller") return;
+    getSellerProfileService(store.token)
+      .then((data) => setSellerProfile(data))
+      .catch(() => setSellerProfile(null));
+  }, [role, store.token]);
+
+  const sellerLinkLabel = () => {
+    if (role === "admin")  return t("seller.adminPanel");
+    if (role === "seller" && sellerProfile?.store_name) return sellerProfile.store_name;
+    if (role === "seller") return t("seller.myStore");
+    return t("seller.becomeSeller");
+  };
+
+  const sellerIcon = () => {
+    if (role === "admin") return <ShieldCheck size={15} />;
+    if (role === "seller" && sellerProfile?.logo_url) {
+      return (
+        <img
+          src={sellerProfile.logo_url}
+          alt={sellerProfile.store_name || ""}
+          style={{ width: "16px", height: "16px", borderRadius: "4px", objectFit: "cover", flexShrink: 0 }}
+        />
+      );
+    }
+    return <Store size={15} />;
+  };
 
   // Rutas del menú de usuario autenticado
   const userLinks = [
-    { to: `/profile`,   icon: "👤", label: t("navbar.profile") },
-    { to: `/profile?tab=favorites`, icon: "❤️", label: t("navbar.favorites") },
-    { to: `/profile?tab=orders`,    icon: "📦", label: t("navbar.orders") },
+    { to: "/profile?tab=info",               icon: <User size={15} />,    label: t("navbar.profile") },
+    { to: "/profile?tab=orders",    icon: <Package size={15} />, label: t("navbar.orders") },
+    { to: "/profile?tab=favorites", icon: <Heart size={15} />,   label: t("navbar.favorites") },
+    { to: "/profile?tab=incidents",    icon: <AlertTriangle size={15} />, label: t("incidents.title") },
+    { to: "/profile?tab=seller",    icon: sellerIcon(),          label: sellerLinkLabel() },
   ];
 
   // ── Handlers ──────────────────────────────

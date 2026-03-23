@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, LogOut } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguagePicker } from "./LanguagePicker";
 import { AuthPanel } from "./AuthPanel";
@@ -65,7 +65,7 @@ export const NavbarDesktop = ({ store, userEmail, userLinks, handleLogout, userM
                   onClick={handleLogout}
                   className="flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 transition w-[calc(100%-12px)]"
                 >
-                  <span className="text-base w-5 text-center">↩</span>
+                  <span className="text-base w-5 text-center"><LogOut size={15} /></span>
                   {t("navbar.logout")}
                 </button>
               </div>
