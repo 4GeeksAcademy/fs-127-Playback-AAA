@@ -60,10 +60,16 @@ async function updateProduct(id, formData, token) {
   if (!res.ok) return [null, data.description || "Error al actualizar el producto"];
   return [data, null];
 }
-async function deleteProduct(id) {
+
+async function deleteProduct(id, token) {
   const res = await fetch(`${backendUrl}/api/product/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
   });
+
   const data = await res.json();
   if (!res.ok) return [null, data.description || "Error al eliminar el producto"];
   return [data, null];

@@ -27,7 +27,7 @@ const ProductsTab = () => {
   const loadProducts = async () => {
     try {
       const data = await getMyProductsService(token);
-      setProducts(data || []);
+      setProducts((data || []).filter(p => !p.is_deleted));
     } catch {
       setProducts([]);
     } finally {
@@ -37,10 +37,10 @@ const ProductsTab = () => {
 
   useEffect(() => { loadProducts(); }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, token) => {
     if (!confirm(t("dashboard.products.confirmDelete"))) return;
     setDeleting(id);
-    await productServices.deleteProduct(id);
+    await productServices.deleteProduct(id, token);    
     setDeleting(null);
     loadProducts();
     showToast(t("dashboard.products.deleted"));
@@ -152,7 +152,7 @@ const ProductsTab = () => {
                     {t("dashboard.products.edit")}
                   </button>
                   <button
-                    onClick={() => handleDelete(p.id)}
+                    onClick={() => handleDelete(p.id, token)}
                     disabled={deleting === p.id}
                     className="text-[10px] text-red-400 hover:text-red-600 font-medium disabled:opacity-50"
                   >
@@ -230,7 +230,7 @@ const ProductsTab = () => {
                       {t("dashboard.products.edit")}
                     </button>
                     <button
-                      onClick={() => handleDelete(p.id)}
+                      onClick={() => handleDelete(p.id, token)}
                       disabled={deleting === p.id}
                       className="text-xs text-red-400 hover:text-red-600 font-medium disabled:opacity-50 ml-3"
                     >
