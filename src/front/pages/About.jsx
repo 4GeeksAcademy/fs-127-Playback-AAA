@@ -20,7 +20,7 @@ const PROFESSORS = [
 const STUDENTS = [
   { name: "Anghers Fernando Bello Linares", linkedin: "https://www.linkedin.com/in/angherxs-bello-3b9488376/", github: "https://github.com/angherxs",    instagram: "https://www.instagram.com/angherxsfbello/", avatar: "https://github.com/angherxs.png" },
   { name: "Alex Silván Silván",             linkedin: "https://www.linkedin.com/in/alex-silvan/",              github: "https://github.com/alexsilvan92",                                                               avatar: "https://github.com/alexsilvan92.png" },
-  { name: "Arantxa Ordoyo Orozco",          linkedin: "https://www.linkedin.com/in/arantxa-ordoyo/",           github: "https://github.com/arianxa",    website: "https://mi-primer-react-git-main-arantxa-ordoyos-projects.vercel.app/",           avatar: "https://github.com/arianxa.png" },
+  { name: "Arantxa Ordoyo Orozco",          linkedin: "https://www.linkedin.com/in/arantxa-ordoyo/",           github: "https://github.com/arianxa",    website: "https://mi-primer-react-pearl.vercel.app/",           avatar: "https://github.com/arianxa.png" },
 ];
 
 const FEATURE_ICONS = [Gamepad2, ShoppingCart, CreditCard, Image, Mail, Globe];
