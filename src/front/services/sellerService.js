@@ -29,11 +29,11 @@ export const updateSellerProfileService = async (token, data) => {
   const response = await fetch(`${BACKEND_URL}/api/seller/me`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data),
+    body: data,
   });
+
   const json = await response.json();
   if (!response.ok)
     throw new Error(json.description || json.msg || 'Error al actualizar');

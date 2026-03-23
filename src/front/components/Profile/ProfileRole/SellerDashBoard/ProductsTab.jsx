@@ -5,6 +5,7 @@ import useGlobalReducer from "../../../../hooks/useGlobalReducer";
 import productServices from "../../../../services/productService";
 import { getMyProductsService } from "../../../../services/sellerService";
 import ProductModal from "./ProductModal";
+import {ProductPrice} from "../../../Common/ProductPrice"
 
 const ProductsTab = () => {
   const { store } = useGlobalReducer();
@@ -123,7 +124,7 @@ const ProductsTab = () => {
 
               {/* Precio + stock + acciones */}
               <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                <span className="text-sm font-semibold text-main">{p.price}€</span>
+                <span className="text-sm font-semibold text-main"><ProductPrice price={p.price} discount={p.discount} /></span>
 
                 {/* Control de stock */}
                 <div className="flex items-center gap-1">
@@ -197,7 +198,7 @@ const ProductsTab = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold text-main whitespace-nowrap">
-                    {p.price}€
+                    <ProductPrice price={p.price} discount={p.discount} />
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-1">

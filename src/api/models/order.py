@@ -21,7 +21,7 @@ class Status(enum.Enum):
 
 
 class Order(db.Model):
-    __tablename__ = 'order'
+    _tablename_ = 'order'
     id: Mapped[int] = mapped_column(primary_key=True)
     total_price: Mapped[float] = mapped_column(Float, nullable=False)
     tax: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
@@ -43,7 +43,6 @@ class Order(db.Model):
     order_details: Mapped[list["OrderDetail"]] = relationship("OrderDetail", back_populates="order", cascade="all, delete-orphan")
     shipment: Mapped["Shipment"] = relationship("Shipment", back_populates="order", uselist=False, cascade="all, delete-orphan")
     reviews: Mapped[list["Review"]] = relationship("Review", back_populates="order", cascade="all, delete-orphan")
-    incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="order", cascade="all, delete-orphan")
     shipping_address: Mapped["Address"] = relationship("Address", foreign_keys=[shipping_address_id])
     billing_address: Mapped["Address"] = relationship("Address", foreign_keys=[billing_address_id])
     seller_orders: Mapped[list["SellerOrder"]] = relationship("SellerOrder", back_populates="order", cascade="all, delete-orphan")

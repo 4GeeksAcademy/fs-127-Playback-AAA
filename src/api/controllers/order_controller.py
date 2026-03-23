@@ -16,7 +16,7 @@ from api.emails.brevo_service import send_email
 
 
 
-order_bp = Blueprint('order', __name__, url_prefix='/order')
+order_bp = Blueprint('order', _name_, url_prefix='/order')
 
 # def translate_text(text, target_lang):
 #     if not text:
@@ -250,11 +250,28 @@ def my_orders():
         result.append({
             "id": order.id,
             "status": order.status.value,
+            "subtotal": order.subtotal,
+            "tax": order.tax,
             "total_price": order.total_price,
             "shipping_cost": order.shipping_cost,
             "created_at": order.created_at.isoformat(),
             "seller_orders": seller_orders_data,   # vacío en pedidos antiguos
-            "products": all_products,          # retrocompatibilidad
+            "products": all_products,              # retrocompatibilidad
+            "user": {
+                "name":      order.user.name,
+                "last_name": order.user.last_name,
+                "email":     order.user.email,
+            } if order.user else None,
+            "order_details": [{
+                "id":       d.id,
+                "quantity": d.quantity,
+                "product": {
+                    "id":       d.product.id,
+                    "name":     d.product.name,
+                    "price":    d.product.price,
+                    "discount": d.product.discount,
+                }
+            } for d in order.order_details],
             "shipping_address": order.shipping_address.serialize() if order.shipping_address else None,
             "billing_address": order.billing_address.serialize() if order.billing_address else None,
         })

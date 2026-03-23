@@ -7,7 +7,7 @@ from api.models.user import User
 
 
 class Incident(db.Model): 
-    __tablename__ = 'incident'
+    _tablename_ = 'incident'
 
     # Columnas
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -24,14 +24,15 @@ class Incident(db.Model):
     #----------------------ForeignKey
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    order_id: Mapped[int] = mapped_column(ForeignKey("order.id"), nullable=True)
+    seller_order_id: Mapped[int] = mapped_column(ForeignKey("seller_order.id"), nullable=False)
 
     #----------------------RelationShip
     
     user: Mapped["User"] = relationship("User", back_populates="incidents")
-    order: Mapped["Order"] = relationship("Order", back_populates="incidents")
+    seller_order: Mapped["SellerOrder"] = relationship("SellerOrder", back_populates="incidents")
+    messages: Mapped[list["IncidentMessage"]] = relationship("IncidentMessage", back_populates="incident", cascade="all, delete-orphan")
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<Incident {self.id}: {self.title} ({self.status})>'
 
     def serialize(self):
@@ -41,7 +42,12 @@ class Incident(db.Model):
             "description": self.description,
             "status": self.status,
             "user_id": self.user_id,
-            "order_id": self.order_id,
+            "seller_order_id": self.seller_order_id,
+            "order_id": self.seller_order.order_id if self.seller_order else None,
+            "seller_id": self.seller_order.seller_id if self.seller_order else None,
+            "seller_name": self.seller_order.seller.store_name if self.seller_order and self.seller_order.seller else None,
+            "buyer_name": f"{self.user.name} {self.user.last_name}" if self.user else None,
+            "buyer_image": self.user.image_url if self.user else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

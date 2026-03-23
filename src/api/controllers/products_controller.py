@@ -13,7 +13,7 @@ from api.models.seller import Seller
 from datetime import datetime, timezone
 import unicodedata
 
-product_bp = Blueprint('product', __name__, url_prefix='/product')
+product_bp = Blueprint('product', _name_, url_prefix='/product')
 
 LOW_STOCK_THRESHOLD = 1
 
@@ -347,14 +347,22 @@ def update_product(id):
             product.image_url = resultado["secure_url"]
 
         # ── Imágenes adicionales ───────────────────────────────────────────────
+        # mantener existentes
+        existing_images = request.form.getlist("existing_images")
+        # nuevas imágenes
+        new_images = []
         if other_images:
             if hasattr(other_images[0], "read"):
-                product.other_image_url = [
-                    cloudinary.uploader.upload(img, folder="productos")["secure_url"]
-                    for img in other_images
-                ]
-            else:
-                product.other_image_url = other_images
+                try:
+                    new_images = [
+                        cloudinary.uploader.upload(img, folder="productos")["secure_url"]
+                        for img in other_images
+                    ]
+                except Exception as e:
+                    abort(500, description=f"Error al subir imágenes adicionales: {str(e)}")
+        # combinar ambas
+        if existing_images or new_images:
+            product.other_image_url = existing_images + new_images
 
         db.session.commit()
     except Exception as e:
