@@ -7,7 +7,7 @@ from api.models.user import User
 
 
 class Incident(db.Model): 
-    _tablename_ = 'incident'
+    __tablename__ = 'incident'
 
     # Columnas
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -32,7 +32,7 @@ class Incident(db.Model):
     seller_order: Mapped["SellerOrder"] = relationship("SellerOrder", back_populates="incidents")
     messages: Mapped[list["IncidentMessage"]] = relationship("IncidentMessage", back_populates="incident", cascade="all, delete-orphan")
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<Incident {self.id}: {self.title} ({self.status})>'
 
     def serialize(self):
