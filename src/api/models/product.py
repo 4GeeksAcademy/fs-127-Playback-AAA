@@ -88,6 +88,7 @@ class Product(db.Model):
                 for r in self.reviews if r.is_visible
             ],
             "seller": self.seller.serialize_public() if self.seller else None,
+            "is_deleted": self.is_deleted,
         }
 
     def to_dict(self, locale="es"):
@@ -126,4 +127,5 @@ class Product(db.Model):
                 for r in self.reviews if r.is_visible
             ],
             "seller": self.seller.serialize_public() if self.seller else None,
+            "is_deleted": self.is_deleted,
         }
