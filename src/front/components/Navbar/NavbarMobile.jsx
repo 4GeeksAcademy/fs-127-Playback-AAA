@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { UserRound, ShoppingCart } from "lucide-react";
+import { UserRound, ShoppingCart, LogOut, SunMoon } from "lucide-react";
 import { LanguagePicker } from "./LanguagePicker";
 import { AuthPanel } from "./AuthPanel";
 import { ThemeToggle } from "./ThemeToggle";
@@ -56,7 +56,7 @@ export const NavbarMobileActions = ({ store, mobileOpen, setMobileOpen, langRefM
   );
 };
 
-// Panel desplegable — va FUERA del div h-[70px], como hermano de la barra
+// Panel desplegable 
 export const NavbarMobilePanel = ({
   store, userEmail, userLinks, handleLogout,
   mobileOpen, setMobileOpen,
@@ -69,7 +69,7 @@ export const NavbarMobilePanel = ({
     <div className="md:hidden border-t border-[rgb(var(--color-border-sm))] bg-main px-4 pb-5 space-y-3">
       {store.isAuthenticated ? (
         <>
-          {/* Cabecera con avatar y nombre */}
+          {/* Cabecera con avatar */}
           <div className="flex items-center gap-3 px-1 pt-4">
             <img
               src={store.user?.image_url}
@@ -100,7 +100,7 @@ export const NavbarMobilePanel = ({
             {/* Toggle de tema — dentro solo cuando está autenticado */}
             <div className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-muted hover:bg-muted hover:text-main transition">
               <div className="flex items-center gap-3">
-                <span className="text-base w-5 text-center">🌓</span>
+                <span className="text-base w-5 text-center"><SunMoon size={15} /></span>
                 {t("navbar.theme")}
               </div>
               <ThemeToggle />
@@ -111,7 +111,7 @@ export const NavbarMobilePanel = ({
               onClick={handleLogout}
               className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
             >
-              <span className="text-base w-5 text-center">↩</span>
+              <span className="text-base w-5 text-center"><LogOut size={15} /></span>
               {t("navbar.logout")}
             </button>
           </div>
