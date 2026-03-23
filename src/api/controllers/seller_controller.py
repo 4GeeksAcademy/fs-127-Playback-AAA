@@ -11,9 +11,11 @@ from api.emails import build_seller_registration_email, build_new_seller_admin_e
 from threading import Thread
 from flask import current_app
 from api.emails.brevo_service import send_email
+import cloudinary
+import cloudinary.uploader
 
 
-seller_bp = Blueprint('seller', __name__, url_prefix='/seller')
+seller_bp = Blueprint('seller', _name_, url_prefix='/seller')
 
 
 # ── Helper: envía cualquier mensaje de Flask-Mail en un hilo separado ─────────
@@ -138,31 +140,72 @@ def update_seller_profile():
     if not seller:
         abort(404, description="Perfil de vendedor no encontrado")
 
-    body = request.get_json()
+    # 🔹 Soporta JSON y FormData
+    body = request.form.to_dict()
     if not body:
-        abort(400, description="Body vacío")
-
-    # Campos actualizables — el NIF no se pueden cambiar una vez creados
-    updatable = ["store_name", "description", "phone", "logo_url",
-                 "origin_address", "origin_city", "origin_zip", "origin_country",
-                 "origin_community_code", "origin_province_code", "origin_province", "origin_community"]
+        body = request.get_json(silent=True) or {}
 
     updated = False
+
+    # -------------------------
+    # 📦 CAMPOS NORMALES
+    # -------------------------
+    updatable = ["store_name", "description", "phone",
+                 "origin_address", "origin_city", "origin_zip", "origin_country",
+                 "origin_community_code", "origin_province_code",
+                 "origin_province", "origin_community"]
+
     for field in updatable:
         if field in body:
             setattr(seller, field, body[field])
             updated = True
 
+    # -------------------------
+    # 🖼️ IMAGEN (Cloudinary)
+    # -------------------------
+    if "imagen" in request.files:
+        image_file = request.files["imagen"]
+
+        if image_file.filename != "":
+            allowed_extensions = ["jpg", "jpeg", "png", "webp"]
+
+            if "." not in image_file.filename:
+                abort(400, description="Formato inválido")
+
+            ext = image_file.filename.rsplit(".", 1)[1].lower()
+
+            if ext not in allowed_extensions:
+                abort(400, description="Formato no permitido")
+
+            try:
+                result = cloudinary.uploader.upload(
+                    image_file,
+                    folder="seller_logos"
+                )
+
+                seller.logo_url = result["secure_url"]
+                updated = True
+
+            except Exception as e:
+                abort(500, description=f"Error subiendo imagen: {str(e)}")
+
+    # -------------------------
+    # VALIDACIÓN FINAL
+    # -------------------------
     if not updated:
         abort(400, description="No hay datos para actualizar")
-        
-    # Si está rechazado y reenvía, vuelve a pending y se limpia el motivo
+
+    # lógica de estado
     if seller.status == SellerStatus.rejected:
         seller.status = SellerStatus.pending
         seller.rejection_reason = None
 
     db.session.commit()
-    return jsonify({"msg": "Perfil actualizado correctamente", "seller": seller.serialize()}), 200
+
+    return jsonify({
+        "msg": "Perfil actualizado correctamente",
+        "seller": seller.serialize()
+    }), 200
 
 
 # -------------------------

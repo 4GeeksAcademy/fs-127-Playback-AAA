@@ -39,7 +39,7 @@ ROLE_PERMISSIONS = {
 
 class User(db.Model):
 
-    __tablename__ = 'user'
+    _tablename_ = 'user'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(80), nullable=False)
@@ -59,6 +59,7 @@ class User(db.Model):
     incidents: Mapped[list["Incident"]] = relationship("Incident", back_populates="user", cascade="all, delete-orphan")
     favorites: Mapped[list["Favorite"]] = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
     seller: Mapped["Seller"] = relationship("Seller", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    incident_messages: Mapped[list["IncidentMessage"]] = relationship("IncidentMessage", back_populates="user")
 
     def set_password(self, password):
         """Hashea un password en texto plano y lo almacena."""
@@ -76,7 +77,7 @@ class User(db.Model):
         """Devuelve la lista de permisos del rol actual."""
         return ROLE_PERMISSIONS.get(self.role, [])
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<User {self.id}: {self.email}>'
 
     def serialize(self):

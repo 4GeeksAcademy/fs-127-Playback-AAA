@@ -15,8 +15,13 @@ const STATUS_STYLE = {
   cancelled:  "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400",
 };
 
-// El vendedor NO puede marcar como delivered — eso lo hace el comprador o la transportista.
-// Por eso "shipped" no tiene siguiente estado aquí.
+const INCIDENT_STYLE = {
+  open:        { bg: "#FAEEDA", color: "#633806", dot: "#F59E0B", label: "Abierta" },
+  in_progress: { bg: "#E6F1FB", color: "#185FA5", dot: "#3B82F6", label: "En progreso" },
+  resolved:    { bg: "#EAF3DE", color: "#3B6D11", dot: "#22C55E", label: "Resuelta" },
+  rejected:    { bg: "#FCEBEB", color: "#A32D2D", dot: "#EF4444", label: "Rechazada" },
+};
+
 const NEXT_STATUS = {
   pending:    "confirmed",
   paid:       "confirmed",
@@ -24,66 +29,71 @@ const NEXT_STATUS = {
   processing: "shipped",
 };
 
-// Estados que requieren datos extra — se abre el modal en lugar de avanzar inline
 const REQUIRES_MODAL = new Set(["shipped"]);
 
-const OrdersTab = () => {
+const OrdersTab = ({ onNavigateToIncidents }) => {
   const { store } = useGlobalReducer();
   const { t } = useTranslation();
 
-  const [orders,   setOrders]   = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [selected, setSelected] = useState(null);
-  const [toast,    setToast]    = useState(null);
-  const [sortKey,  setSortKey]  = useState("id");
-  const [sortDir,  setSortDir]  = useState("desc");
+  const [orders,    setOrders]    = useState([]);
+  const [incidents, setIncidents] = useState({}); // Map<seller_order_id, incident>
+  const [loading,   setLoading]   = useState(true);
+  const [selected,  setSelected]  = useState(null);
+  const [toast,     setToast]     = useState(null);
+  const [sortKey,   setSortKey]   = useState("id");
+  const [sortDir,   setSortDir]   = useState("desc");
+
+  const token = store.token || localStorage.getItem("token");
 
   const showToast = (msg, type = "error") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
   };
 
+  const loadIncidents = async () => {
+    try {
+      const res  = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/incidences`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        const map = {};
+        data.forEach((inc) => { map[inc.seller_order_id] = inc; });
+        setIncidents(map);
+      }
+    } catch (_) { /* silencioso */ }
+  };
+
   const loadOrders = async () => {
     setLoading(true);
-    const [data, error] = await orderService.getSellerOrders(store.token);
+    const [data, error] = await orderService.getSellerOrders(token);
     if (error) { showToast(error); setLoading(false); return; }
 
-    // Auto-confirmar en paralelo todos los SellerOrders que sigan en "paid".
-    // Se hace silenciosamente: si alguno falla no interrumpe el resto.
     const paidOrders = data.filter((p) => p.status === "paid");
     if (paidOrders.length > 0) {
       await Promise.allSettled(
         paidOrders.map((p) =>
-          orderService.updateOrderStatus(store.token, p.seller_order_id, "confirmed")
+          orderService.updateOrderStatus(token, p.seller_order_id, "confirmed")
         )
       );
-      // Recargar para que la lista refleje los estados ya actualizados
-      const [refreshed] = await orderService.getSellerOrders(store.token);
+      const [refreshed] = await orderService.getSellerOrders(token);
       setOrders(refreshed ?? data);
     } else {
       setOrders(data);
     }
 
+    await loadIncidents();
     setLoading(false);
   };
 
   useEffect(() => { loadOrders(); }, []);
 
-  // Avance rápido de estado desde la lista sin abrir el modal.
-  // Usa seller_order_id (no order.id) para el PATCH.
-  // Si el siguiente estado requiere datos extra (código de envío), abre el modal.
   const handleInlineAdvance = async (e, pedido) => {
     e.stopPropagation();
     const next = NEXT_STATUS[pedido.status];
     if (!next) return;
-
-    // Transiciones que necesitan input del vendedor → abrir modal
-    if (REQUIRES_MODAL.has(next)) {
-      setSelected(pedido);
-      return;
-    }
-
-    const [, err] = await orderService.updateOrderStatus(store.token, pedido.seller_order_id, next);
+    if (REQUIRES_MODAL.has(next)) { setSelected(pedido); return; }
+    const [, err] = await orderService.updateOrderStatus(token, pedido.seller_order_id, next);
     if (err) showToast(err);
     else loadOrders();
   };
@@ -94,10 +104,8 @@ const OrdersTab = () => {
   };
 
   const sorted = [...orders].sort((a, b) => {
-    // Los cancelados siempre al final, independientemente del sort activo
     if (a.status === "cancelled" && b.status !== "cancelled") return 1;
     if (b.status === "cancelled" && a.status !== "cancelled") return -1;
-
     let va, vb;
     if (sortKey === "id")     { va = a.id;                   vb = b.id; }
     if (sortKey === "date")   { va = new Date(a.created_at); vb = new Date(b.created_at); }
@@ -109,15 +117,9 @@ const OrdersTab = () => {
   });
 
   const SortIcon = ({ col }) => (
-    <ArrowUpDown
-      size={12}
-      className={`inline ml-1 transition-opacity ${
-        sortKey === col ? "opacity-100 text-violet-500" : "opacity-30"
-      }`}
-    />
+    <ArrowUpDown size={12} className={`inline ml-1 transition-opacity ${sortKey === col ? "opacity-100 text-violet-500" : "opacity-30"}`} />
   );
 
-  // Clases del botón de badge según si tiene siguiente estado o no
   const badgeClasses = (pedido) => {
     const hasNext = !!NEXT_STATUS[pedido.status];
     const base = STATUS_STYLE[pedido.status] || "bg-muted text-muted";
@@ -127,12 +129,20 @@ const OrdersTab = () => {
     return `${base} ${interactive}`;
   };
 
-  if (loading)
+  // Badge de incidencia
+  const IncidentBadge = ({ sellerOrderId }) => {
+    const inc = incidents[sellerOrderId];
+    if (!inc) return <span style={{ fontSize: "11px", color: "var(--color-muted)", opacity: 0.4 }}>—</span>;
+    const cfg = INCIDENT_STYLE[inc.status] || { bg: "#f1f1f1", color: "#555", dot: "#999", label: inc.status };
     return (
-      <p className="text-center text-sm text-faint mt-10 animate-pulse">
-        {t("dashboard.orders.loading")}
-      </p>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", background: cfg.bg, color: cfg.color, fontSize: "10px", padding: "2px 7px", borderRadius: "20px", fontWeight: "600", whiteSpace: "nowrap" }}>
+        <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: cfg.dot, flexShrink: 0 }} />
+        {cfg.label}
+      </span>
     );
+  };
+
+  if (loading) return <p className="text-center text-sm text-faint mt-10 animate-pulse">{t("dashboard.orders.loading")}</p>;
 
   return (
     <div className="pt-6 space-y-4">
@@ -144,93 +154,69 @@ const OrdersTab = () => {
         </div>
       )}
 
-      <p className="text-sm text-muted">
-        {orders.length} {t("dashboard.orders.found")}
-      </p>
+      <p className="text-sm text-muted">{orders.length} {t("dashboard.orders.found")}</p>
 
       {sorted.length === 0 && (
-        <p className="text-center text-faint text-sm py-10">
-          {t("dashboard.orders.noOrders")}
-        </p>
+        <p className="text-center text-faint text-sm py-10">{t("dashboard.orders.noOrders")}</p>
       )}
 
-      {/* ══════════════════════════════════════════════
-          MÓVIL: lista de cards  (solo visible en <sm)
-      ══════════════════════════════════════════════ */}
+      {/* ── MÓVIL ── */}
       {sorted.length > 0 && (
         <div className="flex flex-col gap-3 sm:hidden">
-          {sorted.map((pedido) => (
-            <div
-              key={pedido.seller_order_id}
-              onClick={() => setSelected(pedido)}
-              className="border border-main rounded-xl p-3 cursor-pointer hover:bg-subtle transition active:scale-[0.99]"
-            >
-              {/* Fila única: miniaturas + info + total + badge */}
-              <div className="flex items-center gap-3">
-
-                {/* Info principal */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-[10px] text-faint">#{pedido.id}</span>
-                    {pedido.customer && (
-                      <span className="text-xs font-medium text-main truncate">· {pedido.customer}</span>
+          {sorted.map((pedido) => {
+            const inc = incidents[pedido.seller_order_id];
+            const incCfg = inc ? (INCIDENT_STYLE[inc.status] || { bg: "#f1f1f1", color: "#555", dot: "#999", label: inc.status }) : null;
+            return (
+              <div key={pedido.seller_order_id} onClick={() => setSelected(pedido)}
+                className="border border-main rounded-xl p-3 cursor-pointer hover:bg-subtle transition active:scale-[0.99]">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-[10px] text-faint">#{pedido.id}</span>
+                      {pedido.customer && <span className="text-xs font-medium text-main truncate">· {pedido.customer}</span>}
+                    </div>
+                    <span className="text-[10px] text-faint">{new Date(pedido.created_at).toLocaleDateString("es-ES")}</span>
+                    {/* Incidencia en móvil */}
+                    {incCfg && (
+                      <div style={{ marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "3px", background: incCfg.bg, color: incCfg.color, fontSize: "9px", padding: "1px 6px", borderRadius: "20px", fontWeight: "600" }}>
+                        <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: incCfg.dot }} />
+                        Incidencia · {incCfg.label}
+                      </div>
                     )}
                   </div>
-                  <span className="text-[10px] text-faint">
-                    {new Date(pedido.created_at).toLocaleDateString("es-ES")}
-                  </span>
-                </div>
 
-                {/* Miniaturas apiladas (máx 2) */}
-                {pedido.products?.length > 0 && (
-                  <div className="flex items-center flex-shrink-0">
-                    {pedido.products.slice(0, 2).map((prod, i) =>
-                      prod.image_url ? (
-                        <img
-                          key={`${prod.id}-${i}`}
-                          src={prod.image_url}
-                          alt="prod"
-                          className="w-9 h-9 rounded-lg object-cover border border-main"
-                          style={{ marginLeft: i > 0 ? "-10px" : "0", zIndex: 2 - i, position: "relative" }}
-                        />
-                      ) : null
-                    )}
-                    {pedido.products.length > 2 && (
-                      <span className="text-[10px] text-faint ml-1.5">+{pedido.products.length - 2}</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Total + badge (botón de avance rápido con hover) */}
-                <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                  <span className="font-semibold text-main text-sm">
-                    {Number(pedido.total_price).toFixed(2)}€
-                  </span>
-                  <button
-                    onClick={(e) => handleInlineAdvance(e, pedido)}
-                    disabled={!NEXT_STATUS[pedido.status]}
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${badgeClasses(pedido)}`}
-                  >
-                    {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
-                    {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
-                  </button>
-                  {pedido.status === "cancelled" && (
-                    <p style={{ fontSize: "9px", color: "#A32D2D", opacity: 0.7, textAlign: "right", marginTop: "2px" }}>
-                      💳 {t("dashboard.orders.refundIssued")}
-                    </p>
+                  {pedido.products?.length > 0 && (
+                    <div className="flex items-center flex-shrink-0">
+                      {pedido.products.slice(0, 2).map((prod, i) =>
+                        prod.image_url ? (
+                          <img key={`${prod.id}-${i}`} src={prod.image_url} alt="prod"
+                            className="w-9 h-9 rounded-lg object-cover border border-main"
+                            style={{ marginLeft: i > 0 ? "-10px" : "0", zIndex: 2 - i, position: "relative" }} />
+                        ) : null
+                      )}
+                      {pedido.products.length > 2 && <span className="text-[10px] text-faint ml-1.5">+{pedido.products.length - 2}</span>}
+                    </div>
                   )}
 
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <span className="font-semibold text-main text-sm">{Number(pedido.total_price).toFixed(2)}€</span>
+                    <button onClick={(e) => handleInlineAdvance(e, pedido)} disabled={!NEXT_STATUS[pedido.status]}
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${badgeClasses(pedido)}`}>
+                      {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
+                      {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
+                    </button>
+                    {pedido.status === "cancelled" && (
+                      <p style={{ fontSize: "9px", color: "#A32D2D", opacity: 0.7, textAlign: "right", marginTop: "2px" }}>💳 {t("dashboard.orders.refundIssued")}</p>
+                    )}
+                  </div>
                 </div>
-
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════
-          DESKTOP: tabla  (solo visible en sm+)
-      ══════════════════════════════════════════════ */}
+      {/* ── DESKTOP ── */}
       {sorted.length > 0 && (
         <div className="hidden sm:block border border-main rounded-xl overflow-hidden">
           <table className="w-full text-sm">
@@ -239,18 +225,15 @@ const OrdersTab = () => {
                 <th className="text-left px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("id")}>
                   {t("dashboard.orders.table.order")} <SortIcon col="id" />
                 </th>
-                <th className="text-left px-4 py-3">
-                  {t("dashboard.orders.table.customer")}
-                </th>
-                <th className="text-left px-4 py-3 hidden md:table-cell">
-                  {t("dashboard.orders.table.products")}
-                </th>
+                <th className="text-left px-4 py-3">{t("dashboard.orders.table.customer")}</th>
+                <th className="text-left px-4 py-3 hidden md:table-cell">{t("dashboard.orders.table.products")}</th>
                 <th className="text-right px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("total")}>
                   {t("dashboard.orders.table.total")} <SortIcon col="total" />
                 </th>
                 <th className="text-right px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("date")}>
                   {t("dashboard.orders.table.date")} <SortIcon col="date" />
                 </th>
+                <th className="text-center px-4 py-3">Incidencia</th>
                 <th className="text-right px-4 py-3 cursor-pointer select-none" onClick={() => toggleSort("status")}>
                   {t("dashboard.orders.table.status")} <SortIcon col="status" />
                 </th>
@@ -258,35 +241,22 @@ const OrdersTab = () => {
             </thead>
             <tbody className="divide-y divide-[rgb(var(--color-border))]">
               {sorted.map((pedido) => (
-                <tr
-                  key={pedido.seller_order_id}
-                  onClick={() => setSelected(pedido)}
-                  className="hover:bg-subtle transition cursor-pointer"
-                >
+                <tr key={pedido.seller_order_id} onClick={() => setSelected(pedido)}
+                  className="hover:bg-subtle transition cursor-pointer">
                   <td className="px-4 py-3 text-faint font-mono text-xs">#{pedido.id}</td>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-main truncate max-w-[160px]">
-                      {pedido.customer || "—"}
-                    </p>
-                    {pedido.customer_email && (
-                      <p className="text-xs text-faint">{pedido.customer_email}</p>
-                    )}
+                    <p className="font-medium text-main truncate max-w-[160px]">{pedido.customer || "—"}</p>
+                    {pedido.customer_email && <p className="text-xs text-faint">{pedido.customer_email}</p>}
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
                     <div className="flex items-center gap-1">
                       {pedido.products.slice(0, 3).map((prod, i) =>
                         prod.image_url && (
-                          <img
-                            key={`${prod.id}-${i}`}
-                            src={prod.image_url}
-                            alt="prod"
-                            className="w-7 h-7 rounded object-cover border border-main"
-                          />
+                          <img key={`${prod.id}-${i}`} src={prod.image_url} alt="prod"
+                            className="w-7 h-7 rounded object-cover border border-main" />
                         )
                       )}
-                      {pedido.products.length > 3 && (
-                        <span className="text-xs text-faint ml-1">+{pedido.products.length - 3}</span>
-                      )}
+                      {pedido.products.length > 3 && <span className="text-xs text-faint ml-1">+{pedido.products.length - 3}</span>}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-semibold text-main whitespace-nowrap">
@@ -295,13 +265,12 @@ const OrdersTab = () => {
                   <td className="px-4 py-3 text-right text-faint text-xs whitespace-nowrap">
                     {new Date(pedido.created_at).toLocaleDateString("es-ES")}
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <IncidentBadge sellerOrderId={pedido.seller_order_id} />
+                  </td>
                   <td className="px-4 py-3 text-right">
-                    {/* Badge convertido en botón de avance con hover */}
-                    <button
-                      onClick={(e) => handleInlineAdvance(e, pedido)}
-                      disabled={!NEXT_STATUS[pedido.status]}
-                      className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${badgeClasses(pedido)}`}
-                    >
+                    <button onClick={(e) => handleInlineAdvance(e, pedido)} disabled={!NEXT_STATUS[pedido.status]}
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${badgeClasses(pedido)}`}>
                       {t(`dashboard.orders.status.${pedido.status}`, { defaultValue: pedido.status })}
                       {NEXT_STATUS[pedido.status] && <span className="ml-1 opacity-60">→</span>}
                     </button>
@@ -321,8 +290,10 @@ const OrdersTab = () => {
       {selected && (
         <OrderDetailModal
           order={selected}
+          incident={incidents[selected.seller_order_id] || null}
           onClose={() => setSelected(null)}
           onUpdated={loadOrders}
+          onNavigateToIncidents={onNavigateToIncidents}
         />
       )}
     </div>

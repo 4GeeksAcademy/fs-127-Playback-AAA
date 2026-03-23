@@ -24,7 +24,7 @@ export default function StoreDashboard() {
   const renderTab = () => {
     switch (activeTab) {
       case "overview":  return <ResumTab />;
-      case "orders":    return <OrderTab />;
+      case "orders":    return <OrderTab onNavigateToIncidents={() => setActiveTab("incidents")} />;
       case "products":  return <ProductsTab />;
       case "earnings":  return <EarningTab />;
       case "settings":  return <SettingsTab />;

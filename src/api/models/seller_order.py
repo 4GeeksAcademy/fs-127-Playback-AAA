@@ -33,8 +33,9 @@ class SellerOrder(db.Model):
 
     #----------------------RelationShip
 
-    order:  Mapped["Order"]  = relationship("Order",  back_populates="seller_orders")
-    seller: Mapped["Seller"] = relationship("Seller", back_populates="seller_orders")
+    order:     Mapped["Order"]           = relationship("Order",    back_populates="seller_orders")
+    seller:    Mapped["Seller"]          = relationship("Seller",   back_populates="seller_orders")
+    incidents: Mapped[list["Incident"]]  = relationship("Incident", back_populates="seller_order", cascade="all, delete-orphan")
 
     def serialize(self):
         return {

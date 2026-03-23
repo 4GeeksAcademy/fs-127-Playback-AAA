@@ -94,6 +94,17 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
     }
   }, [categories]);
 
+  useEffect(() => {
+    if (product?.other_image_url) {
+      setOtherImages(
+        product.other_image_url.map((url) => ({
+          file: null,
+          url,
+        }))
+      );
+    }
+  }, [product]);
+
   const catSeleccionada = categories.find((c) => c.id === parseInt(selectedCat));
   const subcategories   = catSeleccionada?.subcategories || [];
   const subSeleccionada = subcategories.find((s) => s.id === parseInt(selectedSub));
@@ -169,9 +180,16 @@ const ProductModal = ({ product, token, onClose, onSaved }) => {
     if (form.weight) fd.append("weight", form.weight);
     if (imageFile)   fd.append("imagen", imageFile);
 
-    // Solo enviar los archivos nuevos; las URLs existentes no se retransmiten
     otherImages.forEach((entry) => {
-      if (entry.file) fd.append("other_images", entry.file);
+      if (!entry.file) {
+        fd.append("existing_images", entry.url);
+      }
+    });
+
+    otherImages.forEach((entry) => {
+      if (entry.file) {
+        fd.append("other_images", entry.file);
+      }
     });
 
     return fd;

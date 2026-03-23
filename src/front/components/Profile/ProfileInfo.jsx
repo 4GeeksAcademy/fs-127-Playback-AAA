@@ -93,37 +93,40 @@ const ProfileInfo = () => {
   };
 
   const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImageError("");
-    setImageSuccess(false);
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setImageError(t("profile.info.imageFormat"));
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      setImageError(t("profile.info.imageSize"));
-      return;
-    }
-    setImageLoading(true);
-    setPreview(URL.createObjectURL(file));
-    const formData = new FormData();
-    formData.append("image", file);
-    const [data, error] = await userService.updateProfileImage(token, formData);
-    if (error) {
-      setImageError(error);
-      setImageLoading(false);
-      return;
-    }
-    setUser((prev) => ({ ...prev, image_url: data.image_url }));
-    dispatch({
-      type: "setUser",
-      payload: { ...store.user, image_url: data.image_url },
-    });
+  const file = e.target.files[0];
+  if (!file) return;
+  setImageError("");
+  setImageSuccess(false);
 
-    setImageSuccess(true);
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    setImageError(t("profile.info.imageFormat"));
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    setImageError(t("profile.info.imageSize"));
+    return;
+  }
+
+  setImageLoading(true);
+  setPreview(URL.createObjectURL(file));
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const [data, error] = await userService.updateProfileImage(token, formData);
+
+  if (error) {
+    setImageError(error);
     setImageLoading(false);
-  };
+    return;
+  }
+
+  // Solo actualizar el estado local, nada de dispatch
+  setUser((prev) => ({ ...prev, image_url: data.image_url }));
+
+  setImageSuccess(true);
+  setImageLoading(false);
+};
 
   const roleInfo = ROLE_LABELS[user.role] || null;
 

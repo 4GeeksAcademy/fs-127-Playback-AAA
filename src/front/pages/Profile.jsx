@@ -135,9 +135,22 @@ const Profile = () => {
     isAccountSection ? rawTab : "info"
   );
 
+  // Sincroniza URL → estado (cuando navigate cambia el param externamente)
+  useEffect(() => {
+    const param = searchParams.get("tab") || "dashboard";
+    const isAccount = ACCOUNT_SECTIONS.includes(param);
+    if (isAccount) {
+      setActiveTab("account");
+      setActiveSection(param);
+    } else {
+      setActiveTab(param);
+    }
+  }, [searchParams]);
+
+  // Sincroniza estado → URL (cuando el usuario clica una tab)
   useEffect(() => {
     const param = activeTab === "account" ? activeSection : activeTab;
-    setSearchParams({ tab: param });
+    setSearchParams({ tab: param }, { replace: true });
   }, [activeTab, activeSection]);
 
   const handleTabChange = (tab) => {

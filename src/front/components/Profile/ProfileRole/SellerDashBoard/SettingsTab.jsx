@@ -60,16 +60,35 @@ const SettingsTab = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setStatus("saving");
+
     try {
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      if (imageFile) fd.append("imagen", imageFile);
-      await updateSellerProfileService(store.token, fd);
+
+      // añadir campos normales
+      Object.entries(form).forEach(([k, v]) => {
+        if (v !== null && v !== undefined) {
+          fd.append(k, v);
+        }
+      });
+
+      // añadir imagen si existe
+      if (imageFile) {
+        fd.append("imagen", imageFile);
+      }
+
+      const res = await updateSellerProfileService(store.token, fd);
+
+      // 🔥 actualizar preview con la URL real de Cloudinary
+      if (res?.seller?.logo_url) {
+        setPreview(res.seller.logo_url);
+      }
+
       setStatus("success");
-    } catch {
+    } catch (err) {
+      console.error(err);
       setStatus("error");
     }
-  };
+  };;
 
   if (loading)
     return (
