@@ -39,7 +39,7 @@ ROLE_PERMISSIONS = {
 
 class User(db.Model):
 
-    _tablename_ = 'user'
+    __tablename__ = 'user'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(80), nullable=False)
@@ -77,7 +77,7 @@ class User(db.Model):
         """Devuelve la lista de permisos del rol actual."""
         return ROLE_PERMISSIONS.get(self.role, [])
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<User {self.id}: {self.email}>'
 
     def serialize(self):

@@ -5,7 +5,7 @@ from api.models import db
 
 
 class IncidentMessage(db.Model):
-    _tablename_ = 'incident_message'
+    __tablename__ = 'incident_message'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     body: Mapped[str] = mapped_column(Text, nullable=True)
@@ -23,7 +23,7 @@ class IncidentMessage(db.Model):
     incident = relationship("Incident", back_populates="messages")
     user = relationship("User", back_populates="incident_messages")
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<IncidentMessage {self.id} incident={self.incident_id}>'
 
     def serialize(self):

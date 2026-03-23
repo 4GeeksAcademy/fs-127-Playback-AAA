@@ -21,7 +21,7 @@ class Status(enum.Enum):
 
 
 class Order(db.Model):
-    _tablename_ = 'order'
+    __tablename__ = 'order'
     id: Mapped[int] = mapped_column(primary_key=True)
     total_price: Mapped[float] = mapped_column(Float, nullable=False)
     tax: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
