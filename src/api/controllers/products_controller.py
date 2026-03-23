@@ -13,7 +13,7 @@ from api.models.seller import Seller
 from datetime import datetime, timezone
 import unicodedata
 
-product_bp = Blueprint('product', _name_, url_prefix='/product')
+product_bp = Blueprint('product',__name__, url_prefix='/product')
 
 LOW_STOCK_THRESHOLD = 1
 

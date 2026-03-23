@@ -15,7 +15,7 @@ import cloudinary
 import cloudinary.uploader
 
 
-seller_bp = Blueprint('seller', _name_, url_prefix='/seller')
+seller_bp = Blueprint('seller',__name__, url_prefix='/seller')
 
 
 # ── Helper: envía cualquier mensaje de Flask-Mail en un hilo separado ─────────

@@ -16,7 +16,7 @@ from api.emails.brevo_service import send_email
 
 
 
-order_bp = Blueprint('order', _name_, url_prefix='/order')
+order_bp = Blueprint('order',__name__, url_prefix='/order')
 
 # def translate_text(text, target_lang):
 #     if not text:

@@ -16,9 +16,13 @@
   },
   "incidents": {
     "title": "Incidencias",
+    "subjectLabel": "Asunto",
+    "subjectPlaceholder": "Ej: Producto dañado, no llegó mi pedido...",
     "placeholder": "Cuéntanos qué ha pasado con tu pedido...",
     "descriptionRequired": "La descripción es obligatoria",
-    "submitError": "Error al crear la incidencia"
+    "subjectRequired": "El asunto es obligatorio",
+    "submitError": "Error al crear la incidencia",
+    "empty": "No tienes incidencias abiertas"
   },
   "product": {
     "noFound": "No se han encontrado productos",
@@ -254,14 +258,16 @@
     "billingAddress": "Dirección de facturación",
     "recent": "Pedidos recientes",
     "viewAll": "Ver todos los pedidos",
-    "openIncident": "Incidencia / Devolución",
+    "openIncident": "Abrir Incidencia",
     "cancelOrder": "Cancelar pedido",
     "confirmCancel": "Sí, cancelar",
     "goBack": "Volver",
     "cancelledBySeller": "Este envío fue cancelado por el vendedor.",
     "cancelledByYou": "Cancelaste este pedido.",
     "cancelReason": "Motivo",
-    "refundPending": "Se procesará el reembolso del importe en los próximos días hábiles."
+    "refundPending": "Se procesará el reembolso del importe en los próximos días hábiles.",
+    "incidentOpen": "Incidencia abierta",
+    "incidentResolved": "Incidencia resuelta"
   },
   "favorites": {
     "title": "Tus favoritos",
