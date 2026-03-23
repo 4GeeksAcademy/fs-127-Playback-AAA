@@ -152,8 +152,6 @@ SELLERS_DATA = [
 # ══════════════════════════════════════════════════════════════════════════════
 
 PRODUCTS_DATA = [
-
-    # ── PRODUCTOS DE PLAYBACK (tienda oficial certificada) ────────────────────
     {
         "name": "Super Nintendo SNES Certificada",
         "name_en": "Certified SNES Console",
@@ -163,10 +161,17 @@ PRODUCTS_DATA = [
         "description_en": "SNES serviced and certified by Playback. Includes original controller, SCART cables and 3-month warranty.",
         "description_ca": "SNES revisada i certificada per Playback. Inclou comandament original, cables SCART i garantia de 3 mesos.",
         "description_gl": "SNES revisada e certificada por Playback. Inclúe mando orixinal, cables SCART e garantía de 3 meses.",
-        "price": 109.99, "stock": 4, "discount": 0.0, "condition": "refurbished",
+        "price": 109.99,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "snes",
         "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
-        "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://detorotec.com/cdn/shop/files/SNES6.jpg?v=1717269489&width=1946",
+        "https://detorotec.com/cdn/shop/files/SNES10.jpg?v=1717269479&width=1445"
+        ],
+        "seller_email": "seller@playback.com"
     },
     {
         "name": "Nintendo 64 Certificada con Mando",
@@ -177,10 +182,16 @@ PRODUCTS_DATA = [
         "description_en": "N64 serviced, cleaned and certified by Playback. Capacitors checked, cartridge slot and games tested. Controller and cables included.",
         "description_ca": "N64 revisada, netejada i certificada per Playback. Condensadors comprovats, lector i cartutxos provats. Comandament i cables inclosos.",
         "description_gl": "N64 revisada, limpada e certificada por Playback. Condensadores comprobados, lector e cartuchos probados. Mando e cables incluídos.",
-        "price": 129.99, "stock": 3, "discount": 5.0, "condition": "refurbished",
+        "price": 129.99,
+        "stock": 3,
+        "discount": 5.0,
+        "condition": "refurbished",
         "item_slug": "nintendo-64",
         "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://games4players.net/wp-content/uploads/2022/01/MANDO-NINTENDO-64-COMPATIBLE.jpg"
+        ]
     },
     {
         "name": "PlayStation 1 Certificada",
@@ -191,10 +202,17 @@ PRODUCTS_DATA = [
         "description_en": "PS1 with serviced disc reader, complete internal cleaning and 3-month warranty. Includes 2 DualShock controllers and AV cable.",
         "description_ca": "PS1 amb lector revisat, neteja interna completa i garantia de 3 mesos. Inclou 2 comandaments DualShock i cable AV.",
         "description_gl": "PS1 con lector revisado, limpeza interna completa e garantía de 3 meses. Inclúe 2 mandos DualShock e cable AV.",
-        "price": 89.99, "stock": 5, "discount": 0.0, "condition": "refurbished",
+        "price": 89.99,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "ps1",
         "image_url": "https://m.media-amazon.com/images/I/71TCoWMwK+L.jpg",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://www.pcdual.com/5716-large_default/playstation-1-sony-gris.jpg",
+        "https://retrovgames.com/wp-content/uploads/2023/03/playstation-1-fat-japonska-verzia.png"
+        ]
     },
     {
         "name": "Sega Mega Drive II Certificada",
@@ -205,10 +223,17 @@ PRODUCTS_DATA = [
         "description_en": "Mega Drive II serviced and certified. Two original controllers, AV cable and power supply included. 3-month warranty.",
         "description_ca": "Mega Drive II revisada i certificada. Dos comandaments originals, cable AV i font d'alimentació inclosos. Garantia 3 mesos.",
         "description_gl": "Mega Drive II revisada e certificada. Dous mandos orixinais, cable AV e fonte de alimentación incluídos. Garantía 3 meses.",
-        "price": 84.99, "stock": 4, "discount": 0.0, "condition": "refurbished",
+        "price": 84.99,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "mega-drive",
-        "image_url": "https://www.museodelvideojuego.com/files/imgs/consolas/Mega-Drive-II-caja.jpg",
+        "image_url": "https://www.museodelvideojuego.com/files/imgs/consolas/Mega-Drive-II.jpg",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://www.museodelvideojuego.com/files/imgs/consolas/Mega-Drive-II-caja.jpg",
+        "https://cdn-products.eneba.com/resized-products/OTpaw-7SWFHrtGvzFu29uZ7cbLO2Bs6gL66-9MX5IlM_350x200_1x-0"
+        ]
     },
     {
         "name": "Game Boy Advance SP Certificada",
@@ -219,10 +244,16 @@ PRODUCTS_DATA = [
         "description_en": "GBA SP with new battery, backlit screen and original charger. Serviced and certified by Playback.",
         "description_ca": "GBA SP amb bateria nova, pantalla retroil·luminada i carregador original. Revisada i certificada per Playback.",
         "description_gl": "GBA SP con batería nova, pantalla retroiluminada e cargador orixinal. Revisada e certificada por Playback.",
-        "price": 99.99, "stock": 6, "discount": 0.0, "condition": "refurbished",
+        "price": 99.99,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "game-boy-advance",
         "image_url": "https://m.media-amazon.com/images/I/61hNR9cWhZL.jpg",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://cdn-products.eneba.com/resized-products/04zxbwddEUD8vgbu7nhYpteq2lzE5YwmiyDBsvZMlO8_350x200_1x-0"
+        ]
     },
     {
         "name": "The Legend of Zelda: OoT N64 Certificado",
@@ -233,10 +264,17 @@ PRODUCTS_DATA = [
         "description_en": "Zelda Ocarina of Time original PAL cartridge for N64. Save battery verified and functional. Certified by Playback.",
         "description_ca": "Zelda Ocarina of Time cartutx PAL original per a N64. Bateria de desat verificada i funcional. Certificat per Playback.",
         "description_gl": "Zelda Ocarina of Time cartucho PAL orixinal para N64. Batería de gardado verificada e funcional. Certificado por Playback.",
-        "price": 59.99, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 59.99,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-nintendo-64",
-        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPo0fYRIsSTEYir_VND0m40qs6Oc2kdggSDg&s",
+        "image_url": "https://img.clasf.mx/2024/05/16/The-Legend-Of-Zelda-Ocarina-Of-Time-N64-Juego-Fisico-Hyrule-20240516204038.4235440015.jpg",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://down-br.img.susercontent.com/file/b5cbcb46ac58ec7168e710bbbd9f5d07",
+        "https://down-br.img.susercontent.com/file/2fdd4dd1f6ce2a6cc56dec04eaf7daed"
+        ]
     },
     {
         "name": "Final Fantasy VII PS1 Certificado",
@@ -247,10 +285,17 @@ PRODUCTS_DATA = [
         "description_en": "Final Fantasy VII PAL complete with box and manual. Discs checked, scratch-free. Certified by Playback.",
         "description_ca": "Final Fantasy VII PAL complet amb caixa i manual. Discos comprovats sense ratllades. Certificat per Playback.",
         "description_gl": "Final Fantasy VII PAL completo con caixa e manual. Discos comprobados sen arañazos. Certificado por Playback.",
-        "price": 79.99, "stock": 2, "discount": 10.0, "condition": "used",
+        "price": 79.99,
+        "stock": 2,
+        "discount": 10.0,
+        "condition": "used",
         "item_slug": "juegos-ps1",
-        "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "image_url": "https://http2.mlstatic.com/D_NQ_NP_695405-MLA47660907577_092021-O.webp",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "https://cloud10.todocoleccion.online/videojuegos-consola-playstation1/tc/2022/03/23/18/326801868.jpg"
+        ]
     },
     {
         "name": "Pack Pokémon Rojo + Azul Game Boy",
@@ -261,10 +306,17 @@ PRODUCTS_DATA = [
         "description_en": "Pack with both original Pokémon Red and Blue cartridges for Game Boy. Save batteries verified. Certified by Playback.",
         "description_ca": "Pack amb els dos cartutxos originals de Pokémon Vermell i Blau per a Game Boy. Bateries de desat verificades. Certificat per Playback.",
         "description_gl": "Pack cos dous cartuchos orixinais de Pokémon Vermello e Azul para Game Boy. Baterías de gardado verificadas. Certificado por Playback.",
-        "price": 69.99, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 69.99,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-game-boy",
-        "image_url": "https://media2.gameplaystores.es/77648-large_default/pokemon-rojo-cartucho-gb.jpg",
+        "image_url": "https://1.bp.blogspot.com/_KNZH403imb4/S_563S_rh5I/AAAAAAAAAfE/EurSooJQiog/s1600/pokemon-red-and-blue.jpg",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://4.bp.blogspot.com/-0un3hXOqce0/WH2LhzVi1PI/AAAAAAAAEc0/iYcIFaonWZ01BYBSZWkpfaNvMf0KmXm3ACEw/s1600/red.jpg",
+        "https://cdn.vox-cdn.com/thumbor/Ftr0TeYgWtQazg7c7BPuRv4K1js=/0x0:2040x1360/920x613/filters:focal(831x778:1157x1104)/cdn.vox-cdn.com/uploads/chorus_image/image/61498597/jbareham_180924_ply0802_0010.1537823893.jpg"
+        ]
     },
     {
         "name": "Vinilo Pink Floyd The Dark Side of the Moon",
@@ -275,10 +327,17 @@ PRODUCTS_DATA = [
         "description_en": "The Dark Side of the Moon original 1973 UK edition. Reviewed and certified by Playback. Includes original posters.",
         "description_ca": "The Dark Side of the Moon edició UK original 1973. Revisat i certificat per Playback. Inclou pòsters originals.",
         "description_gl": "The Dark Side of the Moon edición UK orixinal 1973. Revisado e certificado por Playback. Inclúe pósters orixinais.",
-        "price": 89.99, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 89.99,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "discos-de-vinilo",
-        "image_url": "https://signosdisqueria.cl/cdn/shop/files/pink-floyd-the-wall-vinilo-2.jpg?v=1702653827&width=1000",
+        "image_url": "https://cdn.shopify.com/s/files/1/0572/2400/3783/products/PinkFloyd-TheDarkSideOfTheMoon_Vinilo_452ad2c5-5693-4aae-bbe2-4b94d465ecbf_1800x.jpg?v=1679172738",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://www.baba.es/25759-large_default/pink-floyd-the-dark-side-of-the-moon-lp-vinilo.jpg",
+        "https://elevenstore.cl/elevenstore/10673-thickbox_default/pink-floyd-the-dark-side-of-the-moon-vinilo-50th-anniversary.jpg"
+        ]
     },
     {
         "name": "Nokia 3310 Certificado Batería Nueva",
@@ -289,13 +348,17 @@ PRODUCTS_DATA = [
         "description_en": "Nokia 3310 serviced by Playback. New battery, scratch-free screen. Includes compatible charger. 3-month warranty.",
         "description_ca": "Nokia 3310 revisat per Playback. Bateria nova, pantalla sense ratllades. Inclou carregador compatible. Garantia 3 mesos.",
         "description_gl": "Nokia 3310 revisado por Playback. Batería nova, pantalla sen arañazos. Inclúe cargador compatible. Garantía 3 meses.",
-        "price": 44.99, "stock": 8, "discount": 0.0, "condition": "refurbished",
+        "price": 44.99,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "moviles-antiguos",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
         "seller_email": "seller@playback.com",
+        "other_image_url": [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Nokia_3310_grey_all_sides.jpg/1200px-Nokia_3310_grey_all_sides.jpg"
+        ]
     },
-
-    # ── PRODUCTOS DE ARANTXA ──────────────────────────────────────────────────
     {
         "name": "NES Classic",
         "name_en": "Classic NES",
@@ -311,7 +374,11 @@ PRODUCTS_DATA = [
         "condition": "used",
         "item_slug": "nes",
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
-        "seller_email": "pro.arantxa.ordoyo@gmail.com"
+        "seller_email": "pro.arantxa.ordoyo@gmail.com",
+        "other_image_url": [
+        "https://ultimainformatica.com/1958527-thickbox_default/nintendo-nes-classic-gris.jpg",
+        "https://cdn-products.eneba.com/resized-products/1wGFqBqTZnxjmLSdvr6GPvq4F64lEGrxPTJ8pCI907E_350x200_1x-0"
+        ]
     },
     {
         "name": "Vinilo Led Zeppelin IV",
@@ -322,13 +389,17 @@ PRODUCTS_DATA = [
         "description_en": "Led Zeppelin IV original edition.",
         "description_ca": "Led Zeppelin IV edició original.",
         "description_gl": "Led Zeppelin IV edición orixinal.",
-        "price": 42.00,
+        "price": 42.0,
         "stock": 2,
         "discount": 10.0,
         "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
-        "seller_email": "pro.arantxa.ordoyo@gmail.com"
+        "seller_email": "pro.arantxa.ordoyo@gmail.com",
+        "other_image_url": [
+        "https://http2.mlstatic.com/D_NQ_NP_957546-MLC69943739397_062023-O.webp",
+        "https://www.baba.es/43517-large_default/led-zeppelin-led-zeppelin-iv-lp-vinilo-clear.jpg"
+        ]
     },
     {
         "name": "Game Boy DMG",
@@ -339,13 +410,17 @@ PRODUCTS_DATA = [
         "description_en": "Working original DMG Game Boy.",
         "description_ca": "Game Boy original DMG funcionant.",
         "description_gl": "Game Boy orixinal DMG funcionando.",
-        "price": 52.00,
+        "price": 52.0,
         "stock": 4,
         "discount": 0.0,
         "condition": "used",
         "item_slug": "game-boy",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png",
-        "seller_email": "pro.arantxa.ordoyo@gmail.com"
+        "seller_email": "pro.arantxa.ordoyo@gmail.com",
+        "other_image_url": [
+        "https://cdn-products.eneba.com/resized-products/2Om0g_KJ-R4HUj8zSSk0MMOGR14adrQ2dfUjaCcXmVg_350x200_1x-0",
+        "https://cdn-products.eneba.com/resized-products/ZC2Lh5XIQ6MLJzErzxjUwz0g_i6rwonkLRdhmdLX79Q_350x200_1x-0"
+        ]
     },
     {
         "name": "Nokia 3310",
@@ -356,13 +431,14 @@ PRODUCTS_DATA = [
         "description_en": "Blue Nokia 3310 with new battery.",
         "description_ca": "Nokia 3310 blau amb bateria nova.",
         "description_gl": "Nokia 3310 azul con batería nova.",
-        "price": 32.00,
+        "price": 32.0,
         "stock": 5,
         "discount": 0.0,
         "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
-        "seller_email": "pro.arantxa.ordoyo@gmail.com"
+        "seller_email": "pro.arantxa.ordoyo@gmail.com",
+        "other_image_url": []
     },
     {
         "name": "Walkman Sony",
@@ -373,16 +449,15 @@ PRODUCTS_DATA = [
         "description_en": "Sony Walkman with FM radio.",
         "description_ca": "Walkman Sony amb ràdio FM.",
         "description_gl": "Walkman Sony con radio FM.",
-        "price": 38.00,
+        "price": 38.0,
         "stock": 3,
         "discount": 5.0,
         "condition": "used",
         "item_slug": "walkman",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
-        "seller_email": "pro.arantxa.ordoyo@gmail.com"
+        "seller_email": "pro.arantxa.ordoyo@gmail.com",
+        "other_image_url": []
     },
-    
-    # ── CONSOLAS › Nintendo Clásica ── nes ─────────────────────────────────────
     {
         "name": "NES Classic Edition",
         "name_en": "NES Classic Edition",
@@ -392,10 +467,16 @@ PRODUCTS_DATA = [
         "description_en": "NES in perfect condition with original controller and cables.",
         "description_ca": "NES en perfecte estat amb comandament original i cables.",
         "description_gl": "NES en perfecto estado con mando orixinal e cables.",
-        "price": 89.99, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 89.99,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "nes",
         "image_url": "https://m.media-amazon.com/images/I/71YTum90-lL.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://cl.buscafs.com/www.levelup.com/public/uploads/images/447515.jpg"
+        ]
     },
     {
         "name": "NES con 10 juegos",
@@ -406,13 +487,17 @@ PRODUCTS_DATA = [
         "description_en": "NES bundle with 10 cartridges in good condition.",
         "description_ca": "Pack NES amb 10 cartutxos en bon estat.",
         "description_gl": "Pack NES con 10 cartuchos en bo estado.",
-        "price": 140.00, "stock": 2, "discount": 10.0, "condition": "used",
+        "price": 140.0,
+        "stock": 2,
+        "discount": 10.0,
+        "condition": "used",
         "item_slug": "nes",
         "image_url": "https://hardzone.es/app/uploads-hardzone.es/2023/06/nes-nintendo.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://image.jimcdn.com/app/cms/image/transf/dimension=1920x10000:format=jpg/path/sce853b1d90b7b71e/image/ib4ff9894430bfdbc/version/1494045377/image.jpg"
+        ]
     },
-
-    # ── snes ───────────────────────────────────────────────────────────────────
     {
         "name": "SNES con Super Mario World",
         "name_en": "SNES with Super Mario World",
@@ -422,10 +507,14 @@ PRODUCTS_DATA = [
         "description_en": "Super Nintendo with Super Mario World cartridge included.",
         "description_ca": "Super Nintendo amb cartutx de Super Mario World inclòs.",
         "description_gl": "Super Nintendo con cartucho de Super Mario World incluído.",
-        "price": 120.00, "stock": 3, "discount": 10.0, "condition": "used",
+        "price": 120.0,
+        "stock": 3,
+        "discount": 10.0,
+        "condition": "used",
         "item_slug": "snes",
         "image_url": "https://m.media-amazon.com/images/I/51JgQtlGh8L._AC_UF894,1000_QL80_.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "SNES Reacondicionada",
@@ -436,13 +525,15 @@ PRODUCTS_DATA = [
         "description_en": "SNES serviced and cleaned, works like new.",
         "description_ca": "SNES revisada i netejada, funciona com a nova.",
         "description_gl": "SNES revisada e limpa, funciona como nova.",
-        "price": 95.00, "stock": 4, "discount": 0.0, "condition": "refurbished",
+        "price": 95.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "snes",
         "image_url": "https://cdn-products.eneba.com/resized-products/e54c7018578b11edbcec929548667aa2_350x200_1x-0",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-
-    # ── nintendo-64 ────────────────────────────────────────────────────────────
     {
         "name": "Nintendo 64 Gris",
         "name_en": "Nintendo 64 Grey",
@@ -452,10 +543,14 @@ PRODUCTS_DATA = [
         "description_en": "N64 with original controller and cables.",
         "description_ca": "N64 amb comandament i cables originals.",
         "description_gl": "N64 con mando e cables orixinais.",
-        "price": 110.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 110.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "nintendo-64",
         "image_url": "https://i.blogs.es/bfd715/n64/450_1000.png",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Nintendo 64 con Expansion Pak",
@@ -466,12 +561,15 @@ PRODUCTS_DATA = [
         "description_en": "N64 with Expansion Pak and controller, ready for Majora's Mask.",
         "description_ca": "N64 amb Expansion Pak i comandament, llesta per a Majora's Mask.",
         "description_gl": "N64 con Expansion Pak e mando, lista para Majora's Mask.",
-        "price": 135.00, "stock": 2, "discount": 5.0, "condition": "used",
+        "price": 135.0,
+        "stock": 2,
+        "discount": 5.0,
+        "condition": "used",
         "item_slug": "nintendo-64",
         "image_url": "https://cdn.wallapop.com/images/10420/dc/bp/__/c10420p806762443/i3050428381.jpg?pictureSize=W640",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-    # ── gamecube ──────────────────────────────────────────────────────────────
     {
         "name": "GameCube Plateada",
         "name_en": "Silver GameCube",
@@ -481,10 +579,16 @@ PRODUCTS_DATA = [
         "description_en": "Silver GameCube with purple controller.",
         "description_ca": "GameCube en color platejat amb comandament morat.",
         "description_gl": "GameCube en cor prateado con mando morado.",
-        "price": 130.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 130.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "gamecube",
         "image_url": "https://media2.gameplaystores.es/74876-large_default/gamecube-plateada-mando-sin-caja-gc.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://cdn-products.eneba.com/resized-products/UUwubEQUPClBYopWwnYhnHcizUq7NGowJZf2uSnB9F0_350x200_1x-0"
+        ]
     },
     {
         "name": "GameCube Negra con Lector Roto",
@@ -495,12 +599,15 @@ PRODUCTS_DATA = [
         "description_en": "Black GameCube, disc reader not working. For parts.",
         "description_ca": "GameCube negra, el lector no llegeix discos. Ideal per a peces.",
         "description_gl": "GameCube negra, o lector non le discos. Ideal para pezas.",
-        "price": 25.00, "stock": 1, "discount": 0.0, "condition": "broken",
+        "price": 25.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "broken",
         "item_slug": "gamecube",
         "image_url": "https://media.gameplaystores.es/99746-large_default/gamecube-negra-sin-mando-con-caja-.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-    # ── game-boy ───────────────────────────────────────────────────────────────
     {
         "name": "Game Boy Original DMG",
         "name_en": "Original Game Boy DMG",
@@ -510,10 +617,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Game Boy DMG model with grey shell.",
         "description_ca": "Game Boy original model DMG amb carcassa grisa.",
         "description_gl": "Game Boy orixinal modelo DMG con carcasa gris.",
-        "price": 55.00, "stock": 8, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "game-boy",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Game-Boy-FL.png/1280px-Game-Boy-FL.png",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Game Boy Color Morada",
@@ -524,13 +635,17 @@ PRODUCTS_DATA = [
         "description_en": "Translucent purple Game Boy Color, impeccable condition.",
         "description_ca": "Game Boy Color en morat translúcid, estat impecable.",
         "description_gl": "Game Boy Color en morado translúcido, estado impecable.",
-        "price": 70.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 70.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "game-boy",
         "image_url": "https://www.todoconsolas.com/344840-large_default/game_boy_color_violeta_po215947.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "http://cdn.shopify.com/s/files/1/0549/9174/9191/products/04514b60-02b5-43b4-b8d8-20abf7ff0d7d.jpg?v=1668194331"
+        ]
     },
-
-    # ── game-boy-advance ───────────────────────────────────────────────────────
     {
         "name": "Game Boy Advance SP Azul",
         "name_en": "Blue Game Boy Advance SP",
@@ -540,10 +655,17 @@ PRODUCTS_DATA = [
         "description_en": "GBA SP with backlit screen and original charger.",
         "description_ca": "GBA SP amb pantalla retroil·luminada i carregador original.",
         "description_gl": "GBA SP con pantalla retroiluminada e cargador orixinal.",
-        "price": 95.00, "stock": 3, "discount": 5.0, "condition": "used",
+        "price": 95.0,
+        "stock": 3,
+        "discount": 5.0,
+        "condition": "used",
         "item_slug": "game-boy-advance",
         "image_url": "https://m.media-amazon.com/images/I/61hNR9cWhZL.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://cdn-products.eneba.com/resized-products/c1134880dc2e11ec96420289b061e8af_350x200_1x-0",
+        "https://imaticalospalacios.com/640-img_aliexpress/carcasa-completa-para-nintendo-game-boy-advance-sp-gba-sp-full-housing-azul.jpg"
+        ]
     },
     {
         "name": "Game Boy Advance Transparente",
@@ -554,13 +676,17 @@ PRODUCTS_DATA = [
         "description_en": "Refurbished GBA with transparent shell.",
         "description_ca": "GBA carcassa transparent recondicionada.",
         "description_gl": "GBA carcasa transparente reacondicionada.",
-        "price": 60.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
+        "price": 60.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "game-boy-advance",
         "image_url": "https://bucket.stash.cl/images/3404_1914_154deadc-0a18-4bc1-bc99-2e8751fe96ec_game_boy_advance(_transparente).webp",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://media.gameplaystores.es/56774-large_default/game-boy-advance-transparente-con-caja-gba.jpg"
+        ]
     },
-
-    # ── accesorios ────────────────────────────────────────────────────────────
     {
         "name": "Mando NES Original",
         "name_en": "Original NES Controller",
@@ -570,10 +696,16 @@ PRODUCTS_DATA = [
         "description_en": "Original NES controller in good working condition.",
         "description_ca": "Comandament NES original en bon estat de funcionament.",
         "description_gl": "Mando NES orixinal en bo estado de funcionamento.",
-        "price": 12.00, "stock": 10, "discount": 0.0, "condition": "used",
+        "price": 12.0,
+        "stock": 10,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "accesorios",
         "image_url": "https://www.videojuegoshoracio.com/public/IMG_4990.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://retrocables.es/431-superlarge_default/mando-nes-original-nuevo.jpg"
+        ]
     },
     {
         "name": "Pack Mandos SNES x2",
@@ -584,13 +716,18 @@ PRODUCTS_DATA = [
         "description_en": "Two original SNES controllers in perfect condition.",
         "description_ca": "Dos comandaments originals de SNES en perfecte estat.",
         "description_gl": "Dous mandos orixinais de SNES en perfecto estado.",
-        "price": 20.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 20.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "accesorios",
         "image_url": "https://elblogdemanu.com/adaptador-de-mandos-de-snes-a-usb/a2.webp",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://http2.mlstatic.com/D_NQ_NP_747502-MLM73981561223_012024-O.webp",
+        "https://gameware.com/wp-content/uploads/SNES-main-bg_2000x.jpg"
+        ]
     },
-
-    # ── otros-nintendo-clasica ─────────────────────────────────────────────────
     {
         "name": "Virtual Boy con Stand",
         "name_en": "Virtual Boy with Stand",
@@ -600,13 +737,18 @@ PRODUCTS_DATA = [
         "description_en": "Nintendo Virtual Boy with stand and original controller.",
         "description_ca": "Virtual Boy de Nintendo amb suport i comandament original.",
         "description_gl": "Virtual Boy de Nintendo con soporte e mando orixinal.",
-        "price": 180.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 180.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-nintendo-clasica",
         "image_url": "https://files.virtual-boy.com/vb-stand-hack-scaled.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://files.virtual-boy.com/low_height.jpg",
+        "https://files.virtual-boy.com/iso_view1.jpg"
+        ]
     },
-
-    # ── CONSOLAS › SEGA ───────────────────────────────────────────────────────
     {
         "name": "Sega Master System II",
         "name_en": "Sega Master System II",
@@ -616,10 +758,16 @@ PRODUCTS_DATA = [
         "description_en": "Master System II with built-in Alex Kidd.",
         "description_ca": "Master System II amb Alex Kidd integrat.",
         "description_gl": "Master System II con Alex Kidd integrado.",
-        "price": 60.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 60.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "master-system",
         "image_url": "https://guide-images.cdn.ifixit.com/igi/UxsSanKSYPneQ6Ge.large",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://www.pcdual.com/5709-large_default/consola-master-system-ii-sega.jpg"
+        ]
     },
     {
         "name": "Mega Drive II",
@@ -630,10 +778,16 @@ PRODUCTS_DATA = [
         "description_en": "Mega Drive II with two controllers and AV cable.",
         "description_ca": "Mega Drive II amb dos comandaments i cable AV.",
         "description_gl": "Mega Drive II con dous mandos e cable AV.",
-        "price": 75.00, "stock": 4, "discount": 5.0, "condition": "used",
+        "price": 75.0,
+        "stock": 4,
+        "discount": 5.0,
+        "condition": "used",
         "item_slug": "mega-drive",
         "image_url": "https://www.museodelvideojuego.com/files/imgs/consolas/Mega-Drive-II-caja.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://www.museodelvideojuego.com/files/imgs/consolas/Mega-Drive-II.jpg"
+        ]
     },
     {
         "name": "Mega Drive Sin Cables (Piezas)",
@@ -644,10 +798,14 @@ PRODUCTS_DATA = [
         "description_en": "First version Mega Drive, no cables or controllers. For parts.",
         "description_ca": "Mega Drive primera versió sense cables ni comandaments. Per a peces.",
         "description_gl": "Mega Drive primeira versión sen cables nin mandos. Para pezas.",
-        "price": 20.00, "stock": 2, "discount": 0.0, "condition": "broken",
+        "price": 20.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "broken",
         "item_slug": "mega-drive",
         "image_url": "https://media2.gameplaystores.es/72316-thickbox_default/megadrive-mando-sin-caja-.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Sega Saturn Gris",
@@ -658,10 +816,16 @@ PRODUCTS_DATA = [
         "description_en": "Sega Saturn with original controller and power supply.",
         "description_ca": "Sega Saturn amb comandament i font d'alimentació original.",
         "description_gl": "Sega Saturn con mando e fonte de alimentación orixinal.",
-        "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "saturn",
         "image_url": "https://media2.gameplaystores.es/103967-large_default/controller-sega-saturn-gris-transparente-licenciado.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://retrocables.es/2526-superlarge_default/mando-sega-saturn-gris-transparente-licenciado.jpg"
+        ]
     },
     {
         "name": "Sega Dreamcast",
@@ -672,10 +836,17 @@ PRODUCTS_DATA = [
         "description_en": "Dreamcast with VMU and original controller, works perfectly.",
         "description_ca": "Dreamcast amb VMU i comandament original, funciona perfectament.",
         "description_gl": "Dreamcast con VMU e mando orixinal, funciona perfectamente.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "dreamcast",
         "image_url": "https://i.blogs.es/5ad1a1/dreamcast_01/650_1200.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://www.retrojuegoschile.cl/wp-content/uploads/2024/09/sega-dreamcast.jpg",
+        "https://i0.wp.com/retromaquinitas.com/wp-content/uploads/2023/05/Collection0219-scaled.jpg?resize=1160%2C653&ssl=1"
+        ]
     },
     {
         "name": "Sega Game Gear Roja",
@@ -686,10 +857,14 @@ PRODUCTS_DATA = [
         "description_en": "Red Game Gear with screen in perfect condition.",
         "description_ca": "Game Gear en vermell amb pantalla en perfecte estat.",
         "description_gl": "Game Gear en vermello con pantalla en perfecto estado.",
-        "price": 65.00, "stock": 3, "discount": 10.0, "condition": "used",
+        "price": 65.0,
+        "stock": 3,
+        "discount": 10.0,
+        "condition": "used",
         "item_slug": "game-gear",
         "image_url": "https://www.japanzon.com/24351-product_hd/sega-game-gear-micro-rojo.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Game Gear Reacondicionada",
@@ -700,10 +875,14 @@ PRODUCTS_DATA = [
         "description_en": "Game Gear with new capacitors, perfect screen.",
         "description_ca": "Game Gear revisada amb condensadors nous.",
         "description_gl": "Game Gear revisada con condensadores novos.",
-        "price": 85.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
+        "price": 85.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "game-gear",
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Sega-Game-Gear-WB.png/500px-Sega-Game-Gear-WB.png",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Sega Pico (Consola Infantil)",
@@ -714,13 +893,15 @@ PRODUCTS_DATA = [
         "description_en": "Sega Pico, the educational console for kids.",
         "description_ca": "Sega Pico, la consola educativa de Sega per a nens.",
         "description_gl": "Sega Pico, a consola educativa de Sega para nenos.",
-        "price": 40.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 40.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-sega",
         "image_url": "https://images.wikidexcdn.net/mwuploads/wikidex/0/0b/latest/20130315195556/Sega_Pico.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
-
-    # ── CONSOLAS › PlayStation y Xbox ─────────────────────────────────────────
     {
         "name": "PlayStation 1 PAL",
         "name_en": "PlayStation 1 PAL",
@@ -730,10 +911,17 @@ PRODUCTS_DATA = [
         "description_en": "PAL PS1 in good condition with original memory card.",
         "description_ca": "PS1 PAL en bon estat amb memory card original.",
         "description_gl": "PS1 PAL en bo estado con memory card orixinal.",
-        "price": 65.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 65.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "ps1",
         "image_url": "https://m.media-amazon.com/images/I/71TCoWMwK+L.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://w7.pngwing.com/pngs/85/418/png-transparent-playstation-pal-hd-logo-thumbnail.png",
+        "https://www.retrogame-shop.com/31880-thickbox_default/console-playstation-pal-.jpg"
+        ]
     },
     {
         "name": "PlayStation 1 Reacondicionada",
@@ -744,10 +932,16 @@ PRODUCTS_DATA = [
         "description_en": "Serviced PS1, cleaned and tested reader, 3-month warranty.",
         "description_ca": "PS1 revisada, lector netejat i testat, garantia 3 mesos.",
         "description_gl": "PS1 revisada, lector limpado e testado, garantía 3 meses.",
-        "price": 80.00, "stock": 3, "discount": 0.0, "condition": "refurbished",
+        "price": 80.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "ps1",
         "image_url": "https://tresubresdobles.com/wp-content/uploads/2020/08/restaurando-una-playstation-ps1-p9N7AEZnhp8.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://st3.depositphotos.com/6429798/37232/i/450/depositphotos_372324254-stock-photo-london-england-07052018-an-original.jpg"
+        ]
     },
     {
         "name": "PlayStation 2 Slim Negra",
@@ -758,10 +952,16 @@ PRODUCTS_DATA = [
         "description_en": "Black PS2 Slim with two DualShock 2 controllers.",
         "description_ca": "PS2 Slim en negre amb dos comandaments DualShock 2.",
         "description_gl": "PS2 Slim en negro con dous mandos DualShock 2.",
-        "price": 85.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "ps2",
         "image_url": "https://d2e6ccujb3mkqf.cloudfront.net/2eb54452-73ab-4cc2-83ce-dece99b9a1f9-1_959ca981-d879-41b7-807e-204efb73d96d.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "http://guatechivas.com/wp-content/uploads/2022/08/Playstation-2-slim-completo.jpg"
+        ]
     },
     {
         "name": "PSP 3000 Blanca",
@@ -772,10 +972,16 @@ PRODUCTS_DATA = [
         "description_en": "White PSP 3000 with case and charger.",
         "description_ca": "PSP 3000 en blanc amb funda i carregador.",
         "description_gl": "PSP 3000 en branco con funda e cargador.",
-        "price": 80.00, "stock": 5, "discount": 5.0, "condition": "used",
+        "price": 80.0,
+        "stock": 5,
+        "discount": 5.0,
+        "condition": "used",
         "item_slug": "psp",
         "image_url": "https://www.todoconsolas.com/186979-medium_default/psp_3000_blanca_po152723.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://cdn-products.eneba.com/resized-products/dBQG1LR9GHzqAKw1t0JEbJGwGb2I2x0JckNnCtg-QO4_350x200_1x-0"
+        ]
     },
     {
         "name": "PSP sin Pantalla (Piezas)",
@@ -786,10 +992,14 @@ PRODUCTS_DATA = [
         "description_en": "PSP 2000 with broken screen, rest works. For parts.",
         "description_ca": "PSP 2000 amb pantalla trencada, la resta funciona.",
         "description_gl": "PSP 2000 con pantalla rota, o resto funciona.",
-        "price": 15.00, "stock": 2, "discount": 0.0, "condition": "broken",
+        "price": 15.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "broken",
         "item_slug": "psp",
-        "image_url": "https://m.media-amazon.com/images/I/51CbBOgUaGL.jpg",
+        "image_url": "https://i.redd.it/vy6piul55kta1.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Xbox Clásica Negra",
@@ -800,10 +1010,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Xbox with Duke controller and cables.",
         "description_ca": "Xbox original amb comandament Duke i cables.",
         "description_gl": "Xbox orixinal con mando Duke e cables.",
-        "price": 70.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 70.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "xbox",
         "image_url": "https://i.blogs.es/f65b01/xbox-original/650_1200.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Mando DualShock 2 Azul",
@@ -814,13 +1028,15 @@ PRODUCTS_DATA = [
         "description_en": "Blue DualShock 2 controller for PS2.",
         "description_ca": "Comandament DualShock 2 en color blau per a PS2.",
         "description_gl": "Mando DualShock 2 en cor azul para PS2.",
-        "price": 18.00, "stock": 8, "discount": 0.0, "condition": "used",
+        "price": 18.0,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-playstation-xbox",
         "image_url": "https://cdn-products.eneba.com/resized-products/fd16264003f711ed96e2c68b8d5107b0_350x200_1x-0",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
-
-    # ── CONSOLAS › Otras Consolas ──────────────────────────────────────────────
     {
         "name": "Atari 2600",
         "name_en": "Atari 2600",
@@ -830,10 +1046,14 @@ PRODUCTS_DATA = [
         "description_en": "Atari 2600 with original joystick and 5 cartridges.",
         "description_ca": "Atari 2600 amb joystick original i 5 cartutxos.",
         "description_gl": "Atari 2600 con joystick orixinal e 5 cartuchos.",
-        "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "atari",
         "image_url": "https://sm.ign.com/ign_latam/gallery/a/atari-2600/atari-2600-images_pyet.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Neo Geo Pocket Color",
@@ -844,10 +1064,17 @@ PRODUCTS_DATA = [
         "description_en": "Neo Geo Pocket Color in excellent condition with 3 games.",
         "description_ca": "Neo Geo Pocket Color en estat excel·lent amb 3 jocs.",
         "description_gl": "Neo Geo Pocket Color en estado excelente con 3 xogos.",
-        "price": 150.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 150.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "neo-geo",
         "image_url": "https://i.ebayimg.com/images/g/YWYAAOSwQrBj-Uvw/s-l1600.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://i.ebayimg.com/images/g/upAAAOSwmhhhGmzc/s-l1600.jpg",
+        "https://www.museodelvideojuego.com/files/imgs/consolas/Neo-Geo-Pocket-Color-Clear.jpg"
+        ]
     },
     {
         "name": "NEC PC Engine",
@@ -858,10 +1085,14 @@ PRODUCTS_DATA = [
         "description_en": "PC Engine with PC Denjin Hu-Card.",
         "description_ca": "PC Engine amb Hu-Card de PC Denjin.",
         "description_gl": "PC Engine con Hu-Card de PC Denjin.",
-        "price": 130.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 130.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "pc-engine",
         "image_url": "https://i0.wp.com/retromaquinitas.com/wp-content/uploads/2023/05/P7270042.jpg?resize=1160%2C653&ssl=1",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Commodore 64 con Datasette",
@@ -872,10 +1103,14 @@ PRODUCTS_DATA = [
         "description_en": "C64 with datasette and joystick, works perfectly.",
         "description_ca": "C64 amb datasette i joystick, funciona perfectament.",
         "description_gl": "C64 con datasette e joystick, funciona perfectamente.",
-        "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "commodore-64",
         "image_url": "http://vintagecomputer.com/wp-content/uploads/2012/01/commodore-datasette.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Amstrad CPC 464",
@@ -886,10 +1121,17 @@ PRODUCTS_DATA = [
         "description_en": "Amstrad CPC 464 with color monitor and built-in datasette.",
         "description_ca": "Amstrad CPC 464 amb monitor color i datasette integrat.",
         "description_gl": "Amstrad CPC 464 con monitor cor e datasette integrado.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "amstrad",
         "image_url": "https://i0.wp.com/auamstrad.es/wp-content/uploads/2018/12/464.png",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "http://inthenite.com/wp-content/uploads/2020/05/Amstrad_CPC464_keyboard-scaled.jpg",
+        "https://files.soniccdn.com/images/products/640/910/amstrad-cpc-464-76910.jpg"
+        ]
     },
     {
         "name": "Magnavox Odyssey",
@@ -900,13 +1142,15 @@ PRODUCTS_DATA = [
         "description_en": "The first home console in history.",
         "description_ca": "La primera consola domèstica de la història.",
         "description_gl": "A primeira consola doméstica da historia.",
-        "price": 200.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 200.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-otras-consolas",
         "image_url": "https://i.3dmodels.org/uploads/preorder/magnavox_odyssey_1972_/magnavox_odyssey_1972__1000_0001.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-
-    # ── VIDEOJUEGOS › Cartucho ─────────────────────────────────────────────────
     {
         "name": "Super Mario Bros 3 NES",
         "name_en": "Super Mario Bros 3 NES",
@@ -916,10 +1160,16 @@ PRODUCTS_DATA = [
         "description_en": "Original Super Mario Bros 3 NES cartridge.",
         "description_ca": "Cartutx original Super Mario Bros 3 per a NES.",
         "description_gl": "Cartucho orixinal Super Mario Bros 3 para NES.",
-        "price": 45.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-nes",
         "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://cdn.gameplanet.com/wp-content/uploads/2022/08/31184521/super-mario-bros-3-510x630.jpg"
+        ]
     },
     {
         "name": "Mega Man 2 NES",
@@ -930,10 +1180,16 @@ PRODUCTS_DATA = [
         "description_en": "Mega Man 2 PAL cartridge for NES, very good condition.",
         "description_ca": "Mega Man 2 cartutx PAL per a NES, molt bon estat.",
         "description_gl": "Mega Man 2 cartucho PAL para NES, moi bo estado.",
-        "price": 38.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 38.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-nes",
         "image_url": "https://www.elconsolas.cl/wp-content/uploads/2021/01/mega-man-2-02.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://www.elconsolas.cl/wp-content/uploads/2021/01/mega-man-2-cabecera.jpg"
+        ]
     },
     {
         "name": "Zelda A Link to the Past SNES",
@@ -944,10 +1200,14 @@ PRODUCTS_DATA = [
         "description_en": "The Legend of Zelda A Link to the Past PAL cartridge.",
         "description_ca": "The Legend of Zelda A Link to the Past cartutx PAL.",
         "description_gl": "The Legend of Zelda A Link to the Past cartucho PAL.",
-        "price": 55.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-snes",
         "image_url": "https://cdn11.bigcommerce.com/s-ymgqt/images/stencil/1000w/products/26452/33322/Legend-of-Zelda-A-Link-To-t__89317.1712937460.jpg?c=2",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Donkey Kong Country SNES",
@@ -958,10 +1218,14 @@ PRODUCTS_DATA = [
         "description_en": "Donkey Kong Country PAL SNES cartridge, very good condition.",
         "description_ca": "Donkey Kong Country cartutx PAL SNES, estat molt bo.",
         "description_gl": "Donkey Kong Country cartucho PAL SNES, estado moi bo.",
-        "price": 35.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-snes",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_606378-MLU78257877346_082024-O.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "GoldenEye 007 N64",
@@ -972,10 +1236,17 @@ PRODUCTS_DATA = [
         "description_en": "GoldenEye 007 original cartridge for Nintendo 64.",
         "description_ca": "GoldenEye 007 cartutx original per a Nintendo 64.",
         "description_gl": "GoldenEye 007 cartucho orixinal para Nintendo 64.",
-        "price": 50.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 50.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-nintendo-64",
-        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPo0fYRIsSTEYir_VND0m40qs6Oc2kdggSDg&s",
+        "image_url": "https://www.museumgames.com.ar/wp-content/uploads/2024/06/Goldeneye-007-00-1024x707.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://i.blogs.es/f0c126/goldeneye-007/1366_2000.jpg",
+        "https://m.media-amazon.com/images/I/91zVvxBV8QL._SL1500_.jpg"
+        ]
     },
     {
         "name": "Super Mario 64",
@@ -986,10 +1257,18 @@ PRODUCTS_DATA = [
         "description_en": "Super Mario 64 original PAL N64 cartridge.",
         "description_ca": "Super Mario 64 cartutx original PAL N64.",
         "description_gl": "Super Mario 64 cartucho orixinal PAL N64.",
-        "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-nintendo-64",
-        "image_url": "https://static.wikia.nocookie.net/mario64hacks/images/9/9a/SMB3D.png/revision/latest?cb=20180429184218",
+        "image_url": "https://games4players.net/wp-content/uploads/2023/02/SUPER-MARIO-64-PACK-VERSION-JAPONES.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://nolotire.com/wp-content/uploads/2024/03/WhatsApp-Image-2024-03-01-at-19.21.01-1.jpeg",
+        "https://nolotire.com/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-30-at-16.35.44.jpeg",
+        "https://nolotire.com/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-30-at-16.35.45.jpeg"
+        ]
     },
     {
         "name": "Sonic the Hedgehog Mega Drive",
@@ -1000,10 +1279,14 @@ PRODUCTS_DATA = [
         "description_en": "Sonic 1 original cartridge for Mega Drive, complete with box.",
         "description_ca": "Sonic 1 cartutx original per a Mega Drive, complet amb caixa.",
         "description_gl": "Sonic 1 cartucho orixinal para Mega Drive, completo con caixa.",
-        "price": 40.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 40.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-mega-drive",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROg9k-9v7OYh9H9bwlun7oh7n9pyqI_bcq9Q&s",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Streets of Rage 2 Mega Drive",
@@ -1014,10 +1297,14 @@ PRODUCTS_DATA = [
         "description_en": "Streets of Rage 2 Mega Drive PAL cartridge, good condition.",
         "description_ca": "Streets of Rage 2 cartutx Mega Drive PAL, bon estat.",
         "description_gl": "Streets of Rage 2 cartucho Mega Drive PAL, bo estado.",
-        "price": 35.00, "stock": 3, "discount": 15.0, "condition": "used",
+        "price": 35.0,
+        "stock": 3,
+        "discount": 15.0,
+        "condition": "used",
         "item_slug": "juegos-mega-drive",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_822592-MLB44888916938_022021-O.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Pokémon Edición Roja",
@@ -1028,10 +1315,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Pokémon Red cartridge for Game Boy.",
         "description_ca": "Cartutx original de Pokémon Vermell per a Game Boy.",
         "description_gl": "Cartucho orixinal de Pokémon Vermello para Game Boy.",
-        "price": 35.00, "stock": 7, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 7,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-game-boy",
         "image_url": "https://media2.gameplaystores.es/77648-large_default/pokemon-rojo-cartucho-gb.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Pokémon Edición Azul",
@@ -1042,10 +1333,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Pokémon Blue Game Boy cartridge, working battery.",
         "description_ca": "Cartutx original Pokémon Blau Game Boy, bateria funcional.",
         "description_gl": "Cartucho orixinal Pokémon Azul Game Boy, batería funcional.",
-        "price": 33.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 33.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-game-boy",
         "image_url": "https://media2.gameplaystores.es/77646-large_default/pokemon-azul-cartucho-gb.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Tetris Game Boy",
@@ -1056,10 +1351,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Tetris for Game Boy.",
         "description_ca": "Tetris original per a Game Boy, el clàssic dels clàssics.",
         "description_gl": "Tetris orixinal para Game Boy, o clásico dos clásicos.",
-        "price": 15.00, "stock": 10, "discount": 0.0, "condition": "used",
+        "price": 15.0,
+        "stock": 10,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-game-boy",
         "image_url": "https://sm.ign.com/t/ign_es/cover/t/tetris-gam/tetris-game-boy_9x5h.300.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Lote 20 Cartuchos Variados",
@@ -1070,13 +1369,18 @@ PRODUCTS_DATA = [
         "description_en": "Lot of 20 cartridges for various consoles.",
         "description_ca": "Lot de 20 cartutxos per a diferents consoles.",
         "description_gl": "Lote de 20 cartuchos para diferentes consolas.",
-        "price": 60.00, "stock": 2, "discount": 20.0, "condition": "used",
+        "price": 60.0,
+        "stock": 2,
+        "discount": 20.0,
+        "condition": "used",
         "item_slug": "otros-cartucho",
-        "image_url": "https://www.todoconsolas.com/308618-medium_default/super_mario_bros_3_nes_sp_po8443.jpg",
+        "image_url": "https://http2.mlstatic.com/D_NQ_NP_906484-MLA77525823682_072024-O.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://i.ytimg.com/vi/8L3FtPCIQeI/0.jpg",
+        "https://http2.mlstatic.com/D_NQ_NP_716576-MLA83111659957_032025-O.webp"
+        ]
     },
-
-    # ── VIDEOJUEGOS › CD/DVD ───────────────────────────────────────────────────
     {
         "name": "Final Fantasy VII PS1",
         "name_en": "Final Fantasy VII PS1",
@@ -1086,10 +1390,16 @@ PRODUCTS_DATA = [
         "description_en": "Final Fantasy VII PAL complete with box and manual.",
         "description_ca": "Final Fantasy VII PAL complet amb caixa i manual.",
         "description_gl": "Final Fantasy VII PAL completo con caixa e manual.",
-        "price": 75.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 75.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-ps1",
-        "image_url": "https://i.etsystatic.com/20685833/r/il/d09585/5220865797/il_fullxfull.5220865797_qg92.jpg",
+        "image_url": "https://www.mundogamers.com/cdn/covers/big/ps1/final-fantasy-vii.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://http2.mlstatic.com/D_NQ_NP_757923-MLA44507485789_012021-O.webp"
+        ]
     },
     {
         "name": "Metal Gear Solid PS1",
@@ -1100,10 +1410,14 @@ PRODUCTS_DATA = [
         "description_en": "Metal Gear Solid PAL PS1, complete with box.",
         "description_ca": "Metal Gear Solid PAL PS1, complet amb caixa.",
         "description_gl": "Metal Gear Solid PAL PS1, completo con caixa.",
-        "price": 45.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-ps1",
         "image_url": "https://oldgame.com.br/wp-content/uploads/2022/10/metal-gear-solid-ps1-3.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "GTA San Andreas PS2",
@@ -1114,10 +1428,14 @@ PRODUCTS_DATA = [
         "description_en": "Grand Theft Auto San Andreas for PS2, complete.",
         "description_ca": "Grand Theft Auto San Andreas per a PS2, complet.",
         "description_gl": "Grand Theft Auto San Andreas para PS2, completo.",
-        "price": 25.00, "stock": 8, "discount": 0.0, "condition": "used",
+        "price": 25.0,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-ps2",
         "image_url": "https://media.game.es/COVERV2/3D_L/049/049906.png",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Shadow of the Colossus PS2",
@@ -1128,10 +1446,14 @@ PRODUCTS_DATA = [
         "description_en": "Shadow of the Colossus PS2 PAL complete.",
         "description_ca": "Shadow of the Colossus PS2 PAL complet.",
         "description_gl": "Shadow of the Colossus PS2 PAL completo.",
-        "price": 35.00, "stock": 3, "discount": 10.0, "condition": "used",
+        "price": 35.0,
+        "stock": 3,
+        "discount": 10.0,
+        "condition": "used",
         "item_slug": "juegos-ps2",
         "image_url": "https://media.vandal.net/m/1903/20051224193432_1.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Shenmue Dreamcast",
@@ -1142,10 +1464,14 @@ PRODUCTS_DATA = [
         "description_en": "Shenmue for Dreamcast, complete PAL edition with box.",
         "description_ca": "Shenmue per a Dreamcast, edició PAL completa amb caixa.",
         "description_gl": "Shenmue para Dreamcast, edición PAL completa con caixa.",
-        "price": 60.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 60.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-dreamcast",
         "image_url": "https://media.vandal.net/m/31/shenmue-201961215304614_1.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Soul Calibur Dreamcast",
@@ -1156,10 +1482,14 @@ PRODUCTS_DATA = [
         "description_en": "Soul Calibur for Dreamcast, impeccable condition.",
         "description_ca": "Soul Calibur per a Dreamcast, estat impecable.",
         "description_gl": "Soul Calibur para Dreamcast, estado impecable.",
-        "price": 30.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 30.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-dreamcast",
         "image_url": "https://elrincondelretro.com/storage/images/image?remote=https:%2F%2Felrincondelretro.com%2FWebRoot%2FStore19%2FShops%2Fad583ff4-95d5-4b1d-b578-9925a0fc4b7c%2F6703%2FC66F%2F07AD%2FB8D4%2F4F93%2F0A48%2F356D%2F8F33%2FIMG-0722.JPG&shop=ad583ff4-95d5-4b1d-b578-9925a0fc4b7c",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Panzer Dragoon Saga Saturn",
@@ -1170,24 +1500,35 @@ PRODUCTS_DATA = [
         "description_en": "Panzer Dragoon Saga for Sega Saturn, rare PAL gem.",
         "description_ca": "Panzer Dragoon Saga per a Sega Saturn, joia rara PAL.",
         "description_gl": "Panzer Dragoon Saga para Sega Saturn, xoia rara PAL.",
-        "price": 200.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 200.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-saturn",
         "image_url": "https://www.museodelvideojuego.com/files/caratulas/sega-saturn/pal/panzer_dragoon_saga_disco_4.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
-        "name": "Half-Life PC CD-ROM",
-        "name_en": "Half-Life PC CD-ROM",
-        "name_ca": "Half-Life PC CD-ROM",
-        "name_gl": "Half-Life PC CD-ROM",
+        "name": "Half-Life PC CD-ROm",
+        "name_en": "Half-Life PC CD-ROm",
+        "name_ca": "Half-Life PC CD-ROm",
+        "name_gl": "Half-Life PC CD-ROm",
         "description": "Half-Life para PC en caja original con manual.",
         "description_en": "Half-Life for PC in original box with manual.",
         "description_ca": "Half-Life per a PC en caixa original amb manual.",
         "description_gl": "Half-Life para PC en caixa orixinal con manual.",
-        "price": 20.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 20.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-pc",
         "image_url": "https://m.media-amazon.com/images/I/91U8dILGZ5L.__AC_SX300_SY300_QL70_ML2_.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://4.bp.blogspot.com/-LWw3DE4hZhE/XhthFmZ0UoI/AAAAAAAAgC4/n86V3YeaG8EYyl3vEk3ZOVXFBewbHYJ6QCLcBGAsYHQ/s1600/half-life-pc-caja-1.jpg",
+        "https://1.bp.blogspot.com/-55z2ajao26Y/XhthFXPP8fI/AAAAAAAAgCw/wxDmg9uOttgODWW5PiKtwiJXf-V5jY_QACLcBGAsYHQ/s1600/half-life-pc-cd.jpg"
+        ]
     },
     {
         "name": "Diablo II PC",
@@ -1198,10 +1539,14 @@ PRODUCTS_DATA = [
         "description_en": "Diablo II PC complete with Lord of Destruction.",
         "description_ca": "Diablo II PC complet amb Lord of Destruction.",
         "description_gl": "Diablo II PC completo con Lord of Destruction.",
-        "price": 25.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 25.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juegos-pc",
         "image_url": "https://retrogamevalencia.com/21169-large_default/diablo-ii-pc.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Lote 10 Juegos PS1 Variados",
@@ -1212,13 +1557,15 @@ PRODUCTS_DATA = [
         "description_en": "Lot of 10 PS1 games in good condition.",
         "description_ca": "Lot de 10 jocs de PS1 en bon estat.",
         "description_gl": "Lote de 10 xogos de PS1 en bo estado.",
-        "price": 40.00, "stock": 3, "discount": 15.0, "condition": "used",
+        "price": 40.0,
+        "stock": 3,
+        "discount": 15.0,
+        "condition": "used",
         "item_slug": "otros-cd-dvd",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_725923-MLM75954992293_042024-O.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
-    
-    # ── VIDEOJUEGOS › Ediciones Especiales ───────────────────────────────────
     {
         "name": "Zelda Ocarina of Time Collector's",
         "name_en": "Zelda Ocarina of Time Collector's",
@@ -1228,10 +1575,14 @@ PRODUCTS_DATA = [
         "description_en": "Zelda OoT Collector's Edition N64 sealed.",
         "description_ca": "Zelda OoT Collector's Edition N64 precintada.",
         "description_gl": "Zelda OoT Collector's Edition N64 precintada.",
-        "price": 300.00, "stock": 1, "discount": 0.0, "condition": "new",
+        "price": 300.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "collectors-edition",
         "image_url": "https://m.media-amazon.com/images/I/81I3FYpVKYL._SL1500_.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Metal Gear Solid 3 Steelbook",
@@ -1242,10 +1593,14 @@ PRODUCTS_DATA = [
         "description_en": "MGS3 Snake Eater Steelbook PS2, European edition.",
         "description_ca": "MGS3 Snake Eater Steelbook PS2, edició europea.",
         "description_gl": "MGS3 Snake Eater Steelbook PS2, edición europea.",
-        "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "steelbook",
         "image_url": "https://storage.googleapis.com/retrobroker/products/rtr_img_6221_170629354758527/thumbnail.webp",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Final Fantasy X Precintado PAL",
@@ -1256,10 +1611,14 @@ PRODUCTS_DATA = [
         "description_en": "Final Fantasy X PAL completely sealed.",
         "description_ca": "Final Fantasy X PAL completament precintado.",
         "description_gl": "Final Fantasy X PAL completamente precintado.",
-        "price": 120.00, "stock": 1, "discount": 0.0, "condition": "new",
+        "price": 120.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "precintados",
         "image_url": "https://www.saldojuegos.com/3711-large_default/final-fantasy-x-ps2-nuevo-precintado.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Dragon Ball Z Super Butōden Import SNES",
@@ -1270,10 +1629,14 @@ PRODUCTS_DATA = [
         "description_en": "Dragon Ball Z Super Butōden Japanese import for SNES.",
         "description_ca": "Dragon Ball Z Super Butōden import japonès per a SNES.",
         "description_gl": "Dragon Ball Z Super Butōden import xaponés para SNES.",
-        "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "japoneses-import",
         "image_url": "https://www.elconsolas.cl/wp-content/uploads/2020/12/dragon.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Press Kit Resident Evil 2",
@@ -1284,13 +1647,15 @@ PRODUCTS_DATA = [
         "description_en": "Original Resident Evil 2 press kit, extremely rare.",
         "description_ca": "Press kit original de Resident Evil 2, raríssim.",
         "description_gl": "Press kit orixinal de Resident Evil 2, rarísimo.",
-        "price": 250.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 250.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-ediciones-especiales",
         "image_url": "https://www.ecured.cu/images/0/04/Re2_portada.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-    
-    # ── MÚSICA › Medios Físicos ───────────────────────────────────────────────
     {
         "name": "Vinilo Led Zeppelin IV",
         "name_en": "Led Zeppelin IV Vinyl",
@@ -1300,10 +1665,17 @@ PRODUCTS_DATA = [
         "description_en": "Led Zeppelin IV original 1971 edition.",
         "description_ca": "Led Zeppelin IV edició original.",
         "description_gl": "Led Zeppelin IV edición orixinal.",
-        "price": 45.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2019/10/Led-Zeppelin-1200x1200.png",
         "seller_email": "maria@test.com",
+        "other_image_url": [
+        "https://http2.mlstatic.com/D_NQ_NP_957546-MLC69943739397_062023-O.webp",
+        "https://www.baba.es/43517-large_default/led-zeppelin-led-zeppelin-iv-lp-vinilo-clear.jpg"
+        ]
     },
     {
         "name": "Vinilo Pink Floyd The Wall",
@@ -1314,10 +1686,14 @@ PRODUCTS_DATA = [
         "description_en": "The Wall double vinyl original 1979 edition.",
         "description_ca": "The Wall doble vinil edició original 1979.",
         "description_gl": "The Wall dobre vinilo edición orixinal 1979.",
-        "price": 60.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 60.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://signosdisqueria.cl/cdn/shop/files/pink-floyd-the-wall-vinilo-2.jpg?v=1702653827&width=1000",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vinilo Nirvana Nevermind",
@@ -1328,10 +1704,17 @@ PRODUCTS_DATA = [
         "description_en": "Nevermind original 1991 edition in perfect condition.",
         "description_ca": "Nevermind edició original 1991 en perfecte estat.",
         "description_gl": "Nevermind edición orixinal 1991 en perfecto estado.",
-        "price": 50.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 50.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "discos-de-vinilo",
-        "image_url": "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501",
+        "image_url": "https://www.repdiscosperu.com/cdn/shop/files/56.png?v=1721687085&width=1080",
         "seller_email": "maria@test.com",
+        "other_image_url": [
+        "https://dojiw2m9tvv09.cloudfront.net/41657/product/8488800551.jpg?38",
+        "https://universalmusiconline.es/cdn/shop/files/nirvana.jpg?v=1685519501"
+        ]
     },
     {
         "name": "Vinilo Michael Jackson Thriller",
@@ -1342,10 +1725,17 @@ PRODUCTS_DATA = [
         "description_en": "Thriller original 1982 edition, includes insert.",
         "description_ca": "Thriller edició original 1982, inclou encart.",
         "description_gl": "Thriller edición orixinal 1982, inclúe encarte.",
-        "price": 70.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 70.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "discos-de-vinilo",
         "image_url": "https://undergroundrecordshop.es/wp-content/uploads/2024/12/Michael-Jackson-e1734520718418.png",
         "seller_email": "maria@test.com",
+        "other_image_url": [
+        "https://www.multiocio.com/20540-large_default/michael-jackson-thriller-vinilo-.jpg",
+        "https://signosdisqueria.cl/cdn/shop/files/michael-jackson-thriller-vinilo.jpg?v=1694101383&width=1024"
+        ]
     },
     {
         "name": "CD Radiohead OK Computer",
@@ -1356,10 +1746,14 @@ PRODUCTS_DATA = [
         "description_en": "OK Computer Radiohead CD original 1997 edition.",
         "description_ca": "CD OK Computer Radiohead edició original 1997.",
         "description_gl": "CD OK Computer Radiohead edición orixinal 1997.",
-        "price": 12.00, "stock": 8, "discount": 0.0, "condition": "used",
+        "price": 12.0,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "cds",
         "image_url": "https://dojiw2m9tvv09.cloudfront.net/51271/product/img-22535344.jpeg?47&time=1676056059",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "CD Daft Punk Random Access Memories",
@@ -1370,10 +1764,14 @@ PRODUCTS_DATA = [
         "description_en": "Random Access Memories CD special edition with booklet.",
         "description_ca": "Random Access Memories CD edició especial amb llibret.",
         "description_gl": "Random Access Memories CD edición especial con libreto.",
-        "price": 15.00, "stock": 5, "discount": 20.0, "condition": "new",
+        "price": 15.0,
+        "stock": 5,
+        "discount": 20.0,
+        "condition": "new",
         "item_slug": "cds",
         "image_url": "https://dovinilos.cl/wp-content/uploads/2023/01/Daft-Punk-–-Random-Access-Memories.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Casete Depeche Mode Violator",
@@ -1384,10 +1782,14 @@ PRODUCTS_DATA = [
         "description_en": "Depeche Mode Violator cassette in good condition.",
         "description_ca": "Casset Violator de Depeche Mode en bon estat.",
         "description_gl": "Casete Violator de Depeche Mode en bo estado.",
-        "price": 12.00, "stock": 10, "discount": 20.0, "condition": "used",
+        "price": 12.0,
+        "stock": 10,
+        "discount": 20.0,
+        "condition": "used",
         "item_slug": "casetes",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHVBpFFP68FQd9Gh1OWGXo4awKfdLAho6Qvg&s",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Casete Metallica Black Album",
@@ -1398,10 +1800,14 @@ PRODUCTS_DATA = [
         "description_en": "Metallica The Black Album original 1991 cassette.",
         "description_ca": "Metallica The Black Album casset original 1991.",
         "description_gl": "Metallica The Black Album casete orixinal 1991.",
-        "price": 10.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 10.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "casetes",
         "image_url": "https://i.ebayimg.com/images/g/zK8AAOSwnh1i5Ykf/s-l1200.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Casete Madonna Like a Virgin",
@@ -1412,10 +1818,14 @@ PRODUCTS_DATA = [
         "description_en": "Madonna Like a Virgin original 1984 cassette.",
         "description_ca": "Madonna Like a Virgin casset original 1984.",
         "description_gl": "Madonna Like a Virgin casete orixinal 1984.",
-        "price": 8.00, "stock": 8, "discount": 0.0, "condition": "used",
+        "price": 8.0,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "casetes",
         "image_url": "https://i.etsystatic.com/20964828/r/il/203b03/7004577808/il_570xN.7004577808_o5pm.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Mini Disc Sony MZ-R70",
@@ -1426,13 +1836,15 @@ PRODUCTS_DATA = [
         "description_en": "Sony MZ-R70 MiniDisc recorder with original box and earphones.",
         "description_ca": "Gravador Sony MZ-R70 amb caixa i auriculars originals.",
         "description_gl": "Gravador Sony MZ-R70 con caixa e auriculares orixinais.",
-        "price": 55.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-vinilos",
         "image_url": "https://m.media-amazon.com/images/I/91ayTKQJS0L._AC_SL1500_.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
-
-    # ── MÚSICA › Épocas ───────────────────────────────────────────────────────
     {
         "name": "Vinilo The Beatles Abbey Road",
         "name_en": "The Beatles Abbey Road Vinyl",
@@ -1442,10 +1854,14 @@ PRODUCTS_DATA = [
         "description_en": "Abbey Road original 1969 vinyl, good general condition.",
         "description_ca": "Abbey Road vinil original 1969, bon estat general.",
         "description_gl": "Abbey Road vinilo orixinal 1969, bo estado xeral.",
-        "price": 80.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 80.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-60",
         "image_url": "https://dondisco.net/22310-thickbox_default/beatles-vinilo-abbey-road-50-aniv.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vinilo The Rolling Stones Exile",
@@ -1456,10 +1872,14 @@ PRODUCTS_DATA = [
         "description_en": "Exile on Main St. original double vinyl 1972.",
         "description_ca": "Exile on Main St. doble vinil original 1972.",
         "description_gl": "Exile on Main St. dobre vinilo orixinal 1972.",
-        "price": 65.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 65.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-60",
         "image_url": "https://images-na.ssl-images-amazon.com/images/I/913zQMka2zL._SL1500_.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vinilo David Bowie Ziggy Stardust",
@@ -1470,10 +1890,14 @@ PRODUCTS_DATA = [
         "description_en": "Ziggy Stardust original 1972 vinyl, good condition.",
         "description_ca": "Ziggy Stardust vinil original 1972, bon estat.",
         "description_gl": "Ziggy Stardust vinilo orixinal 1972, bo estado.",
-        "price": 55.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-70",
         "image_url": "https://static.fnac-static.com/multimedia/Images/ES/NR/59/39/74/7616857/1540-1.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vinilo Madonna Like a Virgin",
@@ -1484,10 +1908,14 @@ PRODUCTS_DATA = [
         "description_en": "Like a Virgin original 1984 vinyl.",
         "description_ca": "Like a Virgin vinil original 1984.",
         "description_gl": "Like a Virgin vinilo orixinal 1984.",
-        "price": 30.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 30.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-80",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_835198-MLC70019230713_062023-O.webp",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vinilo Michael Jackson Bad",
@@ -1498,10 +1926,14 @@ PRODUCTS_DATA = [
         "description_en": "Michael Jackson Bad original 1987 edition.",
         "description_ca": "Bad de Michael Jackson edició original 1987.",
         "description_gl": "Bad de Michael Jackson edición orixinal 1987.",
-        "price": 40.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 40.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-80",
         "image_url": "https://static.wixstatic.com/media/54fc53_2cd0abf5f1654f9098152f9b203b150d~mv2_d_1200_1200_s_2.jpg/v1/fill/w_980,h_980,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/54fc53_2cd0abf5f1654f9098152f9b203b150d~mv2_d_1200_1200_s_2.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "CD Nirvana Nevermind 1991",
@@ -1512,10 +1944,14 @@ PRODUCTS_DATA = [
         "description_en": "Nevermind original 1991 CD edition.",
         "description_ca": "Nevermind CD edició original 1991.",
         "description_gl": "Nevermind CD edición orixinal 1991.",
-        "price": 18.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 18.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-90",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_934502-MLM43192280186_082020-O.webp",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "CD Oasis (What's the Story) Morning Glory?",
@@ -1526,10 +1962,14 @@ PRODUCTS_DATA = [
         "description_en": "What's the Story Morning Glory? original 1995 CD.",
         "description_ca": "What's the Story Morning Glory? CD original 1995.",
         "description_gl": "What's the Story Morning Glory? CD orixinal 1995.",
-        "price": 14.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 14.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "los-90",
         "image_url": "https://dojiw2m9tvv09.cloudfront.net/51271/product/default1186.jpeg?46&time=1700694983",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vinilo Jazz Blue Note Años 50",
@@ -1540,13 +1980,15 @@ PRODUCTS_DATA = [
         "description_en": "Blue Note jazz vinyl selection from the 50s.",
         "description_ca": "Selecció de vinils jazz de Blue Note anys 50.",
         "description_gl": "Selección de vinilos jazz de Blue Note anos 50.",
-        "price": 90.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 90.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-epocas",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_684075-MLU72345704004_102023-O.webp",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
-
-    # ── MÚSICA › Reproductores ────────────────────────────────────────────────
     {
         "name": "Walkman Sony WM-F10",
         "name_en": "Sony WM-F10 Walkman",
@@ -1556,10 +1998,14 @@ PRODUCTS_DATA = [
         "description_en": "Sony Walkman with FM radio in good working condition.",
         "description_ca": "Walkman Sony amb ràdio FM en bon estat.",
         "description_gl": "Walkman Sony con radio FM en bo estado.",
-        "price": 40.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 40.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "walkman",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1_UePqDF2twZgFm7ZVbr8sHs39o4Jjx22Ag&s",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Walkman Sony WM-EX1 Reacondicionado",
@@ -1570,10 +2016,14 @@ PRODUCTS_DATA = [
         "description_en": "Serviced Sony WM-EX1 Walkman, works perfectly.",
         "description_ca": "Walkman Sony WM-EX1 revisat, funciona perfectament.",
         "description_gl": "Walkman Sony WM-EX1 revisado, funciona perfectamente.",
-        "price": 55.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
+        "price": 55.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "walkman",
         "image_url": "https://www.picclickimg.com/aywAAOSwXIVmI9YE/Sony-walkman-WM-EX1-casette-player.webp",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Discman Sony D-EJ955",
@@ -1584,10 +2034,14 @@ PRODUCTS_DATA = [
         "description_en": "Sony Discman with G-Protection, includes headphones.",
         "description_ca": "Discman Sony amb G-Protection, inclou auriculars.",
         "description_gl": "Discman Sony con G-Protection, inclúe auriculares.",
-        "price": 45.00, "stock": 4, "discount": 5.0, "condition": "used",
+        "price": 45.0,
+        "stock": 4,
+        "discount": 5.0,
+        "condition": "used",
         "item_slug": "discman",
         "image_url": "https://static-data2.manualslib.com/product-images/299/214754/sony-cd-walkman-d-ej1000-cd-player.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Radiocassette JVC PC-W330",
@@ -1598,10 +2052,14 @@ PRODUCTS_DATA = [
         "description_en": "JVC double-deck radiocassette with equalizer.",
         "description_ca": "Radiocasset JVC doble plat amb equalitzador.",
         "description_gl": "Radiocasete JVC dobre pletina con ecualizador.",
-        "price": 65.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 65.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "radiocassettes",
         "image_url": "https://hifivintage.eu/38222-large_default/jvc-pc-w330-l.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Tocadiscos Technics SL-1200",
@@ -1612,10 +2070,14 @@ PRODUCTS_DATA = [
         "description_en": "Legendary Technics SL-1200 turntable in collector condition.",
         "description_ca": "Mític Technics SL-1200 en estat de col·leccionista.",
         "description_gl": "Mítico Technics SL-1200 en estado de coleccionista.",
-        "price": 350.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 350.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "tocadiscos",
         "image_url": "https://i.blogs.es/2c45fe/direct_drive_turntable_system_sl_1200gae_3/1366_2000.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Amplificador Marantz PM-80",
@@ -1626,10 +2088,14 @@ PRODUCTS_DATA = [
         "description_en": "Vintage Marantz PM-80 amplifier in perfect condition.",
         "description_ca": "Amplificador Marantz PM-80 vintage en perfecte estat.",
         "description_gl": "Amplificador Marantz PM-80 vintage en perfecto estado.",
-        "price": 180.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 180.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "amplificadores",
         "image_url": "https://assets.catawiki.nl/assets/2020/7/22/d/b/f/dbf16928-5dec-49c8-b3c1-8c348bd9fc25.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Equipo de Música Aiwa CX-NA777",
@@ -1640,13 +2106,15 @@ PRODUCTS_DATA = [
         "description_en": "Aiwa CX-NA777 hi-fi system with 5CD, radio and cassette.",
         "description_ca": "Equip Aiwa CX-NA777 amb 5 CD, ràdio i casset.",
         "description_gl": "Equipo Aiwa CX-NA777 con 5 CD, radio e casete.",
-        "price": 90.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 90.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-reproductores-audio",
         "image_url": "https://i.blogs.es/2c45fe/direct_drive_turntable_system_sl_1200gae_3/1366_2000.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
-
-    # ── MÚSICA › Instrumentos ─────────────────────────────────────────────────
     {
         "name": "Guitarra Fender Stratocaster 80s",
         "name_en": "Fender Stratocaster 80s Guitar",
@@ -1656,10 +2124,14 @@ PRODUCTS_DATA = [
         "description_en": "Fender Stratocaster Made in Japan 80s, incredible sound.",
         "description_ca": "Fender Stratocaster Made in Japan anys 80, so increïble.",
         "description_gl": "Fender Stratocaster Made in Japan anos 80, son incribles.",
-        "price": 650.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 650.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "guitarras",
         "image_url": "https://thunderguitars.com/wp-content/uploads/2025/03/IMG_8483.jpeg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Piano Casio CT-310 Vintage",
@@ -1670,10 +2142,14 @@ PRODUCTS_DATA = [
         "description_en": "80s Casio CT-310 keyboard, works perfectly.",
         "description_ca": "Teclat Casio CT-310 dels 80, funciona perfectament.",
         "description_gl": "Teclado Casio CT-310 dos 80, funciona perfectamente.",
-        "price": 90.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 90.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "pianos",
         "image_url": "https://images.evisos.cl/2011/06/01/oferta-casio-ht-3000-casio-ct-310_d01222ef47_3.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Batería Pearl Export 90s",
@@ -1684,10 +2160,14 @@ PRODUCTS_DATA = [
         "description_en": "Complete Pearl Export 90s drum kit, good condition.",
         "description_ca": "Bateria Pearl Export anys 90 completa, bon estat.",
         "description_gl": "Batería Pearl Export anos 90 completa, bo estado.",
-        "price": 400.00, "stock": 1, "discount": 10.0, "condition": "used",
+        "price": 400.0,
+        "stock": 1,
+        "discount": 10.0,
+        "condition": "used",
         "item_slug": "baterias",
         "image_url": "https://ultramaraudio.com/wp-content/uploads/2023/01/1911291727239209_01_medium.png",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Trompeta Yamaha YTR-2320 Vintage",
@@ -1698,13 +2178,15 @@ PRODUCTS_DATA = [
         "description_en": "Yamaha YTR-2320 trumpet in excellent condition.",
         "description_ca": "Trompeta Yamaha YTR-2320 en excel·lent estat.",
         "description_gl": "Trompeta Yamaha YTR-2320 en excelente estado.",
-        "price": 220.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 220.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-instrumentos",
         "image_url": "https://vientosur.cl/116-large_default/trompeta-yamaha-ytr-2320.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
-
-    # ── TECNOLOGÍA › Ordenadores ──────────────────────────────────────────────
     {
         "name": "IBM PC XT 5160",
         "name_en": "IBM PC XT 5160",
@@ -1714,10 +2196,14 @@ PRODUCTS_DATA = [
         "description_en": "IBM PC XT with monochrome monitor and original keyboard.",
         "description_ca": "IBM PC XT amb monitor monocrom i teclat original.",
         "description_gl": "IBM PC XT con monitor monocromo e teclado orixinal.",
-        "price": 200.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 200.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "ibm",
         "image_url": "https://www.umadivulga.uma.es/wp-content/uploads/2021/09/partes-ibm-xt-5160-image3.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Commodore 64 Completo",
@@ -1728,10 +2214,14 @@ PRODUCTS_DATA = [
         "description_en": "C64 with datasette, joystick and original box.",
         "description_ca": "C64 amb datasette, joystick i caixa original.",
         "description_gl": "C64 con datasette, joystick e caixa orixinal.",
-        "price": 130.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 130.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "commodore",
         "image_url": "https://consolasmini.net/wp-content/uploads/2020/10/IE-008KKEDIT.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Amiga 500",
@@ -1742,10 +2232,14 @@ PRODUCTS_DATA = [
         "description_en": "Commodore Amiga 500 with joystick and games.",
         "description_ca": "Commodore Amiga 500 amb joystick i jocs.",
         "description_gl": "Commodore Amiga 500 con joystick e xogos.",
-        "price": 160.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 160.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "amiga",
         "image_url": "https://museodeinformatica.org.ar/wp-content/uploads/2015/06/amiga500.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Amstrad PC 1512",
@@ -1756,10 +2250,14 @@ PRODUCTS_DATA = [
         "description_en": "Amstrad PC 1512 with color monitor and MS-DOS.",
         "description_ca": "Amstrad PC 1512 amb monitor color i MS-DOS.",
         "description_gl": "Amstrad PC 1512 con monitor cor e MS-DOS.",
-        "price": 110.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 110.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "amstrad-tech",
         "image_url": "https://live.staticflickr.com/65535/53056859679_30c9131c4b_c.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Apple Macintosh 128K",
@@ -1770,10 +2268,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 1984 Macintosh 128K, works and boots.",
         "description_ca": "Macintosh 128K original 1984, funciona i s'encén.",
         "description_gl": "Macintosh 128K orixinal 1984, funciona e acende.",
-        "price": 450.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 450.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "macintosh",
         "image_url": "https://guide-images.cdn.ifixit.com/igi/GtJsssF5C32GYZU5.large",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Spectrum ZX 48K",
@@ -1784,13 +2286,15 @@ PRODUCTS_DATA = [
         "description_en": "Sinclair ZX Spectrum 48K with power supply and joystick.",
         "description_ca": "Sinclair ZX Spectrum 48K amb carregador i joystick.",
         "description_gl": "Sinclair ZX Spectrum 48K con cargador e joystick.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-ordenadores",
         "image_url": "https://media3.gameplaystores.es/71658-thickbox_default/ordenador-zx-spectrum-48k.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-
-    # ── TECNOLOGÍA › Telefonía ────────────────────────────────────────────────
     {
         "name": "Teléfono Ericofon",
         "name_en": "Ericofon Fixed Phone",
@@ -1800,10 +2304,14 @@ PRODUCTS_DATA = [
         "description_en": "60s Ericofon telephone, museum piece.",
         "description_ca": "Telèfon Ericofon dels 60, peça de museu.",
         "description_gl": "Teléfono Ericofon dos 60, peza de museo.",
-        "price": 85.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "telefonos-fijos",
         "image_url": "https://3.bp.blogspot.com/-4waGj5Ae1NI/T8gOVLRLLmI/AAAAAAAAAMA/CGHFVJz9-a4/s1600/Ericofon+05.JPG",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Nokia 3310 Azul",
@@ -1814,10 +2322,14 @@ PRODUCTS_DATA = [
         "description_en": "Classic Nokia 3310 in blue, new battery.",
         "description_ca": "Nokia 3310 clàssic en blau, bateria nova.",
         "description_gl": "Nokia 3310 clásico en azul, batería nova.",
-        "price": 35.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://vintagemobile.fr/cdn/shop/files/Nokia-3310-Vintage-Mobile-777.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Motorola Razr V3 Plata",
@@ -1828,10 +2340,14 @@ PRODUCTS_DATA = [
         "description_en": "Silver Motorola RAZR V3, iconic flip phone.",
         "description_ca": "Motorola RAZR V3 platejat, icònic mòbil plegable.",
         "description_gl": "Motorola RAZR V3 prateado, icónico móbil dobrable.",
-        "price": 50.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 50.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://m.media-amazon.com/images/I/81EAOq92VaL.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Sony Ericsson T610",
@@ -1842,10 +2358,14 @@ PRODUCTS_DATA = [
         "description_en": "Sony Ericsson T610 with integrated camera, good condition.",
         "description_ca": "Sony Ericsson T610 amb càmera integrada, bon estat.",
         "description_gl": "Sony Ericsson T610 con cámara integrada, bo estado.",
-        "price": 30.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 30.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "moviles-antiguos",
         "image_url": "https://www.celulares.com/fotos/sony-ericsson-t610-1698-g-alt.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "iPhone 2G Original",
@@ -1856,10 +2376,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 2007 iPhone 2G, works but battery dead.",
         "description_ca": "iPhone 2G original 2007, funciona però bateria esgotada.",
         "description_gl": "iPhone 2G orixinal 2007, funciona pero batería esgotada.",
-        "price": 120.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "smartphones",
         "image_url": "https://assets.catawiki.nl/assets/2022/10/13/e/f/b/efb8f147-507e-4e7c-bc8c-01ee36eab594.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Cargador Nokia Universal",
@@ -1870,10 +2394,14 @@ PRODUCTS_DATA = [
         "description_en": "Universal charger for Nokia 3310 and similar models.",
         "description_ca": "Carregador universal per a Nokia 3310 i similars.",
         "description_gl": "Cargador universal para Nokia 3310 e similares.",
-        "price": 8.00, "stock": 15, "discount": 0.0, "condition": "new",
+        "price": 8.0,
+        "stock": 15,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "accesorios-telefonia",
         "image_url": "https://tienda.todomovil.co/wp-content/uploads/2024/06/cargador-nokia.jpeg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Walkie Talkie Motorola TalkAbout",
@@ -1884,13 +2412,19 @@ PRODUCTS_DATA = [
         "description_en": "Pair of 90s Motorola TalkAbout walkie-talkies.",
         "description_ca": "Parell de walkie-talkies Motorola TalkAbout anys 90.",
         "description_gl": "Par de walkie-talkies Motorola TalkAbout anos 90.",
-        "price": 28.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 28.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-telefonia",
         "image_url": "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MP_88925677/fee_786_587_png",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://prophonechile.cl/wp-content/uploads/2023/03/radio_motorola_talkabout_t470_foto.jpg",
+        "https://www.shoppingchina.com.py/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNEN0QkE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--4e6395f47ad587cc293486be917fdfab0fc0a3cd/771476.jpg",
+        "https://prophonechile.cl/wp-content/uploads/2023/03/radio_motorola_talkabout_t470_caja.jpg"
+        ]
     },
-
-    # ── TECNOLOGÍA › Fotografía ───────────────────────────────────────────────
     {
         "name": "Olympus OM-1",
         "name_en": "Olympus OM-1",
@@ -1900,10 +2434,14 @@ PRODUCTS_DATA = [
         "description_en": "Olympus OM-1 reflex camera with 50mm lens.",
         "description_ca": "Càmera rèflex Olympus OM-1 amb objectiu 50mm.",
         "description_gl": "Cámara réflex Olympus OM-1 con obxectivo 50mm.",
-        "price": 150.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 150.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "camaras-analogicas",
         "image_url": "https://i.pinimg.com/originals/ed/71/29/ed7129fc61265c56a748c2c83c66e73f.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Canon AE-1 Program",
@@ -1914,10 +2452,14 @@ PRODUCTS_DATA = [
         "description_en": "Canon AE-1 Program with 50mm f/1.8 lens.",
         "description_ca": "Canon AE-1 Program amb objectiu 50mm f/1.8.",
         "description_gl": "Canon AE-1 Program con obxectivo 50mm f/1.8.",
-        "price": 180.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 180.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "camaras-analogicas",
         "image_url": "https://cameramarket.es/cdn/shop/files/CapturadePantalla2023-10-05alas20.05.01.png",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Pentax K1000",
@@ -1928,10 +2470,14 @@ PRODUCTS_DATA = [
         "description_en": "Fully mechanical Pentax K1000, no battery needed.",
         "description_ca": "Pentax K1000 totalment mecànica, no necessita bateria.",
         "description_gl": "Pentax K1000 totalmente mecánica, non necesita batería.",
-        "price": 120.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "camaras-analogicas",
         "image_url": "https://cdn.assets.lomography.com/ea/26f4004e1867352fe39b5b45504d2e7623031a/1216x794x2.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Polaroid 600",
@@ -1942,10 +2488,14 @@ PRODUCTS_DATA = [
         "description_en": "Classic Polaroid 600 in good condition, ready to use.",
         "description_ca": "Polaroid 600 clàssica en bon estat, llesta per usar.",
         "description_gl": "Polaroid 600 clásica en bo estado, lista para usar.",
-        "price": 60.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 60.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "polaroid",
         "image_url": "https://tiendainstant.com/1306-thickbox_default/polaroid-600.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Cámara Super 8 Chinon",
@@ -1956,10 +2506,14 @@ PRODUCTS_DATA = [
         "description_en": "Chinon 8F-MA Super 8 camera, works perfectly.",
         "description_ca": "Càmera Super 8 Chinon 8F-MA, funciona perfectament.",
         "description_gl": "Cámara Super 8 Chinon 8F-MA, funciona perfectamente.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "super-8",
         "image_url": "https://cloud10.todocoleccion.online/antiguedades-tecnicas/tc/2018/11/18/12/140568778_112612776.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Objetivo Takumar 50mm f/1.4",
@@ -1970,10 +2524,14 @@ PRODUCTS_DATA = [
         "description_en": "Super-Takumar 50mm f/1.4 M42, collector's optics.",
         "description_ca": "Super-Takumar 50mm f/1.4 M42, òptica de col·leccionista.",
         "description_gl": "Super-Takumar 50mm f/1.4 M42, óptica de coleccionista.",
-        "price": 75.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 75.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "objetivos-antiguos",
         "image_url": "https://cdnx.jumpseller.com/used/image/34543364/resize/960/960?1682546484",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Proyector de Diapositivas Leitz",
@@ -1984,13 +2542,15 @@ PRODUCTS_DATA = [
         "description_en": "Leitz Pradovit slide projector, impeccable condition.",
         "description_ca": "Projector de diapositives Leitz Pradovit, estat impecable.",
         "description_gl": "Proxector de diapositivas Leitz Pradovit, estado impecable.",
-        "price": 70.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 70.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-fotografia",
         "image_url": "https://assets.catawiki.nl/assets/2021/1/17/d/8/d/d8d9cc20-7170-4f21-ac10-f75e2291bc55.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-
-    # ── TECNOLOGÍA › Accesorios Tech ──────────────────────────────────────────
     {
         "name": "Ratón Microsoft Serial Vintage",
         "name_en": "Vintage Microsoft Serial Mouse",
@@ -2000,24 +2560,34 @@ PRODUCTS_DATA = [
         "description_en": "Original 90s Microsoft IntelliMouse serial mouse.",
         "description_ca": "Ratolí Microsoft IntelliMouse serial original anys 90.",
         "description_gl": "Rato Microsoft IntelliMouse serial orixinal anos 90.",
-        "price": 25.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 25.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "ratones-antiguos",
         "image_url": "https://secondhandeuropean.com/wp-content/uploads/2023/01/Serial-Mouse-Microsoft-sh00231.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
-        "name": "Teclado IBM Model M",
+        "name": "Teclado IBM Model m",
         "name_en": "IBM Model M Keyboard",
-        "name_ca": "Teclat IBM Model M",
-        "name_gl": "Teclado IBM Model M",
+        "name_ca": "Teclat IBM Model m",
+        "name_gl": "Teclado IBM Model m",
         "description": "IBM Model M buckling spring, el mejor teclado de la historia.",
         "description_en": "IBM Model M buckling spring, the best keyboard ever made.",
         "description_ca": "IBM Model M buckling spring, el millor teclat de la història.",
         "description_gl": "IBM Model M buckling spring, o mellor teclado da historia.",
-        "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "teclados-mecanicos",
-        "image_url": "https://vintageuy.com/img_productos/tamanio_unico/6eb0037ee682df92e2f47f45417f5e2b9e99d402.jpg",
+        "image_url": "https://http2.mlstatic.com/D_653960-MLB49130638330_022022-O.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": [
+        "https://ireland.apollo.olxcdn.com/v1/files/mokaw4hkb4w9-PT/image;s=2000x1500"
+        ]
     },
     {
         "name": "Cable SCART Dorado",
@@ -2028,10 +2598,14 @@ PRODUCTS_DATA = [
         "description_en": "High quality gold SCART cable for retro consoles.",
         "description_ca": "Cable SCART daurat d'alta qualitat per a consoles retro.",
         "description_gl": "Cable SCART dourado de alta calidade para consolas retro.",
-        "price": 8.00, "stock": 20, "discount": 0.0, "condition": "new",
+        "price": 8.0,
+        "stock": 20,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "cables",
         "image_url": "https://ae01.alicdn.com/kf/HTB1mzrVKVXXXXb7apXXq6xXFXXXo/Scart-1-8m-RGB-Scart-Video-HD-TV-AV-Cable-For-XBOX-360-Version-Gamepads-High.jpg_640x640.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
     {
         "name": "Módem 56K US Robotics",
@@ -2042,13 +2616,15 @@ PRODUCTS_DATA = [
         "description_en": "External US Robotics 56K modem, 90s.",
         "description_ca": "Mòdem extern US Robotics 56K, anys 90.",
         "description_gl": "Módem externo US Robotics 56K, anos 90.",
-        "price": 20.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 20.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-accesorios-tech",
         "image_url": "https://images.pcel.com/mp/Redes-Modems-para-PC-US-Robotics-22542-4cea49ce1c97a.jpg",
         "seller_email": "carlos@test.com",
+        "other_image_url": []
     },
-
-    # ── MODA ──────────────────────────────────────────────────────────────────
     {
         "name": "Camiseta Nirvana Nevermind 90s",
         "name_en": "Nirvana Nevermind 90s T-Shirt",
@@ -2058,10 +2634,14 @@ PRODUCTS_DATA = [
         "description_en": "Nirvana Nevermind vintage T-shirt, size L, 100% cotton.",
         "description_ca": "Samarreta vintage Nirvana Nevermind, talla L, cotó 100%.",
         "description_gl": "Camiseta vintage Nirvana Nevermind, talla L, algodón 100%.",
-        "price": 22.00, "stock": 8, "discount": 0.0, "condition": "used",
+        "price": 22.0,
+        "stock": 8,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "camisetas-80s-90s",
         "image_url": "https://media.camden.es/product/camiseta-nirvana-unisex-nevermind-album-800x800.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Camiseta AC/DC Back in Black Tour",
@@ -2072,10 +2652,14 @@ PRODUCTS_DATA = [
         "description_en": "Original AC/DC Back in Black 1980 tour T-shirt.",
         "description_ca": "Samarreta tour AC/DC Back in Black 1980, original.",
         "description_gl": "Camiseta tour AC/DC Back in Black 1980, orixinal.",
-        "price": 35.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "camisetas-80s-90s",
         "image_url": "https://media.camden.es/product/camiseta-acdc-back-in-black-800x800.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Sudadera Champion Vintage",
@@ -2086,10 +2670,14 @@ PRODUCTS_DATA = [
         "description_en": "90s Champion sweatshirt with embroidered logo, size M.",
         "description_ca": "Dessuadora Champion amb logo brodat anys 90, talla M.",
         "description_gl": "Sudadeira Champion con logo bordado anos 90, talla M.",
-        "price": 38.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 38.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "sudaderas",
         "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSep2jVyni3fNTPvcuEB5a72p7TfWok-Xf__Q&s",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Chaqueta Levi's Trucker Vintage",
@@ -2100,10 +2688,14 @@ PRODUCTS_DATA = [
         "description_en": "80s Levi's Trucker denim jacket, size L.",
         "description_ca": "Jaqueta texana Levi's Trucker anys 80, talla L.",
         "description_gl": "Chaqueta vaqueira Levi's Trucker anos 80, talla L.",
-        "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "chaquetas",
         "image_url": "https://m.media-amazon.com/images/I/61p40rOP6cL._AC_SL1000_.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Chándal Adidas Firebird Vintage",
@@ -2114,10 +2706,14 @@ PRODUCTS_DATA = [
         "description_en": "Complete 80s Adidas Firebird tracksuit, size M.",
         "description_ca": "Xandall Adidas Firebird complet anys 80, talla M.",
         "description_gl": "Chándal Adidas Firebird completo anos 80, talla M.",
-        "price": 65.00, "stock": 3, "discount": 15.0, "condition": "used",
+        "price": 65.0,
+        "stock": 3,
+        "discount": 15.0,
+        "condition": "used",
         "item_slug": "chandales-clasicos",
         "image_url": "https://fashionlawinstitute.es/wp-content/uploads/2024/05/412j-V0GpyS._SL160_.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Vaqueros Levi's 501 Vintage",
@@ -2128,10 +2724,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 80s Levi's 501, size 32x32.",
         "description_ca": "Levi's 501 originals anys 80, talla 32x32.",
         "description_gl": "Levi's 501 orixinais anos 80, talla 32x32.",
-        "price": 65.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 65.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "levis",
         "image_url": "https://media.revistagq.com/photos/63cfabf0c40d662c393df90d/master/w_1600%2Cc_limit/198799_1200_A.jpeg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Zapatos Oxford Vintage",
@@ -2142,10 +2742,14 @@ PRODUCTS_DATA = [
         "description_en": "70s leather Oxford shoes, size 42.",
         "description_ca": "Sabates Oxford de cuir anys 70, talla 42.",
         "description_gl": "Zapatos Oxford de coiro anos 70, talla 42.",
-        "price": 45.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "zapatos",
         "image_url": "https://hombresconestilo.com/wp-content/uploads/2018/11/ejemplo-zapatos-oxford.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Zapatillas Nike Air Max 90",
@@ -2156,10 +2760,14 @@ PRODUCTS_DATA = [
         "description_en": "Nike Air Max 90 retro in OG colorway, size 42.",
         "description_ca": "Nike Air Max 90 retro en colorway OG, talla 42.",
         "description_gl": "Nike Air Max 90 retro en colorway OG, talla 42.",
-        "price": 120.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "zapatillas",
         "image_url": "https://static.nike.com/a/images/t_web_pw_592_v2/f_auto/21536089-ba55-416a-9ee6-4ab5dc9f1116/W+AIR+MAX+90+SE.png",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Botas Doc Martens 1460",
@@ -2170,10 +2778,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Made in England Doc Martens 1460, size 41.",
         "description_ca": "Doc Martens 1460 originals Made in England, talla 41.",
         "description_gl": "Doc Martens 1460 orixinais Made in England, talla 41.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "botas",
         "image_url": "https://www.docmartens.com.co/images/large/60693621466554/Botas_Dr_Martens_1460_Abruzzo_Cuero_Enca_652_3_ZOOM.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Sandalias Birkenstock Arizona Vintage",
@@ -2184,10 +2796,14 @@ PRODUCTS_DATA = [
         "description_en": "80s Birkenstock Arizona sandals, light brown leather.",
         "description_ca": "Birkenstock Arizona anys 80, cuir marró clar.",
         "description_gl": "Birkenstock Arizona anos 80, coiro marrón claro.",
-        "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-zapatos",
         "image_url": "http://ulanka.com/cdn/shop/files/3918605-S-PT-S-2-1.jpg?v=1722925133",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Anillo de Plata Años 70",
@@ -2198,10 +2814,14 @@ PRODUCTS_DATA = [
         "description_en": "Sterling silver ring with floral engraving, 70s.",
         "description_ca": "Anell de plata de llei amb gravat floral anys 70.",
         "description_gl": "Anel de prata de lei con gravado floral anos 70.",
-        "price": 28.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 28.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "anillos",
         "image_url": "https://sacsash.com/wp-content/uploads/2024/07/anillo-artesanal-plata.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Pendientes Vintage Clip Dorados",
@@ -2212,10 +2832,14 @@ PRODUCTS_DATA = [
         "description_en": "60s gold clip-on earrings, no piercing needed.",
         "description_ca": "Arracades de clip daurades anys 60, sense perforació.",
         "description_gl": "Pendentes de clip dourados anos 60, sen perforación.",
-        "price": 15.00, "stock": 6, "discount": 0.0, "condition": "used",
+        "price": 15.0,
+        "stock": 6,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "pendientes",
         "image_url": "https://cloud10.todocoleccion.online/vintage-moda/tc/2019/10/25/01/180984387_tcimg_3CB1FE29.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Collar Medallón Años 70",
@@ -2226,10 +2850,14 @@ PRODUCTS_DATA = [
         "description_en": "Gold medallion necklace from the 70s.",
         "description_ca": "Collar amb medalló daurat dels anys 70.",
         "description_gl": "Colar con medallón dourado dos anos 70.",
-        "price": 22.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 22.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "collares",
         "image_url": "https://www.impulsivos.es/images/productos/CYLC.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Reloj Casio F-91W",
@@ -2240,10 +2868,14 @@ PRODUCTS_DATA = [
         "description_en": "The most iconic Casio digital watch, new in box.",
         "description_ca": "El rellotge digital més icònic de Casio, nou en caixa.",
         "description_gl": "O reloxo dixital máis icónico de Casio, novo en caixa.",
-        "price": 18.00, "stock": 15, "discount": 0.0, "condition": "new",
+        "price": 18.0,
+        "stock": 15,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "relojes",
         "image_url": "https://www.joyeriasanchez.com/177814-large_default/reloj-casio-digital-f-91w-1yeg.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Reloj Seiko 5 Automático Vintage",
@@ -2254,10 +2886,14 @@ PRODUCTS_DATA = [
         "description_en": "70s Seiko 5 automatic, serviced with new strap.",
         "description_ca": "Seiko 5 automàtic anys 70, revisat amb corretja nova.",
         "description_gl": "Seiko 5 automático anos 70, revisado con correa nova.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "refurbished",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "refurbished",
         "item_slug": "relojes",
         "image_url": "https://i.ebayimg.com/images/g/jyoAAOSwh7tk5yHK/s-l1200.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Broche Camafeo Vintage",
@@ -2268,10 +2904,14 @@ PRODUCTS_DATA = [
         "description_en": "50s mother-of-pearl cameo brooch, unique piece.",
         "description_ca": "Fermall camafeu de nacre anys 50, peça única.",
         "description_gl": "Broche camafeo de nácar anos 50, peza única.",
-        "price": 35.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-joyeria-relojes",
         "image_url": "https://lh5.ggpht.com/-GQtLBFOrjf0/UUISlPj6nuI/AAAAAAAAANA/vPxkTz0M-q8/s1600/DSC_0205.JPG",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Bolso Gucci Vintage GG Canvas",
@@ -2282,10 +2922,14 @@ PRODUCTS_DATA = [
         "description_en": "80s Gucci GG canvas bag, authentic.",
         "description_ca": "Bossa Gucci GG canvas anys 80, autèntica.",
         "description_gl": "Bolso Gucci GG canvas anos 80, auténtico.",
-        "price": 250.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 250.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "bolsos",
         "image_url": "https://assets.catawiki.nl/assets/2024/10/3/f/f/0/ff0cd775-2664-461b-8977-93a3f0a8233a.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Riñonera Fila Vintage",
@@ -2296,10 +2940,14 @@ PRODUCTS_DATA = [
         "description_en": "90s Fila fanny pack, impeccable condition.",
         "description_ca": "Riñonera Fila anys 90, estat impecable.",
         "description_gl": "Riñoneira Fila anos 90, estado impecable.",
-        "price": 20.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 20.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "rinoneras",
         "image_url": "https://img.michollo.com/deals/EFcAJhvH2.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Gafas Ray-Ban Wayfarer Vintage",
@@ -2310,10 +2958,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 80s Ray-Ban Wayfarer, black frame.",
         "description_ca": "Ray-Ban Wayfarer originals anys 80, muntura negra.",
         "description_gl": "Ray-Ban Wayfarer orixinais anos 80, montura negra.",
-        "price": 85.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "gafas",
         "image_url": "https://assets2.sunglasshut.com/cdn-record-files-pi/71c68633-dfbb-4a35-9bc2-a358000441ec/0a37755b-5550-4bab-846f-b01300c7048e/0RB2140__902_57__P21__noshad__qt.png",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Parche Led Zeppelin Bordado",
@@ -2324,10 +2976,14 @@ PRODUCTS_DATA = [
         "description_en": "Embroidered Led Zeppelin patch for jacket or backpack.",
         "description_ca": "Pegat brodat Led Zeppelin per a jaqueta o motxilla.",
         "description_gl": "Parche bordado Led Zeppelin para chaqueta ou mochila.",
-        "price": 5.00, "stock": 30, "discount": 0.0, "condition": "new",
+        "price": 5.0,
+        "stock": 30,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "parches",
         "image_url": "https://custom13.com/17991-thickbox_default/parche-bordado-led-zeppelin-redondo.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
     {
         "name": "Pack 10 Parches Rock Vintage",
@@ -2338,13 +2994,15 @@ PRODUCTS_DATA = [
         "description_en": "Pack of 10 embroidered patches from 70s-90s rock bands.",
         "description_ca": "Pack de 10 pegats brodats de bandes rock dels 70-90.",
         "description_gl": "Pack de 10 parches bordados de bandas rock dos 70-90.",
-        "price": 18.00, "stock": 8, "discount": 10.0, "condition": "new",
+        "price": 18.0,
+        "stock": 8,
+        "discount": 10.0,
+        "condition": "new",
         "item_slug": "parches",
         "image_url": "https://www.rock4u.eu/img/c/32-Niara_category.jpg",
         "seller_email": "maria@test.com",
+        "other_image_url": []
     },
-
-    # ── COLECCIONISMO ─────────────────────────────────────────────────────────
     {
         "name": "Figura He-Man Masters of the Universe",
         "name_en": "He-Man Masters of the Universe Figure",
@@ -2354,10 +3012,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 80s Mattel He-Man with sword and shield.",
         "description_ca": "He-Man original Mattel anys 80 amb espasa i escut.",
         "description_gl": "He-Man orixinal Mattel anos 80 con espada e escudo.",
-        "price": 28.00, "stock": 3, "discount": 15.0, "condition": "used",
+        "price": 28.0,
+        "stock": 3,
+        "discount": 15.0,
+        "condition": "used",
         "item_slug": "action-figures-80s-90s",
         "image_url": "https://tajmahalcomics.com/wp-content/uploads/2024/01/x_matthyd17.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Figura Leonardo TMNT",
@@ -2368,10 +3030,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 90s Leonardo TMNT figure, complete with weapons.",
         "description_ca": "Figura original Leonardo Tortugues Ninja anys 90, completa.",
         "description_gl": "Figura orixinal Leonardo Tartarugas Ninja anos 90, completa.",
-        "price": 35.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "action-figures-80s-90s",
         "image_url": "https://m.media-amazon.com/images/I/61FLOrTtrIL._AC_UF894,1000_QL80_.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Figura Optimus Prime G1",
@@ -2382,10 +3048,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 80s G1 Transformers Optimus Prime, complete.",
         "description_ca": "Optimus Prime Transformers G1 original anys 80, complet.",
         "description_gl": "Optimus Prime Transformers G1 orixinal anos 80, completo.",
-        "price": 80.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 80.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "action-figures-80s-90s",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_870309-MPE80752064401_112024-O.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Figura Mazinger Z Japonesa",
@@ -2396,10 +3066,14 @@ PRODUCTS_DATA = [
         "description_en": "Japanese edition Mazinger Z collector's figure.",
         "description_ca": "Figura Mazinger Z edició japonesa de col·leccionista.",
         "description_gl": "Figura Mazinger Z edición xaponesa de coleccionista.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "figuras-anime",
         "image_url": "https://m.media-amazon.com/images/I/71i2t-c7JWL._AC_UF894,1000_QL80_.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Figura Dragon Ball Z Goku",
@@ -2410,10 +3084,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Irwin Super Saiyan Goku figure, 90s.",
         "description_ca": "Figura original Goku Super Saiyan d'Irwin, anys 90.",
         "description_gl": "Figura orixinal Goku Super Saiyan de Irwin, anos 90.",
-        "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "figuras-anime",
         "image_url": "https://pokeplush.cl/wp-content/uploads/2023/10/Figura-Dragon-Ball-Z-Goku.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Figura Evangelion Unit 01 Resina",
@@ -2424,10 +3102,14 @@ PRODUCTS_DATA = [
         "description_en": "Evangelion Unit-01 limited edition numbered resin figure.",
         "description_ca": "Figura resina Evangelion Unit-01 edició limitada numerada.",
         "description_gl": "Figura resina Evangelion Unit-01 edición limitada numerada.",
-        "price": 180.00, "stock": 1, "discount": 0.0, "condition": "new",
+        "price": 180.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "resina-edicion-limitada",
         "image_url": "https://cdn.athmanager.com/nihonfigures/archivos/evangelion-figura-alloy-anima-evangelion-unit-1-final-model-29-cm-p8803788i12961.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Pista Scalextric Años 80",
@@ -2438,10 +3120,14 @@ PRODUCTS_DATA = [
         "description_en": "Complete 80s Scalextric track with two cars.",
         "description_ca": "Circuit Scalextric complet anys 80 amb dos cotxes.",
         "description_gl": "Pista Scalextric completa anos 80 con dous coches.",
-        "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juguetes-antiguos",
         "image_url": "https://offloadmedia.feverup.com/madridsecreto.co/wp-content/uploads/2021/03/16043823/WhatsApp-Image-2020-07-02-at-10.38.42-1.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Etch-a-Sketch Original",
@@ -2452,10 +3138,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 80s Etch-a-Sketch, works perfectly.",
         "description_ca": "Etch-a-Sketch original anys 80, funciona perfectament.",
         "description_gl": "Etch-a-Sketch orixinal anos 80, funciona perfectamente.",
-        "price": 18.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 18.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "juguetes-antiguos",
         "image_url": "https://http2.mlstatic.com/D_NQ_NP_668266-MLM79961325084_102024-O.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Figura Star Wars Han Solo Kenner",
@@ -2466,10 +3156,14 @@ PRODUCTS_DATA = [
         "description_en": "1978 Kenner Han Solo figure, complete with blaster.",
         "description_ca": "Figura Han Solo Kenner 1978, completa amb blaster.",
         "description_gl": "Figura Han Solo Kenner 1978, completa con blaster.",
-        "price": 55.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 55.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-figuras",
         "image_url": "https://cdn.juguetilandia.com/images/articulos/1999971862g00.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Carta Pikachu Base Set Holo",
@@ -2480,10 +3174,14 @@ PRODUCTS_DATA = [
         "description_en": "1999 Base Set holographic Pikachu, Near Mint condition.",
         "description_ca": "Pikachu hologràfic Base Set 1999, Near Mint.",
         "description_gl": "Pikachu holográfico Base Set 1999, Near Mint.",
-        "price": 60.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 60.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "pokemon",
         "image_url": "https://images.wikidexcdn.net/mwuploads/wikidex/9/99/latest/20180603165645/Pikachu_(Base_Set_2_TCG).png",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Carta Charizard Holo Base Set 1999",
@@ -2494,10 +3192,14 @@ PRODUCTS_DATA = [
         "description_en": "1999 Base Set holographic Charizard, Near Mint.",
         "description_ca": "Charizard Holo Base Set 1999, estat Near Mint.",
         "description_gl": "Charizard Holo Base Set 1999, estado Near Mint.",
-        "price": 250.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 250.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "pokemon",
         "image_url": "https://m.media-amazon.com/images/I/81y6KqdilQL._AC_UF894,1000_QL80_.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Carta Magic Black Lotus Alpha",
@@ -2508,10 +3210,14 @@ PRODUCTS_DATA = [
         "description_en": "Alpha edition Magic: The Gathering Black Lotus, authentic.",
         "description_ca": "Black Lotus Magic: The Gathering Alpha, autèntica.",
         "description_gl": "Black Lotus Magic: The Gathering Alpha, auténtica.",
-        "price": 500.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 500.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "magic",
         "image_url": "https://i.ebayimg.com/00/s/MTYwMFgxMTU2/z/2pgAAOSwoaNePCCr/$_57.JPG",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Lote 50 Cartas Magic Vintage",
@@ -2522,10 +3228,14 @@ PRODUCTS_DATA = [
         "description_en": "Lot of 50 Magic cards vintage editions 1994-1998.",
         "description_ca": "Lot de 50 cartes Magic edicions vintage 1994-1998.",
         "description_gl": "Lote de 50 cartas Magic edicións vintage 1994-1998.",
-        "price": 80.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 80.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "magic",
         "image_url": "https://foto.digdelray.com/upload/7/4b/74b28164f56ae3c24ad1b5767bf0b4eb_thumb.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Carta Red-Eyes Black Dragon 1ª Ed",
@@ -2536,10 +3246,14 @@ PRODUCTS_DATA = [
         "description_en": "Yu-Gi-Oh Red-Eyes Black Dragon 1st edition, excellent condition.",
         "description_ca": "Red-Eyes Black Dragon Yu-Gi-Oh 1a edició, excel·lent estat.",
         "description_gl": "Red-Eyes Black Dragon Yu-Gi-Oh 1ª edición, excelente estado.",
-        "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "yugioh",
         "image_url": "https://images.saymedia-content.com/.image/t_share/MTc0NDYwODA5NDc1OTI1MzUy/top-10-cards-you-need-for-your-red-eyes-black-dragon-yu-gi-oh-deck.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Lote Cromos Panini Mundial 82",
@@ -2550,10 +3264,14 @@ PRODUCTS_DATA = [
         "description_en": "Lot of Panini stickers from the 1982 Spain World Cup.",
         "description_ca": "Lot de cromos Panini del Mundial d'Espanya 1982.",
         "description_gl": "Lote de cromos Panini do Mundial de España 1982.",
-        "price": 30.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 30.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-cartas",
         "image_url": "https://imgv2-2-f.scribdassets.com/img/document/721934165/original/833e8c8d65/1714316611?v=1",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Litografía Star Wars Numerada 1/500",
@@ -2564,10 +3282,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Star Wars lithograph numbered edition 1/500.",
         "description_ca": "Litografia original Star Wars edició numerada 1/500.",
         "description_gl": "Litografía orixinal Star Wars edición numerada 1/500.",
-        "price": 150.00, "stock": 1, "discount": 0.0, "condition": "new",
+        "price": 150.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "ediciones-numeradas",
         "image_url": "https://coleccionanostalgia.com/2333-large_default/star-wars.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Game Boy Light Edición Japonesa",
@@ -2578,10 +3300,14 @@ PRODUCTS_DATA = [
         "description_en": "Japanese Game Boy Light edition, discontinued in Europe.",
         "description_ca": "Game Boy Light edició japonesa, descatalogada a Europa.",
         "description_gl": "Game Boy Light edición xaponesa, descatalogada en Europa.",
-        "price": 220.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 220.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "descatalogadas",
         "image_url": "https://static.wixstatic.com/media/970a22_eb8915d219cc4d408ecf332efd8cda34~mv2.jpg/v1/fit/w_500,h_500,q_90/file.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Cartucho Prototipo NES",
@@ -2592,10 +3318,14 @@ PRODUCTS_DATA = [
         "description_en": "NES prototype cartridge never commercially released, very rare.",
         "description_ca": "Cartutx prototip NES sense llançament comercial, raríssim.",
         "description_gl": "Cartucho prototipo NES sen lanzamento comercial, rarísimo.",
-        "price": 800.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 800.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "rarezas",
         "image_url": "https://pxplayers.com/wp-content/uploads/2023/11/NES-Cartucho-1-scaled.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Set LEGO Classic Space 928 Vintage",
@@ -2606,10 +3336,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 1979 LEGO Classic Space 928 Galaxy Explorer.",
         "description_ca": "LEGO Classic Space 928 Galaxy Explorer original 1979.",
         "description_gl": "LEGO Classic Space 928 Galaxy Explorer orixinal 1979.",
-        "price": 400.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 400.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-ediciones-limitadas",
         "image_url": "https://media.karousell.com/media/photos/products/2020/4/27/vintage_lego_classic_space_set_1587997697_6b71ce2f_progressive.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Don Quijote Facsímil 1ª Edición 1605",
@@ -2620,10 +3354,14 @@ PRODUCTS_DATA = [
         "description_en": "Certified facsimile of the first edition of Don Quixote.",
         "description_ca": "Facsímil certificat de la primera edició del Quixot.",
         "description_gl": "Facsímile certificado da primeira edición do Quixote.",
-        "price": 180.00, "stock": 2, "discount": 0.0, "condition": "new",
+        "price": 180.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "primeras-ediciones",
         "image_url": "https://1.bp.blogspot.com/-_3dc31B0tnA/VxhzUKgtDaI/AAAAAAAAPuw/vUYL0VUPris5z0K7NfZLHyt2sUSwAEQrQCLcB/s1600/IMG_20160421_082924.JPG",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "El Señor de los Anillos Ilustrado Tolkien",
@@ -2634,10 +3372,14 @@ PRODUCTS_DATA = [
         "description_en": "The Lord of the Rings numbered illustrated edition.",
         "description_ca": "El Senyor dels Anells edició il·lustrada numerada.",
         "description_gl": "O Señor dos Aneis edición ilustrada numerada.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "new",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "new",
         "item_slug": "ediciones-especiales",
         "image_url": "https://aurynlibros.mx/wp-content/uploads/2025/02/9788445019580-552x777.png",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Guía Oficial Zelda Ocarina of Time",
@@ -2648,10 +3390,14 @@ PRODUCTS_DATA = [
         "description_en": "Official Nintendo guide for Zelda OoT, out of print.",
         "description_ca": "Guia oficial de Nintendo per a Zelda OoT, descatalogada.",
         "description_gl": "Guía oficial de Nintendo para Zelda OoT, descatalogada.",
-        "price": 45.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "descatalogados",
         "image_url": "https://imgv2-2-f.scribdassets.com/img/document/75039623/original/fcd56740d0/1724010116?v=1",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Amazing Fantasy #15 Réplica Certificada",
@@ -2662,10 +3408,14 @@ PRODUCTS_DATA = [
         "description_en": "Certified replica Amazing Fantasy #15 first Spiderman appearance.",
         "description_ca": "Rèplica certificada Amazing Fantasy #15 primera aparició Spiderman.",
         "description_gl": "Réplica certificada Amazing Fantasy #15 primeira aparición Spiderman.",
-        "price": 95.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 95.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "marvel",
         "image_url": "https://i.ebayimg.com/images/g/XiMAAeSwZUFpkNKx/s-l1600.webp",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Detective Comics #27 Réplica",
@@ -2676,10 +3426,14 @@ PRODUCTS_DATA = [
         "description_en": "Detective Comics #27 replica, first Batman appearance.",
         "description_ca": "Rèplica Detective Comics #27 primera aparició Batman.",
         "description_gl": "Réplica Detective Comics #27 primeira aparición Batman.",
-        "price": 85.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 85.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "dc-comics",
         "image_url": "https://imgv2-2-f.scribdassets.com/img/document/614391696/original/4d08240ac3/1707849084?v=1",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Póster Star Wars Original 1977",
@@ -2690,10 +3444,14 @@ PRODUCTS_DATA = [
         "description_en": "Original Star Wars A New Hope poster, 1977.",
         "description_ca": "Pòster original de Star Wars Una Nova Esperança, 1977.",
         "description_gl": "Póster orixinal de Star Wars Unha Nova Esperanza, 1977.",
-        "price": 120.00, "stock": 1, "discount": 0.0, "condition": "used",
+        "price": 120.0,
+        "stock": 1,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "posters-originales",
         "image_url": "http://posterhouseuy.com/cdn/shop/files/20231114_023356494_iOS.jpg?v=1700524552",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Revista Micromania Nº1 1988",
@@ -2704,10 +3462,14 @@ PRODUCTS_DATA = [
         "description_en": "First issue of Micromania Spain, 1988. Historic piece.",
         "description_ca": "Primer número de Micromania Espanya, 1988. Peça històrica.",
         "description_gl": "Primeiro número de Micromania España, 1988. Peza histórica.",
-        "price": 40.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 40.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "publicidad",
         "image_url": "https://cloud10.todocoleccion.online/coleccionismo-revistas-periodicos/tc/2024/07/10/17/490470477_tcimg_EC327385.jpg?r=3&size=230x230&crop=true",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Cartel Publicitario Coca-Cola 1950",
@@ -2718,10 +3480,14 @@ PRODUCTS_DATA = [
         "description_en": "Original 1950s Coca-Cola advertising poster.",
         "description_ca": "Cartell publicitari original Coca-Cola anys 50.",
         "description_gl": "Cartel publicitario orixinal Coca-Cola anos 50.",
-        "price": 65.00, "stock": 2, "discount": 0.0, "condition": "used",
+        "price": 65.0,
+        "stock": 2,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "publicidad",
         "image_url": "https://cloud10.todocoleccion.online/coleccionismo-coca-cola/tc/2016/12/04/14/68372649.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Catálogo IKEA 1975",
@@ -2732,10 +3498,14 @@ PRODUCTS_DATA = [
         "description_en": "1975 IKEA catalogue, collector's piece.",
         "description_ca": "Catàleg IKEA de 1975, peça de col·leccionista.",
         "description_gl": "Catálogo IKEA de 1975, peza de coleccionista.",
-        "price": 25.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 25.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-libros-comics-revistas",
         "image_url": "https://ikeamuseum.com/wp-content/uploads/2021/04/im-ikeacatalogue-1975.jpg?sv=2022-11-02&ss=bf&srt=o&sp=rwact&se=2032-07-19T20:53:53Z&st=2023-07-19T00:53:53Z&spr=https,http&sig=CbW5rmYp6FrCBT77fuGZVaQIyQ6kOS0Coe6AbA3prrw%3D",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Moneda Peseta 1 Pta 1947",
@@ -2746,10 +3516,14 @@ PRODUCTS_DATA = [
         "description_en": "1947 Spanish 1 peseta coin, VF condition.",
         "description_ca": "Moneda d'1 pesseta espanyola 1947, estat MBC.",
         "description_gl": "Moeda de 1 peseta española 1947, estado MBC.",
-        "price": 8.00, "stock": 10, "discount": 0.0, "condition": "used",
+        "price": 8.0,
+        "stock": 10,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "monedas",
         "image_url": "https://cloud10.todocoleccion.online/monedas-franco/tc/2019/01/03/20/145643094.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Lote 20 Monedas Pesetas",
@@ -2760,10 +3534,14 @@ PRODUCTS_DATA = [
         "description_en": "Lot of 20 peseta coins from different years.",
         "description_ca": "Lot de 20 monedes de pessetes de diferents anys.",
         "description_gl": "Lote de 20 moedas de pesetas de diferentes anos.",
-        "price": 30.00, "stock": 4, "discount": 0.0, "condition": "used",
+        "price": 30.0,
+        "stock": 4,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "monedas",
         "image_url": "https://cloud10.todocoleccion.online/monedas-franco/tc/2019/11/11/15/182858928.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Colección Sellos España 1930s",
@@ -2774,10 +3552,14 @@ PRODUCTS_DATA = [
         "description_en": "Collection of 1930s Spanish stamps, mint condition.",
         "description_ca": "Col·lecció de segells espanyols anys 30, sense circular.",
         "description_gl": "Colección de selos españois anos 30, sen circular.",
-        "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "sellos",
         "image_url": "https://www.filateliahaeffner.com/wp-content/uploads/2021/02/MARROC-81-001.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Postal Fotográfica Barcelona 1910",
@@ -2788,10 +3570,14 @@ PRODUCTS_DATA = [
         "description_en": "1910 photographic postcard of Barcelona, posted with stamp.",
         "description_ca": "Postal fotogràfica de Barcelona 1910, circulada amb segell.",
         "description_gl": "Postal fotográfica de Barcelona 1910, circulada con selo.",
-        "price": 12.00, "stock": 5, "discount": 0.0, "condition": "used",
+        "price": 12.0,
+        "stock": 5,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "postales",
         "image_url": "https://publicacions-media.dtibcn.cat/7IUAVxXN4PFqhZl_18KEWbZDZm8=/fit-in/700x699/filters:fill(fff,1):quality(100)/files/20236/dfa79e8d_alb_2480.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": []
     },
     {
         "name": "Mapa Antiguo España 1652",
@@ -2802,10 +3588,16 @@ PRODUCTS_DATA = [
         "description_en": "Reproduction of old map of Spain dated 1652.",
         "description_ca": "Reprodució de mapa antic d'Espanya datat de 1652.",
         "description_gl": "Reprodución de mapa antigo de España datado en 1652.",
-        "price": 35.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 35.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "postales",
         "image_url": "https://i.blogs.es/bd03d8/nova-et-accurata-tabula-hispaniae-1652/650_1200.jpg",
         "seller_email": "alex@test.com",
+        "other_image_url": [
+        "https://pictures.abebooks.com/inventory/31710483134.jpg"
+        ]
     },
     {
         "name": "Mechero Zippo Vintage",
@@ -2816,13 +3608,16 @@ PRODUCTS_DATA = [
         "description_en": "Original 60s Zippo lighter with engraving.",
         "description_ca": "Encenedor Zippo original anys 60 amb gravat.",
         "description_gl": "Mecheiro Zippo orixinal anos 60 con gravado.",
-        "price": 45.00, "stock": 3, "discount": 0.0, "condition": "used",
+        "price": 45.0,
+        "stock": 3,
+        "discount": 0.0,
+        "condition": "used",
         "item_slug": "otros-coleccionables",
         "image_url": "https://fenixterra.com/wp-content/uploads/2022/07/60001167-scaled.jpeg",
         "seller_email": "alex@test.com",
-    },
-]
-
+        "other_image_url": []
+    }
+    ]
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TRANSPORTISTAS
@@ -3186,6 +3981,7 @@ def seed_products(sellers):
             item_id=item.id,
             seller_id=seller.id,
             image_url=p["image_url"],
+            other_image_url=p.get("other_image_url", []),
             created_at=datetime.now(timezone.utc) - timedelta(days=random.randint(1, 365)),
         )
         db.session.add(product)
@@ -3399,48 +4195,53 @@ def seed_favorites(users, products):
 
 def seed_incidents(users, orders):
     """
-    Crea incidencias para pedidos en estado shipped o delivered.
-    Solo buyers abren incidencias.
+    Crea incidencias por SellerOrder (no por Order).
+    Solo buyers abren incidencias, en envíos shipped o delivered.
     """
     print("\n🚨 Seeding incidencias...")
     count = 0
-    status_map = {
-        "open":        "open",
-        "in_progress": "in_progress",
-        "resolved":    "resolved",
-        "rejected":    "rejected",
-    }
-    buyers = [u for u in users if u.role == RoleName.buyer]
-    # Pedidos elegibles: shipped o delivered
-    eligible = [o for o in orders if o.status in (Status.shipped, Status.delivered)]
 
-    if not eligible:
-        print("  [WARN] No hay pedidos elegibles para incidencias")
+    buyers = [u for u in users if u.role == RoleName.buyer]
+
+    # Recopilar SellerOrders elegibles: shipped o delivered
+    eligible_sos = []
+    for o in orders:
+        if o.status in (Status.shipped, Status.delivered):
+            for so in o.seller_orders:
+                if so.status.value in ("shipped", "delivered"):
+                    eligible_sos.append((o, so))
+
+    if not eligible_sos:
+        print("  [WARN] No hay SellerOrders elegibles para incidencias")
         return
 
-    # Cada buyer abre 1-2 incidencias
     incident_pool = list(INCIDENTS_DATA)
     random.shuffle(incident_pool)
     pool_idx = 0
 
     for buyer in buyers:
-        buyer_orders = [o for o in eligible if o.user_id == buyer.id]
-        if not buyer_orders:
+        # SellerOrders del pedido de este buyer
+        buyer_sos = [(o, so) for o, so in eligible_sos if o.user_id == buyer.id]
+        if not buyer_sos:
             continue
-        n = random.randint(1, min(2, len(buyer_orders)))
-        for order in random.sample(buyer_orders, n):
+        n = random.randint(1, min(2, len(buyer_sos)))
+        for order, so in random.sample(buyer_sos, n):
+            # Evitar duplicados por seller_order_id
+            existing = Incident.query.filter_by(seller_order_id=so.id).first()
+            if existing:
+                continue
             data = incident_pool[pool_idx % len(incident_pool)]
             pool_idx += 1
             db.session.add(Incident(
                 user_id=buyer.id,
-                order_id=order.id,
+                seller_order_id=so.id,
                 title=data["title"],
                 description=data["description"],
                 status=data["status"],
                 created_at=order.created_at + timedelta(days=random.randint(2, 10)),
             ))
             count += 1
-            print(f"  [OK]   {buyer.email} | {data['status']:12} | {data['title'][:40]}")
+            print(f"  [OK]   {buyer.email} | SO#{so.id} | {data['status']:12} | {data['title'][:40]}")
 
     db.session.flush()
     print(f"\n  Total incidencias: {count}")
