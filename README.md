@@ -142,7 +142,7 @@ pipenv run start    # backend → :3001
 npm run start       # frontend → :3000
 ```
 
-📖 Guía completa → [Instalación y arranque](./docs/README_SETUP.md) · [Despliegue en Render](./docs/README_DEPLOY.md)
+📖 Guía completa → [Instalación y arranque](./docs/README_SETUP.md)
 
 ---
 
@@ -215,7 +215,6 @@ npm run start       # frontend → :3000
 | | Doc | Descripción |
 |---|---|---|
 | 🚀 | [Instalación y arranque](./docs/README_SETUP.md) | Codespaces y Windows local paso a paso |
-| ☁️ | [Despliegue en Render](./docs/README_DEPLOY.md) | Blueprint, variables de producción y troubleshooting |
 | 🌱 | [Seed de categorías](./docs/README_SEED_CATEGORIES.md) | Categorías, subcategorías e ítems del catálogo |
 | 🧪 | [Seed de datos de prueba](./docs/README_SEED_DATA.md) | Usuarios, productos y pedidos de prueba |
 | 🌗 | [Sistema de temas](./docs/README_DARK_MODE.md) | Clases semánticas para modo claro/oscuro |
