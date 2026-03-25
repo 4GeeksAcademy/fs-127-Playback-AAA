@@ -9,7 +9,7 @@ def build_incident_created_seller_email(seller, buyer, incident):
     """Email al vendedor cuando el comprador abre una incidencia sobre su pedido."""
 
     msg = Message(
-        subject=f"▶️ Nueva incidencia en el pedido #{incident.order_id}",
+        subject=f"▶️ Nueva incidencia en el pedido #{incident.seller_order.order_id}",
         recipients=[seller.user.email],
         sender=("Playback", os.getenv("MAIL_DEFAULT_SENDER"))
     )
@@ -50,7 +50,7 @@ def build_incident_created_seller_email(seller, buyer, incident):
                             </h2>
                             <p style="margin:0 0 28px; color:#444444; font-size:15px; line-height:1.7;">
                                 El comprador <strong>{buyer.name} {buyer.last_name}</strong> ha abierto
-                                una incidencia relacionada con el pedido <strong>#{incident.order_id}</strong>.
+                                una incidencia relacionada con el pedido <strong>#{incident.seller_order.order_id}</strong>.
                             </p>
 
                             <!-- DETALLE INCIDENCIA -->
@@ -127,7 +127,7 @@ def build_incident_created_seller_email(seller, buyer, incident):
     msg.body = (
         f"Hola {seller.store_name},\n\n"
         f"El comprador {buyer.name} {buyer.last_name} ha abierto una incidencia "
-        f"en el pedido #{incident.order_id}.\n\n"
+        f"en el pedido #{incident.seller_order.order_id}.\n\n"
         f"Asunto: {incident.title}\n"
         f"Descripción: {incident.description}\n\n"
         f"Ver incidencia: {os.getenv('FRONTEND_URL')}seller/incidents\n\n"
@@ -165,7 +165,7 @@ def build_incident_status_changed_email(buyer, incident):
     bg     = STATUS_BG.get(status, "#f7f7f7")
 
     msg = Message(
-        subject=f"▶️ Actualización de tu incidencia — pedido #{incident.order_id}",
+        subject=f"▶️ Actualización de tu incidencia — pedido #{incident.seller_order.order_id}",
         recipients=[buyer.email],
         sender=("Playback", os.getenv("MAIL_DEFAULT_SENDER"))
     )
@@ -206,7 +206,7 @@ def build_incident_status_changed_email(buyer, incident):
                             </h2>
                             <p style="margin:0 0 28px; color:#444444; font-size:15px; line-height:1.7;">
                                 El estado de tu incidencia <strong>"{incident.title}"</strong>
-                                del pedido <strong>#{incident.order_id}</strong> ha sido actualizado.
+                                del pedido <strong>#{incident.seller_order.order_id}</strong> ha sido actualizado.
                             </p>
 
                             <!-- NUEVO ESTADO -->
@@ -266,7 +266,7 @@ def build_incident_status_changed_email(buyer, incident):
 
     msg.body = (
         f"Hola {buyer.name},\n\n"
-        f"El estado de tu incidencia \"{incident.title}\" del pedido #{incident.order_id} "
+        f"El estado de tu incidencia \"{incident.title}\" del pedido #{incident.seller_order.order_id} "
         f"ha sido actualizado a: {label}\n\n"
         f"Ver incidencia: {os.getenv('FRONTEND_URL')}profile?tab=incidents\n\n"
         "Equipo Playback"
@@ -279,7 +279,7 @@ def build_incident_new_message_email(recipient, sender, incident):
     """Email al destinatario cuando alguien envía un mensaje en la incidencia."""
 
     msg = Message(
-        subject=f"▶️ Nuevo mensaje en tu incidencia — pedido #{incident.order_id}",
+        subject=f"▶️ Nuevo mensaje en tu incidencia — pedido #{incident.seller_order.order_id}",
         recipients=[recipient.email],
         sender=("Playback", os.getenv("MAIL_DEFAULT_SENDER"))
     )
@@ -321,7 +321,7 @@ def build_incident_new_message_email(recipient, sender, incident):
                             <p style="margin:0 0 28px; color:#444444; font-size:15px; line-height:1.7;">
                                 <strong>{sender.name} {sender.last_name}</strong> ha enviado un mensaje
                                 en la incidencia <strong>"{incident.title}"</strong>
-                                del pedido <strong>#{incident.order_id}</strong>.
+                                del pedido <strong>#{incident.seller_order.order_id}</strong>.
                             </p>
                             <p style="margin:0 0 28px; color:#888888; font-size:13px; line-height:1.6;">
                                 Accede a tu perfil para ver el mensaje completo y responder.
@@ -374,7 +374,7 @@ def build_incident_new_message_email(recipient, sender, incident):
     msg.body = (
         f"Hola {recipient.name},\n\n"
         f"{sender.name} {sender.last_name} ha enviado un mensaje en la incidencia "
-        f"\"{incident.title}\" del pedido #{incident.order_id}.\n\n"
+        f"\"{incident.title}\" del pedido #{incident.seller_order.order_id}.\n\n"
         f"Ver mensaje: {os.getenv('FRONTEND_URL')}profile?tab=incidents\n\n"
         "Equipo Playback"
     )
