@@ -11,25 +11,26 @@ Playback usa **Stripe Connect** para gestionar pagos entre compradores y vendedo
 
 ## Arquitectura
 
-El flujo de pago funciona así:
 ```
 Comprador paga → Plataforma recibe el total → Plataforma transfiere al vendedor (total - comisión)
 ```
 
 - Los compradores pagan a la cuenta de la plataforma
 - La plataforma retiene la comisión configurada
-- El resto se transfiere automáticamente al vendedor al confirmar el pago (`payment_intent.succeeded`)
+- El resto se transfiere automáticamente al vendedor cuando el webhook confirma el pago
 
-Cada vendedor tiene una **Express Account** en Stripe, creada durante el proceso de registro como vendedor.
+Cada vendedor tiene una **Express Account** en Stripe, creada durante su proceso de onboarding.
 
 ---
 
 ## 1. Variables de entorno
+
 ```env
 STRIPE_SECRET_KEY=sk_test_XXXXXXXXXXXXXXXXXXXX
 STRIPE_WEBHOOK_SECRET=whsec_XXXXXXXXXXXXXXXXXXXX
 PLATFORM_COMMISSION_RATE=0.05
 PLATFORM_MINIMUM_COMMISSION=1.00
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
 ```
 
 | Variable | Descripción |
@@ -38,11 +39,7 @@ PLATFORM_MINIMUM_COMMISSION=1.00
 | `STRIPE_WEBHOOK_SECRET` | Secreto del endpoint de webhook registrado en Stripe |
 | `PLATFORM_COMMISSION_RATE` | Porcentaje de comisión (0.05 = 5%) |
 | `PLATFORM_MINIMUM_COMMISSION` | Comisión mínima en euros independientemente del porcentaje |
-
-Y en el frontend:
-```env
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
-```
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Clave pública usada en el frontend |
 
 ---
 
@@ -59,50 +56,45 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
 
 ## 3. Configurar webhooks
 
-Los webhooks permiten que Stripe notifique al backend cuando un pago se completa. **Es obligatorio configurarlo** para que los pedidos se actualicen correctamente.
+Los webhooks son **obligatorios** — sin ellos los pedidos no se actualizan tras el pago.
 
-### En Codespaces o entornos remotos
+### En local (Stripe CLI)
 
-El puerto del backend no es accesible desde internet directamente. Debes usar la URL pública que genera Codespaces.
-
-1. En la pestaña **Ports**, localiza el puerto `3001`
-2. Copia la URL pública (formato `https://xxxx-3001.app.github.dev`)
-3. Ve a [dashboard.stripe.com/webhooks](https://dashboard.stripe.com/webhooks)
-4. Haz clic en **Add endpoint**
-5. Introduce la URL del webhook:
-```
-https://tu-url-publica-3001.app.github.dev/api/stripe/webhook
-```
-
-6. En **Events to listen**, selecciona:
-   - `payment_intent.succeeded`
-
-7. Haz clic en **Add endpoint**
-8. Copia el **Signing secret** → `STRIPE_WEBHOOK_SECRET` en tu `.env`
-
-> ⚠️ Cada vez que Codespaces genere una URL nueva para el backend, tendrás que **actualizar el endpoint** en el dashboard de Stripe.
-
-### En local
-
-En local puedes usar la **Stripe CLI** para redirigir los webhooks:
 ```bash
 stripe listen --forward-to localhost:3001/api/stripe/webhook
 ```
 
-La CLI te mostrará un `whsec_...` temporal que debes copiar en `STRIPE_WEBHOOK_SECRET`.
+La CLI muestra un `whsec_...` temporal → cópialo en `STRIPE_WEBHOOK_SECRET`.
+
+### En Codespaces
+
+1. En la pestaña **Ports**, localiza el puerto `3001` y copia la URL pública (`https://xxxx-3001.app.github.dev`)
+2. En [dashboard.stripe.com/webhooks](https://dashboard.stripe.com/webhooks) → **Add endpoint**
+3. URL: `https://xxxx-3001.app.github.dev/api/stripe/webhook`
+4. Evento: `payment_intent.succeeded`
+5. Copia el **Signing secret** → `STRIPE_WEBHOOK_SECRET`
+
+> ⚠️ Cada vez que Codespaces genere una nueva URL deberás actualizar el endpoint en Stripe.
+
+### En producción (Render)
+
+1. En [dashboard.stripe.com/webhooks](https://dashboard.stripe.com/webhooks) → **Add endpoint**
+2. URL: `https://tu-servicio.onrender.com/api/stripe/webhook`
+3. Evento: `payment_intent.succeeded`
+4. Copia el **Signing secret** → variable `STRIPE_WEBHOOK_SECRET` en Render
 
 ---
 
 ## 4. Registro de vendedores (Stripe Connect)
 
-Cuando un usuario se registra como vendedor en Playback, el backend:
+Cuando un usuario solicita ser vendedor, el backend:
 
 1. Crea una **Express Account** en Stripe
-2. Genera un **Account Link** para que el vendedor complete el onboarding en Stripe
+2. Genera un **Account Link** para el onboarding
 3. Redirige al vendedor al formulario de Stripe
 4. Al completarlo, Stripe redirige de vuelta a la plataforma
 
-El `stripe_account_id` del vendedor se guarda en la base de datos y se usa en todas las transferencias posteriores.
+El `stripe_account_id` se guarda en la base de datos y se usa en todas las transferencias posteriores.
 
 ---
 
@@ -112,16 +104,12 @@ El `stripe_account_id` del vendedor se guarda en la base de datos y se usa en to
 2. El backend crea el `PaymentIntent` con el importe total (en céntimos)
 3. El frontend usa `PaymentElement` + `confirmPayment()` de Stripe.js
 4. Stripe procesa el pago y envía el evento `payment_intent.succeeded` al webhook
-5. El backend:
-   - Actualiza el estado del pedido a `paid`
-   - Calcula la comisión de plataforma
-   - Ejecuta la transferencia al vendedor
+5. El backend actualiza el pedido a `paid`, calcula la comisión y ejecuta la transferencia al vendedor
 
 ---
 
 ## 6. Comisión de plataforma
 
-La comisión se calcula así:
 ```python
 commission = max(
     order_total * PLATFORM_COMMISSION_RATE,
@@ -130,19 +118,17 @@ commission = max(
 transfer_amount = order_total - commission
 ```
 
-Con la configuración por defecto (`0.05` y `1.00€`):
+Con la configuración por defecto (5% y mínimo 1,00 €):
 
 | Pedido | Comisión | Transferencia al vendedor |
 |---|---|---|
-| 10€ | 1.00€ (mínimo) | 9.00€ |
-| 50€ | 2.50€ (5%) | 47.50€ |
-| 200€ | 10.00€ (5%) | 190.00€ |
+| 10 € | 1,00 € (mínimo) | 9,00 € |
+| 50 € | 2,50 € (5%) | 47,50 € |
+| 200 € | 10,00 € (5%) | 190,00 € |
 
 ---
 
 ## 7. Tarjetas de prueba
-
-Para probar el flujo de pago en modo test:
 
 | Número | Resultado |
 |---|---|
@@ -157,8 +143,30 @@ Para probar el flujo de pago en modo test:
 ---
 
 ## Estados del pedido
+
 ```
 pending → paid → confirmed → processing → shipped → delivered
 ```
 
-El paso de `pending` a `paid` lo ejecuta automáticamente el webhook al recibir `payment_intent.succeeded`.
+El paso de `pending` a `paid` lo ejecuta el webhook al recibir `payment_intent.succeeded`.
+
+---
+
+## Resolución de problemas
+
+**Los pedidos no pasan a `paid` después del pago**
+- El webhook no está configurado o tiene la URL incorrecta
+- Comprueba en el dashboard de Stripe → **Webhooks** que el endpoint recibe eventos (columna *Last delivery*)
+- Verifica que `STRIPE_WEBHOOK_SECRET` coincide con el Signing secret del endpoint registrado
+
+**Error al crear el PaymentIntent**
+- Comprueba que `STRIPE_SECRET_KEY` es correcta y corresponde al modo test/live que estás usando
+- Verifica que el vendedor tiene el onboarding de Stripe completado (`stripe_account_id` en BD)
+
+**Transferencias al vendedor fallidas**
+- El vendedor no ha completado el onboarding de Stripe Connect
+- En modo test, usa una [cuenta de prueba de Connect](https://stripe.com/docs/connect/testing) para simular el onboarding
+
+---
+
+## <a href="../README.md"><img src="https://img.shields.io/badge/←_Volver_al_README_principal-8b5cf6?style=for-the-badge" /></a>

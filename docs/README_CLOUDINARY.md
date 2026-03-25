@@ -3,19 +3,23 @@
   <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vdark.png#gh-dark-mode-only" alt="Playback" height="52">
 </p>
 
-# 📸 Cloudinary — Imágenes
+# 📸 Cloudinary — Imágenes de productos
 
-Playback usa **Cloudinary** para almacenar y servir todas las imágenes de la plataforma.
+Playback usa **Cloudinary** para almacenar y servir las imágenes de productos y los assets estáticos del catálogo.
 
 ---
 
 ## Qué se almacena en Cloudinary
 
-| Tipo | Descripción |
-|---|---|
-| Imágenes de productos | Subidas por vendedores al publicar o editar un producto |
-| Avatares de usuarios | Generados automáticamente en el registro desde ui-avatars.com y almacenados en Cloudinary |
-| Imágenes de categorías y subcategorías | Assets estáticos del catálogo (gestionados desde el seed) |
+| Tipo | Cuándo | Carpeta |
+|---|---|---|
+| Imágenes de productos | Al crear o editar un producto | `products/` |
+| Imágenes adjuntas en incidencias | Al enviar un mensaje con imagen en un ticket | `incidencias/` |
+| Foto de perfil de usuario | Al actualizar manualmente el avatar | `profile_images/` |
+| Logo de tienda del vendedor | Al actualizar manualmente el logo | `seller_logos/` |
+| Imágenes de categorías y subcategorías | Assets estáticos gestionados desde el seed | `categories/` |
+
+> **Avatares e imágenes iniciales:** en el registro, tanto los avatares de usuarios como los logos de tiendas se generan automáticamente con **UI Avatars** (sin subida a Cloudinary). Solo se suben a Cloudinary si el usuario o vendedor los actualiza manualmente después. Ver sección [UI Avatars](#-ui-avatars--avatares-automáticos) más abajo.
 
 ---
 
@@ -30,6 +34,7 @@ Playback usa **Cloudinary** para almacenar y servir todas las imágenes de la pl
 ---
 
 ## 2. Variables de entorno
+
 ```env
 CLOUDINARY_CLOUD_NAME=tu_cloud_name
 CLOUDINARY_API_KEY=tu_api_key
@@ -41,6 +46,7 @@ La librería se instala automáticamente con `pipenv install`.
 ---
 
 ## 3. Configuración en `app.py`
+
 ```python
 import cloudinary
 import cloudinary.uploader
@@ -56,6 +62,7 @@ cloudinary.config(
 ---
 
 ## 4. Subir una imagen desde el backend
+
 ```python
 import cloudinary.uploader
 
@@ -78,8 +85,10 @@ El método devuelve la URL HTTPS de la imagen ya alojada en Cloudinary, que se g
 | Carpeta | Contenido |
 |---|---|
 | `products/` | Imágenes de productos |
-| `avatars/` | Avatares de usuarios |
-| `categories/` | Imágenes de categorías (assets estáticos) |
+| `incidencias/` | Imágenes adjuntas en mensajes de tickets |
+| `profile_images/` | Fotos de perfil actualizadas por usuarios |
+| `seller_logos/` | Logos de tienda actualizados por vendedores |
+| `categories/` | Assets estáticos del catálogo |
 
 ---
 
@@ -104,3 +113,36 @@ Suficiente para desarrollo y fases iniciales del proyecto.
 **Las imágenes no se muestran**
 - Confirma que la URL guardada en BD empieza por `https://res.cloudinary.com/`
 - Verifica que el recurso no fue eliminado manualmente desde el dashboard de Cloudinary
+
+---
+
+## 🧑‍💼 UI Avatars — Avatares automáticos
+
+Los avatares de usuarios y logos de tiendas se generan automáticamente usando [UI Avatars](https://ui-avatars.com), un servicio gratuito que crea imágenes con iniciales a partir de un nombre.
+
+**No requiere registro ni API key** — es una llamada HTTP directa.
+
+### Cuándo se genera el avatar
+
+| Evento | Qué se genera | Función |
+|---|---|---|
+| Registro de usuario | Avatar con iniciales del nombre y apellido | `generate_initial_avatar(name, last_name)` |
+| Registro de tienda (vendedor) | Logo con el nombre de la tienda | `generate_initial_avatar(store_name)` |
+
+La URL generada se guarda directamente en el campo `image_url` del usuario o `logo_url` de la tienda. No hay subida a Cloudinary.
+
+### Formato de la URL
+
+```
+https://ui-avatars.com/api/?size=200&font-size=0.6&background=random&bold=true&name=Alex+Silvan
+```
+
+El parámetro `background=random` asigna un color de fondo diferente a cada usuario.
+
+### Dónde está implementado
+
+La lógica de generación está centralizada en `src/api/utils.py` → función `generate_initial_avatar()`, usada desde `auth_controller.py` y `seller_controller.py`.
+
+---
+
+## <a href="../README.md"><img src="https://img.shields.io/badge/←_Volver_al_README_principal-8b5cf6?style=for-the-badge" /></a>
