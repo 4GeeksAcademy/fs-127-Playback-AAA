@@ -33,7 +33,6 @@ npm install
 
 ### 2. Configurar el entorno
 
-Copia el archivo de ejemplo:
 ```bash
 cp .env.example .env
 ```
@@ -49,14 +48,9 @@ DATABASE_URL=postgres://gitpod:postgres@localhost:5432/example
 
 ### 3. Migraciones y seeds
 ```bash
-# Aplicar migraciones
 pipenv run upgrade
-
-# Poblar categorías (obligatorio antes que el resto)
-pipenv run python src/api/seeds/seed_categories.py
-
-# Poblar datos de prueba (opcional)
-pipenv run python src/api/seeds/seed_data.py
+pipenv run seed_categories   # obligatorio antes que seed_data
+pipenv run seed_data         # opcional, datos de prueba
 ```
 
 ---
@@ -88,7 +82,7 @@ En Codespaces los puertos deben ser públicos para que el frontend se comunique 
 
 | Herramienta | Cómo instalar |
 |---|---|
-| [pyenv-win](https://github.com/pyenv-win/pyenv-win) | `winget install pyenv-win` o sigue la guía oficial |
+| [pyenv-win](https://github.com/pyenv-win/pyenv-win) | `winget install pyenv-win` |
 | Python 3.13 | `pyenv install 3.13.0` → `pyenv global 3.13.0` |
 | pipenv | `pip install pipenv` |
 | Node.js 20+ | [nodejs.org](https://nodejs.org) |
@@ -98,22 +92,16 @@ En Codespaces los puertos deben ser públicos para que el frontend se comunique 
 
 ### 1. Configurar Python con pyenv-win
 ```powershell
-# Instalar Python 3.13
 pyenv install 3.13.0
 pyenv global 3.13.0
-
-# Verificar
-python --version
+python --version   # debe mostrar 3.13.x
 ```
 
 ---
 
 ### 2. Instalar dependencias
 ```powershell
-# Backend
 pipenv install
-
-# Frontend
 npm install
 ```
 
@@ -137,7 +125,7 @@ GRANT ALL PRIVILEGES ON DATABASE example TO gitpod;
 copy .env.example .env
 ```
 
-Edita `.env`. La `DATABASE_URL` para local es la misma:
+La `DATABASE_URL` para local es la misma que en Codespaces:
 ```env
 DATABASE_URL=postgres://gitpod:postgres@localhost:5432/example
 ```
@@ -147,8 +135,8 @@ DATABASE_URL=postgres://gitpod:postgres@localhost:5432/example
 ### 5. Migraciones y seeds
 ```powershell
 pipenv run upgrade
-pipenv run python src/api/seeds/seed_categories.py
-pipenv run python src/api/seeds/seed_data.py
+pipenv run seed_categories
+pipenv run seed_data
 ```
 
 ---
@@ -162,13 +150,13 @@ pipenv run start
 npm run start
 ```
 
-El frontend estará en `http://localhost:3000` y el backend en `http://localhost:3001`.
+Frontend: `http://localhost:3000` · Backend: `http://localhost:3001`
 
 ---
 
 ## 🔧 Variables de entorno
 
-Referencia completa del archivo `.env`:
+Referencia completa del archivo `.env`. Copia `.env.example` como base y completa los valores.
 
 ### General
 ```env
@@ -189,20 +177,17 @@ CLOUDINARY_CLOUD_NAME=tu_cloud_name
 CLOUDINARY_API_KEY=tu_api_key
 CLOUDINARY_API_SECRET=tu_api_secret
 ```
+→ [Guía de Cloudinary](./README_CLOUDINARY.md)
 
-→ [Guía de configuración de Cloudinary](./README_CLOUDINARY.md)
-
-### Email (Brevo SMTP)
+### Email (Brevo)
 ```env
-MAIL_SERVER=smtp-relay.brevo.com
-MAIL_PORT=587
-MAIL_USE_TLS=True
-MAIL_USERNAME=tu_usuario_smtp
-MAIL_DEFAULT_SENDER="tu_email_remitente"
-MAIL_PASSWORD=tu_smtp_key
+BREVO_API_KEY=xkeysib-xxxxxxxxxxxxxxxxxxxxx
+MAIL_DEFAULT_SENDER=tu_email@dominio.com
+FRONTEND_URL=http://localhost:3000/
 ```
+→ [Guía de Email](./README_EMAIL.md)
 
-→ [Guía de configuración de Email](./README_EMAIL.md)
+> Las variables `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USE_TLS`, `MAIL_USERNAME` y `MAIL_PASSWORD` están en `.env.example` por compatibilidad histórica pero **no son necesarias** — el envío usa la API HTTP de Brevo, no SMTP.
 
 ### Stripe
 ```env
@@ -210,49 +195,69 @@ STRIPE_SECRET_KEY=sk_test_XXXXXXXXXXXXXXXXXXXX
 STRIPE_WEBHOOK_SECRET=whsec_XXXXXXXXXXXXXXXXXXXX
 PLATFORM_COMMISSION_RATE=0.05
 PLATFORM_MINIMUM_COMMISSION=1.00
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
 ```
+→ [Guía de Stripe](./README_STRIPE.md)
 
-→ [Guía de configuración de Stripe](./README_STRIPE.md)
+### IA (Groq)
+```env
+VITE_GROQ_API_KEY=gsk_XXXXXXXXXXXXXXXXXXXX
+```
+→ [Guía de Groq](./README_AI.md)
 
 ### Frontend
 ```env
 VITE_BASENAME=/
 VITE_BACKEND_URL=""
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXXXXXXXX
 ```
 
-> `VITE_BACKEND_URL` se deja vacío en desarrollo local. En Codespaces debe apuntar a la URL pública del backend.
+> `VITE_BACKEND_URL` se deja vacío en desarrollo local. En Codespaces y Render debe apuntar a la URL pública del backend **sin barra final**.
 
 ---
 
 ## 🗄️ Comandos útiles
 
+Todos los comandos se ejecutan con `pipenv run <alias>` desde la raíz del proyecto.
+
+### Servidor
+```bash
+pipenv run start            # Arranca el backend en :3001
+```
+
 ### Migraciones
 ```bash
-pipenv run migrate      # Crear nueva migración
-pipenv run upgrade      # Aplicar migraciones
+pipenv run init             # Inicializar carpeta migrations (solo la primera vez)
+pipenv run migrate          # Crear nueva migración tras cambios en modelos
+pipenv run upgrade          # Aplicar migraciones pendientes
+pipenv run downgrade        # Revertir la última migración
 ```
 
 ### Seeds
 ```bash
-pipenv run python src/api/seeds/seed_categories.py   # Categorías (ejecutar primero)
-pipenv run python src/api/seeds/seed_data.py         # Datos iniciales
+pipenv run seed_categories  # Poblar categorías (siempre primero)
+pipenv run seed_data        # Poblar datos de prueba
 ```
+
+### Reset completo de la BD
+```bash
+pipenv run reset_db         # Elimina migrations, resetea schema y aplica upgrade
+```
+
+> ⚠️ `reset_db` borra todas las migraciones. Solo para desarrollo cuando el estado es inconsistente.
 
 ---
 
 ## 🛠️ Solución de problemas
 
-### Problemas con migraciones
+### Migraciones en estado inconsistente
 
-Si las migraciones están en un estado inconsistente:
+Si `reset_db` no es suficiente, puedes hacerlo manualmente:
+
 ```bash
-# 1. Eliminar migraciones
 rm -rf migrations
 
-# 2. Entrar a PostgreSQL y resetear el schema
 psql -h localhost -U gitpod -d example
-# password: postgres
+# contraseña: postgres
 ```
 ```sql
 DROP SCHEMA public CASCADE;
@@ -260,33 +265,27 @@ CREATE SCHEMA public;
 \q
 ```
 ```bash
-# 3. Recrear migraciones desde cero
-pipenv run flask db init
-pipenv run flask db migrate -m "initial"
-pipenv run flask db upgrade
-
-# 4. Ejecutar seeds
-pipenv run python src/api/seeds/seed_categories.py
-pipenv run python src/api/seeds/seed_data.py
+pipenv run init
+pipenv run migrate
+pipenv run upgrade
+pipenv run seed_categories
+pipenv run seed_data
 ```
 
 ---
 
 ### El frontend no conecta con el backend
 
-- Verifica que `VITE_BACKEND_URL` apunte a la URL correcta del backend
+- Verifica que `VITE_BACKEND_URL` apunte a la URL correcta del backend (sin barra final)
 - Confirma que el backend está corriendo (`pipenv run start`)
 - En Codespaces, verifica que el puerto `3001` sea público
-- Reinicia el frontend tras cualquier cambio en variables `VITE_*`:
-```bash
-npm run start
-```
+- Reinicia el frontend tras cualquier cambio en variables `VITE_*`
 
 ---
 
 ### Los pagos no funcionan o los pedidos no se actualizan
 
-El webhook de Stripe no está configurado o tiene la URL incorrecta. Consulta la [guía de Stripe](./README_STRIPE.md#-webhooks).
+El webhook de Stripe no está configurado o tiene la URL incorrecta. Consulta la [guía de Stripe](./README_STRIPE.md).
 
 ---
 
@@ -295,3 +294,7 @@ El webhook de Stripe no está configurado o tiene la URL incorrecta. Consulta la
 - **Nunca subas `.env` al repositorio**
 - Usa `.env.example` para compartir la estructura (sin valores reales)
 - Reinicia siempre el frontend tras modificar variables `VITE_*`
+
+---
+
+## <a href="../README.md"><img src="https://img.shields.io/badge/←_Volver_al_README_principal-8b5cf6?style=for-the-badge" /></a>

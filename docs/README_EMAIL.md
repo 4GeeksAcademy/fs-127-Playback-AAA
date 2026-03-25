@@ -3,169 +3,171 @@
   <img src="https://res.cloudinary.com/playback-assets/image/upload/v1772853456/logo_navbar_playback_vdark.png#gh-dark-mode-only" alt="Playback" height="52">
 </p>
 
-# 📧 Email — Configuración con Brevo SMTP
+# 📧 Email — Configuración con Brevo API HTTP
 
-Playback envía emails transaccionales usando **Brevo** (antes Sendinblue) como proveedor SMTP, a través de **Flask-Mail**.
+Playback envía emails transaccionales usando **Brevo** (antes Sendinblue) como proveedor. Los mensajes se construyen con **Flask-Mail** pero se envían a través de la **API HTTP de Brevo** — no por SMTP — ya que las plataformas cloud bloquean los puertos SMTP salientes (587/465).
 
 ---
 
 ## 1. Crear cuenta en Brevo
 
 1. Regístrate en [brevo.com](https://www.brevo.com) (plan gratuito disponible)
-2. Ve a **Settings → Senders & IP → SMTP & API**
-3. En la pestaña **SMTP**, anota:
-   - **SMTP Server**: `smtp-relay.brevo.com`
-   - **Port**: `587`
-   - **Login**: tu email SMTP (formato `xxxxxxx@smtp-brevo.com`)
-   - **Password**: genera una clave SMTP desde esa misma pantalla
+2. Ve a **Settings → API Keys** y genera una API key
+3. En **Settings → Senders & IP → Senders**, añade y verifica el email remitente
 
 ---
 
 ## 2. Variables de entorno
 
-Añade esto a tu `.env`:
 ```env
-MAIL_SERVER=smtp-relay.brevo.com
-MAIL_PORT=587
-MAIL_USE_TLS=True
-MAIL_USERNAME=tu_login_smtp@smtp-brevo.com
-MAIL_DEFAULT_SENDER="Nombre del remitente <tu_email@dominio.com>"
-MAIL_PASSWORD=tu_clave_smtp_de_brevo
+BREVO_API_KEY=xkeysib-xxxxxxxxxxxxxxxxxxxxx
+MAIL_DEFAULT_SENDER=tu_email@dominio.com
+FRONTEND_URL=http://localhost:3000/
 ```
 
 | Variable | Descripción |
 |---|---|
-| `MAIL_SERVER` | Servidor SMTP de Brevo (no cambiar) |
-| `MAIL_PORT` | Puerto SMTP con TLS (no cambiar) |
-| `MAIL_USE_TLS` | Cifrado TLS (no cambiar) |
-| `MAIL_USERNAME` | Login SMTP que aparece en tu cuenta Brevo |
-| `MAIL_DEFAULT_SENDER` | Nombre y email que verá el destinatario |
-| `MAIL_PASSWORD` | Clave SMTP generada en Brevo (no es tu contraseña de acceso) |
+| `BREVO_API_KEY` | API key generada en el panel de Brevo |
+| `MAIL_DEFAULT_SENDER` | Email remitente verificado en Brevo |
+| `FRONTEND_URL` | URL base del frontend (para los enlaces dentro de los emails) |
+
+> **Nota sobre variables legacy:** `.env.example` contiene `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USE_TLS`, `MAIL_USERNAME` y `MAIL_PASSWORD`. Estas variables son restos de una implementación anterior por SMTP y **no son necesarias** para el envío actual. Puedes ignorarlas o dejarlas vacías.
 
 ---
 
-## 3. Configuración en `app.py`
+## 3. Arquitectura de envío
 
-Flask-Mail se configura automáticamente leyendo las variables de entorno con el prefijo `MAIL_`:
-```python
-from flask_mail import Mail
-
-mail = Mail()
-
-def create_app():
-    app = Flask(__name__)
-
-    app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
-    app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", 587))
-    app.config["MAIL_USE_TLS"] = os.getenv("MAIL_USE_TLS", "True") == "True"
-    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
-
-    mail.init_app(app)
+```
+Controller
+    │
+    ├── build_*_email()       ← Construye el objeto Message (subject, html, recipients)
+    │       welcome_email.py, order_emails.py, etc.
+    │
+    ├── _send_email_async()   ← Lanza el envío en un hilo separado (no bloquea Gunicorn)
+    │
+    └── send_email(msg)       ← brevo_service.py — llama a la API HTTP de Brevo
 ```
 
+Flask-Mail se usa únicamente para construir los objetos `Message`. El envío real lo hace `brevo_service.py` contra el endpoint REST de Brevo. Los fallos de email nunca interrumpen el flujo principal de la aplicación.
+
 ---
 
-## 4. Enviar un email
-```python
-from flask_mail import Message
-from src.app import mail
+## 4. Catálogo de emails
 
-def send_order_confirmation(user_email, order_id):
-    msg = Message(
-        subject="Tu pedido ha sido confirmado",
-        recipients=[user_email]
-    )
-    msg.body = f"Tu pedido #{order_id} ha sido recibido correctamente."
-    msg.html = f"<p>Tu pedido <strong>#{order_id}</strong> ha sido recibido.</p>"
+### Por evento
 
-    mail.send(msg)
+```
+REGISTRO / AUTENTICACIÓN
+├── Registro                  → build_welcome_email()
+│                               → Destinatario: nuevo usuario
+│                               → Asunto: "▶ Tu cuenta en Playback está lista"
+│
+└── Recuperar contraseña      → build_reset_password_email()
+                                → Destinatario: usuario
+                                → Asunto: "▶ Restablece tu contraseña"
+
+VENDEDORES
+├── Solicitud de vendedor     → build_seller_registration_email()
+│                               → Destinatario: vendedor
+│                               → Asunto: confirmación de solicitud recibida
+│
+└── Onboarding Stripe         → build_new_seller_admin_email()
+    completado                  → Destinatario: admin (MAIL_DEFAULT_SENDER)
+                                → Asunto: notificación de nuevo vendedor listo
+
+PEDIDOS
+├── Pago completado           → build_order_confirmation_buyer_email()
+│   (webhook Stripe)            → Destinatario: comprador
+│
+├── Pago completado           → build_new_order_seller_email()
+│   (webhook Stripe)            → Destinatario: cada vendedor implicado
+│                               → (un email por vendedor con solo sus productos)
+│
+├── Pedido enviado            → build_order_shipped_buyer_email()
+│   (vendedor marca shipped)    → Destinatario: comprador
+│                               → Incluye: código de seguimiento y transportista
+│
+├── Pedido cancelado          → build_order_cancelled_buyer_email()
+│   (por vendedor)              → Destinatario: comprador
+│
+└── Pedido cancelado          → build_order_cancelled_seller_email()
+    (por plataforma/comprador)  → Destinatario: vendedor afectado
+
+INCIDENCIAS
+├── Incidencia abierta        → build_incident_created_seller_email()
+│   (comprador abre ticket)     → Destinatario: vendedor implicado
+│                               → Asunto: "Nueva incidencia en el pedido #X"
+│
+├── Estado actualizado        → build_incident_status_changed_email()
+│   (vendedor o admin cambia    → Destinatario: comprador
+│    open/in_progress/          → Informa del nuevo estado de la incidencia
+│    resolved/rejected)
+│
+└── Nuevo mensaje en ticket   → build_incident_new_message_email()
+    (cualquier participante)    → Destinatario: el otro participante
+                                → Comprador escribe → notifica al vendedor
+                                → Vendedor/admin escribe → notifica al comprador
 ```
 
----
+### Tabla resumen
 
-## 5. Envío asíncrono en producción (Render)
-
-El plan gratuito de Render **bloquea las conexiones SMTP salientes**. Para evitar que un timeout de red mate el worker de gunicorn, todos los `mail.send()` se ejecutan en un hilo separado mediante un helper compartido:
-
-```python
-from threading import Thread
-from flask import current_app
-
-def _send_email_async(app, message):
-    with app.app_context():
-        try:
-            mail.send(message)
-        except Exception as e:
-            print(f"[Mail] Error al enviar email: {str(e)}")
-
-# Uso
-Thread(
-    target=_send_email_async,
-    args=(current_app._get_current_object(), mensaje)
-).start()
-```
-
-**¿Por qué `current_app._get_current_object()`?**
-Flask usa proxies de contexto — `current_app` dentro de un hilo nuevo no tiene contexto activo. `_get_current_object()` extrae la instancia real de la app para pasarla al hilo, que luego abre su propio contexto con `app.app_context()`.
-
-> ⚠️ En local el comportamiento es idéntico: el hilo envía el email por SMTP normalmente. No hay diferencia funcional entre entornos.
+| Evento | Destinatario |
+|---|---|
+| Registro de usuario | Comprador / Vendedor |
+| Recuperación de contraseña | Usuario |
+| Solicitud de vendedor | Vendedor |
+| Onboarding Stripe completado | Admin |
+| Pago completado — confirmación | Comprador |
+| Pago completado — nueva venta | Vendedor(es) |
+| Pedido enviado | Comprador |
+| Pedido cancelado (al comprador) | Comprador |
+| Pedido cancelado (al vendedor) | Vendedor |
+| Incidencia abierta | Vendedor |
+| Estado de incidencia actualizado | Comprador |
+| Nuevo mensaje en incidencia | Otro participante |
 
 ---
 
-## 6. Emails enviados por la plataforma
+## 5. Verificar el remitente en Brevo
 
-| Evento | Destinatario | Descripción |
-|---|---|---|
-| Registro de usuario | Cliente | Bienvenida a la plataforma |
-| Cambio de contraseña | Cliente | Servicio de recuperación |
-| Pedido realizado | Cliente | Confirmación del pedido |
-| Pago completado | Vendedor | Notificación de nueva venta |
-| Cambio de estado del pedido | Cliente | Actualización del envío |
-| Solicitud de vendedor aprobada | Vendedor | Acceso activado |
-| Solicitud de vendedor rechazada | Vendedor | Motivo del rechazo |
-| Ticket de soporte | Usuario | Confirmación de recepción |
+Para que los emails no caigan en spam el remitente debe estar verificado:
+
+1. En Brevo → **Settings → Senders & IP → Senders**
+2. Añade el email que usas en `MAIL_DEFAULT_SENDER`
+3. Sigue el proceso de verificación
 
 ---
 
-## 7. Límites del plan gratuito de Brevo
+## 6. Límites del plan gratuito
 
 | Plan | Emails/día | Emails/mes |
 |---|---|---|
 | Gratuito | 300 | 9.000 |
 | Starter | Sin límite diario | Desde 20.000/mes |
 
-El plan gratuito es suficiente para desarrollo y pruebas.
-
----
-
-## 8. Verificar el remitente en Brevo
-
-Para que los emails no caigan en spam, debes **verificar el dominio o el email remitente**:
-
-1. En Brevo → **Settings → Senders & IP → Senders**
-2. Añade el email que usas en `MAIL_DEFAULT_SENDER`
-3. Sigue el proceso de verificación (recibirás un email de confirmación)
+Suficiente para desarrollo y pruebas del MVP.
 
 ---
 
 ## Resolución de problemas
 
 **Los emails no llegan**
-- Verifica que `MAIL_USERNAME` y `MAIL_PASSWORD` son los del SMTP (no los de tu cuenta de Brevo)
-- Comprueba la carpeta de spam del destinatario
-- Revisa los logs del backend para ver si Flask-Mail lanza algún error
+- Verifica que `BREVO_API_KEY` está configurada en las variables de entorno
+- Comprueba que el email remitente está verificado en Brevo
+- Revisa los logs del backend — los errores de Brevo se imprimen con su código HTTP
 
-**Error de autenticación SMTP**
-- Regenera la clave SMTP en el panel de Brevo
-- Actualiza `MAIL_PASSWORD` en `.env` y reinicia el backend
+**Error 400 — `valid sender email required`**
+- El email en `MAIL_DEFAULT_SENDER` no está verificado en Brevo
+- Añádelo y confírmalo desde **Settings → Senders & IP → Senders**
 
-**El remitente no aparece verificado**
-- Sin verificar, Brevo puede limitar el envío o redirigir los mensajes
-- Completa la verificación del remitente en el panel de Brevo
+**Error 401 — `unauthorized`**
+- La `BREVO_API_KEY` es incorrecta o ha sido revocada
+- Genera una nueva desde **Settings → API Keys**
 
-**Los emails no se envían en producción (Render free)**
-- Render bloquea los puertos SMTP en el plan gratuito
-- Todos los `mail.send()` deben ejecutarse en un hilo separado (ver sección 5)
-- Los errores de envío se registran en los logs del servidor pero no interrumpen el flujo principal
+**Los emails no se envían en producción (Render)**
+- Confirma que `BREVO_API_KEY` y `MAIL_DEFAULT_SENDER` están en las variables de entorno del servicio
+- Los fallos de email son silenciosos por diseño (no rompen el flujo) — revisa los logs para detectarlos
+
+---
+
+## <a href="../README.md"><img src="https://img.shields.io/badge/←_Volver_al_README_principal-8b5cf6?style=for-the-badge" /></a>
