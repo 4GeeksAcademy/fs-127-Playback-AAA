@@ -111,20 +111,20 @@ INCIDENCIAS
 
 ### Tabla resumen
 
-| Evento | Builder | Destinatario | Controller |
-|---|---|---|---|
-| Registro de usuario | `build_welcome_email` | Comprador / Vendedor | `auth_controller` |
-| Recuperación de contraseña | `build_reset_password_email` | Usuario | `auth_controller` |
-| Solicitud de vendedor | `build_seller_registration_email` | Vendedor | `seller_controller` |
-| Onboarding Stripe completado | `build_new_seller_admin_email` | Admin | `seller_controller` |
-| Pago completado — confirmación | `build_order_confirmation_buyer_email` | Comprador | `payment_controller` |
-| Pago completado — nueva venta | `build_new_order_seller_email` | Vendedor(es) | `payment_controller` |
-| Pedido enviado | `build_order_shipped_buyer_email` | Comprador | `order_controller` |
-| Pedido cancelado (al comprador) | `build_order_cancelled_buyer_email` | Comprador | `order_controller` |
-| Pedido cancelado (al vendedor) | `build_order_cancelled_seller_email` | Vendedor | `order_controller` |
-| Incidencia abierta | `build_incident_created_seller_email` | Vendedor | `incident_controller` |
-| Estado de incidencia actualizado | `build_incident_status_changed_email` | Comprador | `incident_controller` |
-| Nuevo mensaje en incidencia | `build_incident_new_message_email` | Otro participante | `incident_controller` |
+| Evento | Destinatario |
+|---|---|
+| Registro de usuario | Comprador / Vendedor |
+| Recuperación de contraseña | Usuario |
+| Solicitud de vendedor | Vendedor |
+| Onboarding Stripe completado | Admin |
+| Pago completado — confirmación | Comprador |
+| Pago completado — nueva venta | Vendedor(es) |
+| Pedido enviado | Comprador |
+| Pedido cancelado (al comprador) | Comprador |
+| Pedido cancelado (al vendedor) | Vendedor |
+| Incidencia abierta | Vendedor |
+| Estado de incidencia actualizado | Comprador |
+| Nuevo mensaje en incidencia | Otro participante |
 
 ---
 
